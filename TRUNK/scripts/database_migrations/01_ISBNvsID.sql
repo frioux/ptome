@@ -19,31 +19,81 @@ select count(*) from tomebooks where library = $2 AND isbn = $1 AND timeremoved 
 $$ LANGUAGE SQL;
 
 create function tomebooks_reserved(books.isbn%TYPE, tomebooks.library%TYPE, checkouts.semester%TYPE) returns bigint AS $$
-select count(*) from reservations where isbn = $1 AND library_to = $2 AND semester = $3;
+select count(*) from reservations where isbn = $1 AND library_to = $2 AND semester = $3 AND fulfilled IS NULL;
 $$ LANGUAGE SQL;
 
-CREATE FUNCTION reservation_insert_update() RETURNS "trigger" AS $$
+CREATE FUNCTION reservation_update() RETURNS "trigger" AS $$
 BEGIN
-IF tomebooks_reserved(NEW.isbn, NEW.library_to, NEW.semester) + 1 <= tomebooks_available_to_reserve(NEW.isbn, NEW.library_to, NEW.semester) THEN
-return NEW;
-else
-raise exception 'All available books are already reserved';
-end if;
+	IF(OLD.isbn IS DISTINCT FROM NEW.isbn OR OLD.library_to IS DISTINCT FROM NEW.library_to OR OLD.semester IS DISTINCT FROM NEW.semester) THEN
+		raise exception 'Changing the isbn, library_to, or semester of a reservation is not allowed.';
+	END IF;
+
+	RETURN NEW;
 end;
 $$ Language plpgsql;
 
-CREATE TRIGGER reservation_insert_update BEFORE insert or update on reservations for each row execute procedure reservation_insert_update();
+CREATE FUNCTION reservation_insert() RETURNS "trigger" AS $$
+BEGIN
+	IF tomebooks_reserved(NEW.isbn, NEW.library_to, NEW.semester) + 1 <= tomebooks_available_to_reserve(NEW.isbn, NEW.library_to, NEW.semester) THEN
+		return NEW;
+	else
+		raise exception 'All available books are already reserved';
+	end if;
 
-CREATE FUNCTION checkouts_insert_update() RETURNS "trigger" AS $$
+	RETURN NEW;
+end;
+$$ Language plpgsql;
+
+CREATE TRIGGER reservation_update BEFORE update on reservations for each row execute procedure reservation_update();
+CREATE TRIGGER reservation_insert BEFORE insert on reservations for each row execute procedure reservation_insert();
+
+CREATE FUNCTION checkouts_update() RETURNS "trigger" AS $$
+BEGIN
+	IF(OLD.tomebook IS DISTINCT FROM NEW.tomebook OR OLD.semester IS DISTINCT FROM NEW.semester OR OLD.library IS DISTINCT FROM NEW.library) THEN
+		raise exception 'Changing the tomebook, semester, or library of a checkout is not allowed.';
+	END IF;
+
+	return NEW;
+end;
+$$ Language plpgsql;
+
+CREATE FUNCTION checkouts_insert() RETURNS "trigger" AS $$
 declare tomebook record;
 BEGIN
 	select into tomebook * from tomebooks where id = NEW.tomebook;
-IF tomebooks_available_to_reserve(tomebook.isbn, tomebook.library, NEW.semester) - tomebooks_reserved(tomebook.isbn, tomebook.library, NEW.semester) >= 1 THEN
-return NEW;
-else
-raise exception 'All available books are already reserved';
-end if;
+	IF tomebook.timeremoved IS NOT NULL THEN
+		raise exception 'Cannot check out a tome book after it has been removed.';
+	END IF;
+
+	IF tomebooks_available_to_reserve(tomebook.isbn, tomebook.library, NEW.semester) - tomebooks_reserved(tomebook.isbn, tomebook.library, NEW.semester) < 1 THEN
+		raise exception 'All available books are already reserved';
+	end if;
+
+	return NEW;
 end;
 $$ Language plpgsql;
 
-CREATE TRIGGER checkouts_insert_update BEFORE insert or update on checkouts for each row execute procedure checkouts_insert_update();
+CREATE TRIGGER checkouts_update BEFORE update on checkouts for each row execute procedure checkouts_update();
+CREATE TRIGGER checkouts_insert BEFORE insert on checkouts for each row execute procedure checkouts_insert();
+
+CREATE FUNCTION tomebooks_update() RETURNS "trigger" AS $$
+declare semester_reservations record;
+declare checkout record;
+BEGIN
+IF(NEW.timeremoved IS NOT NULL AND OLD.timeremoved IS NULL) THEN
+	select into checkout * FROM checkouts where tomebook = NEW.id AND checkin IS NULL;
+	if(FOUND) THEN
+		raise exception 'Book cannot be removed while it is checked out.';
+	END IF;
+
+	FOR semester_reservations IN SELECT count(*) as count, semester from reservations where isbn = NEW.isbn AND fulfilled is null group by semester LOOP
+		IF semester_reservations.count > (tomebooks_available_to_reserve(NEW.isbn, NEW.library, semester_reservations.semester) - 1) THEN
+			raise exception 'Removing this book would invalidate a reservation';
+		END IF;
+	END LOOP;
+END IF;
+return NEW;
+end;
+$$ Language plpgsql;
+
+CREATE TRIGGER tomebooks_update BEFORE update on tomebooks for each row execute procedure tomebooks_update();
