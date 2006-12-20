@@ -7,10 +7,10 @@
 <input type="hidden" name="rm" value="isbnupdate" />
 <input type="hidden" 
 <table>
-<tr><td><em>Patron:</em></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron'  %]</td></tr>
+<tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron'  %]</td></tr>
 [%# Should be if there is only one library (Maybe this change should be in the block itself...?) %]
-<tr><td><em>Floor:</em></td><td>[% PROCESS 'blocks/librariesbox.html' name='library' libraries=libraries_to %]</td></tr>
-<tr><td><em>Semester:</em></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %]</td></tr>
+<tr><td><strong>Floor:</strong></td><td>[% PROCESS 'blocks/librariesbox.html' name='library' libraries=libraries_to %]</td></tr>
+<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %]</td></tr>
 [%# should be if it is in our libraru %]
 <tr><td>[% IF 1==2 %]<input type="submit" value="Reserve Book" />[% ELSE %]<input type="submit" value="Reserve Book from Library:"/></td><td><select>[% FOREACH library = libraries_to %]<option value="[% library.id | html %]">[% library.name | html %] (3 Free)</option>[% END %]</select>[% END %]</td></tr>
 </table>
