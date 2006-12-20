@@ -2668,7 +2668,7 @@ sub library_access {
 		libraries	=> { type => ARRAYREF, optional => 1 },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT id FROM library_access WHERE', { uid => $params{user} });
+	my ($sql, @bind) = sql_interp('SELECT library FROM library_access WHERE', { uid => $params{user} });
 
 	my $sth = $self->dbh->prepare($sql);
 	$sth->execute(@bind);
