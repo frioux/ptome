@@ -295,6 +295,20 @@ sub patron_add {
 	$sth->execute(@bind);
 }
 
+sub patron_update {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id	=> { type => SCALAR },
+		email	=> { type => SCALAR },
+		name	=> { type => SCALAR },
+	});
+
+	my ($sql, @bind) = sql_interp('UPDATE patrons SET email = ', \$params{'email'}, ', name = ', \$params{'name'}, 'WHERE id = ', \$params{id});
+	my $sth = $self->dbh->prepare($sql);
+	$sth->execute(@bind);
+}
+
 sub patron_info {
 	my $self = shift;
 	
@@ -553,7 +567,7 @@ sub checkout_history {
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, reservation, checkin, comments, uid, username, library FROM checkouts, users WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
+	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, reservation, checkin, comments, uid, username, library FROM checkouts, users, patrons WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
 	$sth->execute($params{id});
 	my @results;
 	while(my $result = $sth->fetchrow_hashref) {

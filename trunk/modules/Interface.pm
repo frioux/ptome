@@ -15,7 +15,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook addpatron addpatron_process autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -494,6 +494,43 @@ sub addclass_process {
 	return;
 }
 
+sub patronview {
+	my $self = shift;
+	my $errs = shift;
+
+	my $q = $self->query;
+
+	my $patron;
+	if($q->param('patron')) {
+		$patron = $self->patron_info({ email => $self->query->param('patron') });
+		return $self->error({ message => 'Unable to locate patron with email ' . $self->query->param('patron') }) unless $patron;
+	} elsif($q->param('id')) {
+		$patron = $self->patron_info({ id => $self->query->param('id') });
+		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
+	}
+
+	return $self->template({ file => 'patronview.html', vars => { patron => $patron, errs => $errs }});
+}
+
+sub patronupdate {
+	my $self = shift;
+
+	my $results = $self->check_rm('patronview', {
+		required	=> [qw(
+			id
+			name
+			email
+		)],
+		filters		=> 'trim',
+	}, { target => 'patronupdate' }) || return $self->check_rm_error_page;
+
+	my $update = $results->valid;
+
+	$self->patron_update({ id => $update->{id}, email => $update->{email}, name => $update->{name} });
+
+	return $self->forward('patronview');
+}	
+
 sub addpatron {
 	my $self = shift;
 	my $errs = shift;
@@ -522,7 +559,7 @@ sub addpatron_process {
 				'emails_match'	=> 'Emails do not match',
 			},
 		},
-	}) || return $self->check_rm_error_page;
+	}, { target => 'addpatron' }) || return $self->check_rm_error_page;
 
 	$self->patron_add({ email => $results->valid('ap_email1'), name => $results->valid('ap_name') });
 
@@ -566,7 +603,7 @@ sub addtomebook_process {
 			isbn	=> 'uc',
 			isbn	=> sub { my $value = shift; $value =~ s/[- ]//g; return $value; },
 		},
-	}) || return $self->check_rm_error_page;
+	}, { target => 'addtomebook' }) || return $self->check_rm_error_page;
 
 	unless($self->patron_info({ email => $addtomebook_results->valid('patron') })) {
 		return $self->forward('addpatron');
@@ -583,7 +620,7 @@ sub addtomebook_process {
 					edition
 				)],
 				filters		=> 'trim',
-			}) || return $self->check_rm_error_page;
+			}, { target => 'addtomebook_isbn' }) || return $self->check_rm_error_page;
 			
 			my %addbook = (
 				isbn	=> $addtomebook_results->valid('isbn'),
@@ -626,22 +663,35 @@ sub addtomebook_process {
 
 sub checkout {
 	my $self = shift;
+	
+	my $results = $self->check_rm('tomebookinfo', {
+		required	=> [qw(
+			id
+			library
+			semester
+			patron
+		)],
+		filters		=> 'trim',
+	}, { target => 'checkout' }) || return $self->check_rm_error_page;
 
 	my $q = $self->query;
-	my $id = $q->param('tomebook');
+	my $id = $results->valid('id');
 
-	my $reservation = $q->param('reservation') ? 'true' : 'false';
+	my $reservation = $results->valid('reservation') ? 'true' : 'false';
 	my $error;
 	if($reservation eq 'true') {
-		$error = $self->tomebook_can_reserve({tomebook => $q->param('tomebook'), semester => $q->param('semester')});
+		$error = $self->tomebook_can_reserve({tomebook => $id, semester => $results->valid('semester')});
 	} else { 
-		$error = $self->tomebook_can_checkout({tomebook => $q->param('tomebook'), semester => $q->param('semester')});
+		$error = $self->tomebook_can_checkout({tomebook => $id, semester => $results->valid('semester')});
 	}
 	return $error if $error;
 
+	my $patron_info = $self->patron_info({ email => $results->valid('patron') });
+	unless($patron_info) { return $self->forward('addpatron'); }
+
 	my $checkoutid;
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $q->param('library'))) {
-		my $tomebook = $self->tomebook_info({id => $q->param('tomebook')});
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $results->valid('library'))) {
+		my $tomebook = $self->tomebook_info({id => $id});
 		# InterTOME loans may only be on a reservation basis
 		unless($self->_libraryauthorized($self->param('user_info')->{id}, $tomebook->{library})) {
 			$reservation = 'true';
@@ -657,20 +707,20 @@ sub checkout {
 							tomebooklibrary	=> $self->library_info({id => $tomebook->{library}}),
 							tomebook	=> $tomebook,
 							notifieduser	=> $userinfo,
-							borrower	=> $q->param('borrower'),
-							semester	=> $q->param('semester'),
-							library		=> $self->library_info({id => $q->param('library')}),
+							borrower	=> "$patron_info->{name} ($patron_info->{email})",
+							semester	=> $results->valid('semester'),
+							library		=> $self->library_info({id => $results->valid('library')}),
 						}}),
 					);
 					$message->send;
 				}
 			}
 		}
-		$checkoutid = $self->tomebook_checkout({tomebook => $q->param('tomebook'), borrower => $q->param('borrower'), semester => $q->param('semester'), reservation => $reservation, uid => $self->param('user_info')->{id}, library => $q->param('library') });
+		$checkoutid = $self->tomebook_checkout({tomebook => $id, borrower => $patron_info->{id}, semester => $results->valid('semester'), reservation => $reservation, uid => $self->param('user_info')->{id}, library => $results->valid('library') });
 	}
 	
-	if($q->param('comments')) {
-		$self->update_checkout_comments({id => $checkoutid, comments => $q->param('comments')});
+	if($results->valid('comments')) {
+		$self->update_checkout_comments({id => $checkoutid, comments => $results->valid('comments')});
 	}
 
 	$self->header_type('redirect');
@@ -747,6 +797,7 @@ sub cancelcheckout {
 
 sub tomebookinfo {
 	my $self = shift;
+	my $errs = shift;
 
 	my $q = $self->query;
 
@@ -767,6 +818,7 @@ sub tomebookinfo {
 		libraries	=> $libraries,
 		classes		=> $self->book_classes({ isbn => $info->{isbn} }),
 		librarieshash	=> { map { $_->{id} => $_ } @{$libraries} },
+		errs		=> $errs,
 	}});
 }
 

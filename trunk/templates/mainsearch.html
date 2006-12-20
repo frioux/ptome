@@ -35,7 +35,9 @@
 <td valign="top">
 <table cellpadding="5" border="1">
 <tr><td colspan="2" align="center">Edit Patron</td></tr>
+<form action="[% config.cgibase %]/admin.pl" method="post">
 <tr><td>
+<input type="hidden" name="rm" value="patronview">
 Email
 </td>
 <td>
@@ -44,6 +46,7 @@ Email
 </tr>
 <tr><td align="center" colspan="2">
 <input type="submit" value="Edit">
+</form>
 </td></tr>
 </table>
 </td>

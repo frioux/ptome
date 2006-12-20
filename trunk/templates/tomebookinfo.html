@@ -103,26 +103,27 @@ Expiration Semester: <select name="expire">
 <p><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id | uri | html %]&edit=1">Edit this TOME book</a>
 [% END %]
 <hr>
-<h4>Checkout:</h4>
+<a name="checkout"></a><h4>Checkout:</h4>
 [% UNLESS librarieshash.${tomebook.library}.access %]
 <b>This will be an InterTOME loan.</b><br>
 Because of this, only reservations are allowed.
 [% END %]
 <form action="[% config.cgibase %]/admin.pl" method="post" name="checkout">
+<input type="hidden" name="anchor" value="checkout">
 <input type="hidden" name="rm" value="checkout">
-<input type="hidden" name="tomebook" value="[% tomebook.id %]">
+<input type="hidden" name="id" value="[% tomebook.id %]">
 <table border="1" cellpadding="5">
-<tr><td>Borrower</td><td><input type="text" name="borrower"></td></tr>
+<tr><td>Borrower</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.patron %]</td></tr>
 <tr><td>Semester</td><td><select name="semester" onChange="if(document.checkout.semester.selectedIndex > 0){document.checkout.reservation.checked = true;}">
 [% FOREACH semester = semesters %]
 [% IF semester.id >= currsemester.id %]<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemesterid)  == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END %]
 [% END %]
-</select></td></tr>
+</select> [% errs.semester %]</td></tr>
 <tr><td>Responsible Library</td><td><select name="library">
 [% FOREACH library = libraries %]
 [% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 [% END %]
-</select></td></tr>
+</select> [% errs.library %]</td></tr>
 <tr><td>Comments</td><td><input type="text" name="comments"></td></tr>
 <tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %][% UNLESS librarieshash.${tomebook.library}.access %]disabled="disabled[% END %]"></td></tr>
 <tr><td colspan="2" align="center"><input type="submit" value="Checkout"></td></tr>
@@ -159,7 +160,7 @@ Because of this, only reservations are allowed.
 		[% semestershash.${checkout.semester}.name | html %]
 	</td>
 	<td>
-		[% checkout.borrower_name | html %] ([% checkout.borrower_email | html %])
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout.borrower | html | uri %]">[% checkout.borrower_name | html %]</a> ([% checkout.borrower_email | html %])
 	</td>
 	<td>[% checkout.username | html %]</td>
 	<td>[% librarieshash.${checkout.library}.name | html %]</td>

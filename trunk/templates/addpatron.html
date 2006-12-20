@@ -1,7 +1,7 @@
 [% META title = 'Add Patron' %]
 <font color="red" size="+1"><b>[% CGI.param('patron') | html %]</b> is not in the TOME system.<br>
 If you are certain that the email address is correct, you may add them by completing this form:</font>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[% config.cgibase %]/admin.pl" method="post" name="addpatron">
 <input type="hidden" name="rm" value="addpatron_process">
 <p><table cellpadding="5" border="1"><tr>
 <td>Email</td><td><input type="text" name="ap_email1" value="[% CGI.param('patron') | html %]"> [% errs.ap_email1 %]</td></tr>
