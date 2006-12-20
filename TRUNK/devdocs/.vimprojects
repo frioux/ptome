@@ -76,14 +76,11 @@ cgi=cgi{
  }
  
  docs=docs {
-  
   site-config.pl
- 
  }
  
  modules=modules {
   TOME.pm
-  tmp
  TOME=TOME{
    Interface.pm
    TemplateCallbacks.pm
@@ -92,7 +89,14 @@ cgi=cgi{
  }
  
  scripts=scripts {
-  
+  createsemester.pl
+  createuser.pl
+  dumpclean.pl
+  dumpdb.pl
+  dumpschema.pl
+  install.pl
+  regen-prototype.pl
+  test.pl
   database_migrations=database_migrations{
    01_ISBNvsID.sql
    02_PatronClasses.sql
@@ -101,15 +105,6 @@ cgi=cgi{
    05_InterTOMEBarriers.sql
    06_ClassesTypeCorrection.sql
   }
-  
-  createsemester.pl
-  createuser.pl
-  dumpclean.pl
-  dumpdb.pl
-  dumpschema.pl
-  install.pl
-  test.pl
- 
  }
  
  static=static/ {
@@ -129,23 +124,13 @@ cgi=cgi{
  }
  
  templates=templates {
-  
-  blocks=blocks{
-   autocomplete_class.html
-   autocomplete_isbn.html
-   autocomplete_patron.html
-   book.html
-   datetime.html
-  }
-  
+ 
   addclass.html
   addclassbook-isbn.html
   addpatron.html
   addtomebook.html
   addtomebook_isbn.html
   adminlogin.html
-  autocomplete_isbn.html
-  autocomplete_patron.html
   classsearch.html
   confirm.html
   error.html
@@ -154,16 +139,24 @@ cgi=cgi{
   footer.html
   header.html
   interTOMEnotify.email
-  librariesbox.html
+  isbnview.html
   mainsearch.html
   management.html
   patronview.html
   report.html
-  semestersbox.html
   stats.html
   tomebookinfo.html
   updatebook.html
- 
+
+  blocks=blocks{
+   autocomplete_class.html
+   autocomplete_isbn.html
+   autocomplete_patron.html
+   book.html
+   datetime.html
+   librariesbox.html
+   semestersbox.html
+  }
  }
  
  tests=tests {
