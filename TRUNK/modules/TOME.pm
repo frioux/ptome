@@ -105,24 +105,7 @@ the "address" email messages are sent to when in development mode
 Note: address format is 'Name <email@domain>`
 
 =cut
-our %CONFIG = (
-	cgibase		=> '/perl/tome/cgi',
-	staticbase	=> '/tome',
-
-	templatepath	=> '../templates',
-
-	dbidbname	=> 'tome',
-	dbihostname	=> 'localhost',
-	dbiport		=> '5432',
-	dbiusername	=> 'tome',
-	dbipassword	=> 'password',
-
-	notifyfrom	=> 'TOMEkeeper <tomekeeper@tome>',
-	adminemail	=> 'TOMEadmin <tomeadmin@tome>',
-
-	devmode		=> 0,
-	devemailto	=> 'TOMEadmin <tomeadmin@tome>',
-);
+our %CONFIG;
 #}}}
 
 require '../site-config.pl';
