@@ -8,10 +8,9 @@ Contact information page (maybe move user admin to here as well)
 Don't let the system drop to less than 1 admin user
 Make sure a book cannot be removed unless it is checked in
 Orphan page links need to have libraries in them
-Streamline the "tome book"/book adding process - there should only be one page
 Prompt for current password when changing password
-After selecting all libraries and doing a search, the owner's library will not be selected
-Can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
+After selecting all libraries and doing a search, the owner's library will not be selected, but it should be
+Make it so you can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
 make usernames case insensitive - use a case insenstive unique key
 investigate form validation...
 
