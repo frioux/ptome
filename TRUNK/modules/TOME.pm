@@ -619,6 +619,69 @@ sub reservation_info {
 }
 #}}}
 
+#{{{reservation_create
+=head2 reservation_create
+
+This function creates a reservation.
+
+Arguments are in a hashref.  Unless otherwise noted, all parameters are required.
+
+=over
+
+=item isbn
+
+The ISBN of the book to reserve
+
+=item uid
+
+The user ID of the TOMEkeeper responsible for the checkout
+
+=item patron
+
+The patron ID of the borrower
+
+=item comment (optional)
+
+Any comments about the reservation
+
+=item library_from
+
+The library responsible for making the reservation (the library that is requesting the book)
+
+=item library_to
+
+The library the reservation is being made to (the library that has the book that is being requested)
+
+=item semester
+
+The semester the reservation is valid for
+
+=back
+
+=cut
+
+sub reservation_create {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		isbn		=> { type => SCALAR, regex => qr/^\d+$/ },
+		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
+		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
+		comment		=> { type => SCALAR, optional => 1 },
+		library_from	=> { type => SCALAR, regex => qr/^\d+$/ },
+		library_to	=> { type => SCALAR, regex => qr/^\d+$/ },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});			
+
+	my ($sql, @bind) = sql_interp('INSERT INTO reservations', \%params);
+	$self->dbh->do($sql, undef, @bind);
+	
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.reservations_id_seq')");
+	return $id;
+}
+
+#}}}
+
 #{{{reservation_search 
 
 =head2 reservation_search 
