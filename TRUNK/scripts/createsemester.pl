@@ -16,9 +16,8 @@ GetOptions (
 	'name:s' => \$semestername,  #-u, -user, or -username, fills $username
 );
 
-if (!$semestername)
-{
-  $semestername = prompt ("Semester name: ");
+if (!$semestername) {
+	$semestername = prompt ("Semester name: ");
 }
 
 my $app = TOME->new();

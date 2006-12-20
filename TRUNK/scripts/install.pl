@@ -49,7 +49,7 @@ print ("If the username already exists, you may see an error message to that eff
 $username = prompt ("Username: ", -default => 'tome');
 print ("Attempting to create user \'" . $username . "\'...\n");
 
-@args = ("sudo", "-u", "postgres", "createuser", $username, "-SDRP");
+@args = ("su", "postgres", "-c", "createuser $username -SDRP");
 system (@args);
 
 print ("\n");
@@ -57,17 +57,17 @@ print ("What database do you want TOME to use?  For now, please enter a new data
 $database = prompt ("Database name: ", -default => 'tome');
 print ("Attempting to create database \'" . $database . "\'...\n");
 
-@args = ("sudo", "-u", "postgres", "createdb", "-O", $username, '-T', 'template0', $database);
+@args = ("su", "postgres", "-c", "createdb -O $username -T template0 $database");
 system (@args);
 
 print ("Installing the plpgsql language on database \'" . $database . "\'...\n");
 
-@args = ("sudo", "-u", "postgres", "createlang", "plpgsql", $database);
+@args = ("su", "postgres", "-c", "createlang plpgsql $database");
 system (@args);
 
 print ("Inserting the TOME schema into the database...\n");
 
-@args = ("sudo", "-u", "postgres", 'psql', $database, $username, '-f', '../devdocs/schema.sql');
+@args = ("su", "postgres", "-c", "psql $database $username -f ../devdocs/schema.sql");
 system (@args);
 
 print ("\n");
@@ -115,9 +115,8 @@ print ("\n");
 print ("What port should TOME connect on?\n");
 prompt ("Server port: ", -default => '5432');
 
-if ($_ != '5432')
-{
-  $siteconfig .= ';port=' . $_;
+if ($_ != '5432') {
+	$siteconfig .= ';port=' . $_;
 }
 $siteconfig .= '\',' . "\n";
 
@@ -163,20 +162,34 @@ $siteconfig .= ');' . "\n";
 
 print ("\n");
 print ("Attempting to write site-config.pl...\n");
-print ("This will overwrite any existing site-config.pl, assuming this script has the permissions to do so\n");
 
-open (FH, ">", '../site-config.pl')
-	or die "Can't open site-config.pl: $!";
-
-print FH $siteconfig;
-
-close (FH);
-
-print ("Here are the contents of site-config.pl:\n");
-print ("\n");
-print ($siteconfig . "\n");
-
-#write file to disk
+if (-e "../site-config.pl") {
+	if (prompt ("site-config.pl already exists!  Do you wish to overwrite it? ", -yn)) {
+		if (open (FH, ">", '../site-config.pl')) {
+			print FH $siteconfig;
+			close (FH);
+		} else {
+			print ("Can\'t open site-config.pl for writing!\n");
+			print ("Here\'s what would have been written:\n");
+			print ("\n");
+			print ($siteconfig . "\n");
+		}
+	} else {
+		print ("Here's what would have been written:\n");
+		print ("\n");
+		print ($siteconfig . "\n");
+	}
+} else {
+	if (open (FH, ">", '../site-config.pl')) {
+		print FH $siteconfig;
+		close (FH);
+	} else {
+		print ("Can\'t open site-config.pl for writing!\n");
+		print ("Here\'s what would have been written:\n");
+		print ("\n");
+		print ($siteconfig . "\n");
+	}
+}
 
 print ("\n");
 print ("Now the program will attempt to create an admin user on TOME.\n");

@@ -22,28 +22,22 @@ GetOptions (
 	'admin' => \$admin,	     #-a or -admin, fills $admin 
 );
 
-if ($admin)
-{
-  $admin = 'true';
-}
-else
-{
-  $admin = 'false';
+if ($admin) {
+	$admin = 'true';
+} else {
+	$admin = 'false';
 }
 
-if (!$username)
-{
-  $username = prompt ("Username: ");
+if (!$username) {
+	$username = prompt ("Username: ");
 }
 
-if (!$email)
-{
-  $email = prompt ("Email: ");
+if (!$email) {
+	$email = prompt ("Email: ");
 }
 
-if (!$passwd)
-{
-  $passwd = prompt ("Password: ", -echo => '');
+if (!$passwd) {
+	$passwd = prompt ("Password: ", -echo => '');
 }
 
 #$username = "theclint";
