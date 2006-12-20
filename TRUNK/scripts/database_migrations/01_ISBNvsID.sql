@@ -1,3 +1,5 @@
+BEGIN WORK;
+LOCK TABLE checkouts,tomebooks,reservations;
 alter TABLE checkouts alter column tomebook type int;
 alter TABLE checkouts alter column semester type int;
 ALTER TABLE tomebooks alter column expire type integer;
@@ -97,3 +99,4 @@ end;
 $$ Language plpgsql;
 
 CREATE TRIGGER tomebooks_update BEFORE update on tomebooks for each row execute procedure tomebooks_update();
+COMMIT WORK;
