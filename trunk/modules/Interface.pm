@@ -547,7 +547,7 @@ sub cancelcheckout {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $id })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
 		$self->tomebook_cancel_checkout({id => $id});
 	}
 
