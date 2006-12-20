@@ -1,7 +1,0 @@
-<tr><td>Libraries</td><td><select name="libraries" size="5" multiple="multiple">
-[% FOREACH library = libraries %]
-<option value="[% library.id | html %]" [% IF libraries_selected.grep("^${library.id}\$").size == 1 %]selected="selected"[% END %]>[% library.name | html %]</option>
-[% END %]
-</select><br>
-<a href="#" onClick="for(i=0;i<document.report.libraries.length;i++){document.report.libraries.options[i].selected=true;}">Select All</a> | <a href="#" onClick="[% FOREACH library = libraries %][% IF library.access %]document.report.libraries.options[[% loop.index %]].selected=true;[% ELSE %]document.report.libraries.options[[% loop.index %]].selected=false;[% END %][% END %]">Select Mine</a>
-</td></tr>
