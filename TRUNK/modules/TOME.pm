@@ -317,7 +317,7 @@ the libraries to look in for the book (Note: this is an array reference...whatev
 
 =cut
 
-sub tomebooks_search {
+sub tomebook_availability_search {
 	my $self = shift;
 
 	my $dbh = $self->dbh;
@@ -341,7 +341,7 @@ sub tomebooks_search {
 	} elsif($params{status} eq 'in_collection') {
 		($sql, @bind) = sql_interp('SELECT count(*) FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
 	} elsif($params{status} eq 'can_reserve') {
-		push @library_reservations;
+		my @library_reservations;
 		foreach(@{$params{libraries}}) {
 			push @library_reservations, 'tomebooks_available_to_reserve(?, ?, ?)';
 			push @bind, ($params{isbn}, $_, $params{semester});
@@ -352,12 +352,12 @@ sub tomebooks_search {
 	}
 
 	my $sth = $dbh->prepare($sql);
-	$sth->execute(@values);
+	$sth->execute(@bind);
 	
 	return ($sth->fetchrow_array)[0];
 }
 #}}}
-#{{{tomebooks_search 
+#{{{tomebook_availability_search
 
 =head2 tomebooks_search 
 
