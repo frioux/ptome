@@ -217,9 +217,16 @@ This component does not have any specific performance or speed requirements.  Fa
 The static content is plain text files located in the static directory.
 
 \section{Class Interfaces}
-Due to the still-changing nature of the class interfaces, they have not been included in this document.  Up-to-date documentation of the entire interface is always available by viewing the POD embedded in any of the Perl modules for this project.
+Note: up-to-date documentation of the entire interface is always available by viewing the POD embedded in any of the Perl modules for this project.  The following is the core interface for the TOME class.
 
+\subsection{error}
+This function is called when there is a fatal error.
 
+This function takes a hash as an argument:
+\paragraph{message}
+the short error message
+\paragraph{extended}
+the details of the error message
 \section{Component Design}
 \subsection{Pattern Usage}
 TOME is built around an MVC pattern.  The Model is handled by the TOME model, the View is handled by the templates, and the Control is handled by TOME::Interface.
