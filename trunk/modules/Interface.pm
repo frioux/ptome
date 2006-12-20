@@ -290,7 +290,6 @@ sub addclassbook {
 	unless($self->book_exists({ isbn => $book{isbn} })) {
 		return $self->template({ file => 'invalidisbn.html' });
 	}
-
 	
 	$self->classbook_add({%book});
 
@@ -298,7 +297,7 @@ sub addclassbook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$book{class}");
 	return;
 }
-	
+
 sub report {
 	my $self = shift;
 
@@ -396,7 +395,7 @@ sub addtomebook {
 	}
 
 	my $isbn = $q->param('isbn');
-	$isbn =~ s/-//g; # We don't want hyphens, they're useless
+	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
 	
 	unless($self->book_exists({ isbn => $isbn })) {
 		if($q->param('addbook')) {
@@ -412,7 +411,7 @@ sub addtomebook {
 
 			$self->add_book({%addbook});
 		} else {
-			return $self->template({ file => 'addbook.html', vars => {
+			return $self->template({ file => 'addtomebook-isbn.html', vars => {
 				librarieshash	=> $self->_librarieshash(),
 			}});
 		}

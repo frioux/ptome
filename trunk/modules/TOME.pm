@@ -444,7 +444,7 @@ sub find_useless {
 
 	my $dbh = $self->dbh;
 
-	my ($sql, @bind) = sql_interp('SELECT tomebooks.id AS id FROM tomebooks, classbooks WHERE tomebooks.timeremoved IS NULL AND classbooks.usable = FALSE AND tomebooks.isbn = classbooks.isbn AND library IN', $params{libraries}, 'ORDER BY tomebooks.isbn,id');
+	my ($sql, @bind) = sql_interp('SELECT DISTINCT tomebooks.id AS id, tomebooks.isbn FROM tomebooks, classbooks WHERE tomebooks.timeremoved IS NULL AND classbooks.usable = FALSE AND tomebooks.isbn = classbooks.isbn AND library IN', $params{libraries}, ' AND tomebooks.id NOT IN (SELECT tomebooks.id FROM tomebooks, classbooks WHERE classbooks.usable = TRUE AND tomebooks.isbn = classbooks.isbn) ORDER BY tomebooks.isbn,id');
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
