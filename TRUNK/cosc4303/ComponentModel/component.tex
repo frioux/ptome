@@ -13,6 +13,7 @@ fREW Schmidt
 \tableofcontents
 \listoffigures
 \newpage
+\sloppy
 \section{Introduction}
 \subsection{Purpose of Document}
 The purpose of this document is to specify the TOME system and the component model it uses.
@@ -27,19 +28,22 @@ This component model is a part of the larger suite of documentation for the TOME
 All current documentation will be available in the Trac environment (See Section~\ref{references}).
 \subsection{References}
 \label{references}
-All project data will be stored in a combination Subversion repository and Trac environment.  All of this will be made viewable at the following URL:
+All project data will be stored in a combination Subversion repository and Trac environment.  All of this will be made viewable at this URL: \texttt{http://enosh.letnet.net/trac/tome}.
 
-\texttt{http://enosh.letnet.net/trac/tome}
-
-References will be made to a number of standard Perl modules such as CGI::Application, Template Toolkit, and many others.  Documentation for these modules is available at the following URL:
-
-\texttt{http://search.cpan.org/}
+References will be made to a number of standard Perl modules such as CGI::Application, Template Toolkit, and many others.  Documentation for these modules is available at this URL: \texttt{http://search.cpan.org/}.
+\section{Event Trace}
+The overall trace flow of the entire system can be see in Figure~\ref{EventDiagram}.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{EventDiagram}
+	\caption{Event Trace Diagram}
+	\label{EventDiagram}
+\end{figure}
 
 \section{Component Specifications}
 
 \subsection{admin.pl}
 \subsubsection{Role}
-The role of admin.pl is to load the system and serve as a starting point for the webserver
+The role of admin.pl is to load the system and serve as a starting point for the web server.
 \subsubsection{Responsibilities}
 admin.pl needs only to load TOME::Interface and hand control over to the CGI::Application framework.
 \subsubsection{Exclusions}
@@ -103,30 +107,123 @@ TOME needs to validate all subs with the Params::Validate module. Even if the da
 \subsubsection{Exclusions}
 TOME shouldn't know anything about users and especially nothing about templates.
 \subsubsection{Collaborators}
-TOME collaborates very closely with TOME::Interface.  TOME is the base class of TOME::Interface.  TOME is in turn implemented as a subclass of CGI::Interface.  TOME also interacts closely with several external modules such as Template Toolkit, DateTime, Params::Validate, SQL::Interpolate, and MIME::Lite.  It also uses the TOME::TemplateCallbacks modules to make dynamic callbacks available to templates.
+TOME collaborates very closely with TOME::Interface.  TOME is the base class of TOME::Interface.  TOME is in turn implemented as a subclass of CGI::Interface.  TOME also interacts closely with several external modules such as Template Toolkit, DateTime, Params::Validate, SQL::Interpolate, CGI::Application::Plugin::DBH, CGI::Application::Plugin::Session, CGI::Application::Plugin::HTMLPrototype, and MIME::Lite.  It also uses the TOME::TemplateCallbacks modules to make dynamic callbacks available to templates.
 \subsubsection{Key Scenarios}
+\paragraph{TOME::Interface calls a utility method}
+TOME::Interface is loaded by admin.pl and contains the runmode methods to service runmode dispatches made by CGI::Application.  In the course of servicing these requests, TOME::Interface will usually make calls to the TOME module.  These calls are handled by doing things such as interacting directly with the PostgreSQL database, interacting directly with the Template Toolkit module, or interacting directly with the MIME::Lite module to send email messages.
 \paragraph{admin.pl loads TOME::Interface and calls the run method}
-Since the run method is not actually a part of TOME::Interface, it has no direct responsibilities in this case.  However, the run method sets in motion a chain of events controlled by CGI::Application including calling the setup and cgiapp\_prerun methods, which are implemented by TOME::Interface.
-\paragraph{A runmode dispatch occurs}
-TOME::Interface contains all of the runmode subs that CGI::Application will dispatch to.  A runmode dispatch will simply run one of these methods.  When the method runs, its usual course of action will be to acquire information from the user's CGI query, make appropriate calls into the TOME core to obtain or modify database information, format that information to be used in a template, and then make the call to Template Toolkit with the appropriate information.
+The TOME module also contains some of the methods that CGI::Application calls in the course of initializing itself before dispatching any runmode requests.  These include cgiapp\_init, and potentially error\_runmode.
 \subsubsection{Properties}
-TOME::Interface will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
+TOME will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
 \subsubsection{Creation, Existence, and Management}
-TOME::Interface will exist as a single instantiation created by admin.pl.  The web server (usually Apache) will be responsible for calling admin.pl.  Multiple instantiations of admin.pl (and therefore TOME::Interface and any other classes) can exist only if Apache runs multiple copies, which is expected.
+TOME will exist as a single instantiation created by TOME::Interface when it is loaded by admin.pl.  The web server (usually Apache) will be responsible for calling admin.pl.  Multiple instantiations of admin.pl (and therefore TOME::Interface and any other classes) can exist only if Apache runs multiple copies, which is expected.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.  It does however load the CGI::Application::Plugin::Session module and configure it for use by TOME::Interface.  It also hands the current session object off to the Template Toolkit module when template calls are made.
+\subsubsection{Data Storage}
+This module is responsible for all interactions with the database by indirectly using the DBI module through the CGI::Application::Plugin::DBH module.  The TOME module doesn't have direct knowledge of how database operations are carried out, or especially what kind of storage mechanisms are used, but it relies upon them heavily.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+TOME is packaged as a single Perl module name TOME.pm in the modules directory.
+
+
+\subsection{TOME::TemplateCallbacks}
+\subsubsection{Role}
+The role of the TOME::TemplateCallbacks module is to provide a way for template to dynamically request information from the TOME module.  It is used instead of a direct TOME object to increase orthogonality and prevent accident misuse of the TOME module by a template.
+\subsubsection{Responsibilities}
+All templates are given a "tome" object that is an instantiation of this class. The idea is that when the template is given ID numbers of various things in the database (patrons, books, tomebooks, etc.) by TOME::Interface, the template can use this object to query the database through the TOME module and get string representations of the data. This module has the place of knowing a little bit about both the template and the database. Most methods will be wrappers of TOME methods, but if there is any additional data manipulation that needs to take place before the template (without crossing the line of actually doing template work), this is the place to do it. The reason this is separate from TOME is to give an extra layer of abstraction between the actual database calls and the template.
+\subsubsection{Exclusions}
+This module should know a little about templates and databases, but nothing else.
+\subsubsection{Collaborators}
+TOME::TemplateCallbacks works closely with the TOME module.  It is passed an instantiation of it when it is instantiated itself.  It uses and interacts with no other modules.
+\subsubsection{Key Scenarios}
+\paragraph{A template dynamically requests information}
+This information request will come through a TOME::TemplateCallbacks method.  This method will then request information from the TOME module that it has an instantiation of and return it to the template.
+\paragraph{A template is generated}
+All templates are generated through the TOME module, and whenever the TOME module generates a template through the Template Toolkit module, it instantiates a TOME::TemplateCallbacks object and passes it to the template.  The only important step of the instantiation is that the class is passed a reference to the current TOME object and retains it for any further calls that will be made based on dynamic information requests from the template.
+\subsubsection{Properties}
+TOME::TemplateCallbacks will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
+\subsubsection{Creation, Existence, and Management}
+The template method within the TOME module is responsible for instantiating all instances of the TOME::TemplateCallbacks module.  Usually, there will only be one template created per TOME instance, but in some cases, such as when emails are sent out using templates, there may be multiple template objects created.  This will not cause any problems.
 \subsubsection{Resource Usage/Management}
 No specific requirements exist for this component.  Resources will be limited only by the web server.
 \subsubsection{State/Session/Context Management}
 This component has no particular knowledge of states, sessions, or contexts.
 \subsubsection{Data Storage}
-This component has no intrinsic need for its own data storage.  It will interact heavily with the database, but only through the TOME module.  It has no internal knowledge of anything storage-related.
+This module has no intrinsic data storage requirements.
 \subsubsection{Performance}
 This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
 \subsubsection{Packaging}
-TOME::Interface is packaged as a single Perl module name Interface.pm in the TOME directory.
+TOME is packaged as a single Perl module name TemplateCallbacks.pm in the TOME directory.
 
 
-\subsection{TOME::TemplateCallbacks}
 \subsection{Templates}
+\subsubsection{Role}
+The role of the templates is to control the actual presentation of data by determining the HTML representation of the information gathered by TOME::Interface and TOME::TemplateCallbacks from TOME.  These are HTML-style files that are interpreted by the Template Toolkit module; they are not an actual class.
+\subsubsection{Responsibilities}
+Structures that are used commonly should be put in the blocks directory and INCLUDEd in the other templates. INCLUDE can take a list of locally-scoped variables, which essentially makes the files in blocks like little subroutines.
+\subsubsection{Exclusions}
+The templates should be as free as possible from any knowledge about the database or any internals of the TOME system.
+\subsubsection{Collaborators}
+Templates are retrieved by the TOME module, usually at the behest of the TOME::Interface module.  The only way the templates have to interact with the other system in an active manner is through the TOME::TemplateCallbacks module.  The templates neither know how they have been called nor what will be done with the information they synthesize.
+\subsubsection{Key Scenarios}
+\paragraph{A template dynamically requests information}
+This information request will come through a TOME::TemplateCallbacks method.  This method will then request information from the TOME module that it has an instantiation of and return it to the template.
+\paragraph{A template is generated}
+The template's HTML-style information will be interpreted by the Template Toolkit library.
+\subsubsection{Properties}
+These are plain text files.  They do not really execute code, only provide direction for the Template Toolkit library.
+\subsubsection{Creation, Existence, and Management}
+As these are not classes, they are not ever instantiated.  They are loaded by the TOME module, usually as a response to a request by the TOME::Interface module.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.  It can, however, access information about the current session based on a session object passed to it by the TOME module.
+\subsubsection{Data Storage}
+This module has no intrinsic data storage requirements.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+The templates are plain text files located in the templates directory.
+
+
 \subsection{Static Content}
+\subsubsection{Role}
+The role of the static content is to serve as a location for any content that does not have to be dynamically generated for every call to the TOME system.  Examples include logo graphics, static CSS files, and static Javascript files.
+\subsubsection{Responsibilities}
+The only responsibilities for this component are to be correctly formatted and up to date.
+\subsubsection{Exclusions}
+These files cannot be expected to by dynamically generated in any case.
+\subsubsection{Collaborators}
+These files will be called by the output of templates by the user's web browser and retrieved by the web server.
+\subsubsection{Key Scenarios}
+\paragraph{A template contains information that will request a static file}
+The user's web browser will recognize the request, pass it on to the webserver, the webserver will return the file, and the browser will interpret it.
+\subsubsection{Properties}
+These are plain text files.  They do not really execute code, only provide various static content.
+\subsubsection{Creation, Existence, and Management}
+As these are not classes, they are not ever instantiated.  They are loaded by the user's web browser when needed, usually because the output of a template requests them.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.
+\subsubsection{Data Storage}
+This module has no intrinsic data storage requirements.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+The static content is plain text files located in the static directory.
+
+\section{Database Structure}
+\label{tomedbsection}
+The overall structure of the database can be seen in Figure~\ref{tomedb}.  In addition to the structure, there are also triggers that ensure the consistency of the database at all times.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{tomedb}
+	\caption{Database Diagram}
+	\label{tomedb}
+\end{figure}
+
 \end{document}
 
