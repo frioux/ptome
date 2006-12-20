@@ -277,9 +277,33 @@ sub addclassbook {
 	my $self = shift;
 
 	my $q = $self->query;
+	
+	my $isbn = $q->param('isbn');
+	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
+	
+	unless($self->book_exists({ isbn => $isbn })) {
+		if($q->param('addbook')) {
+			my %addbook = (
+				isbn	=> $isbn,
+				title	=> $q->param('title'),
+				author	=> $q->param('author'),
+			);
+			
+			if($q->param('edition')) {
+				$addbook{edition} = $q->param('edition');
+			}
+
+			$self->add_book({%addbook});
+		} else {
+			return $self->template({ file => 'addclassbook-isbn.html', vars => {
+				librarieshash	=> $self->_librarieshash(),
+				classinfo	=> $self->class_info({ id => $q->param('class') }),
+			}});
+		}
+	}
 
 	my %book = (
-		isbn		=> $q->param('isbn'),
+		isbn		=> $isbn,
 		usable		=> ($q->param('usable') ? 'true' : 'false'),
 		verified	=> $q->param('verified'),
 		comments	=> $q->param('comments'),
@@ -287,10 +311,6 @@ sub addclassbook {
 		uid		=> $self->param('user_info')->{id},
 	);
 
-	unless($self->book_exists({ isbn => $book{isbn} })) {
-		return $self->template({ file => 'invalidisbn.html' });
-	}
-	
 	$self->classbook_add({%book});
 
 	$self->header_type('redirect');
