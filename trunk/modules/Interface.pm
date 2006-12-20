@@ -658,9 +658,11 @@ sub addtomebook_process {
 		}
 	}
 
+	my $patron_info = $self->patron_info({ email => $addtomebook_results->valid('patron') });
+	
 	my %book = (
 		isbn		=> $addtomebook_results->valid('isbn'),
-		originator	=> $addtomebook_results->valid('patron'),
+		originator	=> $patron_info->{id},
 		library		=> $addtomebook_results->valid('library'),
 	);
 
