@@ -43,9 +43,10 @@ While it is ever-present, this risk of the unknown is manageable, especially wit
 
 \section{Test Harness and Automation}
 \subsection{Test Framework}
-The TOME project will use the Perl module Test::More for its test framework.  This module provides an extremely flexible context to specify individual tests in, running the gamut from the simple "ok" test which evaluates and expression for truth to more advanced expressions like "is_deeply" (which compares all members of a data structure) and "like" (which utilizes regular expressions to determine the outcome of the test).
+The TOME project will use the Perl module Test::More for its test framework.  This module provides an extremely flexible context to specify individual tests in, running the gamut from the simple "ok" test which evaluates and expression for truth to more advanced expressions like "is\_deeply" (which compares all members of a data structure) and "like" (which utilizes regular expressions to determine the outcome of the test).
 
-A more complete summary of the Test::More module can be found at the CPAN repository: \texttt{http://search.cpan.org/~mschwern/Test-Simple-0.64/lib/Test/More.pm}
+A more complete summary of the Test::More module can be found at the CPAN repository: \\
+\texttt{http://search.cpan.org/~mschwern/Test-Simple-0.64/lib/Test/More.pm}
 
 \subsection{Test Harness}
 In keeping with the standard operating procedure for Perl projects, the Test::Harness modules will be used for automation.  Using the easily-accessible "prove" command, Test::Harness recursively iterates through each file and directory in the tests folder, running the tests within and compiling the results.  Once it finishes, it outputs the results along with a summary section showing how many tests failed, if any.
@@ -54,24 +55,112 @@ The command-line nature of Test::Harness makes it ideal for automation with the 
 
 \subsection{Example Tests}
 \subsubsection{Database integrity}
-\paragraph{InterTOME consistency} \\
-There is a boolean flag in the libraries table that indicates if a floor is eligible for InterTOME loans. This check makes sure that a library cannot be removed from while there are still books reserved by other libraries from that library.
+\paragraph{InterTOME consistency} 
+\hspace{1pt}\\ There is a boolean flag in the libraries table that indicates if a floor is eligible for InterTOME loans. This check makes sure that a library cannot be removed from while there are still books reserved by other libraries from that library.
 \begin{itemize}
 	\item If a library changes from being in InterTOME to not being in InterTOME, it should give an error if there are any pending reservations from that library.
 	\item Make sure it really checks that the reservations are pending. In other words, if a reservation exists, but has been fulfilled, it should still let you remove the floor.
 	\item If there are no reservations, it should let you change it.
 \end{itemize}
 
-\paragraph{One current semester} \\
-The semesters table has a boolean flag to mark which semester is "current."
+\paragraph{One current semester}
+\hspace{1pt}\\ The semesters table has a boolean flag to mark which semester is "current."
 \begin{itemize}
 	\item Ensure that only one semester can be marked as current. Check on both inserts and updates.
 \end{itemize}
-\section{Component Design}
-\subsection{Pattern Usage}
-TOME is built around an MVC pattern.  The Model is handled by the TOME model, the View is handled by the templates, and the Control is handled by TOME::Interface.
-\subsection{Limitations}
-One major limitation of the current design is that TOME::Interface inherits from TOME.  This introduces both namespace pollution and fragile base class issues.  However, after assessing the benefits of moving to a delegation approach versus coping with the current approach, it was determined that, for now, we will continue with the existing design, limited as it may be.
+
+\paragraph{TOME Book Removal}
+\hspace{1pt}\\ Consistency must be maintained when removing books from the database.
+\begin{itemize}
+	\item Ensure that books cannot be marked as removed in the tomebooks table if they still have a current checkout.
+	\item Ensure that the book can be removed if either there are no checkouts for that book or if all the checkouts are marked as being checked in.
+	\item Make sure that checkouts of other books don't prevent this one from being removed.
+\end{itemize}
+
+\subsubsection{Core TOME module functionality}
+\paragraph{Patron management}
+\hspace{1pt}\\ TOME manages patrons through the functions patron\_add, patron\_update, patron\_info, and patron\_search.  Each of these needs to be tested to ensure compliance with specifications.
+\begin{itemize}
+	\item Ensure that patron\_search returns the correct value after patron\_add is invoked to create a new patron
+	\item Update the patron's info and check to see if the changes were propagated
+\end{itemize}
+
+\paragraph{Checkouts}
+\hspace{1pt}\\ Exercise the checkout functions of TOME.
+\begin{itemize}
+	\item Add a checkout and verify that it exists
+	\item Set a checkout up to fail, then verify that tomebook\_can\_checkout complains
+	\item	Cancel a checkout and verify that it was dropped
+\end{itemize}
+
+\paragraph{Reservations}
+\hspace{1pt}\\ Exercise the reservation functions of TOME.
+\begin{itemize}
+	\item Reserve a book and verify that it is marked as reserved
+	\item Set a reservation up to fail, then verify that tomebook\_can\_reserve complains
+	\item Fill a reservation and verify that the reservation flag is set to false
+\end{itemize}
+
+\subsubsection{Web interface robustness}
+\paragraph{Graceful fallback}
+\hspace{1pt}\\ Like any web application, TOME is subject to being fed bad data and malformed requests.  When this happens, it needs to fail gracefully, giving the user an informative error message describing the problem.
+\begin{itemize}
+	\item Feed the webserver malformed data requests and make sure TOME fails gracefully
+\end{itemize}
+
+\paragraph{Privilege escalation}
+\hspace{1pt}\\ Since TOME is essentially stateless (due to the nature of web applications), it is possible for malicious users to attempt to gain entrance to sections of TOME they do not have permissions for.  In all cases, TOME should refuse them access.
+\begin{itemize}
+	\item Verify that attempting to log in with a bad username and password fails
+	\item Check that TOME refuses access to administrative functions when logged in as a non-administrator
+\end{itemize}
+
+\subsubsection{Component integration}
+\paragraph{Basic web-TOME interaction}
+\hspace{1pt}\\ The web interface and TOME need to interact to a large degree.  Even if TOME itself works when called directly, the communication between the web server and TOME could still fail.
+\begin{itemize}
+	\item Execute some common functions (adding a book, modifying a user, etc.) via HTTP POST requests and verify that the actions have taken place by calling TOME directly
+\end{itemize}
+
+\paragraph{TOME-PostreSQL interaction}
+\hspace{1pt}\\ TOME and the database also interact, so some tests will be needed to verify that this is taking place (or not taking place, as the case may be)
+\begin{itemize}
+	\item Give TOME bad connection information and verify that it fails
+	\item Execute some common functions in TOME and check to make sure they show up in the database
+\end{itemize}
+
+\section{Templates}
+\subsection{Test Results}
+\paragraph{Test output}
+\hspace{1pt}\\ Beginning tests...\\
+../tests/db/currsemester....1..3\\
+ok 1 - DB doesn't allow multiple current semesters\\
+ok 2 - But it doesn allow multiple semesters\\
+ok 3 - Can't have multiple current semesters, even on update\\
+ok\\
+../tests/db/username........1..2\\
+ok 1 - DB won't allow duplicate usernames\\
+ok 2 - But we can add it after we delete the other one\\
+ok\\
+../tests/db/patronemail.....1..2\\
+ok 1 - Database doesn't allow duplicate emails to be inserted\\
+ok 2 - But we can still insert things later\\
+ok\\
+../tests/db/isbnupper.......1..4\\
+ok 1 - Lowercase ISBN does not exist\\
+ok 2 - Uppercase ISBN does exist\\
+ok 3 - Lowercase ISBN doesn't exist, even after update\\
+ok 4 - Uppercase ISBN still exists\\
+ok\\
+All tests successful.\\
+Files=4, Tests=11, 2 wallclock secs ( 0.58 cusr + 0.35 csys = 0.93 CPU)
+
+\subsection{Bug Reporting}
+\paragraph{Move TOMETest out of the main modules tree}
+\hspace{1pt}\\ Status: new		Reported by: fjord	Assigned to: olsonc\\
+Priority: major	Milestone: Automated Test Suite\\
+\hspace{1pt}\\
+TOMETest should reside somewhere else. It's not really a part of the production modules code.
 
 \end{document}
 
