@@ -308,15 +308,15 @@ the isbn to look for
 
 =item status
 
-that status of the book (all, can_reserve, or in_collection)
+that status of the book (all, can_reserve, or in_collection).  Defaults to in_collection.
 
 =item semester
 
-the semester id to consider when status is can_reserve or can_checkout.  Defaults to the current semester
+the semester id to consider when status is can_reserve.  Defaults to the current semester
 
 =item libraries
 
-the libraries to look in for the book (Note: this is an array reference...whatever thatmeans.)
+the libraries to look in for the book (Note: this is an array reference)
 
 =back
 
@@ -328,8 +328,8 @@ sub tomebook_availability_search {
 	my $dbh = $self->dbh;
 
 	my %params = validate(@_, {
-		isbn		=> { type => SCALAR, optional => 1 },
-		status		=> { type => SCALAR, regex => qr/^all|can_reserve|in_collection$/, default => 'all' },
+		isbn		=> { type => SCALAR },
+		status		=> { type => SCALAR, regex => qr/^all|can_reserve|in_collection$/, default => 'in_collection' },
 		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
 		libraries	=> { type => ARRAYREF },
 	});
@@ -362,9 +362,10 @@ sub tomebook_availability_search {
 	return ($sth->fetchrow_array)[0];
 }
 #}}}
-#{{{tomebook_availability_search
 
-=head2 tomebooks_search 
+#{{{tomebook_search
+
+=head2 tomebooks_search (!!! Deprecated!)
 
 This returns an array of found textbooks.
 
@@ -2324,7 +2325,17 @@ sub library_add {
 
 =head2 library_info 
 
-foo
+Returns information about the libraries in the system.  If a Library ID is given, then a hashref containing the id, name, and InterTOME status (true or false) of that particular library will be returned.  If no id is given, then an arrayref containing hashrefs about every library in the system will be returned.
+
+It takes arguments in the form of a hash:
+
+=over
+
+=item id
+
+The id of the library to retrieve information about.
+
+=back
 
 =cut
 
@@ -2335,7 +2346,7 @@ sub library_info {
 		id		=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, name FROM libraries';
+	my $statement = 'SELECT id, name, intertome FROM libraries';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ?');

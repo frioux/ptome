@@ -51,4 +51,11 @@ sub book_info {
 	return $self->{tome}->book_info({ isbn => $isbn });
 }
 
+sub library_info {
+	my $self = shift;
+	my $library = shift;
+
+	return $self->{tome}->library_info({ id => $library });
+}
+
 1;
