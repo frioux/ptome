@@ -142,15 +142,26 @@ sub findorphans {
 
 sub finduseless {
 	my $self = shift;
-	
+
+	my @libraries_selected = $self->query->param('libraries');
+	unless(@libraries_selected) {
+		foreach (@{$self->_libraryaccess($self->param('user_info')->{id})}) {
+			if($_->{access}) {
+				push @libraries_selected, $_->{id};
+			}
+		}
+	}
+
 	my @tomebooks;
-	foreach($self->find_useless()) {
+	foreach($self->find_useless({ libraries => \@libraries_selected })) {
 		push @tomebooks, $self->tomebook_info({ id => $_ });
 		$tomebooks[-1]{classes} = $self->book_classes({ isbn => $tomebooks[-1]{isbn} });
 	}
 
 	return $self->template({ file => 'finduseless.html', vars => {
-		tomebooks => \@tomebooks,
+		tomebooks		=> \@tomebooks,
+		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries_selected	=> \@libraries_selected,
 	}});
 }
 

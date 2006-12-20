@@ -3,7 +3,6 @@ If a book is useful in any class at all, it is not useless
 There should be a way to put books back into TOME
 When adding a class, warn about duplicate IDs
 Comments on the book (not tome book)
-Useless books search should be by library
 Contact information page (maybe move user admin to here as well)
 Don't let the system drop to less than 1 admin user
 Make sure a book cannot be removed unless it is checked in

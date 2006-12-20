@@ -437,11 +437,17 @@ sub find_orphans {
 
 sub find_useless {
 	my $self = shift;
+	
+	my %params = validate(@_, {
+		libraries       => { type => ARRAYREF },
+	});
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare('SELECT tomebooks.id AS id FROM tomebooks, classbooks WHERE tomebooks.timeremoved IS NULL AND classbooks.usable = FALSE AND tomebooks.isbn = classbooks.isbn ORDER BY tomebooks.isbn,id');
-	$sth->execute();
+	my ($sql, @bind) = sql_interp('SELECT tomebooks.id AS id FROM tomebooks, classbooks WHERE tomebooks.timeremoved IS NULL AND classbooks.usable = FALSE AND tomebooks.isbn = classbooks.isbn AND library IN', $params{libraries}, 'ORDER BY tomebooks.isbn,id');
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
