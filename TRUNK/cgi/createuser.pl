@@ -6,20 +6,24 @@ use warnings;
 use lib '../modules';
 use TOME;
 use Crypt::PasswdMD5;
-use Term::Prompt;
+use IO::Prompt;
 
 my $username = '';
 my $email = '';
 my $passwd = '';
 
-#$username = &prompt("x", "Username", "Username", '');
-#$email = &prompt("x", "Email", "Email", '');
-#$passwd = &prompt("p", "Password", "Password", '');
+$username = prompt ("Username: ");
+$email = prompt ("Email: ");
+$passwd = prompt ("Password: ");
 
-#print('Username ' . $username' . "\n" . 'Email ' . $email . "\n");
+#$username = &prompt("x", "Username: ", '', '');
+#$email = &prompt("x", "Email: ", '', '');
+#$passwd = &prompt("p", "Password: ", '', '');
 
-my $passwd = unix_md5_crypt('password');
-my $app = TOME->new();
-$app->user_add({username => 'olsonc', email => 'email', password => $passwd});
+print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
+
+#my $passwd = unix_md5_crypt('password');
+#my $app = TOME->new();
+#$app->user_add({username => 'olsonc', email => 'email', password => $passwd});
 
 print('Success!' . "\n");
