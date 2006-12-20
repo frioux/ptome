@@ -1,4 +1,4 @@
-TOME=/home/cghawthorne/projects/tome/TRUNK CD=. filter="*" {
+TOME=/usr/local/webapps/tome-dev/ CD=. filter="*" {
 
 cgi=cgi{
  
