@@ -267,6 +267,11 @@ sub isbn_search {
 			push @values, $params{$_};
 		}
 	}
+
+        # If there are no parameters specified, don't run the search
+        unless(@likecolumns) {
+            return ();
+        }
 	
 	foreach(@likecolumns) {
 		push @conditions, "$_ ILIKE '%' || ? || '%'";

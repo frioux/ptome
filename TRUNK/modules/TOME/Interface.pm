@@ -145,8 +145,34 @@ sub autocomplete_class {
 }
 #}}}
 
-#{{{mainsearch
+#{{{ mainsearch
 sub mainsearch {
+    my $self = shift;
+
+    my $results = $self->check_rm('mainsearch', 
+        {
+            optional => [qw(author title edition)],
+            filters => ['trim'],
+        },
+        {target => 'mainsearch'} 
+    ) || return $self->check_rm_error_page;
+    
+    my %search;
+    foreach ($results->valid()) {
+        $search{$_} = $results->valid($_);
+    }
+
+    my @books = $self->isbn_search (\%search);
+
+    return $self->template(
+        file => 'mainsearch.html',
+        vars => {books=>\@books}
+    );
+}
+#}}}
+
+#{{{mainsearch_deprecated
+sub mainsearch_deprecated {
 	my $self = shift;
 
 	my $q = $self->query;
@@ -364,7 +390,7 @@ sub patronaddclass {
 
     my $results = $self->check_rm('patronview', {
         required                => ['class', 'patronid'],
-	filters			=> 'trim',
+	filters			=> ['trim'],
         constraint_methods      => {
             class => sub {
                 my $dfv = shift; 
