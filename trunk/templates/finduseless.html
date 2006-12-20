@@ -13,7 +13,7 @@
 </tr>
 [% FOREACH book = tomebooks %]
 <tr>
-	<td><a href="[% adminbase %]/admin.pl?rm=tomebookinfo&id=[% book.id %]">[% book.id %]</a></td>
+	<td><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.id | html | uri %]">[% book.id %]</a></td>
 	<td>
 		[% book.title %]
 	</td>
@@ -26,7 +26,7 @@
 	<td>[% book.originator %]</td>
 	<td>
 		[% FOREACH class = book.classes %]
-		<a href="[% adminbase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
+		<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
 		[% END %]
 	</td>
 </tr>
