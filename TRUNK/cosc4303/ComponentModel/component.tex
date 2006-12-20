@@ -259,12 +259,10 @@ whether or not this is being run in development mode
 \paragraph{devemailto}
 the address email messages are sent to when in development mode 
 
-Note: address format is 'Name <email@domain>`
-
-\subsection{cgiapp_init}
+\subsection{cgiapp\_init}
 This sets up various variables that are needed for CGI stuff. It takes no arguments.
 
-\subsection{error_runmode}
+\subsection{error\_runmode}
 This is called when there is an error that we really don't know what caused. This takes one argument:
 
 \paragraph{error}
@@ -280,7 +278,7 @@ the short error message
 \paragraph{extended}
 the details of the error message
 
-\subsection{tomebooks_search}
+\subsection{tomebooks\_search}
 This returns an array of found textbooks.
 
 It takes arguments in the form of a hash:
@@ -288,7 +286,7 @@ It takes arguments in the form of a hash:
 the isbn to look for 
 
 \paragraph{status}
-that status of the book (all, can_reserve, can_checkout, or in_collection) 
+that status of the book (all, can\_reserve, can\_checkout, or in\_collection) 
 
 \paragraph{title}
 the title of the book 
@@ -305,7 +303,7 @@ the libraries to look in for the book
 \paragraph{semester}
 the semester that the book is here for
 
-\subsection{expire_search}
+\subsection{expire\_search}
 This function returns a list of books that will expire on the given semester with the given libraries.
 
 The arguments are given as a hash:
@@ -315,7 +313,7 @@ The semester in which the books will expire
 \paragraph{libraries}
 The libraries the books reside in
 
-\subsection{reservation_search}
+\subsection{reservation\_search}
 This function returns an array of books that are reserved in a given semester from given libraries.
 
 The arguments are given as a hash:
@@ -325,7 +323,7 @@ the semester that the books are reserved for
 \paragraph{libraries}
 the libraries that the books are in
 
-\subsection{dueback_search}
+\subsection{dueback\_search}
 This function returns a list of books that are due back at the given semester from the given libraries.
 
 The arguments are given as a hash:
@@ -335,7 +333,7 @@ the semester that the books are due back
 \paragraph{libraries}
 the libraries that the books are in
 
-\subsection{add_book}
+\subsection{add\_book}
 This function is used to add a book to TOME. This is not for adding a real book, but for adding a book type. Like adding a Class, not an Object.
 
 This function takes a hash as an argument:
@@ -351,7 +349,7 @@ The Author of the book
 \paragraph{edition}
 The Edition of the book
 
-\subsection{add_class}
+\subsection{add\_class}
 This function adds a class to TOME.
 
 The arguments are given as a hash:
@@ -361,7 +359,7 @@ The "School Readable" name of the class (that is, something like, MATH9999)
 \paragraph{name}
 The Human Readable name of the Class
 
-\subsection{patrons_search}
+\subsection{patrons\_search}
 This function finds patrons.
 
 Arguments are given as a hash:
@@ -374,7 +372,7 @@ The Real Name of the patron
 \paragraph{email}
 The Email of the patron
 
-\subsection{patron_add}
+\subsection{patron\_add}
 This function adds a patron to the database.
 
 This function takes arguments as a hash as follows:
@@ -384,7 +382,7 @@ The email address of the patron
 \paragraph{name}
 The name of the patron (Often the patron's nickname)
 
-\subsection{patron_update}
+\subsection{patron\_update}
 This function changes the patron at a given id.
 
 The arguments to this function are given as a hash, as usual:
@@ -397,7 +395,7 @@ The email to set for the given id
 \paragraph{name}
 The name to set to the given id
 
-\subsection{patron_info}
+\subsection{patron\_info}
 This function returns information about patrons matching certain critereon.
 
 The function looks for the following to parameters in a hash in this order:
@@ -407,7 +405,7 @@ The email to try to find
 \paragraph{id}
 The exact id to find
 
-\subsection{patron_classes}
+\subsection{patron\_classes}
 This function finds the classes associated with a patron for a given semester.
 
 Arguments are given as a hash:
@@ -419,7 +417,7 @@ The ID of the semester to retrieve classes for.
 
 Returns: An arrayref containing class ids.
 
-\subsection{patron_add_class}
+\subsection{patron\_add\_class}
 This function adds a class associated with a patron for a given semester.
 
 Arguments are given as a hash:
@@ -434,7 +432,7 @@ The ID of the class to add.
 
 Returns: Nothing.
 
-\subsection{patron_delete_class}
+\subsection{patron\_delete\_class}
 This function deletes a class associated with a patron for a given semester.
 
 Arguments are given as a hash:
@@ -449,7 +447,7 @@ The ID of the class to add.
 
 Returns: Nothing.
 
-\subsection{class_info}
+\subsection{class\_info}
 This method returns information about class
 
 Arguments are given as a hash:
@@ -469,7 +467,7 @@ Semester ID for which the class has been verified.
 \paragraph{uid}
 User ID of the TOMEkeeper that did the last verification
 
-\subsection{class_books}
+\subsection{class\_books}
 This method returns books associated with a class
 
 Arguments are given as a hash:
@@ -492,7 +490,7 @@ Boolean indicating if the book is usable or not
 \paragraph{uid}
 The user id of the TOMEkeeper who did the verification
 
-\subsection{class_update_verified}
+\subsection{class\_update\_verified}
 This method upates information about a class
 
 Arguments are given as a hash:
