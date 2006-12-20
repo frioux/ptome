@@ -54,7 +54,7 @@
 		[% IF book.otherlibraries.ids.size > 0 %]
 			<p><a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | html | uri %]&status=can_reserve&semester=[% (session.currsemester.id || currsemester.id) | html | uri %]&libraries=[% book.otherlibraries.ids.join('&libraries=') | html | uri %]">All other libraries:</a> [% book.otherlibraries.available %]/[% book.otherlibraries.total %]
 		[% END %]
-		<p><a href="http://www.half.ebay.com/search-isbn?isbn=[% book.isbn | html | uri %]">Half.com</a><br>
+		<p><a href="http://www.half.ebay.com/search-isbn?m=books&isbn=[% book.isbn | html | uri %]">Half.com</a><br>
 		<a href="http://www.amazon.com/exec/obidos/ASIN/[% book.isbn | html | uri %]">Amazon.com</a>
 	</td>
 	<td align="center">
