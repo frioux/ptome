@@ -12,7 +12,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass ) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -26,6 +26,7 @@ sub autoload_rm {
 		extended	=> "Attempted runmode: '$attempted_rm'",
 	});
 }
+
 
 sub cgiapp_prerun {
 	my $self = shift;
@@ -326,6 +327,38 @@ sub updatetomebook {
 	return;
 }
 
+sub patronaddclass {
+    my $self = shift;
+
+    my $results = $self->check_rm('patronview', {
+        required                => ['class', 'patronid'],
+        constraint_methods      => {
+            class => sub {
+                my $dfv = shift; 
+                $dfv->name_this('bad_class');
+                return !($self->class_info({ id => $dfv->get_current_constrain_value() } )->{name});
+                          },
+            msgs => {
+                constraints => {
+                    'bad_class'    => 'Class does not exist',
+                },
+            },
+        }
+    }, { target => 'patronaddclass' }) || return $self->check_rm_error_page;
+        
+
+   $self->patron_add_class({
+     patron     => $results->valid('patronid'),
+     class      => $results->valid('class'),
+     semester   => $self->_semesterselecteddefault(),
+    });
+
+    
+    
+    return $self->forward('patronview');
+}
+
+
 sub updateclassinfo {
 	my $self = shift;
 
@@ -537,7 +570,7 @@ sub patronview {
 	if($q->param('patron')) {
 		$patron = $self->patron_info({ email => $self->query->param('patron') });
 		return $self->error({ message => 'Unable to locate patron with email ' . $self->query->param('patron') }) unless $patron;
-	} elsif($q->param('id')) {
+	} elsif($q->param('patronid')) {
 		$patron = $self->patron_info({ id => $self->query->param('id') });
 		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
 	}
