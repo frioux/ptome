@@ -443,10 +443,26 @@ sub addclass_process {
 		)],
 		filters			=> 'trim',
 		field_filters		=> {
-			id		=> 'uc',
-			id		=> sub { my $value = shift; $value =~ s/[^A-Z0-9]//g; return $value; },
+			id	=> 'uc',
+			id	=> sub {
+				my $value = shift;
+				$value =~ s/[^A-Z0-9]//g;
+				return $value;
+			},
 		},
-	}) || return $self->check_rm_error_page;
+		constraint_methods	=> {
+			id	=> sub {
+				my $dfv = shift;
+				$dfv->name_this('class_exists');
+				return !($self->class_info({ id => $dfv->get_current_constraint_value() })->{name});
+			},
+		},
+		msgs			=> {
+			constraints	=> {
+				'class_exists'	=> 'Class already exists',
+			},
+		},
+	}, { target => 'addclass' }) || return $self->check_rm_error_page;
 
 	my %class = (
 		id	=> $results->valid('id'),
