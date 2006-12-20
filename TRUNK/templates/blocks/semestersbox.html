@@ -1,0 +1,7 @@
+[%# Takes name as an input %]
+
+<select name="[% name | html %]">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF semester_selected == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select>
