@@ -229,7 +229,7 @@ sub updatetomebook {
 	}
 
 	$self->header_type('redirect');
-	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
+	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id&edit=1");
 	return;
 }
 
