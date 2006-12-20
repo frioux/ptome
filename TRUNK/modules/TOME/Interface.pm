@@ -1103,9 +1103,30 @@ sub isbnview {
         vars => {
             isbn => $q->param('isbn'),
             libraries_to => $self->_libraryaccess($self->param('user_info')->{id}),
-            #libraries_from => $self->
+            libraries_from => $self->_libraries_intertome,
         }
     });
+
+}
+#}}}
+
+#{{{_libraries_intertome
+sub _libraries_intertome {
+
+=head2 _libraries_intertome
+
+This subroutine returns an array of libraries that are intertome libraries.
+
+=cut
+
+    my %all_libraries = {};#_librarieshash;
+
+    my %libraries_return;
+    foreach (%all_libraries) {
+        if ($_{'intertome'}) {
+            $libraries_return{${'id'}} = $_;
+        }
+    }
 
 }
 #}}}
