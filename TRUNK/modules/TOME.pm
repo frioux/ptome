@@ -1140,6 +1140,150 @@ sub patron_checkouts {
 }
 #}}}
 
+#{{{patron_classes 
+
+=head2 patron_classes 
+
+This function finds the classes associated with a patron for a given semester.
+
+Arguments are given as a hash:
+
+=over
+
+=item patron
+
+The numeric, databasical id of the patron
+
+=item semester
+
+The ID of the semester to retrieve classes for.
+
+=back
+
+Returns: An arrayref containing class ids.
+
+=cut
+
+sub patron_classes {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('SELECT class FROM patron_classes WHERE', \%params);
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	my @results;
+	while(my @result = $sth->fetchrow_array()) {
+		push @results, $result[0];
+	}
+
+	return \@results;
+
+}
+
+#}}}
+
+#{{{patron_add_class 
+
+=head2 patron_add_class
+
+This function adds a class associated with a patron for a given semester.
+
+Arguments are given as a hash:
+
+=over
+
+=item patron
+
+The numeric, databasical id of the patron
+
+=item semester
+
+The ID of the semester to retrieve classes for.
+
+=item class
+
+The ID of the class to add.
+
+=back
+
+Returns: Nothing.
+
+=cut
+
+sub patron_add_class {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
+		class		=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('INSERT into patron_classes', \%params);
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+}
+
+#}}}
+
+#{{{patron_delete_class
+
+=head2 patron_delete_class
+
+This function deletes a class associated with a patron for a given semester.
+
+Arguments are given as a hash:
+
+=over
+
+=item patron
+
+The numeric, databasical id of the patron
+
+=item semester
+
+The ID of the semester to retrieve classes for.
+
+=item class
+
+The ID of the class to add.
+
+=back
+
+Returns: Nothing.
+
+=cut
+
+sub patron_delete_class {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
+		class		=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('DELETE FROM patron_classes WHERE', \%params);
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+}
+
+#}}}
+
 #{{{checkout_info 
 
 =head2 checkout_info 
@@ -1520,7 +1664,7 @@ sub class_search {
 		push @values, $params{id};
 	}
 
-	my $statement = 'SELECT id, name FROM classes ' . (@conditions ? 'WHERE ' . join(' AND ', @conditions) : '') . ' ORDER BY id ASC';
+	my $statement = 'SELECT id, name FROM classes ' . (@conditions ? 'WHERE ' . join(' OR ', @conditions) : '') . ' ORDER BY id ASC';
 
 	my $sth = $self->dbh->prepare($statement);
 	
@@ -1563,11 +1707,178 @@ sub class_list {
 
 =head2 class_info 
 
-foo
+This method returns information about class
+
+Arguments are given as a hash:
+
+=over
+
+=item id
+
+The numeric, databasical id of the class
+
+=back
+
+Returns a hash:
+
+=over
+
+=item name
+
+The text name of the class
+
+=item comments
+
+The text comments about the class
+
+=item verified
+
+Semester ID for which the class has been verified.
+
+=item uid
+
+User ID of the TOMEkeeper that did the last verification
+
+=back
 
 =cut
 
 sub class_info {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my $sth = $dbh->prepare("SELECT name, comments, verified, uid FROM classes WHERE id = ?");
+	$sth->execute($params{id});
+	my ($name, $comments) = $sth->fetchrow_array;
+
+	return { name => $name, comments => $comments };
+}
+#}}}
+
+#{{{class_books 
+
+=head2 class_books 
+
+This method returns books associated with a class
+
+Arguments are given as a hash:
+
+=over
+
+=item id
+
+The numeric, databasical id of the class
+
+=back
+
+Returns an arrayref to an array of hashrefs:
+
+=over
+
+=item isbn
+
+ISBN of the book
+
+=item verified
+
+Semester ID for when the book was last verified
+
+=item comments
+
+Comments about the verification of the book
+
+=item usable
+
+Boolean indicating if the book is usable or not
+
+=item uid
+
+The user id of the TOMEkeeper who did the verification
+
+=back
+
+=cut
+
+sub class_books {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my $sth = $dbh->prepare("SELECT isbn, usable, verified, comments, uid FROM classbooks WHERE class = ? ORDER BY usable,isbn DESC");
+	$sth->execute($params{id});
+	my @books;
+	while(my $result = $sth->fetchrow_hashref) {
+		push @books, $result;
+	}
+
+	return \@books;
+}
+#}}}
+
+#{{{class_update_verified 
+
+=head2 class_update_verified 
+
+This method upates information about a class
+
+Arguments are given as a hash:
+
+=over
+
+=item id
+
+The numeric, databasical id of the class
+
+=item verified
+
+The ID of the semester for which the class has been verified
+
+=item uid
+
+The ID of the TOMEkeeper that did the verification
+
+=back
+
+Returns nothing.
+
+=cut
+
+sub class_update_verified {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id		=> { type => SCALAR, regex => qr/^\d+$/ },
+		verified	=> { type => SCALAR, regex => qr/^\d+$/ },
+		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
+
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('UPDATE classes SET', {verified => $params{verified}, uid => $params{uid}}, 'WHERE', {id => $params{id}});
+	my $sth = $dbh->prepare($sql);
+
+	$sth->execute(@bind);
+}
+#}}}
+#{{{class_info_deprecated
+
+=head2 class_info_deprecated
+
+foo
+
+=cut
+
+sub class_info_deprecated {
 	my $self = shift;
 
 	my %params = validate(@_, {
@@ -1589,6 +1900,7 @@ sub class_info {
 
 	return { name => $name, comments => $comments, books => \@books };
 }
+
 #}}}
 
 #{{{class_update_comments 
@@ -1603,8 +1915,8 @@ sub class_update_comments {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		id		=> { type => SCALAR },
-		comments	=> { type => SCALAR },
+		id		=> { type => SCALAR, regex => qr/^\d+$/ },
+		comments	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
 	my $dbh = $self->dbh;

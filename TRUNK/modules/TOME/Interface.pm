@@ -245,7 +245,7 @@ sub classsearch {
 
 	my $q = $self->query;
 
-	my $classinfo = $self->class_info({ id => $q->param('class') });
+	my $classinfo = $self->class_info_deprecated({ id => $q->param('class') });
 
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	my (@mylibraries, @otherlibraries);
@@ -390,7 +390,7 @@ sub addclassbook {
 		} else {
 			return $self->template({ file => 'addclassbook-isbn.html', vars => {
 				librarieshash	=> $self->_librarieshash(),
-				classinfo	=> $self->class_info({ id => $q->param('class') }),
+				classinfo	=> $self->class_info_deprecated({ id => $q->param('class') }),
 			}});
 		}
 	}
@@ -505,7 +505,7 @@ sub addclass_process {
 			id	=> sub {
 				my $dfv = shift;
 				$dfv->name_this('class_exists');
-				return !($self->class_info({ id => $dfv->get_current_constraint_value() })->{name});
+				return !($self->class_info_deprecated({ id => $dfv->get_current_constraint_value() })->{name});
 			},
 		},
 		msgs			=> {
