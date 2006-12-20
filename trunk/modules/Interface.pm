@@ -503,7 +503,7 @@ sub checkin {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $id })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
 		$self->tomebook_checkin({ id => $self->query->param('id') });
 	}
 
@@ -535,7 +535,7 @@ sub fillreservation {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $id })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
 		$self->tomebook_fill_reservation({id => $id});
 	}
 
