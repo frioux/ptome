@@ -571,7 +571,7 @@ sub tomebookinfo {
 		checkouts	=> $self->checkout_history({ id => $id }),
 		libraries	=> $libraries,
 		classes		=> $self->book_classes({ isbn => $info->{isbn} }),
-		librarieshash	=> $self->_librarieshash(),
+		librarieshash	=> { map { $_->{id} => $_ } @{$libraries} },
 	}});
 }
 
