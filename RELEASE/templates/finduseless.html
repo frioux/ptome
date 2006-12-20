@@ -1,0 +1,44 @@
+[% META title = 'Useless Books' %]
+<h3>These books have a class associated with them, but are marked as not being usable:</h3>
+<form name="report" action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="finduseless">
+<table border="1" cellpadding="5">
+[% PROCESS librariesbox.html %]
+<tr><td colspan="2" align="center"><input type="submit" value="Find Useless"></td></tr>
+</table>
+</form>
+[% IF tomebooks.size %]
+<p>[% tomebooks.size %] useless books found.
+<p><table border="1">
+<tr>
+	<td align="center"><b>ID</b></td>
+	<td align="center"><b>Title</b></td>
+	<td align="center"><b>Author</b></td>
+	<td align="center"><b>Edition</b></td>
+	<td align="center"><b>Originator</b></td>
+	<td align="center"><b>Classes</b></td>
+</tr>
+[% FOREACH book = tomebooks %]
+<tr>
+	<td><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.id | html | uri %]">[% book.id %]</a></td>
+	<td>
+		[% book.title %]
+	</td>
+	<td>
+		[% book.author %]
+	</td>
+	<td>
+		[% book.edition %]
+	</td>
+	<td><a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.originator | html | uri %]">[% book.originator_name | html %]</a> ([% book.originator_email | html %])</td>
+	<td>
+		[% FOREACH class = book.classes %]
+		<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br />
+		[% END %]
+	</td>
+</tr>
+[% END %]
+[% ELSE %]
+Hooray!  There are no useless books in libraries selected.
+[% END %]
+</table>

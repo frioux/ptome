@@ -1,0 +1,239 @@
+[% META title = "TOME Book Info" %]
+<h3>Book <a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id | html | uri %]">#[% tomebook.id | html %]</a></h3>
+[% IF tomebook.timeremoved %]
+<p><font color="red">Book has been removed from TOME</font>
+[% END %]
+<p><table bgcolor="lightyellow" border="1" cellpadding="5">
+<tr>
+	<td><b>Book Information</b></td>
+	<td><b>Used in these classes</b></td>
+	<td><b>Associate Class</b></td>
+</tr>
+<tr>
+<td>
+	ISBN: [% tomebook.isbn %]<br />
+	Title: [% tomebook.title %]<br />
+	Author: [% tomebook.author %]<br />
+	Edition: [% tomebook.edition %]<br />
+	<div align="right"><font size="-3"><a href="[% config.cgibase %]/admin.pl?rm=updatebook&isbn=[% tomebook.isbn | html | uri %]">Edit</a></font></div>
+</td>
+<td>
+	[% FOREACH class = classes %]
+	<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br />
+	[% END %]
+</td>
+<td>
+	<form action="[% config.cgibase %]/admin.pl" method="post">
+	<input type="hidden" name="rm" value="addclassbook">
+	<input type="hidden" name="isbn" value="[% tomebook.isbn | html %]">
+	Class ID: <input autocomplete="off" id="class" name="class" type="text">
+<div class="auto_complete" id="class_auto_complete"></div>
+[% prototype.auto_complete_field('class', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_class'" }) %]<br />
+Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
+When verified: <select name="verified">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select><br />
+Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
+
+	<input type="submit" value="Associate Class">
+	</form>
+</td>
+</tr></table>
+[% IF CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
+<a name="updatetomebook"></a>
+<form action="[% config.cgibase %]/admin.pl" method="post" name="updatetomebook">
+<input type="hidden" name="rm" value="updatetomebook">
+<input type="hidden" name="anchor" value="updatetomebook">
+<input type="hidden" name="edit" value="1">
+<input type="hidden" name="id" value="[% tomebook.id | html %]">
+<p><b>Library:</b> <select name="library">
+[% FOREACH library = libraries %]
+[% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
+[% END %]
+</select> [% errs.library %]
+<p><b>Originator:</b> [% PROCESS 'autocomplete_patron.html' default_patron="${tomebook.originator_email}" %] [% errs.updatetomebook_errs and errs.patron %]<br />
+<p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
+[% IF tomebook.timeremoved %]
+<p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
+[% END %]
+<p>Comments:<br /><textarea name="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br />
+Expiration Semester: <select name="expire">
+<option value="" [% IF !tomebook.expire %]selected="selected"[% END %]>Never</option>
+[% FOREACH semester = semesters %]
+[% IF semester.id >= currsemester.id OR semester.id == tomebook.expire %]<option value="[% semester.id | html %]" [% IF tomebook.expire == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END %]
+[% END %]
+</select><br />
+<input type="submit" value="Update">
+</form>
+<p>
+[% IF tomebook.timeremoved %]
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="confirm">
+<input type="hidden" name="finalrm" value="removetomebook">
+<input type="hidden" name="undo" value="true">
+<input type="hidden" name="action" value="Mark TOME Book #[% tomebook.id | html %] as back in the collection.  This is not a normal thing to do...">
+<input type="hidden" name="id" value="[% tomebook.id | html %]">
+<input type="submit" value="Put book back in TOME">
+</form>
+[% ELSE %]
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="confirm">
+<input type="hidden" name="finalrm" value="removetomebook">
+<input type="hidden" name="action" value="Remove TOME Book #[% tomebook.id | html %] from the collection.  Make sure that the book has been checked in and any outstanding reservations have been cleared.  Also check the comments and expiration date to see if there are any specific actions that need to be taken when removing the book">
+<input type="hidden" name="id" value="[% tomebook.id | html %]">
+<input type="submit" value="Remove book from TOME">
+</form>
+[% END %]
+[% ELSE %]
+<p><b>Library:</b> [% librarieshash.${tomebook.library}.name %]
+<p><b>Originator:</b> <a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% tomebook.originator | html | uri %]">[% tomebook.originator_name | html %]</a> ([% tomebook.originator_email | html %])
+<p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
+[% IF tomebook.timeremoved %]
+<p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
+[% END %]
+<p><b>Comments:</b><br />
+<blockquote>[% tomebook.comments | html %]</blockquote>
+<p><b>Expiration Semester:</b>
+[% IF tomebook.expire %]
+[% semestershash.${tomebook.expire}.name | html %]
+[% ELSE %]
+<font color="green">This book will not expire</font>
+[% END %]
+[% END %]
+[% IF !CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
+<p><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id | uri | html %]&edit=1">Edit this TOME book</a>
+[% END %]
+<hr>
+<a name="checkout"></a><h4>Checkout:</h4>
+[% UNLESS librarieshash.${tomebook.library}.access %]
+<b>This will be an InterTOME loan.</b><br />
+Because of this, only reservations are allowed.
+[% END %]
+<form action="[% config.cgibase %]/admin.pl" method="post" name="checkout">
+<input type="hidden" name="anchor" value="checkout">
+<input type="hidden" name="rm" value="checkout">
+<input type="hidden" name="id" value="[% tomebook.id %]">
+<table border="1" cellpadding="5">
+<tr><td>Borrower</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.checkout_errs and errs.patron %]</td></tr>
+<tr><td>Semester</td><td><select name="semester" onChange="if(document.checkout.semester.selectedIndex > 0){document.checkout.reservation.checked = true;}">
+[% FOREACH semester = semesters %]
+[% IF semester.id >= currsemester.id %]<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemesterid)  == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END %]
+[% END %]
+</select> [% errs.semester %]</td></tr>
+<tr><td>Responsible Library</td><td><select name="library">
+[% FOREACH library = libraries %]
+[% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
+[% END %]
+</select> [% errs.library %]</td></tr>
+<tr><td>
+Comments
+[% UNLESS librarieshash.${tomebook.library}.access %]
+<br />Please include the CPO Box of the borrower
+[% END %]
+</td><td><input type="text" name="comments"></td></tr>
+<tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %][% UNLESS librarieshash.${tomebook.library}.access %]disabled="disabled[% END %]"></td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Checkout"></td></tr>
+</table>
+</form>
+<hr>
+<h4>Checkout History</h4>
+[% IF checkouts.size > 0 %]
+<table border="1" cellpadding="5">
+<tr>
+	<td>
+		Semester
+	</td>
+	<td>
+		Borrower
+	</td>
+	<td>TOMEkeeper</td>
+	<td>Library</td>
+	<td>
+		Checkout/Reserved
+	</td>
+	<td>
+		Checkin
+	</td>
+	<td>
+		Comments
+	</td>
+	<td>
+		Cancel
+	</td>
+[% FOREACH checkout = checkouts %]
+</tr>
+	<td>
+		[% semestershash.${checkout.semester}.name | html %]
+	</td>
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout.borrower | html | uri %]">[% checkout.borrower_name | html %]</a> ([% checkout.borrower_email | html %])
+	</td>
+	<td>[% checkout.username | html %]</td>
+	<td>[% librarieshash.${checkout.library}.name | html %]</td>
+	<td>
+		[% checkout.checkout.strftime('%B %d, %Y at %r') | html %]
+	</td>
+	<form action="[% config.cgibase %]/admin.pl" method="post">
+	[% IF checkout.reservation %]
+		<input type="hidden" name="rm" value="fillreservation">
+	[% ELSE %]
+		<input type="hidden" name="rm" value="checkin">
+	[% END %]
+	<input type="hidden" name="id" value="[% checkout.id | html %]">
+	<input type="hidden" name="tomebook" value="[% tomebook.id | html %]">
+	<td>
+		[% IF checkout.checkin %]
+			[% checkout.checkin.strftime('%B %d, %Y at %r') | html %]
+		[% ELSE %]
+			[% IF checkout.reservation %]
+				This book is <b>reserved</b> for this semester.<br />
+				[% IF librarieshash.${tomebook.library}.access %]
+					<p><input type="submit" value="Fill Reservation">
+				[% ELSE %]
+					<p>Only the TOMEkeepers of this book's home TOME can fill the reservation.
+				[% END %]
+			[% ELSE %]
+				This book is <b>checked out</b> for this semester.<br />
+				[% IF librarieshash.${tomebook.library}.access %]
+					<p><input type="submit" value="Check In">
+				[% ELSE %]
+					<p>Only the TOMEkeepers of this book's home TOME can check this book in.
+				[% END %]
+			[% END %]
+		[% END %]
+	</td>
+	</form>
+	<form action="[% config.cgibase %]/admin.pl" method="post">
+	<input type="hidden" name="rm" value="updatecheckoutcomments">
+	<input type="hidden" name="id" value="[% checkout.id | html %]">
+	<input type="hidden" name="tomebook" value="[% tomebook.id | html %]">
+	<td>
+		<textarea name="comments">[% checkout.comments | html %]</textarea><input type="submit" value="Update">
+	</td>
+	</form>
+	<form action="[% config.cgibase %]/admin.pl" method="post">
+	<input type="hidden" name="rm" value="confirm">
+	<input type="hidden" name="finalrm" value="cancelcheckout">
+	<input type="hidden" name="id" value="[% checkout.id | html %]">
+	<input type="hidden" name="tomebook" value="[% tomebook.id | html %]">
+	<input type="hidden" name="action" value="Cancel checkout for [% semestershash.${checkout.semester}.name %] for [% tomebook.title %] (ID [% tomebook.id %]) to [% checkout.borrower_name %]">
+	<td>
+		[% UNLESS checkout.checkin %]
+			[% IF librarieshash.${tomebook.library}.access %]
+				<input type="submit" value="Cancel Checkout">
+			[% ELSE %]
+				Only the TOMEkeepers of this book's home TOME can cancel a checkout.
+			[% END %]
+		[% ELSE %]
+			Checked in.
+		[% END %]
+	</td>
+	</form>
+</tr>
+[% END %]
+[% ELSE %]
+No history
+[% END %]
+</table>
