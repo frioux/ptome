@@ -1,5 +1,4 @@
 [% META title = 'Add TOME Book' %]
-[% IF errs %]<h3 style="color: red;">Missing or invalid form data. Errors are displayed below in red if they  are missing or invalid.</h3>[% END %]
 <form action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="addtomebook_process">
 <input type="hidden" name="addtomebook" value="1">
