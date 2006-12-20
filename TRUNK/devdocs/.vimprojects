@@ -1,4 +1,4 @@
-TOME=/usr/local/webapps/tome-dev/ CD=. filter="*" {
+TOME=/usr/local/webapps/tome-dev/ in=devdocs/in.vim out=devdocs/out.vim CD=. filter="*" {
 
 cgi=cgi{
  
@@ -68,14 +68,11 @@ cgi=cgi{
  }
  
  devdocs=devdocs {
-  
   TODO
   clean.sql
-  regen-prototype.pl
-  schema.owned
+  in.vim
+  out.vim
   schema.sql
-  .vimprojects
-
  }
  
  docs=docs {
@@ -86,9 +83,6 @@ cgi=cgi{
  
  modules=modules {
   TOME.pm
-  less
-  pod2htmd.tmp
-  pod2htmi.tmp
   tmp
  TOME=TOME{
    Interface.pm
