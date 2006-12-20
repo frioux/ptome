@@ -1017,7 +1017,11 @@ sub management {
 	}
 
 	foreach my $userinfo (@$users) {
-		$userinfo->{libraries} = $self->_libraryaccess($userinfo->{id});
+		$userinfo->{libraries} = $self->library_info();
+		my $library_access = $self->_libraryaccesshash($userinfo->{id});
+		foreach(@{$userinfo->{libraries}}) {
+			$_->{access} = $library_access->{$_->{id}} ? 1 : 0;
+		}
 	}
 
 	return $self->template({ file => 'management.html', vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});

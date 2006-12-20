@@ -53,14 +53,14 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% IF admin %]
 <select name="libraries" multiple="multiple" size="10">
 [% FOREACH library = user.libraries %]
-<option value="[% library.id | html %]" [% IF library.access %]selected="selected"[% END %]>[% library.name %]</option>
-[% END %]
-[% ELSE %]
-[% FOREACH library = user.libraries %]
-[% IF library.access %][% library.name %]<br />[% END %]
-[% END %]
+<option value="[% library.id | html %]" [% IF library.access %]selected="selected"[% END %]>[% library.name | html %]</option>
 [% END %]
 </select>
+[% ELSE %]
+[% FOREACH library = user.libraries %]
+[% IF library.access %][% library.name %][% END %]<br />
+[% END %]
+[% END %]
 </td></tr>
 <tr><td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
 <tr><td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
