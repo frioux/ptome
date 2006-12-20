@@ -21,10 +21,10 @@
 <input type="hidden" name="class" value="[% id %]">
 <input type="hidden" name="isbn" value="[% book.isbn | html %]">
 	<td>
-		<b>Title:</b> [% book.info.title %]<br><br>
-		<b>Author:</b> [% book.info.author %]<br>
-		<b>Edition:</b> [% book.info.edition %]<br>
-		<b>ISBN:</b> [% book.isbn %]<br><br>
+		<b>Title:</b> [% book.info.title %]<br /><br />
+		<b>Author:</b> [% book.info.author %]<br />
+		<b>Edition:</b> [% book.info.edition %]<br />
+		<b>ISBN:</b> [% book.isbn %]<br /><br />
 		<b>Buy it online:</b> <a href="http://isbn.nu/[% book.isbn | html | uri %]">http://isbn.nu/[% book.isbn | html | uri %]</a>
 	</td>
 	<td align="center">
@@ -56,7 +56,7 @@
 			<p><a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | html | uri %]&status=can_reserve&semester=[% (session.currsemester.id || currsemester.id) | html | uri %]&libraries=[% book.otherlibraries.ids.join('&libraries=') | html | uri %]">All other libraries:</a> [% book.otherlibraries.available %]/[% book.otherlibraries.total %]
 		[% END %]
 		<p>
-		<!--<a href="http://www.half.ebay.com/search-isbn?m=books&isbn=[% book.isbn | html | uri %]">Half.com</a><br>
+		<!--<a href="http://www.half.ebay.com/search-isbn?m=books&isbn=[% book.isbn | html | uri %]">Half.com</a><br />
 		<a href="http://www.amazon.com/exec/obidos/ASIN/[% book.isbn | html | uri %]">Amazon.com</a>-->
 	</td>
 	<td align="center">
@@ -74,7 +74,7 @@
 [% END %]
 </table>
 <hr>
-General Class Comments:<br>
+General Class Comments:<br />
 <form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="updateclasscomments">
 <input type="hidden" name="class" value="[% id | html %]">
@@ -85,14 +85,14 @@ General Class Comments:<br>
 <form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="addclassbook">
 <input type="hidden" name="class" value="[% id %]">
-ISBN: [% PROCESS autocomplete_isbn.html %]<br>
-Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br>
+ISBN: [% PROCESS autocomplete_isbn.html %]<br />
+Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
 When verified: <select name="verified">
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
 [% END %]
-</select><br>
-Verification comments:<br><textarea name="comments" rows="4" cols="30"></textarea><br>
+</select><br />
+Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
 <input type="submit" value="Add">
 </form>
 <hr>

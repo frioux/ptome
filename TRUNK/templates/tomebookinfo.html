@@ -11,15 +11,15 @@
 </tr>
 <tr>
 <td>
-	ISBN: [% tomebook.isbn %]<br>
-	Title: [% tomebook.title %]<br>
-	Author: [% tomebook.author %]<br>
-	Edition: [% tomebook.edition %]<br>
+	ISBN: [% tomebook.isbn %]<br />
+	Title: [% tomebook.title %]<br />
+	Author: [% tomebook.author %]<br />
+	Edition: [% tomebook.edition %]<br />
 	<div align="right"><font size="-3"><a href="[% config.cgibase %]/admin.pl?rm=updatebook&isbn=[% tomebook.isbn | html | uri %]">Edit</a></font></div>
 </td>
 <td>
 	[% FOREACH class = classes %]
-	<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
+	<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br />
 	[% END %]
 </td>
 <td>
@@ -28,14 +28,14 @@
 	<input type="hidden" name="isbn" value="[% tomebook.isbn | html %]">
 	Class ID: <input autocomplete="off" id="class" name="class" type="text">
 <div class="auto_complete" id="class_auto_complete"></div>
-[% prototype.auto_complete_field('class', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_class'" }) %]<br>
-Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br>
+[% prototype.auto_complete_field('class', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_class'" }) %]<br />
+Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
 When verified: <select name="verified">
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
 [% END %]
-</select><br>
-Verification comments:<br><textarea name="comments" rows="4" cols="30"></textarea><br>
+</select><br />
+Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
 
 	<input type="submit" value="Associate Class">
 	</form>
@@ -53,18 +53,18 @@ Verification comments:<br><textarea name="comments" rows="4" cols="30"></textare
 [% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 [% END %]
 </select> [% errs.library %]
-<p><b>Originator:</b> [% PROCESS 'autocomplete_patron.html' default_patron="${tomebook.originator_email}" %] [% errs.updatetomebook_errs and errs.patron %]<br>
+<p><b>Originator:</b> [% PROCESS 'autocomplete_patron.html' default_patron="${tomebook.originator_email}" %] [% errs.updatetomebook_errs and errs.patron %]<br />
 <p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
 [% END %]
-<p>Comments:<br><textarea name="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br>
+<p>Comments:<br /><textarea name="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br />
 Expiration Semester: <select name="expire">
 <option value="" [% IF !tomebook.expire %]selected="selected"[% END %]>Never</option>
 [% FOREACH semester = semesters %]
 [% IF semester.id >= currsemester.id OR semester.id == tomebook.expire %]<option value="[% semester.id | html %]" [% IF tomebook.expire == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END %]
 [% END %]
-</select><br>
+</select><br />
 <input type="submit" value="Update">
 </form>
 <p>
@@ -93,7 +93,7 @@ Expiration Semester: <select name="expire">
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
 [% END %]
-<p><b>Comments:</b><br>
+<p><b>Comments:</b><br />
 <blockquote>[% tomebook.comments | html %]</blockquote>
 <p><b>Expiration Semester:</b>
 [% IF tomebook.expire %]
@@ -108,7 +108,7 @@ Expiration Semester: <select name="expire">
 <hr>
 <a name="checkout"></a><h4>Checkout:</h4>
 [% UNLESS librarieshash.${tomebook.library}.access %]
-<b>This will be an InterTOME loan.</b><br>
+<b>This will be an InterTOME loan.</b><br />
 Because of this, only reservations are allowed.
 [% END %]
 <form action="[% config.cgibase %]/admin.pl" method="post" name="checkout">
@@ -130,7 +130,7 @@ Because of this, only reservations are allowed.
 <tr><td>
 Comments
 [% UNLESS librarieshash.${tomebook.library}.access %]
-<br>Please include the CPO Box of the borrower
+<br />Please include the CPO Box of the borrower
 [% END %]
 </td><td><input type="text" name="comments"></td></tr>
 <tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %][% UNLESS librarieshash.${tomebook.library}.access %]disabled="disabled[% END %]"></td></tr>
@@ -188,14 +188,14 @@ Comments
 			[% checkout.checkin.strftime('%B %d, %Y at %r') | html %]
 		[% ELSE %]
 			[% IF checkout.reservation %]
-				This book is <b>reserved</b> for this semester.<br>
+				This book is <b>reserved</b> for this semester.<br />
 				[% IF librarieshash.${tomebook.library}.access %]
 					<p><input type="submit" value="Fill Reservation">
 				[% ELSE %]
 					<p>Only the TOMEkeepers of this book's home TOME can fill the reservation.
 				[% END %]
 			[% ELSE %]
-				This book is <b>checked out</b> for this semester.<br>
+				This book is <b>checked out</b> for this semester.<br />
 				[% IF librarieshash.${tomebook.library}.access %]
 					<p><input type="submit" value="Check In">
 				[% ELSE %]

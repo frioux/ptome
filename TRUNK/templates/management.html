@@ -10,7 +10,7 @@
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]" [% IF (session.currsemester && (session.currsemester.id == semester.id)) || (!session.currsemester && (semester.id == currsemester.id)) %]selected="selected"[% END %]>[% semester.name %]</option>
 [% END %]
-</select><br>
+</select><br />
 <input type="submit" value="Change">
 </form>
 This setting will temporarily change the current semester of the system for your session.
@@ -23,7 +23,7 @@ This setting will temporarily change the current semester of the system for your
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]" [% IF semester.id == currsemester.id %]selected="selected"[% END %]>[% semester.name %]</option>
 [% END %]
-</select><br>
+</select><br />
 <input type="submit" value="Change">
 </form>
 This setting will permanently change the global semester setting.
@@ -33,7 +33,7 @@ This setting will permanently change the global semester setting.
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="semesteradd">
 <input type="hidden" name="action" value="Add semester.  This action cannot be undone.">
-Semester name: <input type="text" name="name"> <input type="submit" value="Add Semester"><br>
+Semester name: <input type="text" name="name"> <input type="submit" value="Add Semester"><br />
 <b>WARNING: Semesters MUST be added IN ORDER</b>
 </form>
 <hr>
@@ -57,7 +57,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 [% ELSE %]
 [% FOREACH library = user.libraries %]
-[% IF library.access %][% library.name %]<br>[% END %]
+[% IF library.access %][% library.name %]<br />[% END %]
 [% END %]
 [% END %]
 </select>
@@ -82,7 +82,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 <table border="1" cellpadding="5">
 <tr><td>Username</td><td><input type="text" name="username"></td></tr>
 <tr><td>Email</td><td><input type="text" name="email"></td></tr>
-<tr><td colspan="2" align="center"><input type="Submit" value="Add User"><br>
+<tr><td colspan="2" align="center"><input type="Submit" value="Add User"><br />
 (Note: Password and other options must be set after adding)</td></tr>
 </table>
 </form>

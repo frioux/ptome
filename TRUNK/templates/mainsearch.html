@@ -8,7 +8,7 @@
 <tr><td>Title</td><td>[% CGI.textfield({ Name => 'title' }) %]</td></tr>
 <tr><td>Author</td><td>[% CGI.textfield({ Name => 'author' }) %]</td></tr>
 <tr><td>Edition</td><td>[% CGI.textfield({ Name => 'edition' }) %]</td></tr>
-<tr><td>Include</td><td>[% FOREACH button = CGI.radio_group({ Name => 'status', Values => ['all' 'can_reserve' 'can_checkout'], Default => 'can_reserve', Labels => { all => 'All', can_reserve => 'Available for reservation', can_checkout => 'Available for checkout' } }) %][% button %]<br>
+<tr><td>Include</td><td>[% FOREACH button = CGI.radio_group({ Name => 'status', Values => ['all' 'can_reserve' 'can_checkout'], Default => 'can_reserve', Labels => { all => 'All', can_reserve => 'Available for reservation', can_checkout => 'Available for checkout' } }) %][% button %]<br />
 [% END %]
 </td></tr>
 [% PROCESS semestersbox.html %]
@@ -26,7 +26,7 @@
 [% FOREACH class = classes %]
 <option value="[% class.id %]" [% IF loop.first %]selected="selected"[% END %]>[% class.id %] - [% class.name %]</option>
 [% END %]
-</select><br>
+</select><br />
 </td></tr>
 <tr><td align="center"><input type="submit" value="View Class"></td></tr>
 </form>

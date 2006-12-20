@@ -3,9 +3,9 @@
 <form action="[% url %]" name="patronupdate" method="post">
 <input type="hidden" name="rm" value="patronupdate">
 <input type="hidden" name="id" value="[% patron | html %]">
-ID: [% patroninfo.id | html %]<br>
-Email: <input type="text" name="email" value="[% patroninfo.email | html %]" size="40"> [% errs.email %]<br>
-Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]<br>
+ID: [% patroninfo.id | html %]<br />
+Email: <input type="text" name="email" value="[% patroninfo.email | html %]" size="40"> [% errs.email %]<br />
+Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]<br />
 <input type="submit" value="Update">
 </form>
 
@@ -13,7 +13,7 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [% FOREACH checkout = tome.patron_checkouts_outstanding(patron) %]
 [% checkoutinfo = tome.checkout_info(checkout) %]
 [% tomebookinfo = tome.tomebook_info(checkoutinfo.tomebook) %]
-<a href="[% url(rm='tomebookinfo', id=tomebookinfo.id) %]">[% tomebookinfo.id %]</a><br>
+<a href="[% url(rm='tomebookinfo', id=tomebookinfo.id) %]">[% tomebookinfo.id %]</a><br />
 [% INCLUDE "blocks/book.html" isbn = tomebookinfo.isbn %]
-<br>
+<br />
 [% END %]
