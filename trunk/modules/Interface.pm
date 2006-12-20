@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -65,6 +65,21 @@ sub login {
 	}
 
 	return $self->template({ file => 'adminlogin.html', vars => { error => $error }, plain => 1 });
+}
+
+sub autocomplete_isbn {
+	my $self = shift;
+
+	my @books;
+	foreach($self->books_search({ isbn => $self->query->param('isbn') })) {
+		my $title = $self->book_info({ isbn => $_ })->{title};
+		if(length($title) > 40) {
+			$title = substr($title, 0, 40) . '...';
+		}
+		push @books, '<li class="auto_complete_item"><div class="primary">' . $_ . '</div><span class="informal"><div class="secondary">' . $title . '</div></span></li>';
+	}
+
+	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
 }
 
 sub mainsearch {

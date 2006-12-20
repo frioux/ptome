@@ -4,6 +4,7 @@ use base 'CGI::Application';
 
 use CGI::Application::Plugin::DBH qw(dbh_config dbh);
 use CGI::Application::Plugin::Session;
+use CGI::Application::Plugin::HTMLPrototype;
 
 use DateTime::Format::Pg;
 
@@ -230,14 +231,60 @@ sub add_class {
 	$dbh->do("INSERT INTO classes (id, name) VALUES (?, ?)", undef, @params{qw(id name)});
 }
 
+sub books_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		isbn		=> { type => SCALAR, optional => 1 },
+		title		=> { type => SCALAR, optional => 1 },
+		author		=> { type => SCALAR, optional => 1 },
+		edition		=> { type => SCALAR, optional => 1 },
+	});
+
+	my (@likecolumns, @conditions, @values);
+
+	foreach (qw(title author edition)) {
+		if(defined($params{$_})) {
+			$params{$_} =~ s/([\\%_])/\\$1/g;
+			push @likecolumns, $_;
+			push @values, $params{$_};
+		}
+	}
+
+	foreach(@likecolumns) {
+		push @conditions, "$_ ILIKE '%' || ? || '%'";
+	}
+
+	if(defined($params{isbn})) {
+		$params{isbn} =~ s/([\\%_])/\\$1/g;
+		push @conditions, "isbn ILIKE ? || '%'";
+		push @values, $params{isbn};
+	}
+	
+	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . " ORDER BY isbn ASC";
+
+	my $sth = $dbh->prepare($statement);
+	
+	$sth->execute(@values);
+	
+	my @results;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
+	}
+	
+	return @results;
+}
+
 sub book_exists {
 	my $self = shift;
+
+	# This sub has to be different from books_search because it searches for an exact ISBN
 
 	my %params = validate (@_, {
 		isbn	=> { type => SCALAR },
 	});
-
-	# !!! Refactor into a query to general books search sub
 
 	my $dbh = $self->dbh;
 
@@ -348,7 +395,7 @@ sub tome_stats {
 	my $dbh = $self->dbh;
 
 	my (%stats, $sql, @bind);
-	my ($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE library IN', $params{libraries});
+	($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE library IN', $params{libraries});
 	my $sth = $dbh->prepare($sql); $sth->execute(@bind);
 	($stats{totalcollection}) = $sth->fetchrow_array;
 
@@ -932,6 +979,7 @@ sub template {
 		semesters	=> $self->param('semesters'),
 		semestershash	=> { map { $_->{id} => $_ } @{$self->param('semesters')} },
 		currsemester	=> $self->param('currsemester'),
+		prototype	=> $self->prototype,
 	);
 
 	if($self->param('user_info')) {

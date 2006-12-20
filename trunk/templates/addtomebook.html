@@ -1,8 +1,8 @@
 [% META title = 'Add TOME Book' %]
-<form action="[% config.cgibase %]/admin.pl">
+<form action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="addtomebook">
 <input type="hidden" name="addtomebook" value="1">
-ISBN: <input type="text" name="isbn"><br>
+ISBN: [% PROCESS autocomplete_isbn.html %]<br>
 Originator: <input type="text" name="originator"><br>
 Expire Semester: <select name="expire">
 <option value="" selected="selected">Never</option>
@@ -16,5 +16,5 @@ Library: <select name="library">
 [% IF library.access %]<option value="[% library.id | html %]">[% library.name | html %]</option>[% END %]
 [% END %]
 </select><br>
-<input type="submit" value="Add TOME Book">
+<input type="submit" name=".submit" value="Add TOME Book">
 </form>
