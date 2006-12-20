@@ -20,7 +20,7 @@
 		[% book.edition %]
 	</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | uri | html %]">[% book.isbn %]</a>
+		<a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | uri | html %]&status=all">[% book.isbn %]</a>
 	</td>
 </tr>
 [% END %]

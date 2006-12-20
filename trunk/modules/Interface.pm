@@ -79,21 +79,15 @@ sub mainsearch {
 		}
 	}
 
-	$search{libraries} = [ $q->param('libraries') ];
+	$search{libraries} = $self->_librariesselecteddefault();
 
 	my @tomebooks;
 
-	if($q->param('rm')) { # Only run the search if something has been submitted
+	if($q->param('rm')) {
 		my @results = $self->tomebooks_search({%search});
-		#if(@results == 1) {
-		#	$self->header_type('redirect');
-		#	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$results[0]");
-		#	return;
-		#} else {
-			foreach(@results) {
-				push @tomebooks, $self->tomebook_info({ id => $_ });
-			}
-		#}
+		foreach(@results) {
+			push @tomebooks, $self->tomebook_info({ id => $_ });
+		}
 	}
 	
 	my $classes = $self->class_list;
@@ -105,6 +99,7 @@ sub mainsearch {
 		tomebooks		=> \@tomebooks,
 		libraries		=> $libraries,
 		librarieshash		=> $self->_librarieshash(),
+		libraries_selected	=> $search{libraries},
 		semester_selected	=> $self->_semesterselecteddefault(),
 	}});
 }

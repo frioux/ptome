@@ -12,14 +12,7 @@
 [% END %]
 </td></tr>
 [% PROCESS semestersbox.html %]
-<tr><td>Libraries</td><td>
-<select name="libraries" size="5" multiple="multiple">
-[% FOREACH library = libraries %]
-<option value="[% library.id | html %]" [% IF (CGI.param('libraries') && (CGI.param('libraries').grep("^${library.id}\$").size == 1)) || (!CGI.param('libraries') && library.access) %]selected="selected"[% END %]>[% library.name | html %]</option>
-[% END %]
-</select><br>
-<a href="#" onClick="for(i=0;i<document.search.libraries.length;i++){document.search.libraries.options[i].selected=true;}">Select All</a> | <a href="#" onClick="[% FOREACH library = libraries %][% IF library.access %]document.search.libraries.options[[% loop.index %]].selected=true;[% ELSE %]document.search.libraries.options[[% loop.index %]].selected=false;[% END %][% END %]">Select Mine</a>
-</td></tr>
+[% PROCESS librariesbox.html %]
 <tr><td colspan="2" align="center"><input type="submit" value="Search"></td></tr>
 </table>
 </form>
