@@ -25,6 +25,7 @@ my $FH = '';
 my $tomeuser = '';
 my $tomepass = '';
 my $tomeemail = '';
+my $semestername = '';
 
 
 print ("Welcome to the TOME installer!\n");
@@ -185,4 +186,12 @@ $tomepass = prompt ("Password: ", -echo => '');
 $tomeemail = prompt ("Email: ", -default => 'admin@tome');
 
 @args = ('./createuser.pl', '-u', $tomeuser, '-p', $tomepass, '-e', $tomeemail, '-admin');
-system(@args);
+system (@args);
+
+print ("\n");
+print ("Finally, we need to add a default semester.\n");
+print ("What would you like the name of the new semester to be?\n");
+$semestername = prompt ("Semester name: ", -default => 'Fall 06');
+
+@args = ('./createsemester.pl', '-name', $semestername);
+system (@args);
