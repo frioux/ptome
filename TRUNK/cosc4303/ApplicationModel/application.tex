@@ -39,6 +39,7 @@ The TOME system is \textbf{not} responsible for managing:
 \subsection{Context}
 TOME exists as an independent system with no ties to other databases.  Information from other databases, such as class listings, book information, and book-to-class associations will be used, but not in an automated fashion.
 \subsection{Technical Environment}
+TOME is a web-based Perl application.  It is intended to be run under the Apache webserver, but any webserver that supports CGI should be capable of running the system.  Template::Toolkit is used to process HTML templates.  PostgreSQL is used as the database backend.  CGI::Application is used as the framework for the system as a whole.
 \section{Actors}
 \subsection{Actor Diagram}
 Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME system and how they interact with each other.  Patrons talk to TOMEkeepers who use the TOME web interface which is based on the TOME database.
@@ -74,6 +75,28 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 	\textbf{Actor Type} & Active - Person. \\
 	\hline
 \end{tabular}
+
+\section{Business Use Cases}
+\subsection{Use Case Listing}
+\begin{tabular}{|p{.10\textwidth}|p{.40\textwidth}|p{.50\textwidth}|}
+	\hline
+	\textbf{ID} & \textbf{Use Case Name} & \textbf{Comments} \\
+	\hline
+	UC01 & Book Added & testing 1 2 3 \\
+	\hline
+\end{tabular}
+\subsection{Graphical Use Case Diagram}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{GraphicalUseCaseDiagram}
+	\caption{Use Case Diagram}
+	\label{usecase}
+\end{figure}
+\subsection{Business Use Cases}
+This section documents the complete business scenarios within the scope of this project.
+\subsubsection{UC01: Book Added}
+\paragraph{Description}
+test
+
 \section{Database Structure}
 The overall structure of the database can be seen in Figure~\ref{tomedb}.  In addition to the structure, there are also triggers that ensure the consistency of the database at all times.
 \begin{figure}[h]
