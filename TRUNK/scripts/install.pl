@@ -34,7 +34,7 @@ print ("\n");
 
 print ("Checking to make sure the installer has root privileges...\n");
 
-if (!(`whoami` eq "root\n")) {
+if ($> != 0) {
 	die "\nYou must run the installer as root!\n";
 }
 
