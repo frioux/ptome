@@ -119,9 +119,9 @@
 	</td>
 </tr>
 [% FOREACH book = expiring %]
-[% IF book.expire == semester_selected - 1 %]
+[% IF book.expire == semester_selected + 1 %]
 <tr bgcolor="pink">
-[% ELSIF book.expire < semester_selected - 1 %]
+[% ELSIF book.expire > semester_selected + 1 %]
 <tr bgcolor="red">
 [% ELSE %]
 <tr>
