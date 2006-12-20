@@ -1861,6 +1861,7 @@ sub class_update_verified {
 	$sth->execute(@bind);
 }
 #}}}
+
 #{{{class_info_deprecated
 
 =head2 class_info_deprecated

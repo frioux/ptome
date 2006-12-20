@@ -9,6 +9,7 @@ use CGI::Application::Plugin::Forward;
 use strict;
 use warnings;
 
+#{{{setup
 sub setup {
 	my $self = shift;
 
@@ -16,7 +17,9 @@ sub setup {
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
+#}}}
 
+#{{{autoload_rm
 sub autoload_rm {
 	my $self = shift;
 	my $attempted_rm = shift;
@@ -26,8 +29,9 @@ sub autoload_rm {
 		extended	=> "Attempted runmode: '$attempted_rm'",
 	});
 }
+#}}}
 
-
+#{{{cgiapp_prerun
 sub cgiapp_prerun {
 	my $self = shift;
 	
@@ -43,7 +47,9 @@ sub cgiapp_prerun {
 		return;
 	}
 }
+#}}}
 
+#{{{logout
 sub logout {
 	my $self = shift;
 	$self->session->delete;
@@ -52,7 +58,9 @@ sub logout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
 	return;
 }
+#}}}
 
+#{{{login
 sub login {
 	my $self = shift;
 	my $error = '';
@@ -77,7 +85,9 @@ sub login {
 
 	return $self->template({ file => 'adminlogin.html', vars => { error => $error }, plain => 1 });
 }
+#}}}
 
+#{{{autocomplete_isbn
 sub autocomplete_isbn {
 	my $self = shift;
 
@@ -97,7 +107,9 @@ sub autocomplete_isbn {
 
 	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
 }
+#}}}
 
+#{{{autocomplete_patron
 sub autocomplete_patron {
 	my $self = shift;
 
@@ -114,7 +126,9 @@ sub autocomplete_patron {
 
 	return '<ul class="auto_complete_list">' . join("\n", @patrons) . '</ul>';
 }
+#}}}
 
+#{{{autocomplete_class
 sub autocomplete_class {
 	my $self = shift;
 
@@ -129,7 +143,9 @@ sub autocomplete_class {
 
 	return '<ul class="auto_complete_list">' . join("\n", @classes) . '</ul>';
 }
+#}}}
 
+#{{{mainsearch
 sub mainsearch {
 	my $self = shift;
 
@@ -168,7 +184,9 @@ sub mainsearch {
 		semester_selected	=> $self->_semesterselecteddefault(),
 	}});
 }
+#}}}
 
+#{{{removetomebook
 sub removetomebook {
 	my $self = shift;
 
@@ -187,7 +205,9 @@ sub removetomebook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$params{id}");
 	return;
 }
+#}}}
 
+#{{{findorphans
 sub findorphans {
 	my $self = shift;
 
@@ -204,7 +224,9 @@ sub findorphans {
 		libraries_selected	=> $libraries_selected,
 	}});
 }
+#}}}
 
+#{{{finduseless
 sub finduseless {
 	my $self = shift;
 
@@ -222,7 +244,9 @@ sub finduseless {
 		libraries_selected	=> $libraries_selected,
 	}});
 }
+#}}}
 
+#{{{stats
 sub stats {
 	my $self = shift;
 
@@ -234,13 +258,17 @@ sub stats {
 		stats			=> $self->tome_stats({ libraries => $libraries_selected })
 	}});
 }
+#}}}
 
+#{{{confirm
 sub confirm {
 	my $self = shift;
 
 	return $self->template({ file => 'confirm.html' });
 }
+#}}}
 
+#{{{classsearch
 sub classsearch {
 	my $self = shift;
 
@@ -282,7 +310,9 @@ sub classsearch {
 		books		=> $classinfo->{books},
 	}});
 }
+#}}}
 
+#{{{updatetomebook
 sub updatetomebook {
 	my $self = shift;
 	
@@ -326,7 +356,9 @@ sub updatetomebook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id&edit=1");
 	return;
 }
+#}}}
 
+#{{{patronaddclass
 sub patronaddclass {
     my $self = shift;
 
@@ -355,8 +387,9 @@ sub patronaddclass {
     
     return $self->forward('patronview');
 }
+#}}}
 
-
+#{{{updateclassinfo
 sub updateclassinfo {
 	my $self = shift;
 
@@ -370,7 +403,9 @@ sub updateclassinfo {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
+#}}}
 
+#{{{updateclasscomments
 sub updateclasscomments {
 	my $self = shift;
 
@@ -383,7 +418,9 @@ sub updateclasscomments {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
+#}}}
 
+#{{{deleteclassbook
 sub deleteclassbook {
 	my $self = shift;
 
@@ -396,7 +433,9 @@ sub deleteclassbook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
+#}}}
 
+#{{{addclassbook
 sub addclassbook {
 	my $self = shift;
 
@@ -441,7 +480,9 @@ sub addclassbook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$book{class}");
 	return;
 }
+#}}}
 
+#{{{report
 sub report {
 	my $self = shift;
 
@@ -472,7 +513,9 @@ sub report {
 		semester_selected	=> $semester_selected,
 	}});
 }
+#}}}
 
+#{{{deleteclass
 sub deleteclass {
 	my $self = shift;
 
@@ -484,7 +527,9 @@ sub deleteclass {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
 	return;
 }
+#}}}
 
+#{{{updatebook
 sub updatebook {
 	my $self = shift;
 
@@ -506,7 +551,9 @@ sub updatebook {
 
 	return $self->template({ file => 'updatebook.html', vars => $self->book_info({ isbn => $q->param('isbn') }) });
 }
+#}}}
 
+#{{{addclass
 sub addclass {
 	my $self = shift;
 	my $errs = shift;
@@ -514,7 +561,9 @@ sub addclass {
 
 	return $self->template({ file => 'addclass.html', vars => { errs => $errs } });
 }
+#}}}
 
+#{{{addclass_process
 sub addclass_process {
 	my $self = shift;
 
@@ -557,7 +606,9 @@ sub addclass_process {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class{id}");
 	return;
 }
+#}}}
 
+#{{{patronview
 sub patronview {
 	my $self = shift;
 	my $errs = shift;
@@ -575,7 +626,9 @@ sub patronview {
 
 	return $self->template({ file => 'patronview.html', vars => { patron => $patron->{id}, errs => $errs }});
 }
+#}}}
 
+#{{{patronupdate
 sub patronupdate {
 	my $self = shift;
 
@@ -594,14 +647,18 @@ sub patronupdate {
 
 	return $self->forward('patronview');
 }	
+#}}}
 
+#{{{addpatron
 sub addpatron {
 	my $self = shift;
 	my $errs = shift;
 	
 	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }}); 
 }
+#}}}
 
+#{{{addpatron_process
 sub addpatron_process {
 	my $self = shift;
 	my $results = $self->check_rm('addpatron', {
@@ -629,7 +686,9 @@ sub addpatron_process {
 
 	return $self->forward($self->query->param('finalrm'));
 }
+#}}}
 
+#{{{addtomebook
 sub addtomebook {
 	my $self = shift;
 	my $errs = shift;
@@ -639,7 +698,9 @@ sub addtomebook {
 			errs		=> $errs,
 	}});
 }
+#}}}
 
+#{{{addtomebook_isbn
 sub addtomebook_isbn {
 	my $self = shift;
 	my $errs = shift;
@@ -649,8 +710,9 @@ sub addtomebook_isbn {
 		errs		=> $errs,
 	}});
 }
+#}}}
 
-
+#{{{addtomebook_process
 sub addtomebook_process {
 	my $self = shift;
 
@@ -729,7 +791,9 @@ sub addtomebook_process {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
 	return;
 }
+#}}}
 
+#{{{checkout
 sub checkout {
 	my $self = shift;
 	
@@ -801,8 +865,9 @@ sub checkout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
 	return;
 }
+#}}}
 
-
+#{{{checkin
 sub checkin {
 	my $self = shift;
 
@@ -819,7 +884,9 @@ sub checkin {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
+#}}}
 
+#{{{updatecheckoutcomments
 sub updatecheckoutcomments {
 	my $self = shift;
 
@@ -834,7 +901,9 @@ sub updatecheckoutcomments {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
+#}}}
 
+#{{{fillreservation
 sub fillreservation {
 	my $self = shift;
 
@@ -851,7 +920,9 @@ sub fillreservation {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
+#}}}
 
+#{{{cancelcheckout
 sub cancelcheckout {
 	my $self = shift;
 
@@ -868,7 +939,9 @@ sub cancelcheckout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
+#}}}
 
+#{{{tomebookinfo
 sub tomebookinfo {
 	my $self = shift;
 	my $errs = shift;
@@ -895,7 +968,9 @@ sub tomebookinfo {
 		errs		=> $errs,
 	}});
 }
+#}}}
 
+#{{{management
 sub management {
 	my $self = shift;
 
@@ -945,7 +1020,9 @@ sub management {
 
 	return $self->template({ file => 'management.html', vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
 }
+#}}}
 
+#{{{useradd
 sub useradd {
 	my $self = shift;
 
@@ -960,7 +1037,9 @@ sub useradd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
+#}}}
 
+#{{{libraryadd
 sub libraryadd {
 	my $self = shift;
 
@@ -974,7 +1053,9 @@ sub libraryadd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
+#}}}
 
+#{{{semesteradd
 sub semesteradd {
 	my $self = shift;
 
@@ -988,7 +1069,9 @@ sub semesteradd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
+#}}}
 
+#{{{semesterset
 sub semesterset {
 	my $self = shift;
 
@@ -1002,7 +1085,9 @@ sub semesterset {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
+#}}}
 
+#{{{sessionsemester
 sub sessionsemester {
 	my $self = shift;
 
@@ -1021,7 +1106,9 @@ sub sessionsemester {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
+#}}}
 
+#{{{_libraryaccess
 sub _libraryaccess {
 	my $self = shift;
 	my $uid = shift;
@@ -1034,20 +1121,26 @@ sub _libraryaccess {
 
 	return $libraries;
 }
+#}}}
 
+#{{{_libraryauthorized
 sub _libraryauthorized {
 	my $self = shift;
 	my ($uid, $library) = @_;
 
 	return scalar(grep { $_->{id} == $library } @{$self->library_access({user => $uid})}) == 1;
 }
+#}}}
 
+#{{{_librarieshash
 sub _librarieshash {
 	my $self = shift;
 
 	return { map { $_->{id} => $_ } @{$self->library_info} };
 }
+#}}}
 
+#{{{_librariesselecteddefault
 sub _librariesselecteddefault {
 	my $self = shift;
 
@@ -1061,7 +1154,9 @@ sub _librariesselecteddefault {
 	}
 	return \@libraries_selected;
 }
+#}}}
 
+#{{{_semesterselecteddefault
 sub _semesterselecteddefault {
 	my $self = shift;
 
@@ -1071,5 +1166,6 @@ sub _semesterselecteddefault {
 	}
 	return $semester_selected;
 }
+#}}}
 
 1;
