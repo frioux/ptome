@@ -1099,7 +1099,13 @@ sub isbnview {
 
     my $q = $self->query;
 
-    return $self->template({file => 'isbnview.html', vars => {isbn => $q->param('isbn')}});
+    return $self->template({file => 'isbnview.html', 
+        vars => {
+            isbn => $q->param('isbn'),
+            libraries_to => $self->_libraryaccess($self->param('user_info')->{id}),
+            #libraries_from => $self->
+        }
+    });
 
 }
 #}}}
