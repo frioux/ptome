@@ -10,11 +10,16 @@
 \section{Introduction}
 \subsection{Purpose of Document}
 The purpose of this document is to specify the TOME system and the application model it uses.
+
+An application is defined as having business logic and presentation elements while an individual component is defined as providing a particular set of services or presentation—but not both. This approach allows for the structure of a modern component based distributed system.
+
+Delivery scheduling and testing issues are also dealt with to ensure that other related applications and components can be developed in parallel.
 \subsection{Background}
 In December of 2003, several students on Dorm 41 started a system called TOME.  The basic idea is that at the end of the semester, instead of everyone selling their books back to the bookstore, they all donate them to central repository.  Anyone on the floor can then check out whatever books they need free of charge for a semester.
 
 The advantage of having a computer-based system to keep track of all those books is easy to see, and one has been under development ever since the start of TOME.  Since its humble beginnings as a quick solution over Christmas break, the system has grown to well over 3,000 lines of Perl code as well as HTML templates, a well-planned database schema, and significant documentation.  The system not only has comprehensive facilities for tracking books and patrons, but also keeps tabs on what books are used for what classes and other alternatives to purchasing new books.
 \subsection{References}
+\label{references}
 All project data will be stored in a combination Subversion repository and Trac environment.  All of this will be made viewable at the following URL:
 
 \texttt{http://enosh.letnet.net/trac/tome}
@@ -82,10 +87,19 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 	\hline
 	\textbf{ID} & \textbf{Use Case Name} & \textbf{Comments} \\
 	\hline
-	UC01 & Book Added & testing 1 2 3 \\
+	UC01 & Book Added & When a book is donated to the TOME system \\
+	\hline
+	UC02 & Book Reserved & When a patron requests that book be reserved for a particular semester \\
+	\hline
+	UC03 & Book Checked Out & When a patron checks out a physical book \\
+	\hline
+	UC04 & Class Added & When a TOMEkeeper adds a class to the system \\
+	\hline
+	UC05 & Book Added To Class & When a TOMEkeeper adds a book to a particular class \\
 	\hline
 \end{tabular}
 \subsection{Graphical Use Case Diagram}
+This section represents the business use cases of the TOME system in graphical form in Figure~\ref{usecase}.
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{GraphicalUseCaseDiagram}
 	\caption{Use Case Diagram}
@@ -93,11 +107,261 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 \end{figure}
 \subsection{Business Use Cases}
 This section documents the complete business scenarios within the scope of this project.
+
+
 \subsubsection{UC01: Book Added}
 \paragraph{Description}
-test
+This scenario happens when a patron donates a book to the TOME on their floor.  The book information must be entered in the system, and the book must be assigned a unique ID number by the system.
+\paragraph{Actors}
+TOMEkeeper and (indirectly) Patron
+\paragraph{Preconditions}
+\begin{enumerate}
+	\item The TOMEkeeper must have an account
+	\item The TOMEkeeper must be logged in
+\end{enumerate}
+\paragraph{Use Case Text}
+\begin{enumerate}
+	\item Patron requests to donate a book
+	\item TOMEkeeper enters the book information into the system
+	\item TOME assigns a book ID and presents the book information page
+\end{enumerate}
+\paragraph{Alternate Courses}
+None.
+\paragraph{Extends}
+None.
+\paragraph{User Interfaces}
+\paragraph{Constraints}
+None.
+\paragraph{Questions}
+None.
+\paragraph{Notes}
+None.
+\paragraph{Source Documents}
+None.
+
+
+\subsubsection{UC02: Book Reserved}
+\paragraph{Description}
+This scenario happens when a patron requests that a book be reserved for them for a particular semester.
+\paragraph{Actors}
+TOMEkeeper and (indirectly) Patron
+\paragraph{Preconditions}
+\begin{enumerate}
+	\item The TOMEkeeper must have an account
+	\item The TOMEkeeper must be logged in
+\end{enumerate}
+\paragraph{Use Case Text}
+\begin{enumerate}
+	\item Patron sends their class list to the TOMEkeeper
+	\item TOMEkeeper enters the class information into the system
+	\item TOME determines what book reservations can be made, makes them, and notifies the patron via email
+\end{enumerate}
+\paragraph{Alternate Courses}
+None.
+\paragraph{Extends}
+None.
+\paragraph{User Interfaces}
+\paragraph{Constraints}
+None.
+\paragraph{Questions}
+None.
+\paragraph{Notes}
+None.
+\paragraph{Source Documents}
+None.
+
+\subsubsection{UC03: Book Checked Out}
+\paragraph{Description}
+This scenario happens when a patron requests that a book be checked out for a semester
+\paragraph{Actors}
+TOMEkeeper and (indirectly) Patron
+\paragraph{Preconditions}
+\begin{enumerate}
+	\item The TOMEkeeper must have an account
+	\item The TOMEkeeper must be logged in
+\end{enumerate}
+\paragraph{Use Case Text}
+\begin{enumerate}
+	\item Patron requests that the book be checked out.  This may have already been done in the form of a reservation, or the patron can make the request without a previous reservation
+	\item The TOMEkeeper checks a specific instance of the book out to the patron, and the system logs that checkout
+\end{enumerate}
+\paragraph{Alternate Courses}
+None.
+\paragraph{Extends}
+None.
+\paragraph{User Interfaces}
+\paragraph{Constraints}
+None.
+\paragraph{Questions}
+None.
+\paragraph{Notes}
+None.
+\paragraph{Source Documents}
+None.
+
+\subsubsection{UC04: Class Added}
+\paragraph{Description}
+This scenario happens when a TOMEkeeper adds a class to the system
+\paragraph{Actors}
+TOMEkeeper
+\paragraph{Preconditions}
+\begin{enumerate}
+	\item The TOMEkeeper must have an account
+	\item The TOMEkeeper must be logged in
+\end{enumerate}
+\paragraph{Use Case Text}
+\begin{enumerate}
+	\item The TOMEkeeper finds a class that needs to be added to the system
+	\item The TOMEkeeper adds the class to the system
+\end{enumerate}
+\paragraph{Alternate Courses}
+None.
+\paragraph{Extends}
+None.
+\paragraph{User Interfaces}
+\paragraph{Constraints}
+None.
+\paragraph{Questions}
+None.
+\paragraph{Notes}
+None.
+\paragraph{Source Documents}
+None.
+
+\subsubsection{UC05: Book Added To Class}
+\paragraph{Description}
+This scenario happens when a TOMEkeeper adds a book to a class that is already listed in the system.
+\paragraph{Actors}
+TOMEkeeper
+\paragraph{Preconditions}
+\begin{enumerate}
+	\item The TOMEkeeper must have an account
+	\item The TOMEkeeper must be logged in
+	\item The class to be added to must already exist within the system
+\end{enumerate}
+\paragraph{Use Case Text}
+\begin{enumerate}
+	\item The TOMEkeeper finds a book that needs to be added to a particular class
+	\item The TOMEkeeper navigates to the class information page
+	\item The TOMEkeeper adds the book to the class
+\end{enumerate}
+\paragraph{Alternate Courses}
+None.
+\paragraph{Extends}
+None.
+\paragraph{User Interfaces}
+\paragraph{Constraints}
+None.
+\paragraph{Questions}
+None.
+\paragraph{Notes}
+None.
+\paragraph{Source Documents}
+None.
+
+\section{Business Domain Model}
+The business domain model provides a listing of the modules contained in the project and how they work together.  This framework gives the project team a high-level guide to use in developing the project.
+\subsection{Business Class Diagram}
+Figure~\ref{BusinessModelDiagram} shows a graphical representation of the business classes involved in the TOME system.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{BusinessModelDiagram}
+	\caption{Business Class Diagram}
+	\label{BusinessModelDiagram}
+\end{figure}
+\subsection{Business Object Definitions}
+\subsubsection{TOME}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{Description} & TOME is the core module that processes database requests from the Web Interface.\\
+	\hline
+	\textbf{Attributes} & TOME contains all the methods used for interacting with the database as well as processing template files.\\
+	\hline
+	\textbf{Responsibilities} & TOME is responsible for all database communication, all template processing, all error handling, and any other ``core'' functionality\\
+	\hline
+	\textbf{Business Rules} & TOME has dependencies on many Perl modules (listed in the install document that can be located by referencing Section~\ref{references}).  These must be installed before TOME will function properly.\\
+	\hline
+\end{tabular}
+\\
+\\
+Figure~\ref{TOMESequenceDiagram} is an example sequence of events involving TOME.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{TOMESequenceDiagram}
+	\caption{TOME Sequence Diagram}
+	\label{TOMESequenceDiagram}
+\end{figure}
+
+
+\subsubsection{Database}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{Description} & The database is where all the information for TOME is stored.  The current implementation uses PostgreSQL for the database and DBI for all database interactions. \\
+	\hline
+	\textbf{Attributes} & All TOME data is stored in the database.  See Section~\ref{tomedbsection} for more details. TOME communicates with the database to retrieve, insert, and update all data for the system.\\
+	\hline
+	\textbf{Responsibilities} & The database is responsible for maintaining a consistent state for all data at all times. \\
+	\hline
+	\textbf{Business Rules} & PostgreSQL must be installed before the system will be functional. \\
+	\hline
+\end{tabular}
+\\
+\\
+Figure~\ref{DatabaseSequenceDiagram} is an example sequence of events involving the database.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{DatabaseSequenceDiagram}
+	\caption{Database Sequence Diagram}
+	\label{DatabaseSequenceDiagram}
+\end{figure}
+
+
+\subsubsection{Web Interface}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{Description} & The Web Interface forms the connection between the Database and the Templates.  It processes information that TOME retrieves from the Database and sends it to the templates.  It also processes user requests and sends them to TOME.\\
+	\hline
+	\textbf{Attributes} & The Web Interface contains all methods related to interacting with the user via CGI.\\
+	\hline
+	\textbf{Responsibilities} & The Web Interface is responsible for taking any data the user submits, verifying its validity, and submitting it to TOME to be run through the Database.  It is also responsible for taking information that TOME retrieved from the Database and preparing it for the templates to use.\\
+	\hline
+	\textbf{Business Rules} & The Web Interface depends on a number of Perl modules (see the Install document referenced in Section~\ref{references}) and these must be installed before it will be functional.\\
+	\hline
+\end{tabular}
+\\
+\\
+Figure~\ref{WebInterfaceSequenceDiagram} is an example sequence of events involving the Web Interface.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{WebInterfaceSequenceDiagram}
+	\caption{Web Interface Sequence Diagram}
+	\label{WebInterfaceSequenceDiagram}
+\end{figure}
+
+\subsubsection{Templates}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{Description} & Templates form the basis for the look and feel of the web interface.  They do not give any functionality in and of themselves, but are a way to display information that is given by the Web Interface\\
+	\hline
+	\textbf{Attributes} & Templates have no methods, they only contain the data that determines how information is formatted and displayed.\\
+	\hline
+	\textbf{Responsibilities} & The templates must take information that is given to them by the Web Interface and format it.  In the process of formatting that information, they may request more information through a callback mechanism.\\
+	\hline
+	\textbf{Business Rules} & The templates need to be XHTML and CSS compliant. \\
+	\hline
+\end{tabular}
+\\
+\\
+Figure~\ref{TemplateSequenceDiagram} is an example sequence of events involving template generation.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\textwidth]{TemplateSequenceDiagram}
+	\caption{Template Sequence Diagram}
+	\label{TemplateSequenceDiagram}
+\end{figure}
+
 
 \section{Database Structure}
+\label{tomedbsection}
 The overall structure of the database can be seen in Figure~\ref{tomedb}.  In addition to the structure, there are also triggers that ensure the consistency of the database at all times.
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{tomedb}
