@@ -271,23 +271,42 @@ sub classsearch {
 
 sub updatetomebook {
 	my $self = shift;
+	
+	my $results = $self->check_rm('tomebookinfo', {
+		required		=> [qw(
+			id
+			patron
+			library
+		)],
+		optional		=> [qw(
+			comments
+			expire
+		)],
+		filters			=> 'trim',
+		msgs			=> {
+			any_errors	=> 'updatetomebook_errs',
+		},
+	}, { target => 'updatetomebook' }) || return $self->check_rm_error_page;
 
-	my $q = $self->query;
-
-	my $id = $q->param('id');
+	my $patron_info = $self->patron_info({ email => $results->valid('patron') });
+	unless($patron_info) {
+		return $self->forward('addpatron');
+	}
 
 	my %tomebook = (
-		id		=> $id,
-		originator	=> $q->param('patron'),
-		comments	=> $q->param('comments'),
-		expire		=> $q->param('expire'),
-		library		=> $q->param('library'),
+		id		=> $results->valid('id'),
+		originator	=> $patron_info->{id},
+		comments	=> $results->valid('comments') || '',
+		expire		=> $results->valid('expire') || 0,
+		library		=> $results->valid('library'),
 	);
 	
 	# Verify that they're authorized for the library this book is in and authorized for the library they're trying to move the book to
 	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook{id} })->{library}) && $self->_libraryauthorized($self->param('user_info')->{id}, $tomebook{library})) {
 		$self->tomebook_update({ %tomebook });
 	}
+
+	my $id = $results->valid('id');
 
 	$self->header_type('redirect');
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id&edit=1");
@@ -673,6 +692,9 @@ sub checkout {
 			patron
 		)],
 		filters		=> 'trim',
+		msgs		=> {
+			any_errors	=> 'checkout_errs',
+		},
 	}, { target => 'checkout' }) || return $self->check_rm_error_page;
 
 	my $q = $self->query;

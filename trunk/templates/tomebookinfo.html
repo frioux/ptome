@@ -1,5 +1,5 @@
 [% META title = "TOME Book Info" %]
-<h3>Book #[% tomebook.id %]</h3>
+<h3>Book <a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id | html | uri %]">#[% tomebook.id | html %]</a></h3>
 [% IF tomebook.timeremoved %]
 <p><font color="red">Book has been removed from TOME</font>
 [% END %]
@@ -42,15 +42,18 @@ Verification comments:<br><textarea name="comments" rows="4" cols="30"></textare
 </td>
 </tr></table>
 [% IF CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<a name="updatetomebook"></a>
+<form action="[% config.cgibase %]/admin.pl" method="post" name="updatetomebook">
 <input type="hidden" name="rm" value="updatetomebook">
+<input type="hidden" name="anchor" value="updatetomebook">
+<input type="hidden" name="edit" value="1">
 <input type="hidden" name="id" value="[% tomebook.id | html %]">
 <p><b>Library:</b> <select name="library">
 [% FOREACH library = libraries %]
 [% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 [% END %]
-</select>
-<p><b>Originator:</b> <input name="originator" type="text" value="[% tomebook.originator_email | html %]"><br>
+</select> [% errs.library %]
+<p><b>Originator:</b> [% PROCESS 'autocomplete_patron.html' default_patron="${tomebook.originator_email}" %] [% errs.updatetomebook_errs and errs.patron %]<br>
 <p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
@@ -85,7 +88,7 @@ Expiration Semester: <select name="expire">
 [% END %]
 [% ELSE %]
 <p><b>Library:</b> [% librarieshash.${tomebook.library}.name %]
-<p><b>Originator:</b> [% tomebook.originator_name | html %] ([% tomebook.originator_email | html %])
+<p><b>Originator:</b> <a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% tomebook.originator | html | uri %]">[% tomebook.originator_name | html %]</a> ([% tomebook.originator_email | html %])
 <p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
@@ -113,7 +116,7 @@ Because of this, only reservations are allowed.
 <input type="hidden" name="rm" value="checkout">
 <input type="hidden" name="id" value="[% tomebook.id %]">
 <table border="1" cellpadding="5">
-<tr><td>Borrower</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.patron %]</td></tr>
+<tr><td>Borrower</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.checkout_errs and errs.patron %]</td></tr>
 <tr><td>Semester</td><td><select name="semester" onChange="if(document.checkout.semester.selectedIndex > 0){document.checkout.reservation.checked = true;}">
 [% FOREACH semester = semesters %]
 [% IF semester.id >= currsemester.id %]<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemesterid)  == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END %]
