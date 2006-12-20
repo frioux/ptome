@@ -364,7 +364,7 @@ sub book_update {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		isbn	=> { type => SCALAR, regex => qr/^\w+$/ },
+		isbn	=> { type => SCALAR },
 		title 	=> { type => SCALAR },
 		author	=> { type => SCALAR },
 		edition	=> { type => SCALAR, optional => 1 },
@@ -582,7 +582,7 @@ sub book_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		isbn	=> { type => SCALAR, regex => qr/^\w+$/ },
+		isbn	=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
@@ -648,7 +648,7 @@ sub classbook_update {
 
 	my %params = validate(@_, {
 		class		=> { type => SCALAR },
-		isbn		=> { type => SCALAR, regex => qr/^\w+$/ },
+		isbn		=> { type => SCALAR },
 		usable	 	=> { type => SCALAR, regex => qr/^true|false$/ },
 		verified	=> { type => SCALAR, regex => qr/^\d+$/ },
 		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
@@ -678,7 +678,7 @@ sub class_delete_book {
 
 	my %params = validate(@_, {
 		class		=> { type => SCALAR },
-		isbn		=> { type => SCALAR, regex => qr/^\w+$/ },
+		isbn		=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;

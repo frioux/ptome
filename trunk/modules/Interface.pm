@@ -399,14 +399,10 @@ sub addtomebook {
 		library		=> $q->param('library'),
 	);
 
+	$book{isbn} =~ s/-//g; # We don't want hyphens, they're useless
+
 	unless($self->book_exists({ isbn => $book{isbn} })) {
 		if($q->param('addbook')) {
-			my %book = (
-				isbn => $q->param('isbn'),
-				title => $q->param('title'),
-				author => $q->param('author'),
-			);
-	
 			if($q->param('edition')) {
 				$book{edition} = $q->param('edition');
 			}
