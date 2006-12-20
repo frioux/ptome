@@ -2001,7 +2001,15 @@ sub tomebook_cancel_checkout {
 
 =head2 tomebook_checkin 
 
-foo
+This function checks in a TOME book.  Nothing is returned.  Arguments are a hashref:
+
+=over
+
+=item id
+
+The id of the TOME book
+
+=back
 
 =cut
 
@@ -2014,7 +2022,6 @@ sub tomebook_checkin {
 
 	my $dbh = $self->dbh;
 
-	$dbh->do('UPDATE checkouts set reservation = FALSE WHERE id = ?', undef, @params{qw(id)}); # Obviously can't be reserved if it's checked in...
 	$dbh->do('UPDATE checkouts SET checkin = now() WHERE id = ?', undef, @params{qw(id)});
 }
 #}}}
