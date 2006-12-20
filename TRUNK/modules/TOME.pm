@@ -1849,6 +1849,9 @@ sub semester_add {
 
 	my ($sql, @bind) = sql_interp('INSERT INTO semesters', { name => $params{name} });
 	$self->dbh->do($sql, undef, @bind);
+
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.semesters_id_seq')");
+	return $id;
 }
 #}}}
 
