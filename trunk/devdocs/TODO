@@ -13,6 +13,7 @@ After selecting all libraries and doing a search, the owner's library will not b
 Make it so you can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
 make usernames case insensitive - use a case insenstive unique key
 investigate form validation...
+create a user registry of sorts, by email address - more accurate tracking of who added what and checked out what, also a more effective way to blacklist
 
 Make pretty looking
 
