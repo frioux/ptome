@@ -1162,8 +1162,17 @@ sub checkout_info {
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
-	return $sth->fetchrow_hashref();
+	my $checkout = $sth->fetchrow_hashref();
+
+	foreach(qw(checkout checkin)) {
+		if(defined($checkout->{$_})) {
+			$checkout->{$_} = DateTime::Format::Pg->parse_timestamptz($checkout->{$_});
+		}
+	}
+
+	return $checkout;
 }
+
 #}}}
 
 #{{{checkout_history 

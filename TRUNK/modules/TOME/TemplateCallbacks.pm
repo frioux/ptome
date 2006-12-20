@@ -27,7 +27,7 @@ sub patron_checkouts_checkedout {
 sub patron_checkouts_reserved {
 	my $self = shift;
 	my $patron = shift;
-	return $self->{tome}->patron_checkouts({ patron => $patron, all => 'reserved' });
+	return $self->{tome}->patron_checkouts({ patron => $patron, type => 'reserved' });
 }
 
 sub checkout_info {

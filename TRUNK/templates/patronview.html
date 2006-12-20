@@ -9,6 +9,23 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <input type="submit" value="Update">
 </form>
 
+<h3>Unfilled Reservations</h3>
+<table border="1" cellpadding="5">
+<tr>
+<td><b>Tome Book</b></td><td><b>Book</b></td><td><b>Semester</b></td><td><b>Reserved</b></td>
+</tr>
+[% FOREACH checkout = tome.patron_checkouts_reserved(patron) %]
+[% checkoutinfo = tome.checkout_info(checkout) %]
+[% tomebookinfo = tome.tomebook_info(checkoutinfo.tomebook) %]
+<tr>
+<td><a href="[% url(rm='tomebookinfo', id=tomebookinfo.id) %]">[% tomebookinfo.id %]</a></td>
+<td>[% INCLUDE "blocks/book.html" isbn = tomebookinfo.isbn %]</td>
+<td>[% semestershash.${checkoutinfo.semester}.name %]</td>
+<td>[% INCLUDE "blocks/datetime.html" datetime=checkoutinfo.checkout %]</td>
+</tr>
+[% END %]
+</table>
+
 <h3>Books currently checked out</h3>
 <table border="1" cellpadding="5">
 <tr>
@@ -21,7 +38,7 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <td><a href="[% url(rm='tomebookinfo', id=tomebookinfo.id) %]">[% tomebookinfo.id %]</a></td>
 <td>[% INCLUDE "blocks/book.html" isbn = tomebookinfo.isbn %]</td>
 <td>[% semestershash.${checkoutinfo.semester}.name %]</td>
-<td>[% checkoutinfo.checkout %]</td>
+<td>[% INCLUDE "blocks/datetime.html" datetime=checkoutinfo.checkout %]</td>
 </tr>
 [% END %]
 </table>
