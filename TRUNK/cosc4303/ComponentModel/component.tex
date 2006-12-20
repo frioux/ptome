@@ -216,6 +216,26 @@ This component does not have any specific performance or speed requirements.  Fa
 \subsubsection{Packaging}
 The static content is plain text files located in the static directory.
 
+\section{Class Interfaces}
+Due to the still-changing nature of the class interfaces, they have not been included in this document.  Up-to-date documentation of the entire interface is always available by viewing the POD embedded in any of the Perl modules for this project.
+
+
+\section{Component Design}
+\subsection{Pattern Usage}
+TOME is built around an MVC pattern.  The Model is handled by the TOME model, the View is handled by the templates, and the Control is handled by TOME::Interface.
+\subsection{Limitations}
+One major limitation of the current design is that TOME::Interface inherits from TOME.  This introduces both namespace pollution and fragile base class issues.  However, after assessing the benefits of moving to a delegation approach versus coping with the current approach, it was determined that, for now, we will continue with the existing design, limited as it may be.
+
+
+\section{Class Diagram}
+The class diagram for the TOME system can be seen in Figure~\ref{ComponentDiagram}.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{ComponentDiagram}
+	\caption{Class Diagram}
+	\label{ComponentDiagram}
+\end{figure}
+
+
 \section{Database Structure}
 \label{tomedbsection}
 The overall structure of the database can be seen in Figure~\ref{tomedb}.  In addition to the structure, there are also triggers that ensure the consistency of the database at all times.
