@@ -26,6 +26,8 @@ my $tomeuser = '';
 my $tomepass = '';
 my $tomeemail = '';
 my $semestername = '';
+my $temppass1 = '';
+my $temppass2 = '';
 
 
 print ("Welcome to the TOME installer!\n");
@@ -131,9 +133,14 @@ $siteconfig .= '    dbiusername    => \'' . $_ . '\',' . "\n";
 
 print ("\n");
 print ("What password should TOME use to connect?\n");
-prompt ("dbipassword: ", -echo => '');
+while(1) {
+	$temppass1 = prompt ("dbipassword: ", -echo => '');
+	$temppass2 = prompt ("Type it again: ", -echo => '');
+	last if ($temppass1 eq $temppass2);
+	print ("Passwords must match!\n\n");
+}
 
-$siteconfig .= '    dbipassword    => \'' . $_ . '\',' . "\n";
+$siteconfig .= '    dbipassword    => \'' . $temppass2 . '\',' . "\n";
 $siteconfig .= "\n";
 
 print ("\n");
@@ -198,7 +205,13 @@ print ("\n");
 print ("Now the program will attempt to create an admin user on TOME.\n");
 print ("What would you like the username, password, and registered email address to be?\n");
 $tomeuser = prompt ("Username: ", -default => 'admin');
-$tomepass = prompt ("Password: ", -echo => '');
+while(1) {
+        $temppass1 = prompt ("Password: ", -echo => '');
+        $temppass2 = prompt ("Type it again: ", -echo => '');
+        last if ($temppass1 eq $temppass2);
+        print ("Passwords must match!\n\n");
+}
+$tomepass = $temppass2;
 $tomeemail = prompt ("Email: ", -default => 'admin@tome');
 
 @args = ('./createuser.pl', '-u', $tomeuser, '-p', $tomepass, '-e', $tomeemail, '-admin');
