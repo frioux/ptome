@@ -1,0 +1,3 @@
+[% META title = 'Invalid ISBN' %]
+<p><font size="+1" color="red">Could not locate that ISBN</font>
+<p>Maybe you need to <a href="[% config.cgibase %]/admin.pl?rm=addbook&isbn=[% CGI.param('isbn') | uri | html %]">Add Book</a>.

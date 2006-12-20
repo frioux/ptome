@@ -1,0 +1,9 @@
+[% META title = 'Stats' %]
+<b>Total books in the database</b>: [% stats.totalcollection %]<br>
+<b>Books in the current collection</b>: [% stats.currentcollection %]<br>
+<b>Total Checkouts</b>: [% stats.totalcheckouts %]<br>
+<b>Checkouts for this semester</b>: [% stats.semestercheckouts %]<br>
+<h3>Top 10 Donators</h3>
+[% FOREACH stat = stats.top10donators %]
+#[% loop.count() %]. [% stat.originator %] - [% stat.books %]<br>
+[% END %]

@@ -1,0 +1,35 @@
+[% USE CGI %]
+<html>
+<head>
+	<title>TOME - [% template.title %]</title>
+</head>
+<body>
+<table width="95%" align="center">
+<tr>
+<td align="left" width="33%"><img src="/tome.png"></td>
+<td align="center" width="33%"><font size="+3">[% template.title %]</font></td>
+<td align="right" width="33%">
+<font size="-1"><b>Current semester:</b><br>[% currsemester.name %]
+[% IF session.currsemester %]
+<p><font color="red"><b>Current semester overridden:</b></font><br>
+[% session.currsemester.name %] <a href="[% config.cgibase %]/admin.pl?rm=sessionsemester&semester=[% currsemester.id %]">[reset]</a>
+[% END %]
+</font></td>
+</tr>
+</table>
+<form action="[% config.cgibase %]/admin.pl">
+<hr>
+<center>
+<a href="[% config.cgibase %]/admin.pl">Home</a> | 
+<a href="[% config.cgibase %]/admin.pl?rm=addbook">Add Book</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=addtomebook">Add TOME Book</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=addclass">Add Class</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=report">Semester Report</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=findorphans">Find Orphans</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=finduseless">Find Useless</a> |
+<a href="[% config.cgibase %]/admin.pl?rm=stats">Stats</a> |
+<input type="hidden" name="rm" value="tomebookinfo">
+Book ID: <input type="text" size="4" name="id"> <input type="submit" value="Search"> 
+</form>
+</center>
+<hr>

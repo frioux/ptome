@@ -1,0 +1,20 @@
+[% META title = 'Add TOME Book' %]
+<form action="[% config.cgibase %]/admin.pl">
+<input type="hidden" name="rm" value="addtomebook">
+<input type="hidden" name="add" value="1">
+ISBN: <input type="text" name="isbn"><br>
+Originator: <input type="text" name="originator"><br>
+Expire Semester: <select name="expire">
+<option value="" selected="selected">Never</option>
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]">[% semester.name | html %]</option>
+[% END %]
+</select><br>
+Comments: <input type="text" name="comments"><br>
+Library: <select name="library">
+[% FOREACH library = libraries %]
+[% IF library.access %]<option value="[% library.id | html %]">[% library.name | html %]</option>[% END %]
+[% END %]
+</select><br>
+<input type="submit" value="Add TOME Book">
+</form>

@@ -1,0 +1,19 @@
+[% META title = 'Semester Report' %]
+<form action="[% config.cgibase %]/admin.pl" name="report">
+<input type="hidden" name="rm" value="report">
+<table cellpadding="5" border="1">
+<tr><td>Semester</td><td><select name="semester">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select></td></tr>
+<tr><td>Libraries</td><td><select name="libraries" size="5" multiple="multiple">
+[% FOREACH library = libraries %]
+<option value="[% library.id | html %]" [% IF library.access %]selected="selected"[% END %]>[% library.name | html %]</option>
+[% END %]
+</select><br>
+<a href="#" onClick="for(i=0;i<document.report.libraries.length;i++){document.report.libraries.options[i].selected=true;}">Select All</a> | <a href="#" onClick="[% FOREACH library = libraries %][% IF library.access %]document.report.libraries.options[[% loop.index %]].selected=true;[% ELSE %]document.report.libraries.options[[% loop.index %]].selected=false;[% END %][% END %]">Select Mine</a>
+</td></tr>
+<tr><td colspan="2"><input type="submit" value="Generate Report"></td></tr>
+</table>
+</form>

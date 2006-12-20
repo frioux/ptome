@@ -1,0 +1,37 @@
+[% META title = 'Useless Books' %]
+<h3>These books have a class associated with them, but are marked as not being usable:</h3>
+[% IF tomebooks.size %]
+<p>[% tomebooks.size %] useless books found.
+<p><table border="1">
+<tr>
+	<td align="center"><b>ID</b></td>
+	<td align="center"><b>Title</b></td>
+	<td align="center"><b>Author</b></td>
+	<td align="center"><b>Edition</b></td>
+	<td align="center"><b>Originator</b></td>
+	<td align="center"><b>Classes</b></td>
+</tr>
+[% FOREACH book = tomebooks %]
+<tr>
+	<td><a href="[% adminbase %]/admin.pl?rm=tomebookinfo&id=[% book.id %]">[% book.id %]</a></td>
+	<td>
+		[% book.title %]
+	</td>
+	<td>
+		[% book.author %]
+	</td>
+	<td>
+		[% book.edition %]
+	</td>
+	<td>[% book.originator %]</td>
+	<td>
+		[% FOREACH class = book.classes %]
+		<a href="[% adminbase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
+		[% END %]
+	</td>
+</tr>
+[% END %]
+[% ELSE %]
+Hooray!  There are no useless books in the collection.
+[% END %]
+</table>

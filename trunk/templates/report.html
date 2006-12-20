@@ -1,0 +1,142 @@
+[% META title = 'Semester Report' %]
+<h2>Semester: [% semestershash.${semester}.name %]</h2>
+<b>Libraries:</b><br><blockquote>[% FOREACH library = CGI.param('libraries') %][% libraries.${library}.name %]<br>[% END %]</blockquote>
+<h3>Reservations not yet filled</h3>
+<table border="1">
+<tr>
+	<td>
+		TOME ID
+	</td>
+	<td>
+		Book
+	</td>
+	<td>
+		Borrower
+	</td>
+	<td>
+		Comments
+	</td>
+	<td>
+		Semester
+	</td>
+</tr>
+[% FOREACH book = reservation %]
+[% IF book.semester < semester %]
+<tr bgcolor="pink">
+[% ELSE %]
+<tr>
+[% END %]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+	</td>
+	<td>
+		<b>Title:</b> [% book.tomebookinfo.title %]<br>
+		<b>Author:</b> [% book.tomebookinfo.author %]<br>
+		<b>Edition:</b> [% book.tomebookinfo.edition %]
+	</td>
+	<td>
+		[% book.borrower %]
+	</td>
+	<td>
+		[% book.comments %]
+	</td>
+	<td>
+		[% semestershash.${book.semester}.name %]
+	</td>
+</tr>
+[% END %]
+</table>
+<h3>Books due back</h3>
+<table border="1">
+<tr>
+	<td>
+		TOME ID
+	</td>
+	<td>
+		Book
+	</td>
+	<td>
+		Borrower
+	</td>
+	<td>
+		Comments
+	</td>
+	<td>
+		Semester
+	</td>
+</tr>
+[% FOREACH book = dueback %]
+[% IF book.semester == semester - 1%]
+<tr bgcolor="pink">
+[% ELSIF book.semester < semester - 1 %]
+<tr bgcolor="red">
+[% ELSE %]
+<tr>
+[% END %]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+	</td>
+	<td>
+		<b>Title:</b> [% book.tomebookinfo.title %]<br>
+		<b>Author:</b> [% book.tomebookinfo.author %]<br>
+		<b>Edition:</b> [% book.tomebookinfo.edition %]
+	</td>
+	<td>
+		[% book.borrower %]
+	</td>
+	<td>
+		[% book.comments %]
+	</td>
+	<td>
+		[% semestershash.${book.semester}.name %]
+	</td>
+</tr>
+[% END %]
+</table>
+<h3>Books expiring</h3>
+<table border="1">
+<tr>
+	<td>
+		TOME ID
+	</td>
+	<td>
+		Book
+	</td>
+	<td>
+		Originator
+	</td>
+	<td>
+		Expire
+	</td>
+	<td>
+		Comments
+	</td>
+</tr>
+[% FOREACH book = expiring %]
+[% IF book.expire == semester - 1 %]
+<tr bgcolor="pink">
+[% ELSIF book.expire < semester - 1 %]
+<tr bgcolor="red">
+[% ELSE %]
+<tr>
+[% END %]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+	</td>
+	<td>
+		<b>Title:</b> [% book.tomebookinfo.title %]<br>
+		<b>Author:</b> [% book.tomebookinfo.author %]<br>
+		<b>Edition:</b> [% book.tomebookinfo.edition %]
+	</td>
+	<td>
+		[% book.tomebookinfo.originator %]
+	</td>
+	<td>
+		[% semestershash.${book.tomebookinfo.expire}.name %]
+	</td>
+	<td>
+		[% book.tomebookinfo.comments %]
+	</td>
+</tr>
+[% END %]
+</table>

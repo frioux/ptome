@@ -1,0 +1,10 @@
+[% META title = 'Add Book' %]
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="addbook">
+<input type="hidden" name="add" value="true">
+ISBN: [% CGI.textfield({ Name => 'isbn' }) %]<br>
+Title: <input type="text" name="title"><br>
+Author: <input type="text" name="author"><br>
+Edition: <input type="text" name="edition"><br>
+<input type="submit" value="Add Book">
+</form>

@@ -1,0 +1,30 @@
+[% META title = 'Orphan Books' %]
+<h3>These books have no class associated with them:</h3>
+[% IF books.size %]
+<table border="1">
+<tr>
+	<td align="center"><b>Title</b></td>
+	<td align="center"><b>Author</b></td>
+	<td align="center"><b>Edition</b></td>
+	<td align="center"><b>ISBN</b></td>
+</tr>
+[% FOREACH book = books %]
+<tr>
+	<td>
+		[% book.title %]
+	</td>
+	<td>
+		[% book.author %]
+	</td>
+	<td>
+		[% book.edition %]
+	</td>
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | uri | html %]">[% book.isbn %]</a>
+	</td>
+</tr>
+[% END %]
+[% ELSE %]
+None, you rock!
+[% END %]
+</table>

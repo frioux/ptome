@@ -1,0 +1,86 @@
+[% META title = 'Search' %]
+<p><table cellpadding="5"><tr><td valign="top">
+<form action="[% config.cgibase %]/admin.pl" method="post" name="search">
+<input type="hidden" name="rm" value="mainsearch">
+<input type="hidden" name="search" value="1">
+<table border="1" cellpadding="5">
+<tr><td>ISBN</td><td>[% CGI.textfield({ Name => 'isbn' }) %]</td></tr>
+<tr><td>Title</td><td>[% CGI.textfield({ Name => 'title' }) %]</td></tr>
+<tr><td>Author</td><td>[% CGI.textfield({ Name => 'author' }) %]</td></tr>
+<tr><td>Edition</td><td>[% CGI.textfield({ Name => 'edition' }) %]</td></tr>
+<tr><td>Include</td><td>[% FOREACH button = CGI.radio_group({ Name => 'status', Values => ['all' 'can_reserve' 'can_checkout'], Default => 'can_reserve', Labels => { all => 'All', can_reserve => 'Available for reservation', can_checkout => 'Available for checkout' } }) %][% button %]<br>
+[% END %]
+<select name="semester">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select>
+</td></tr>
+<tr><td>Libraries</td><td>
+<select name="libraries" size="5" multiple="multiple">
+[% FOREACH library = libraries %]
+<option value="[% library.id | html %]" [% IF (CGI.param('rm') && (CGI.param('libraries').grep("^${library.id}$").size == 1)) || (!CGI.param('rm') && library.access) %]selected="selected"[% END %]>[% library.name | html %]</option>
+[% END %]
+</select><br>
+<a href="#" onClick="for(i=0;i<document.search.libraries.length;i++){document.search.libraries.options[i].selected=true;}">Select All</a> | <a href="#" onClick="[% FOREACH library = libraries %][% IF library.access %]document.search.libraries.options[[% loop.index %]].selected=true;[% ELSE %]document.search.libraries.options[[% loop.index %]].selected=false;[% END %][% END %]">Select Mine</a>
+</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Search"></td></tr>
+</table>
+</form>
+</td><td valign="top">
+<form action="[% config.cgibase %]/admin.pl">
+<input type="hidden" name="rm" value="classsearch">
+Class:<br>
+<select name="class" size="7">
+[% FOREACH class = classes %]
+<option value="[% class.id %]">[% class.id %] - [% class.name %]</option>
+[% END %]
+</select><br>
+<input type="submit" value="View">
+</form>
+</td></tr></table>
+[% IF CGI.param('search') %]<p>[% tomebooks.size %] results[% END %]
+[% IF tomebooks.size > 0 %]
+<table border="1">
+<tr>
+<td>TOME ID</td>
+<td>Library</td>
+<td>ISBN</td>
+<td>Title</td>
+<td>Author</td>
+<td>Edition</td>
+<td>Originator</td>
+<td>Comments</td>
+</tr>
+[% FOREACH tomebook = tomebooks %]
+[% UNLESS tomebook.timeremoved %]
+<tr>
+[% ELSE %]
+<tr bgcolor="lightgray">
+[% END %]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id %]">[% tomebook.id %]</a>
+	</td>
+	<td>[% librarieshash.${tomebook.library}.name %]</td>
+	<td>[% tomebook.isbn %]</td>
+	<td>
+		[% tomebook.title %]
+	</td>
+	<td>
+		[% tomebook.author %]
+	</td>
+	<td>
+		[% tomebook.edition %]
+	</td>
+	<td>
+		[% tomebook.originator %]
+	</td>
+	<td>
+		[% tomebook.comments %]
+	</td>
+</tr>
+[% END %]
+</table>
+[% END %]
+</body>
+</html>
