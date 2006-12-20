@@ -3,13 +3,25 @@
 [% IF tomebook.timeremoved %]
 <p><font color="red">Book has been removed from TOME</font>
 [% END %]
-<p><table bgcolor="lightyellow" border="1"><tr><td>
-ISBN: [% tomebook.isbn %]<br>
-Title: [% tomebook.title %]<br>
-Author: [% tomebook.author %]<br>
-Edition: [% tomebook.edition %]<br>
-<div align="right"><font size="-3"><a href="[% config.cgibase %]/admin.pl?rm=updatebook&isbn=[% tomebook.isbn | html | uri %]">Edit</a></font></div>
-</td></tr></table>
+<p><table bgcolor="lightyellow" border="1" cellpadding="5">
+<tr>
+	<td><b>Book Information</b></td>
+	<td><b>Used in these classes:</b></td>
+</tr>
+<tr>
+<td>
+	ISBN: [% tomebook.isbn %]<br>
+	Title: [% tomebook.title %]<br>
+	Author: [% tomebook.author %]<br>
+	Edition: [% tomebook.edition %]<br>
+	<div align="right"><font size="-3"><a href="[% config.cgibase %]/admin.pl?rm=updatebook&isbn=[% tomebook.isbn | html | uri %]">Edit</a></font></div>
+</td>
+<td>
+	[% FOREACH class = classes %]
+	<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
+	[% END %]
+</td>
+</tr></table>
 [% IF CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
 <form action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="updatetomebook">
