@@ -2,7 +2,7 @@
 <font size="+1">Adding TOME Book:</font>
 <blockquote>
 <b>ISBN:</b> [% CGI.param('isbn') | html %]<br>
-<b>Originator:</b> [% CGI.param('originator') | html %]<br>
+<b>Originator:</b> [% CGI.param('patron') | html %]<br>
 <b>Expire Semester:</b> [% semestershash.${CGI.param('expire')}.name || "Never" | html %]<br>
 <b>Comments:</b> [% CGI.param('comments') | html %]<br>
 <b>Library:</b> [% librarieshash.${CGI.param('library')}.name | html %]<br>
@@ -13,7 +13,7 @@ If you are sure it is correct, please enter the general book information and the
 <input type="hidden" name="rm" value="addtomebook_process">
 <input type="hidden" name="addbook" value="true">
 <input type="hidden" name="addtomebook" value="true">
-<input type="hidden" name="originator" value="[% CGI.param('originator') | html %]">
+<input type="hidden" name="originator" value="[% CGI.param('patron') | html %]">
 <input type="hidden" name="expire" value="[% CGI.param('expire') | html %]">
 <input type="hidden" name="comments" value="[% CGI.param('comments') | html %]">
 <input type="hidden" name="library" value="[% CGI.param('library') | html %]">

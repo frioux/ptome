@@ -7,6 +7,7 @@ use base 'TOME';
 use Crypt::PasswdMD5;
 use MIME::Lite;
 use CGI::Application::Plugin::ValidateRM;
+use CGI::Application::Plugin::Forward;
 
 use strict;
 use warnings;
@@ -14,7 +15,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook addpatron addpatron_process autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -493,6 +494,41 @@ sub addclass_process {
 	return;
 }
 
+sub addpatron {
+	my $self = shift;
+	my $errs = shift;
+	
+	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }}); 
+}
+
+sub addpatron_process {
+	my $self = shift;
+	my $results = $self->check_rm('addpatron', {
+		required		=> [qw(
+			ap_email1
+			ap_email2
+			ap_name
+		)],
+		filters			=> 'trim',
+		constraint_methods	=> {
+			ap_email1	=> sub {
+				my $dfv = shift;
+				$dfv->name_this('emails_match');
+				return ($dfv->get_current_constraint_value() eq $dfv->get_input_data( as_hashref => 1 )->{'ap_email2'});
+			},
+		},
+		msgs			=> {
+			constraints	=> {
+				'emails_match'	=> 'Emails do not match',
+			},
+		},
+	}) || return $self->check_rm_error_page;
+
+	$self->patron_add({ email => $results->valid('ap_email1'), name => $results->valid('ap_name') });
+
+	return $self->forward($self->query->param('finalrm'));
+}
+
 sub addtomebook {
 	my $self = shift;
 	my $errs = shift;
@@ -531,6 +567,10 @@ sub addtomebook_process {
 			isbn	=> sub { my $value = shift; $value =~ s/[- ]//g; return $value; },
 		},
 	}) || return $self->check_rm_error_page;
+
+	unless($self->patron_info({ email => $addtomebook_results->valid('patron') })) {
+		return $self->forward('addpatron');
+	}
 
 	unless($self->book_exists({ isbn => $addtomebook_results->valid('isbn') })) {
 		if($q->param('addbook')) {

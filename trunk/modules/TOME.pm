@@ -282,6 +282,19 @@ sub patrons_search {
 	return @results;
 }
 
+sub patron_add {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		email	=> { type => SCALAR },
+		name	=> { type => SCALAR },
+	});
+
+	my ($sql, @bind) = sql_interp('INSERT INTO patrons', \%params);
+	my $sth = $self->dbh->prepare($sql);
+	$sth->execute(@bind);
+}
+
 sub patron_info {
 	my $self = shift;
 	
@@ -292,9 +305,9 @@ sub patron_info {
 
 	my ($sql, @bind);
 	if($params{email}) {
-		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE email ILIKE', $params{email});
+		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE email ILIKE ', \$params{email});
 	} elsif($params{id}) {
-		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE id = ', $params{id});
+		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE id = ', \$params{id});
 	} else {
 		die "Neither email nor id specified in patron_info";
 	}
