@@ -72,11 +72,16 @@ sub autocomplete_isbn {
 
 	my @books;
 	foreach($self->books_search({ isbn => $self->query->param('isbn') })) {
-		my $title = $self->book_info({ isbn => $_ })->{title};
-		if(length($title) > 40) {
-			$title = substr($title, 0, 40) . '...';
+		my $book_info = $self->book_info({ isbn => $_ });
+		my $title = $book_info->{title};
+		if(length($title) > 33) {
+			$title = substr($title, 0, 30) . '...';
 		}
-		push @books, '<li class="auto_complete_item"><div class="primary">' . $_ . '</div><span class="informal"><div class="secondary">' . $title . '</div></span></li>';
+		my $edition = $book_info->{edition};
+		if(length($edition) > 13) {
+			$edition = substr($edition, 0, 10) . '...';
+		}
+		push @books, '<li class="auto_complete_item"><div class="primary">' . $_ . '</div><span class="informal"><div class="secondary">' . $title . ': ' . $edition . '</div></span></li>';
 	}
 
 	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
