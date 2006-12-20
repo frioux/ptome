@@ -6,11 +6,11 @@
 <tr><td colspan="2" align="center"><input type="submit" value="Update Stats"></td></tr>
 </table>
 </form>
-<b>Total books in the database</b>: [% stats.totalcollection %]<br>
-<b>Books in the current collection</b>: [% stats.currentcollection %]<br>
-<b>Total Checkouts</b>: [% stats.totalcheckouts %]<br>
-<b>Checkouts for this semester</b>: [% stats.semestercheckouts %]<br>
+<b>Total books in the database</b>: [% stats.totalcollection | comma %]<br>
+<b>Books in the current collection</b>: [% stats.currentcollection | comma %]<br>
+<b>Total Checkouts</b>: [% stats.totalcheckouts | comma %]<br>
+<b>Checkouts for this semester</b>: [% stats.semestercheckouts | comma %]<br>
 <h3>Top 10 Donators</h3>
 [% FOREACH stat = stats.top10donators %]
-#[% loop.count() %]. <a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% stat.originator | html | uri %]">[% stat.originator_name | html %]</a> ([% stat.originator_email | html %]) - [% stat.books %]<br>
+#[% loop.count() %]. <a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% stat.originator | html | uri %]">[% stat.originator_name | html %]</a> ([% stat.originator_email | html %]) - [% stat.books | comma %]<br>
 [% END %]
