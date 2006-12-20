@@ -62,13 +62,11 @@ sub error_runmode {
 		$debug = $error . "\n\nUser: " . $self->param('user_info')->{username} . "\n\n" . $self->dump();
 	}
 	
-	my $message = MIME::Lite->new(
-		From	=> $TOME::CONFIG{notifyfrom},
+	$self->sendmail({
 		To	=> $TOME::CONFIG{adminemail},
 		Subject	=> 'Unknown TOME Error',
 		Data	=> $debug,
-	);
-	$message->send;
+	});
 
 	return $self->error({ message => "Internal exception error", extended => $debug });
 }
@@ -79,7 +77,15 @@ sub error {
 	
 	warn "$params->{message}" . ($params->{extended} ? " - $params->{extended}" : '');
 	
-	return $self->template({ file => 'error.html', vars => { message => $params->{message} }});
+	my $output;
+	eval {
+		$output = $self->template({ file => 'error.html', vars => { message => $params->{message} }});
+	};
+	if($@) {
+		$output = "TOME experienced a fatal error.";
+	}
+
+	return $output;
 }
 
 sub tomebooks_search {
@@ -1147,6 +1153,30 @@ sub template {
 	$tt->process($params{file}, $params{vars}, \$output) or die $tt->error;
 
 	return $output;
+}
+
+sub sendmail {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		From	=> { type => SCALAR, default => $TOME::CONFIG{notifyfrom} },
+		To	=> { type => SCALAR, default => $TOME::CONFIG{amdinemail} },
+		Subject	=> { type => SCALAR },
+		Data	=> { type => SCALAR },
+	});
+
+	if($TOME::CONFIG{devmode} && $TOME::CONFIG{devemailto}) {
+		$params{Data} = "** Devmode email originally to: $params{To} **\n\n" . $params{Data};
+		$params{To} = $TOME::CONFIG{devemailto};
+	}
+
+	my $message = MIME::Lite->new(
+		From	=> $params{From},
+		To	=> $params{To},
+		Subject	=> $params{Subject},
+		Data	=> $params{Data},
+	);
+	$message->send;
 }
 
 sub _quote_like {

@@ -5,7 +5,6 @@ use lib '.';
 use base 'TOME';
 
 use Crypt::PasswdMD5;
-use MIME::Lite;
 use CGI::Application::Plugin::ValidateRM;
 use CGI::Application::Plugin::Forward;
 
@@ -16,7 +15,18 @@ sub setup {
 	my $self = shift;
 
 	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
+	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
+}
+
+sub autoload_rm {
+	my $self = shift;
+	my $attempted_rm = shift;
+
+	return $self->error({
+		message		=> "Unrecoverable URL error",
+		extended	=> "Attempted runmode: '$attempted_rm'",
+	});
 }
 
 sub cgiapp_prerun {
@@ -735,8 +745,7 @@ sub checkout {
 			foreach my $uid ($self->library_users({library => $tomebook->{library}})) {
 				my $userinfo = $self->user_info({id => $uid});
 				if($userinfo->{notifications}) {
-					my $message = MIME::Lite->new(
-						From	=> $TOME::CONFIG{notifyfrom},
+					$self->sendmail({
 						To	=> $userinfo->{username} . ' <' . $userinfo->{email} . '>',
 						Subject	=> 'InterTOME Loan for #' . $tomebook->{id},
 						Data	=> $self->template({file => 'interTOMEnotify.email', plain => 1, vars => {
@@ -747,8 +756,7 @@ sub checkout {
 							semester	=> $results->valid('semester'),
 							library		=> $self->library_info({id => $results->valid('library')}),
 						}}),
-					);
-					$message->send;
+					});
 				}
 			}
 		}
