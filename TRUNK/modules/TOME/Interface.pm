@@ -1,6 +1,4 @@
-package Interface;
-
-use lib '.';
+package TOME::Interface;
 
 use base 'TOME';
 
