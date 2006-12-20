@@ -180,13 +180,17 @@ sub removetomebook {
 sub findorphans {
 	my $self = shift;
 
+	my $libraries_selected = $self->_librariesselecteddefault;
+
 	my @books;
-	foreach($self->find_orphans()) {
+	foreach($self->find_orphans({ libraries => $libraries_selected })) {
 		push @books, $self->book_info({ isbn => $_ });
 	}
 
 	return $self->template({ file => 'findorphans.html', vars => {
 		books => \@books,
+		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries_selected	=> $libraries_selected,
 	}});
 }
 

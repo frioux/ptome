@@ -607,10 +607,15 @@ sub checkout_history {
 sub find_orphans {
 	my $self = shift;
 
+	my %params = validate(@_, {
+		libraries       => { type => ARRAYREF },
+	});
+
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare('SELECT DISTINCT isbn FROM tomebooks WHERE tomebooks.timeremoved IS NULL AND isbn NOT IN (SELECT books.isbn FROM books, classbooks WHERE classbooks.isbn = books.isbn) ORDER BY isbn');
-	$sth->execute();
+	my ($sql, @bind) = sql_interp('SELECT DISTINCT isbn FROM tomebooks WHERE library IN', $params{libraries}, ' AND tomebooks.timeremoved IS NULL AND isbn NOT IN (SELECT books.isbn FROM books, classbooks WHERE classbooks.isbn = books.isbn) ORDER BY isbn');
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
