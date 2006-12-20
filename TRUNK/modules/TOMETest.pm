@@ -2,17 +2,17 @@ package TOMETest;
 use strict;
 
 our %CONFIG;
-
 require '../site-config.pl';
 
 sub new {
-	my ($type) = $_[0];
-	my ($self) = {};
+	my ($type) = shift;
+
+	my $self = {
+		config	=> \%CONFIG,
+	};
+
 	bless ($self, $type);
-	return($self);
+	return ($self);
 }
 
-sub returnconfig {
-	#my $temp = $CONFIG;
-	return %CONFIG;
-}
+1;
