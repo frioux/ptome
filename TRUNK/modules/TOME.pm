@@ -607,7 +607,15 @@ sub reservation_info {
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
-	return $sth->fetchrow_hashref;
+	my $reservation = $sth->fetchrow_hashref;
+
+	foreach(qw(reserved fulfilled)) {
+		if(defined($reservation->{$_})) {
+			$reservation->{$_} = DateTime::Format::Pg->parse_timestamptz($reservation->{$_});
+		}
+	}
+
+	return $reservation;
 }
 #}}}
 
@@ -615,7 +623,7 @@ sub reservation_info {
 
 =head2 reservation_search 
 
-This function returns an array reservation ids matching search criteria
+This function returns an array of reservation ids matching search criteria
 
 The arguments are given as a hash.  They're all optional, but if you don't give any, then just an empty array will be returned.
 
@@ -663,7 +671,7 @@ sub reservation_search {
 		return ();
 	}
 	
-	my ($sql, @bind) = sql_interp(@conditions);
+	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', @conditions);
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1521,11 +1529,159 @@ sub patron_delete_class {
 
 #}}}
 
+#{{{checkout_search 
+
+=head2 checkout_search 
+
+This function returns an array of checkout ids matching search criteria
+
+The arguments are given as a hash.  They're all optional, but something other than just status must be specified before anything other than an empty array will be returned.
+
+=over
+
+=item semester
+
+The semester that the books are checked out for
+
+=item library_to
+
+An arrayref of libraries the checkout can be going to (the libraries that have the books)
+
+=item library_from
+
+An arrayref of libraries the checkouts can be coming from (the libraries that are requesting the books)
+
+=item patron
+
+A patron ID identifying the patron checking out the books
+
+=item tomebook
+
+The id of a TOME book
+
+=item status
+
+Either checked_out (still checked out), checked_in (the checkout is finished), or all.  Defaults to checked_out
+
+=back
+
+=cut
+
+sub checkout_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		semester	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1  },
+		library_to	=> { type => ARRAYREF, optional => 1 },
+		library_from	=> { type => ARRAYREF, optional => 1 },
+		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+		tomebook	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+		status		=> { type => SCALAR, regex => qr/^checked_out|checked_in|all$/, default => 'checked_out' },
+	});
+
+	my @conditions;
+	foreach (qw(semester patron tomebook)) {
+		if($params{$_}) {
+			push @conditions, { 'checkouts.' . $_ => $params{$_} };
+		}
+	}
+
+	if($params{library_from}) {
+		push @conditions, { 'checkouts.library' => $params{library_from} };
+	}
+
+	if($params{library_to}) {
+		push @conditions, { 'tomebooks.library' => $params{library_to} };
+	}
+
+	# If we aren't given anything to do, don't do anything
+	# Note that this check happens /before/ the conditions are added for 'status'
+	# This is because 'status' has a default and will always result in a condition
+	unless(@conditions) {
+		return ();
+	}
+
+	if($params{status} eq 'checked_out') {
+		push @conditions, 'checkouts.checkin IS NULL';
+	} elsif($params{status} eq 'checked_in') {
+		push @conditions, 'checkouts.checkin IS NOT NULL';
+	} elsif($params{status} eq 'all') {
+		# Nothing special to do here
+	} else {
+		die 'An unknown status was selected';
+	}
+
+	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
+	
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+	my @results;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
+	}
+	return @results;
+}
+#}}}
+
 #{{{checkout_info 
 
 =head2 checkout_info 
 
-foo
+Returns info about a checkout, given an id.
+
+Arguments are as a hashref:
+
+=over
+
+=item id
+
+The ID of the checkout to retrieve info about
+
+=back
+
+Returns a hashref:
+
+=over
+
+=item tomebook
+
+The tomebook ID of the checkout
+
+=item semester
+
+The semester of the checkout
+
+=item checkout
+
+The time of the checkout
+
+=item checkin
+
+The time of the check in.  If this is null, the book is still checked out.
+
+=item comments
+
+Comments about the checkout
+
+=item library
+
+The library responsible for the checkout
+
+=item uid
+
+The id of the TOMEkeeper responsible for the checkout
+
+=item id
+
+The id of the checkout
+
+=item borrower
+
+The id of the patron that checked the book out
+
+=back
 
 =cut
 
@@ -1533,12 +1689,12 @@ sub checkout_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		checkout	=> { type => SCALAR, regex => qr/^\d+$/ },
+		id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
 	my $dbh = $self->dbh;
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{checkout} });
+	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{id} });
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
