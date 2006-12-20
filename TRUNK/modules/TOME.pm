@@ -579,7 +579,7 @@ Arguments are given as a hash:
 
 =item id
 
-The Nickname of the patron
+The numeric, databasical id of the patron
 
 =item name
 
@@ -649,7 +649,21 @@ sub patrons_search {
 
 =head2 patron_add 
 
-foo
+This function adds a patron to the database.
+
+This function takes arguments as a hash as follows:
+
+=over
+
+=item email
+
+The email address of the patron
+
+=item name
+
+The name of the patron (Often the patron's nickname)
+
+=back
 
 =cut
 
@@ -671,7 +685,25 @@ sub patron_add {
 
 =head2 patron_update 
 
-foo
+This function changes the patron at a given id.
+
+The arguments to this function are given as a hash, as usual:
+
+=over
+
+=item id
+
+The id of the patron to change
+
+=item email
+
+The email to set for the given id
+
+=item name
+
+The name to set to the given id
+
+=back
 
 =cut
 
@@ -694,7 +726,21 @@ sub patron_update {
 
 =head2 patron_info 
 
-foo
+This function returns information about patrons matching certain critereon.
+
+The function looks for the following to parameters in a hash in this order:
+
+=over
+
+=item email
+
+The email to try to find
+
+=item id
+
+The exact id to find
+
+=back
 
 =cut
 
@@ -725,7 +771,9 @@ sub patron_info {
 
 =head2 books_search 
 
-foo
+This function returns an array of books that match a number of critereon.
+
+frew
 
 =cut
 
@@ -2028,4 +2076,4 @@ gpl?
 
 =cut
 
-
+# vim600: set foldmethod=marker
