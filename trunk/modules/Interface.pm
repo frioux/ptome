@@ -483,7 +483,7 @@ sub addclass_process {
 		field_filters		=> {
 			id	=> sub {
 				my $value = shift;
-				$value =~ tr/[a-z]/[A-Z]/;
+				$value =~ tr/a-z/A-Z/;
 				$value =~ s/[^A-Z0-9]//g;
 				return $value;
 			},
