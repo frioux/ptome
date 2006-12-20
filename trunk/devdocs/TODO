@@ -9,7 +9,6 @@ Don't let the system drop to less than 1 admin user
 Make sure a book cannot be removed unless it is checked in
 Orphan page links need to have libraries in them
 Prompt for current password when changing password
-After selecting all libraries and doing a search, the owner's library will not be selected, but it should be
 Make it so you can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
 investigate form validation...
 create a user registry of sorts, by email address - more accurate tracking of who added what and checked out what, also a more effective way to blacklist
