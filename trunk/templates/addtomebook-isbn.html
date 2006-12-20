@@ -10,7 +10,7 @@
 <p><font color="red">The ISBN you entered is not known by the system.<br>
 If you are sure it is correct, please enter the general book information and the book will be added.</font>
 <p><form action="[% config.cgibase %]/admin.pl" method="post">
-<input type="hidden" name="rm" value="addtomebook">
+<input type="hidden" name="rm" value="addtomebook_process">
 <input type="hidden" name="addbook" value="true">
 <input type="hidden" name="addtomebook" value="true">
 <input type="hidden" name="originator" value="[% CGI.param('originator') | html %]">
@@ -18,8 +18,8 @@ If you are sure it is correct, please enter the general book information and the
 <input type="hidden" name="comments" value="[% CGI.param('comments') | html %]">
 <input type="hidden" name="library" value="[% CGI.param('library') | html %]">
 ISBN: [% CGI.textfield({ Name => 'isbn' }) %]<br>
-Title: <input type="text" name="title"><br>
-Author: <input type="text" name="author"><br>
+Title: <input type="text" name="title"> [% errs.title %]<br>
+Author: <input type="text" name="author"> [% errs.author %]<br>
 Edition: <input type="text" name="edition"><br>
 <input type="submit" value="Add Book">
 </form>

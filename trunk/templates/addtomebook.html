@@ -1,9 +1,10 @@
 [% META title = 'Add TOME Book' %]
+[% IF errs %]<h3 style="color: red;">Missing or invalid form data. Errors are displayed below in red if they  are missing or invalid.</h3>[% END %]
 <form action="[% config.cgibase %]/admin.pl" method="post">
-<input type="hidden" name="rm" value="addtomebook">
+<input type="hidden" name="rm" value="addtomebook_process">
 <input type="hidden" name="addtomebook" value="1">
-ISBN: [% PROCESS autocomplete_isbn.html %]<br>
-Originator: <input type="text" name="originator"><br>
+ISBN: [% PROCESS autocomplete_isbn.html %] [% errs.isbn %]<br>
+Originator: <input type="text" name="originator"> [% errs.originator %]<br>
 Expire Semester: <select name="expire">
 <option value="" selected="selected">Never</option>
 [% FOREACH semester = semesters %]
@@ -15,6 +16,6 @@ Library: <select name="library">
 [% FOREACH library = libraries %]
 [% IF library.access %]<option value="[% library.id | html %]">[% library.name | html %]</option>[% END %]
 [% END %]
-</select><br>
-<input type="submit" name=".submit" value="Add TOME Book">
+</select>[% errs.library %]<br>
+<input type="submit" value="Add TOME Book">
 </form>

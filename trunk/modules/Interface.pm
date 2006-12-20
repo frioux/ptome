@@ -6,6 +6,7 @@ use base 'TOME';
 
 use Crypt::PasswdMD5;
 use MIME::Lite;
+use CGI::Application::Plugin::ValidateRM;
 
 use strict;
 use warnings;
@@ -13,7 +14,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -101,7 +102,6 @@ sub autocomplete_class {
 
 	return '<ul class="auto_complete_list">' . join("\n", @classes) . '</ul>';
 }
-
 
 sub mainsearch {
 	my $self = shift;
@@ -427,14 +427,30 @@ sub updatebook {
 
 sub addclass {
 	my $self = shift;
+	my $errs = shift;
 
-	my $q = $self->query;
 
-	unless($q->param('add')) { return $self->template({ file => 'addclass.html' }); }
+	return $self->template({ file => 'addclass.html', vars => { errs => $errs } });
+}
+
+sub addclass_process {
+	my $self = shift;
+
+	my $results = $self->check_rm('addclass', {
+		required		=> [qw(
+			id
+			name
+		)],
+		filters			=> 'trim',
+		field_filters		=> {
+			id		=> 'uc',
+			id		=> sub { my $value = shift; $value =~ s/[^A-Z0-9]//g; return $value; },
+		},
+	}) || return $self->check_rm_error_page;
 
 	my %class = (
-		id => $q->param('id'),
-		name => $q->param('name'),
+		id	=> $results->valid('id'),
+		name	=> $results->valid('name'),
 	);
 	
 	$self->add_class({%class});
@@ -444,51 +460,84 @@ sub addclass {
 	return;
 }
 
-
 sub addtomebook {
+	my $self = shift;
+	my $errs = shift;
+	
+	return $self->template({ file => 'addtomebook.html', vars => {
+			libraries	=> $self->_libraryaccess($self->param('user_info')->{id}),
+			errs		=> $errs,
+	}});
+}
+
+sub addtomebook_isbn {
+	my $self = shift;
+	my $errs = shift;
+
+	return $self->template({ file => 'addtomebook_isbn.html', vars => {
+		librarieshash	=> $self->_librarieshash(),
+		errs		=> $errs,
+	}});
+}
+
+
+sub addtomebook_process {
 	my $self = shift;
 
 	my $q = $self->query;
 
-	unless($q->param('addtomebook')) {
-		return $self->template({ file => 'addtomebook.html', vars => {
-			libraries => $self->_libraryaccess($self->param('user_info')->{id}),
-		}});
-	}
+	my $addtomebook_results = $self->check_rm('addtomebook', {
+		required	=> [qw(
+			isbn
+			originator
+			library
+		)],
+		filters		=> 'trim',
+		field_filters	=> {
+			isbn	=> 'uc',
+			isbn	=> sub { my $value = shift; $value =~ s/[- ]//g; return $value; },
+		},
+	}) || return $self->check_rm_error_page;
 
-	my $isbn = $q->param('isbn');
-	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
-	
-	unless($self->book_exists({ isbn => $isbn })) {
+	unless($self->book_exists({ isbn => $addtomebook_results->valid('isbn') })) {
 		if($q->param('addbook')) {
+			my $addtomebook_isbn_results = $self->check_rm('addtomebook_isbn', {
+				required	=> [qw(
+					title
+					author
+				)],
+				optional	=> [qw(
+					edition
+				)],
+				filters		=> 'trim',
+			}) || return $self->check_rm_error_page;
+			
 			my %addbook = (
-				isbn	=> $isbn,
-				title	=> $q->param('title'),
-				author	=> $q->param('author'),
+				isbn	=> $addtomebook_results->valid('isbn'),
+				title	=> $addtomebook_isbn_results->valid('title'),
+				author	=> $addtomebook_isbn_results->valid('author'),
 			);
 			
-			if($q->param('edition')) {
-				$addbook{edition} = $q->param('edition');
+			if($addtomebook_isbn_results->valid('edition')) {
+				$addbook{edition} = $addtomebook_isbn_results->valid('edition');
 			}
 
 			$self->add_book({%addbook});
 		} else {
-			return $self->template({ file => 'addtomebook-isbn.html', vars => {
-				librarieshash	=> $self->_librarieshash(),
-			}});
+			return $self->addtomebook_isbn;
 		}
 	}
 
 	my %book = (
-		isbn		=> $isbn,
-		originator	=> $q->param('originator'),
-		library		=> $q->param('library'),
+		isbn		=> $addtomebook_results->valid('isbn'),
+		originator	=> $addtomebook_results->valid('originator'),
+		library		=> $addtomebook_results->valid('library'),
 	);
 
 
 	foreach(qw(expire comments)) {
-		if($q->param($_)) {
-			$book{$_} = $q->param($_);
+		if($addtomebook_results->valid($_)) {
+			$book{$_} = $addtomebook_results->valid($_);
 		}
 	}
 
