@@ -17,16 +17,20 @@
 </table>
 </form>
 </td><td valign="top">
+<table cellpadding="5" border="1">
+<tr><td align="center">Class</td></tr>
+<tr><td>
 <form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="classsearch">
-Class:<br>
 <select name="class" size="7">
 [% FOREACH class = classes %]
-<option value="[% class.id %]">[% class.id %] - [% class.name %]</option>
+<option value="[% class.id %]" [% IF loop.first %]selected="selected"[% END %]>[% class.id %] - [% class.name %]</option>
 [% END %]
 </select><br>
-<input type="submit" value="View">
+</td></tr>
+<tr><td align="center"><input type="submit" value="View Class"></td></tr>
 </form>
+</table>
 </td></tr></table>
 [% IF CGI.param('search') %]<p>[% tomebooks.size %] results[% END %]
 [% IF tomebooks.size > 0 %]
