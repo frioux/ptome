@@ -1,0 +1,3 @@
+<input autocomplete="off" id="isbn" name="isbn" type="text">
+<div class="auto_complete" id="isbn_auto_complete"></div>
+[% prototype.auto_complete_field('isbn', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_isbn'" }) %]
