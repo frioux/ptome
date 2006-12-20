@@ -20,7 +20,7 @@ my $database = '';
 my @args = '';
 
 my $tst = TOMETest->new();
-my %config = $tst->returnconfig();
+my %config = %{$tst->{config}};
 
 $address = $config{'dbihostname'};
 $port = $config{'dbiport'};
@@ -52,7 +52,7 @@ $ENV{'PGPASSWORD'} = '';
 print ("\n");
 print ("Beginning tests...\n");
 
-@args = ("prove", "-r", '../tests');
+@args = ("prove", "-rv", '../tests');
 system (@args);
 
 #$ENV{'TOMEUSERNAME'} = '';
