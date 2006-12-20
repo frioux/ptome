@@ -14,16 +14,16 @@ my $passwd = '';
 
 $username = prompt ("Username: ");
 $email = prompt ("Email: ");
-$passwd = prompt ("Password: ");
+$passwd = prompt ("Password: ", -echo => '');
 
 #$username = &prompt("x", "Username: ", '', '');
 #$email = &prompt("x", "Email: ", '', '');
 #$passwd = &prompt("p", "Password: ", '', '');
 
-print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
+#print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
 
-#my $passwd = unix_md5_crypt('password');
-#my $app = TOME->new();
-#$app->user_add({username => 'olsonc', email => 'email', password => $passwd});
+my $passwd = unix_md5_crypt('password');
+my $app = TOME->new();
+$app->user_add({username => $username, email => $email, password => $passwd});
 
 print('Success!' . "\n");
