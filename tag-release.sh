@@ -1,2 +1,2 @@
-svn rm -m "Tagging Release" svn+ssh://cghawthorne@remnetworks.org/home/cghawthorne/svn/tome/RELEASE
-svn cp -m "Tagging Release" svn+ssh://cghawthorne@remnetworks.org/home/cghawthorne/svn/tome/TRUNK svn+ssh://cghawthorne@remnetworks.org/home/cghawthorne/svn/tome/RELEASE
+svn rm -m "Tagging Release" http://fjord.dnsalias.org/svn/tome/RELEASE
+svn cp -m "Tagging Release" http://fjord.dnsalias.org/svn/tome/TRUNK http://fjord.dnsalias.org/svn/tome/RELEASE
