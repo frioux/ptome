@@ -1,3 +1,6 @@
+Change template to request CPO box on InterTOME Loan
+Add info on checkouts, donations, reservations, etc to patron page
+Restrict the orphans page by floor
 For the used in these classes list, don't show ones that are useless
 Allow combining of patrons
 Comments on the book (not tome book)
@@ -6,8 +9,8 @@ Don't let the system drop to less than 1 admin user
 Make sure a book cannot be removed unless it is checked in
 Prompt for current password when changing password
 Make it so you can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
-create a user registry of sorts, by email address - more accurate tracking of who added what and checked out what, also a more effective way to blacklist
 More classifications, old edition, optional, etc
+Perhaps a per-user, per-floor class listing of glory
 
 Make pretty looking
 
