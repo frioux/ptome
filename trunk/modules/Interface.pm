@@ -694,7 +694,13 @@ sub tomebookinfo {
 	my $q = $self->query;
 
 	my $id = $q->param('id');
-	my $info = $self->tomebook_info({ id => $id });
+	my $info;
+	
+	eval { $info = $self->tomebook_info({ id => $id }); };
+
+	if($@ || !$info->{isbn}) {
+		return $self->error({ message => 'Unable to find TOME book with ID "' . $id . '"' });
+	}
 
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 

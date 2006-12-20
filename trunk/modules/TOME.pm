@@ -994,7 +994,7 @@ sub error {
 	my $self = shift;
 	my $params = shift;
 	
-	warn "$params->{message} - $params->{extended}";
+	warn "$params->{message}" . ($params->{extended} ? " - $params->{extended}" : '');
 	
 	return $self->template({ file => 'error.html', vars => { message => $params->{message} }});
 }
