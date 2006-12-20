@@ -212,7 +212,6 @@ sub stats {
 	my $self = shift;
 
 	my $libraries_selected = $self->_librariesselecteddefault;
-	warn join(',', @$libraries_selected);
 	
 	return $self->template({ file => 'stats.html', vars => {
 		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
@@ -410,7 +409,7 @@ sub report {
 	foreach(@$reservation) {
 		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
 	}
-my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
+	my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$dueback) {
 		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
 	}

@@ -55,12 +55,13 @@ sub cgiapp_init {
 sub error_runmode {
 	my $self = shift;
 
-	my $debug;
-	if(ref($self) eq "HASH") { # Make sure we really have an object here
-		$debug = $@ . "\n\nUser: " . $self->param('user_info')->{username} . "\nTime: " . localtime(time) . "\n\n" . $self->dump();
-	} else {
-		$debug = $@ . "\n\nTime: " . localtime(time);
+	my $error = shift;
+	
+	my $debug = $error . "\n\nTime: " . localtime(time);
+	if(ref $self) { # Make sure we really have an object here
+		$debug = $error . "\n\nUser: " . $self->param('user_info')->{username} . "\n\n" . $self->dump();
 	}
+	
 	my $message = MIME::Lite->new(
 		From	=> $TOME::CONFIG{notifyfrom},
 		To	=> $TOME::CONFIG{adminemail},
@@ -68,7 +69,17 @@ sub error_runmode {
 		Data	=> $debug,
 	);
 	$message->send;
+
 	return $self->error({ message => "Internal exception error", extended => $debug });
+}
+
+sub error {
+	my $self = shift;
+	my $params = shift;
+	
+	warn "$params->{message}" . ($params->{extended} ? " - $params->{extended}" : '');
+	
+	return $self->template({ file => 'error.html', vars => { message => $params->{message} }});
 }
 
 sub tomebooks_search {
@@ -181,7 +192,7 @@ sub reservation_search {
 		libraries       => { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name as borrower_name, patrons.email as borrower_email, comments, semester, checkout FROM checkouts WHERE patrons.id = borrower AND semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
+	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name as borrower_name, patrons.email as borrower_email, comments, semester, checkout FROM checkouts, patrons WHERE patrons.id = borrower AND semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -202,7 +213,7 @@ sub dueback_search {
 		libraries	=> { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name AS borrower_name, patrons.email AS borrower_email, comments, semester, checkout FROM checkouts WHERE semester <=', $params{semester}, 'AND patrons.id = borrower AND checkin IS NULL AND reservation = FALSE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
+	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name AS borrower_name, patrons.email AS borrower_email, comments, semester, checkout FROM checkouts, patrons WHERE semester <=', $params{semester}, 'AND patrons.id = borrower AND checkin IS NULL AND reservation = FALSE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1100,15 +1111,6 @@ sub library_access {
 		my ($sql, @bind) = sql_interp('DELETE FROM library_access WHERE', { library => $library, uid => $params{user} });
 		$self->dbh->do($sql, undef, @bind);
 	}
-}
-
-sub error {
-	my $self = shift;
-	my $params = shift;
-	
-	warn "$params->{message}" . ($params->{extended} ? " - $params->{extended}" : '');
-	
-	return $self->template({ file => 'error.html', vars => { message => $params->{message} }});
 }
 
 sub template {
