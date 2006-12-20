@@ -101,24 +101,21 @@ $siteconfig .= "\n";
 print ("\n");
 print ("What database name should TOME connect to?\n");
 print ("(This defaults to the database you created earlier)\n");
-prompt ("Database name: ", -default => $database);
+prompt ("dbidbname: ", -default => $database);
 
-$siteconfig .= '    dbidatasource   => \'dbi:Pg:dbname=' . $_;
+$siteconfig .= '    dbidbname   => \'' . $_ . '\',' . "\n";
 
 print ("\n");
 print ("What is the address of the database server TOME will be connecting to?\n");
-prompt ("Server address: ", -default => '127.0.0.1');
+prompt ("dbihostname: ", -default => '127.0.0.1');
 
-$siteconfig .= ';host=' . $_;
+$siteconfig .= '    dbihostname => \'' . $_ . '\',' . "\n";
 
 print ("\n");
 print ("What port should TOME connect on?\n");
-prompt ("Server port: ", -default => '5432');
+prompt ("dbiport: ", -default => '5432');
 
-if ($_ != '5432') {
-	$siteconfig .= ';port=' . $_;
-}
-$siteconfig .= '\',' . "\n";
+$siteconfig .= '    dbiport     => \'' . $_ . '\',' . "\n";
 
 print ("\n");
 print ("What username should TOME use to connect?\n");
