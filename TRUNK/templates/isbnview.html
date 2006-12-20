@@ -2,11 +2,10 @@
 [% INCLUDE 'blocks/book.html' isbn=isbn %]
 
 [%# Book Reservation Table  %]
-[%# This needs to have:
-    Patron reserving to, Floor patron is on, semester reserving to, button(reserve from here) || button(reserve from other floor) w/ listbox of available floors( intertome floors, floors with the book)
-%]
+[%# var.array.size is the size of an array. %]
 <table>
-<tr><td>Patron:</td><td>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron'  %]</td></tr>
-<tr><td>Floor:</td><td>[% INCLUDE 'blocks/librariesbox.html' name='library' %]</td></tr>
-<tr><td>Semester:</td><td>[% INCLUDE 'blocks/semestersbox.html' name='semester' %]</td></tr>
+<tr><td><em>Patron:</em></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron'  %]</td></tr>
+<tr><td><em>Floor:</em></td><td>[% IF 1==2 %][% PROCESS 'blocks/librariesbox.html' name='library' %][% ELSE %]Flooders[% END %]</td></tr>
+<tr><td><em>Semester:</em></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %]</td></tr>
+<tr><td>[% IF 1==2 %]<input type="submit" value="Reserve Book" />[% ELSE %]<input type="submit" value="Reserve Book from Library:"></td><td><select><option value="1">Flooders (3 Free)</option></select>[% END %]</td></tr>
 </table>
