@@ -1192,7 +1192,45 @@ sub classbook_add {
 
 =head2 tomebook_info 
 
-foo
+Takes an argument in the form of a hash:
+
+=over
+
+=item tomebook
+
+The id of the tomebook to lookup
+
+=back
+
+Returns a hash:
+
+=over
+
+=item id
+
+id of the tomebook found
+
+=item isbn
+
+isbn of the tomebook found
+
+=item expire
+
+when the book expires
+
+=item comments
+
+any comments on the book
+
+=item timedonated
+
+when the book was donated
+
+=item originator
+
+originator of tomebook
+
+=back
 
 =cut
 
