@@ -1098,45 +1098,37 @@ sub isbnview {
     my $self = shift;
 
     my $q = $self->query;
+    
+    # to_libraries refers to libraries that the
+    # reservation is going to, not the book.
+
+    my @to_libraries;
+
+    my %libraries = $self->_libraries_hash();
+    foreach (values %libraries) {
+        if ($_->{'intertome'}) {
+            push @to_libraries, $_;
+        }
+    }
 
     return $self->template({file => 'isbnview.html', 
         vars => {
             isbn => $q->param('isbn'),
-            libraries_to => $self->_libraryaccess($self->param('user_info')->{id}),
-            libraries_from => $self->_libraries_intertome,
+            libraries_from => $self->_libraryaccess($self->param('user_info')->{id}),
+            libraries_to => \@to_libraries,
         }
     });
 
 }
 #}}}
 
-#{{{_libraries_intertome
-sub _libraries_intertome {
-
-=head2 _libraries_intertome
-
-This subroutine returns an array of libraries that are intertome libraries.
-
-=cut
-
-    my %all_libraries = {};#_librarieshash;
-
-    my %libraries_return;
-    foreach (%all_libraries) {
-        if ($_{'intertome'}) {
-            $libraries_return{${'id'}} = $_;
-        }
-    }
-
-}
-#}}}
 
 #{{{_libraryaccess
 sub _libraryaccess {
 	my $self = shift;
 	my $uid = shift;
 	
-	my %library_access = map { $_->{id} => 1 } @{$self->library_access({ user => $uid })};
+	my %library_access = map { $_ => 1 } @{$self->library_access({ user => $uid })};
 	my $libraries = $self->library_info;
 	foreach my $library (@{$libraries}) {
 		$library->{access} = $library_access{$library->{id}} ? 1 : 0;

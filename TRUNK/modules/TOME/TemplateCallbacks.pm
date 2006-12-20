@@ -58,4 +58,10 @@ sub library_info {
 	return $self->{tome}->library_info({ id => $library });
 }
 
+sub libraries {
+        my $self = shift;
+
+        return $self->{tome}->library_info();
+}
+
 1;

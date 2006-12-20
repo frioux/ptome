@@ -363,127 +363,6 @@ sub tomebook_availability_search {
 }
 #}}}
 
-#{{{tomebook_search
-
-=head2 tomebooks_search (!!! Deprecated!)
-
-This returns an array of found textbooks.
-
-It takes arguments in the form of a hash:
-
-=over
-
-=item isbn
-
-the isbn to look for
-
-=item status
-
-that status of the book (all, can_reserve, can_checkout, or in_collection)
-
-=item title
-
-the title of the book
-
-=item author
-
-the author of the book
-
-=item  edition
-
-the edition of the book
-
-=item libraries
-
-the libraries to look in for the book (Note: this is an array reference...whatever thatmeans.)
-
-=item semester
-
-the semester that the book is here for???
-
-=back
-
-=cut
-
-sub tomebooks_search {
-	my $self = shift;
-
-	my $dbh = $self->dbh;
-
-	my %params = validate(@_, {
-		isbn		=> { type => SCALAR, optional => 1 },
-		status		=> { type => SCALAR, regex => qr/^all|can_reserve|can_checkout|in_collection$/, default => 'all' },
-		title		=> { type => SCALAR, optional => 1 },
-		author		=> { type => SCALAR, optional => 1 },
-		edition		=> { type => SCALAR, optional => 1 },
-		libraries	=> { type => ARRAYREF },
-		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
-	});
-
-	# I've decided to require listing what libraries you want, if you give an empty list, no books can be found
-	unless(@{$params{libraries}}) {
-		return ();
-	}
-
-	my (@likecolumns, @columns, @conditions, @values);
-
-	foreach (qw(title author edition)) {
-		if(defined($params{$_})) {
-			$params{$_} =~ s/([\\%_])/\\$1/g;
-			push @likecolumns, $_;
-			push @values, $params{$_};
-		}
-	}
-	if(defined($params{isbn})) {
-		push @columns, 'tomebooks.isbn';
-		push @values, $params{isbn};
-	}
-	
-	foreach(@likecolumns) {
-		push @conditions, "$_ ILIKE '%' || ? || '%'";
-	}
-	foreach(@columns) {
-		push @conditions, "$_ = ?";
-	}
-
-	if($params{status} eq 'can_reserve' || $params{status} eq 'can_checkout') {
-		push @conditions, "timeremoved IS NULL AND (expire IS NULL OR expire >= ?)";
-		push @values, $params{semester};
-		if($params{status} eq 'can_reserve') {
-			# books that are not reserved or checked out for this semester (may still be checked out to a previous semester)
-			# Note that we check for checkouts on this semester and future ones.  It seemed like a good idea the time...
-			push @conditions, "NOT EXISTS(SELECT 1 FROM checkouts WHERE checkin IS NULL AND tomebook = tomebooks.id AND ((semester >= ? AND reservation = FALSE) OR (semester = ? AND reservation = TRUE)))";
-			push @values, ($params{semester}) x 2;
-		} else {
-			# books with no outstanding checkouts and no reservations for this semester
-			push @conditions, "NOT EXISTS(SELECT 1 FROM checkouts WHERE checkin IS NULL AND tomebook = tomebooks.id AND ((reservation = FALSE) OR (semester = ? AND reservation = TRUE)))";
-			push @values, $params{semester};
-		}
-	} elsif($params{status} eq 'in_collection') {
-		push @conditions, "timeremoved IS NULL";
-	}
-	
-	push @conditions, "library IN (" . join(',', ('?') x @{$params{libraries}}) . ")";
-	push @values, @{$params{libraries}};
-
-	push @conditions, 'tomebooks.isbn = books.isbn';
-	my $statement = 'SELECT tomebooks.id FROM books, tomebooks WHERE ' . join(' AND ', @conditions) . " ORDER BY timeremoved DESC, title, id ASC";
-
-	#warn "Statement of doom: $statement";
-	#warn "Binds: " . join(',', @values);
-
-	my $sth = $dbh->prepare($statement);
-	
-	$sth->execute(@values);
-	
-	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
-	}
-	
-	return @results;
-}
-#}}}
 
 #{{{expire_search 
 
@@ -2724,7 +2603,23 @@ sub library_users {
 
 =head2 library_access 
 
-foo
+This function returns the libraries that a user has access to and can also be used to modify the list of libraries the user has access to.  Arguments are as a hashref:
+
+=over
+
+=item user
+
+The ID of the user (note, this is not a patron) to retrieve (or modify) library access information
+
+=item libraries
+
+This parameter should be specified only when you want to modify the access list of the user given in the user parameter.  Their library access list will be changed to reflect the libraries specified here.
+
+The library list should be passed in as an arrayref of library IDs.
+
+=back
+
+This function will return an array of libraries that the specified user has access to.
 
 =cut
 
@@ -2736,19 +2631,22 @@ sub library_access {
 		libraries	=> { type => ARRAYREF, optional => 1 },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT id, name FROM library_access, libraries WHERE library_access.library = libraries.id AND ', { uid => $params{user} }, 'ORDER BY name');
+	my ($sql, @bind) = sql_interp('SELECT id FROM library_access WHERE', { uid => $params{user} });
 
 	my $sth = $self->dbh->prepare($sql);
 	$sth->execute(@bind);
 	
 	my @results;
-	while(my $result = $sth->fetchrow_hashref) {
-		push @results, $result;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
 	}
 
-	unless($params{libraries}) { return \@results; }
+        # If we don't need to change anything, just return the list now
+	unless($params{libraries}) { return @results; }
 
-	my %access = map { $_->{id} => 1 } @results;
+        # Convert the array into a hash for easy reference
+	my %access = map { $_ => 1 } @results;
+        # Add libraries that were requested but not already in the list
 	foreach my $library (@{$params{libraries}}) {
 		unless($access{$library}) {
 			my ($sql, @bind) = sql_interp('INSERT INTO library_access', { library => $library, uid => $params{user} });
@@ -2757,10 +2655,13 @@ sub library_access {
 			delete $access{$library};
 		}
 	}
+        # Remove libraries that were not requested but were in the list
 	foreach my $library (keys %access) {
 		my ($sql, @bind) = sql_interp('DELETE FROM library_access WHERE', { library => $library, uid => $params{user} });
 		$self->dbh->do($sql, undef, @bind);
 	}
+
+        return @{$params{libraries}};
 }
 #}}}
 
