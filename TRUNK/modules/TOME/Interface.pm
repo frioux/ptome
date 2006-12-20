@@ -332,28 +332,26 @@ sub patronaddclass {
 
     my $results = $self->check_rm('patronview', {
         required                => ['class', 'patronid'],
+	filters			=> 'trim',
         constraint_methods      => {
             class => sub {
                 my $dfv = shift; 
                 $dfv->name_this('bad_class');
-                return !($self->class_info({ id => $dfv->get_current_constraint_value() } )->{name});
-                          },
-            msgs => {
+                return $self->class_info({ id => $dfv->get_current_constraint_value() });
+		  },
+	  },
+    msgs => {
                 constraints => {
                     'bad_class'    => 'Class does not exist',
                 },
             },
-        }
     }, { target => 'patronaddclass' }) || return $self->check_rm_error_page;
         
-
    $self->patron_add_class({
      patron     => $results->valid('patronid'),
      class      => $results->valid('class'),
      semester   => $self->_semesterselecteddefault(),
     });
-
-    
     
     return $self->forward('patronview');
 }
@@ -571,8 +569,8 @@ sub patronview {
 		$patron = $self->patron_info({ email => $self->query->param('patron') });
 		return $self->error({ message => 'Unable to locate patron with email ' . $self->query->param('patron') }) unless $patron;
 	} elsif($q->param('patronid')) {
-		$patron = $self->patron_info({ id => $self->query->param('id') });
-		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
+		$patron = $self->patron_info({ id => $self->query->param('patronid') });
+		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('patronid') }) unless $patron;
 	}
 
 	return $self->template({ file => 'patronview.html', vars => { patron => $patron->{id}, errs => $errs }});

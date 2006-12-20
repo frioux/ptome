@@ -1217,7 +1217,7 @@ sub patron_add_class {
 	my %params = validate(@_, {
 		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
 		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-		class		=> { type => SCALAR, regex => qr/^\d+$/ },
+		class		=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
@@ -1740,16 +1740,14 @@ sub class_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+		id	=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
 
 	my $sth = $dbh->prepare("SELECT name, comments, verified, uid FROM classes WHERE id = ?");
 	$sth->execute($params{id});
-	my ($name, $comments) = $sth->fetchrow_array;
-
-	return { name => $name, comments => $comments };
+	return $sth->fetchrow_hashref;
 }
 #}}}
 

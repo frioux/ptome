@@ -9,10 +9,10 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <input type="submit" value="Update">
 </form>
 
-<form name="patronaddview" action="[% url %]" method="post">
+<form name="patronaddclass" action="[% url %]" method="post">
 [% INCLUDE 'blocks/autocomplete_class.html'  name='class' %]
 [% errs.class %]
 <input type="hidden" name="rm" value="patronaddclass">
 <input type="hidden" name="patronid" value="[% patron | html %]">
-<input type="submit" value="Update">
+<br/><input type="submit" value="Update">
 </form>
