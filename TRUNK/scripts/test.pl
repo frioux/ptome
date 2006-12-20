@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use lib "../modules";
-use TOME;
+#use TOME;
+use TOMETest;
 use Crypt::PasswdMD5;
 use IO::Prompt;
 use DBI;
@@ -18,6 +19,15 @@ my $password = '';
 my $database = '';
 my @args = '';
 
+my $tst = TOMETest->new();
+my %config = $tst->returnconfig();
+
+$address = $config{'dbihostname'};
+$port = $config{'dbiport'};
+$database = $config{'dbidbname'};
+$username = $config{'dbiusername'};
+$password = $config{'dbipassword'};
+
 GetOptions (
         'username:s' => \$username,  #-u, -user, or -username, fills $username
         'password:s' => \$password,     #-p, -pass, or -password, fills $password
@@ -26,25 +36,11 @@ GetOptions (
 	'database:s' => \$database, #-d or -database, fills $database
 );
 
-if (!$username) {
-	$username = 'tome2';
-}
-
-if (!$password) {
-	$password = 'tome2';
-}
-
-if (!$address) {
-	$address = 'localhost';
-}
-
-if (!$port) {
-	$port = '5432';
-}
-
-if (!$database) {
-	$database = 'tome2';
-}
+#$ENV{'TOMEUSERNAME'} = $username;
+#$ENV{'TOMEPASSWORD'} = $password;
+#$ENV{'TOMEDBADDRESS'} = $address;
+#$ENV{'TOMEDBPORT'} = $port;
+#$ENV{'TOMEDBNAME'} = $database;
 
 print ("Blanking and re-creating database \'" . $database . "\'...\n");
 
@@ -58,3 +54,10 @@ print ("Beginning tests...\n");
 
 @args = ("prove", "-r", '../tests');
 system (@args);
+
+#$ENV{'TOMEUSERNAME'} = '';
+#$ENV{'TOMEPASSWORD'} = '';
+#$ENV{'TOMEDBADDRESS'} = '';
+#$ENV{'TOMEDBPORT'} = '';
+#$ENV{'TOMEDBNAME'} = '';
+
