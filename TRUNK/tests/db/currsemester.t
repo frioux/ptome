@@ -1,6 +1,6 @@
 #Test the database directly
 
-use lib "../modules";
+use lib "../testclasses";
 use TOMETest::DBTest;
 use Test::More tests => 3;
 

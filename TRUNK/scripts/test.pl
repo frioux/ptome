@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use lib "../modules";
+use lib "../testclasses";
 #use TOME;
 use TOMETest;
 use Crypt::PasswdMD5;
