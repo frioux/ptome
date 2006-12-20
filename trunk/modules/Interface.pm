@@ -618,6 +618,10 @@ sub addtomebook_process {
 			patron
 			library
 		)],
+		optional	=> [qw(
+			comments
+			expire
+		)],
 		filters		=> 'trim',
 		field_filters	=> {
 			isbn	=> 'uc',
@@ -692,6 +696,10 @@ sub checkout {
 			library
 			semester
 			patron
+		)],
+		optional	=> [qw(
+			reservation
+			comments
 		)],
 		filters		=> 'trim',
 		msgs		=> {
