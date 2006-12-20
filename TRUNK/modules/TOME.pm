@@ -125,6 +125,10 @@ This appears to (and probably does considering the name) set up various variable
 sub cgiapp_init {
 	my $self = shift;
 
+        # Note that it is important that RaiseError and AutoCommit get turned on.  RaiseError means that if there is ever any sort of
+        # SQL error,then the DBI will cause a 'die' that gets handled by the error_runmode.  AutoCommit means that every SQL statement
+        # is executed inside of its own transaction by default.  This can be temporarily turned off by using the DBI begin_work method
+        # and then turned back on with the commit method.
 	$self->dbh_config("dbi:Pg:dbname=$CONFIG{dbidbname};host=$CONFIG{dbihostname}", $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1, AutoCommit => 1});
 	$self->session_config(
 		CGI_SESSION_OPTIONS	=> [ 'driver:PostgreSQL', $self->query, { Handle => $self->dbh } ],
