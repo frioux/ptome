@@ -125,7 +125,7 @@ This appears to (and probably does considering the name) set up various variable
 sub cgiapp_init {
 	my $self = shift;
 
-	$self->dbh_config("dbi:Pg:dbname=$CONFIG{dbidbname};host=$CONFIG{dbihostname}", $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1});
+	$self->dbh_config("dbi:Pg:dbname=$CONFIG{dbidbname};host=$CONFIG{dbihostname}", $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1, AutoCommit => 1});
 	$self->session_config(
 		CGI_SESSION_OPTIONS	=> [ 'driver:PostgreSQL', $self->query, { Handle => $self->dbh } ],
 		SEND_COOKIE		=> 1,
@@ -363,7 +363,6 @@ sub tomebook_availability_search {
 }
 #}}}
 
-
 #{{{expire_search 
 
 =head2 expire_search 
@@ -496,6 +495,59 @@ sub reservation_info {
 
 	return $reservation;
 }
+#}}}
+
+#{{{reservation_fulfill
+=head2 reservation_fulfill
+
+This function turns reservations into checkouts
+
+Arguments are given as a hashref
+
+=over
+
+=item reservation_id
+
+The ID of the reservation to turn into a checkout
+
+=item tomebook_id
+
+The ID of the tomebook to be used for the checkout
+
+=back
+
+The function returns the ID of the checkout that was created
+
+=cut
+
+sub reservation_fulfill {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		reservation_id	=> { type => SCALAR, regex => qr/^\d+$/ },
+		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});			
+
+	$self->dbh->begin_work;
+        $self->dbh->do('LOCK TABLE reservations, checkouts');
+        my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
+        $self->dbh->do($sql, undef, @bind);
+
+        # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
+        # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
+        # putting that info into the query.  Using SQL also makes it easy to do an embedded check to ensure that the type
+        # of TOME book we're turning the reservation into matches the type of book the reservation was for (that's what the
+        # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
+        ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', $params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE tomebooks.isbn = reservations.isbn', { 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
+        $self->dbh->do($sql, undef, @bind);
+
+	$self->dbh->commit;
+	
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
+	return $id;
+}
+
+
 #}}}
 
 #{{{reservation_create
@@ -1834,27 +1886,6 @@ sub tomebook_can_reserve {
 }
 #}}}
 
-#{{{tomebook_fill_reservation 
-
-=head2 tomebook_fill_reservation 
-
-foo
-
-=cut
-
-sub tomebook_fill_reservation {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
-
-	my $dbh = $self->dbh;
-
-	$dbh->do('UPDATE checkouts set checkout = now(), reservation = FALSE WHERE id = ?', undef, @params{qw(id)});
-}
-#}}}
-
 #{{{tomebook_cancel_checkout 
 
 =head2 tomebook_cancel_checkout 
@@ -2477,7 +2508,9 @@ sub semester_set {
 		id => { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
+        # This must happen within a transaction, because, for a little while, the semesters table has no active semesters
 	$self->dbh->begin_work;
+        $self->dbh->do('LOCK TABLE semesters');
 	$self->dbh->do('UPDATE semesters SET current = FALSE');
 	my($sql, @bind) = sql_interp('UPDATE semesters SET current = TRUE WHERE', { id => $params{id} });
 	$self->dbh->do($sql, undef, @bind);
