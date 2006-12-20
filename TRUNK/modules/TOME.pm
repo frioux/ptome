@@ -1740,6 +1740,9 @@ sub user_add {
 
 	my ($sql, @bind) = sql_interp('INSERT INTO users', \%params);
 	$self->dbh->do($sql, undef, @bind);
+
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.users_id_seq')");
+	return $id;
 }
 #}}}
 

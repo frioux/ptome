@@ -12,12 +12,24 @@ use Getopt::Long;
 my $username = '';
 my $email = '';
 my $passwd = '';
+my $admin = '';
+my $userid = '';
 
 GetOptions (
 	'username:s' => \$username,  #-u, -user, or -username, fills $username
 	'email:s' => \$email,        #-e or -email, fills $email
 	'password:s' => \$passwd,    #-p, -pass, or -password, fills $passwd
+	'admin' => \$admin,	     #-a or -admin, fills $admin 
 );
+
+if ($admin)
+{
+  $admin = 'true';
+}
+else
+{
+  $admin = 'false';
+}
 
 if (!$username)
 {
@@ -34,14 +46,13 @@ if (!$passwd)
   $passwd = unix_md5_crypt(prompt ("Password: ", -echo => ''));
 }
 
-#$username = &prompt("x", "Username: ", '', '');
-#$email = &prompt("x", "Email: ", '', '');
-#$passwd = &prompt("p", "Password: ", '', '');
-
 #print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
 
-#my $passwd = unix_md5_crypt('password');
 my $app = TOME->new();
-$app->user_add({username => $username, email => $email, password => $passwd});
+$userid = $app->user_add({username => $username, email => $email, password => $passwd});
+
+#print("UserID created is: \"" . $userid . "\", Admin flag is \"" . $admin . "\"\n");
+
+$app->user_update({id => $userid, username => $username, email => $email, notifications => 'true', admin => $admin});
 
 print('Success!' . "\n");
