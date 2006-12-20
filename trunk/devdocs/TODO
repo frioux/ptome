@@ -10,6 +10,7 @@ Make sure a book cannot be removed unless it is checked in
 Orphan page links need to have libraries in them
 Streamline the "tome book"/book adding process - there should only be one page
 Prompt for current password when changing password
+After selecting all libraries and doing a search, the owner's library will not be selected
 
 Make pretty looking
 
