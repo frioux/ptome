@@ -84,7 +84,7 @@ cgi=cgi{
  TOME=TOME{
    Interface.pm
    TemplateCallbacks.pm
-   tags
+   svn-commit.tmp
   }
  }
  
@@ -124,6 +124,7 @@ cgi=cgi{
  }
  
  templates=templates {
+
   blocks=blocks{
    autocomplete_class.html
    autocomplete_isbn.html
@@ -131,8 +132,10 @@ cgi=cgi{
    book.html
    datetime.html
    librariesbox.html
+   reservation.html
    semestersbox.html
   }
+
   addclass.html
   addclassbook-isbn.html
   addpatron.html
@@ -155,6 +158,7 @@ cgi=cgi{
   stats.html
   tomebookinfo.html
   updatebook.html
+
  }
  
  tests=tests {
