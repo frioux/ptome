@@ -21,10 +21,47 @@ The purpose of this document is to specify the TOME system and the component mod
 In December of 2003, several students on Dorm 41 started a system called TOME.  The basic idea is that at the end of the semester, instead of everyone selling their books back to the bookstore, they all donate them to central repository.  Anyone on the floor can then check out whatever books they need free of charge for a semester.
 
 The advantage of having a computer-based system to keep track of all those books is easy to see, and one has been under development ever since the start of TOME.  Since its humble beginnings as a quick solution over Christmas break, the system has grown to well over 3,000 lines of Perl code as well as HTML templates, a well-planned database schema, and significant documentation.  The system not only has comprehensive facilities for tracking books and patrons, but also keeps tabs on what books are used for what classes and other alternatives to purchasing new books.
+\subsection{Context}
+This component model is a part of the larger suite of documentation for the TOME project.  This document will describe the component architecture in detail.  For the application model, please reference the Application Model Document.  Overall project information can be found in the Project Brief and Project Plan.  A later document describing the test architecture will be made available soon.
+
+All current documentation will be available in the Trac environment (See Section~\ref{references}).
 \subsection{References}
 \label{references}
 All project data will be stored in a combination Subversion repository and Trac environment.  All of this will be made viewable at the following URL:
 
 \texttt{http://enosh.letnet.net/trac/tome}
+
+\section{Component Specifications}
+\subsection{admin.pl}
+\subsubsection{Role}
+The role of admin.pl is to load the system and serve as a starting point for the webserver
+\subsubsection{Responsibilities}
+admin.pl needs only to load TOME::Interface and hand control over to the CGI::Application framework.
+\subsubsection{Exclusions}
+admin.pl has no intrinsic understanding of anything, really.  It only hands control over to the other modules.
+\subsubsection{Collaborators}
+TOME::Interface collaborates very closely with admin.pl.  admin.pl loads TOME::Interface and then relinquishes control.
+\subsubsection{Key Scenarios}
+\paragraph{admin.pl is called by the web server}
+admin.pl will load, and, in turn, load TOME::Interface.
+\subsubsection{Properties}
+admin.pl will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
+\subsubsection{Creation, Existence, and Management}
+admin.pl will create a single instantiation of the TOME::Interface class.  The web server (usually Apache) will be responsible for calling admin.pl.  Multiple instantiations of admin.pl (and therefore TOME::Interface and any other classes) can exist only if Apache runs multiple copies, which is expected.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.
+\subsubsection{Data Storage}
+This component has no intrinsic need for its own data storage.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+admin.pl is packaged as a single, executable Perl file.
+\subsection{Interface.pm}
+\subsection{TOME.pm}
+\subsection{TemplateCallbacks.pm}
+\subsection{Templates}
+\subsection{Static Content}
 \end{document}
 
