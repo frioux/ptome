@@ -512,7 +512,7 @@ sub tome_stats {
 	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	($stats{semestercheckouts}) = $sth->fetchrow_array;
 
-	($sql, @bind) = sql_interp('SELECT originator, patrons.name as originator_name, patrons.email as originator_email, COUNT(tomebooks.id) AS books FROM tomebooks, patrons WHERE orinator = patrons.id library IN', $params{libraries}, 'GROUP BY originator ORDER BY books DESC, originator_name ASC LIMIT 10');
+	($sql, @bind) = sql_interp('SELECT originator, patrons.name as originator_name, patrons.email as originator_email, COUNT(tomebooks.id) AS books FROM tomebooks, patrons WHERE originator = patrons.id AND library IN', $params{libraries}, 'GROUP BY originator, patrons.name, patrons.email ORDER BY books DESC, originator_name ASC LIMIT 10');
 	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	while(my $result = $sth->fetchrow_hashref) {
 		push @{$stats{top10donators}}, $result;

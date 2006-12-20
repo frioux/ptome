@@ -212,6 +212,7 @@ sub stats {
 	my $self = shift;
 
 	my $libraries_selected = $self->_librariesselecteddefault;
+	warn join(',', @$libraries_selected);
 	
 	return $self->template({ file => 'stats.html', vars => {
 		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
@@ -277,7 +278,7 @@ sub updatetomebook {
 
 	my %tomebook = (
 		id		=> $id,
-		originator	=> $q->param('originator'),
+		originator	=> $q->param('patron'),
 		comments	=> $q->param('comments'),
 		expire		=> $q->param('expire'),
 		library		=> $q->param('library'),
