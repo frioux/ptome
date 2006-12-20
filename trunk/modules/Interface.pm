@@ -157,7 +157,13 @@ sub finduseless {
 sub stats {
 	my $self = shift;
 
-	return $self->template({ file => 'stats.html', vars => { stats => $self->tome_stats() }});
+	my $libraries_selected = $self->_librariesselecteddefault;
+	
+	return $self->template({ file => 'stats.html', vars => {
+		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries_selected	=> $libraries_selected,
+		stats			=> $self->tome_stats({ libraries => $libraries_selected })
+	}});
 }
 
 sub confirm {

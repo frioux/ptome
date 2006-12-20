@@ -340,18 +340,32 @@ sub tomebook_info {
 sub tome_stats {
 	my $self = shift;
 
+	my %params = validate(@_, {
+		libraries	=> { type => ARRAYREF },
+	});
+
+
 	my $dbh = $self->dbh;
 
-	my %stats;
-	($stats{totalcollection}) = $dbh->selectrow_array('SELECT count(id) FROM tomebooks');
-	($stats{currentcollection}) = $dbh->selectrow_array('SELECT count(id) FROM tomebooks WHERE timeremoved IS NULL');
-	($stats{totalcheckouts}) = $dbh->selectrow_array('SELECT count(checkout) FROM checkouts');
-	my $sth = $dbh->prepare('SELECT count(checkout) FROM checkouts WHERE semester = ?');
-	$sth->execute($self->param('currsemester')->{id});
+	my (%stats, $sql, @bind);
+	my ($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE library IN', $params{libraries});
+	my $sth = $dbh->prepare($sql); $sth->execute(@bind);
+	($stats{totalcollection}) = $sth->fetchrow_array;
+
+	($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE timeremoved IS NULL AND library IN', $params{libraries});
+	$sth = $dbh->prepare($sql); $sth->execute(@bind);
+	($stats{currentcollection}) = $sth->fetchrow_array;
+
+	($sql, @bind) = sql_interp('SELECT count(checkout) FROM checkouts WHERE library IN', $params{libraries});
+	$sth = $dbh->prepare($sql); $sth->execute(@bind);
+	($stats{totalcheckouts}) = $sth->fetchrow_array;
+
+	($sql, @bind) = sql_interp('SELECT count(checkout) FROM checkouts WHERE semester = ', $self->param('currsemester')->{id}, 'AND library IN', $params{libraries});
+	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	($stats{semestercheckouts}) = $sth->fetchrow_array;
 
-	$sth = $dbh->prepare('SELECT originator, COUNT(id) AS books FROM tomebooks GROUP BY originator ORDER BY books DESC, originator ASC LIMIT 10');
-	$sth->execute;
+	($sql, @bind) = sql_interp('SELECT originator, COUNT(id) AS books FROM tomebooks WHERE library IN', $params{libraries}, 'GROUP BY originator ORDER BY books DESC, originator ASC LIMIT 10');
+	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	while(my $result = $sth->fetchrow_hashref) {
 		push @{$stats{top10donators}}, $result;
 	}
