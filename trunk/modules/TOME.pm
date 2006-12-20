@@ -49,7 +49,12 @@ sub cgiapp_init {
 sub error_runmode {
 	my $self = shift;
 
-	my $debug = $@ . "\n\nUser: " . $self->param('user_info')->{username} . "\nTime: " . localtime(time) . "\n\n" . $self->dump();
+	my $debug;
+	if(ref($self) eq "HASH") { # Make sure we really have an object here
+		$debug = $@ . "\n\nUser: " . $self->param('user_info')->{username} . "\nTime: " . localtime(time) . "\n\n" . $self->dump();
+	} else {
+		$debug = $@ . "\n\nTime: " . localtime(time);
+	}
 	my $message = MIME::Lite->new(
 		From	=> $TOME::CONFIG{notifyfrom},
 		To	=> $TOME::CONFIG{adminemail},
