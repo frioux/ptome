@@ -124,7 +124,15 @@ cgi=cgi{
  }
  
  templates=templates {
- 
+  blocks=blocks{
+   autocomplete_class.html
+   autocomplete_isbn.html
+   autocomplete_patron.html
+   book.html
+   datetime.html
+   librariesbox.html
+   semestersbox.html
+  }
   addclass.html
   addclassbook-isbn.html
   addpatron.html
@@ -147,16 +155,6 @@ cgi=cgi{
   stats.html
   tomebookinfo.html
   updatebook.html
-
-  blocks=blocks{
-   autocomplete_class.html
-   autocomplete_isbn.html
-   autocomplete_patron.html
-   book.html
-   datetime.html
-   librariesbox.html
-   semestersbox.html
-  }
  }
  
  tests=tests {
