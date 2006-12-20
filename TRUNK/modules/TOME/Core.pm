@@ -2,6 +2,8 @@ package TOME;
 
 use base 'CGI::Application';
 
+use TOME::TemplateCallbacks;
+
 use CGI::Application::Plugin::DBH qw(dbh_config dbh);
 use CGI::Application::Plugin::Session;
 use CGI::Application::Plugin::HTMLPrototype;
@@ -33,7 +35,7 @@ our %CONFIG = (
 	devemailto	=> 'TOMEadmin <tomeadmin@tome>',
 );
 
-require 'site-config.pl';
+require '../site-config.pl';
 
 sub cgiapp_init {
 	my $self = shift;
@@ -1144,6 +1146,7 @@ sub template {
 		semestershash	=> { map { $_->{id} => $_ } @{$self->param('semesters')} },
 		currsemester	=> $self->param('currsemester'),
 		prototype	=> $self->prototype,
+		tome		=> TOME::TemplateCallbacks->new($self),
 	);
 
 	if($self->param('user_info')) {
