@@ -529,23 +529,113 @@ sub expire_search {
 }
 #}}}
 
+#{{{reservation_info 
+
+=head2 reservation_info 
+
+This function returns an array of hashrefs about a reservations given an ID.
+
+Arguments are as a hashref:
+
+=over
+
+=item id
+
+The reservation ID
+
+=back
+
+The returned hashref contains:
+
+=over
+
+=item id
+
+The reservation ID
+
+=item isbn
+
+The ISBN the reservation is for
+
+=item uid
+
+The user id of the TOMEkeeper responsible for the reservation
+
+=item patron
+
+The id of the patron the reservation is for
+
+=item reserved
+
+The time of the reservation
+
+=item fulfilled
+
+The time of the fulfilment of the reservation.  If this is null, then the reservation has not been fulfilled.
+
+=item comment
+
+Any comments about the reservation
+
+=item library_from
+
+The library that is responsible for the reservation
+
+=item library_to
+
+The library that has the book that is being reserved
+
+=item semester
+
+The semester that the reservation is for
+
+=back
+
+=cut
+
+sub reservation_info {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my ($sql, @bind) = sql_interp('SELECT id, isbn, uid, patron, reserved, fulfilled, comment, library_from, library_to, library_from, semester FROM reservations WHERE', { id => $params{id} });
+	
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	return $sth->fetchrow_hashref;
+}
+#}}}
+
 #{{{reservation_search 
 
 =head2 reservation_search 
 
-This function returns an array of books that are reserved in a given semester from given libraries.
+This function returns an array reservation ids matching search criteria
 
-The arguments are given as a hash:
+The arguments are given as a hash.  They're all optional, but if you don't give any, then just an empty array will be returned.
 
 =over
 
 =item semester
 
-the semester that the books are reserved for
+The semester that the books are reserved for
 
-=item libraries
+=item library_to
 
-the libraries that the books are in
+An arrayref of libraries the reservations can be going to (the libraries that have the books)
+
+=item library_from
+
+An arrayref of libraries the reservations can be coming from (the libraries that are requesting the books)
+
+=item patron
+
+A patron ID identifying the patron reserving the books
 
 =back
 
@@ -557,19 +647,31 @@ sub reservation_search {
 	my $dbh = $self->dbh;
 
 	my %params = validate(@_, {
-		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-		libraries       => { type => ARRAYREF },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1  },
+		library_to	=> { type => ARRAYREF, optional => 1 },
+		library_from	=> { type => ARRAYREF, optional => 1 },
+		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name as borrower_name, patrons.email as borrower_email, comments, semester, checkout FROM checkouts, patrons WHERE patrons.id = borrower AND semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
+	my @conditions;
+	foreach (keys %params) {
+		push @conditions, { $_ => $params{$_} };
+	}
+
+	# If we aren't given anything to do, don't do anything
+	unless(@conditions) {
+		return ();
+	}
+	
+	my ($sql, @bind) = sql_interp(@conditions);
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 	my @results;
-	while(my $result = $sth->fetchrow_hashref) {
-		push @results, $result;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
 	}
-	return \@results;
+	return @results;
 }
 #}}}
 
