@@ -130,6 +130,7 @@ None.
 \paragraph{Extends}
 None.
 \paragraph{User Interfaces}
+ID0005.
 \paragraph{Constraints}
 None.
 \paragraph{Questions}
@@ -161,6 +162,7 @@ None.
 \paragraph{Extends}
 None.
 \paragraph{User Interfaces}
+ID0004.
 \paragraph{Constraints}
 None.
 \paragraph{Questions}
@@ -190,6 +192,7 @@ None.
 \paragraph{Extends}
 None.
 \paragraph{User Interfaces}
+ID0007.
 \paragraph{Constraints}
 None.
 \paragraph{Questions}
@@ -219,6 +222,7 @@ None.
 \paragraph{Extends}
 None.
 \paragraph{User Interfaces}
+ID0006.
 \paragraph{Constraints}
 None.
 \paragraph{Questions}
@@ -250,6 +254,7 @@ None.
 \paragraph{Extends}
 None.
 \paragraph{User Interfaces}
+ID0003.
 \paragraph{Constraints}
 None.
 \paragraph{Questions}
@@ -359,6 +364,137 @@ Figure~\ref{TemplateSequenceDiagram} is an example sequence of events involving 
 	\label{TemplateSequenceDiagram}
 \end{figure}
 
+\section{User Interface Requirements Specification}
+\subsection{User Interface}
+The interface is entirely web-based.  Interaction with the Web Interface, which is displayed through templates accesses the TOME system which interacts with the Database.
+\subsection{Navigation Model}
+Figure~\ref{NavigationDiagram} graphically displays how the user interacts with TOME through the Web Interface.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{NavigationDiagram}
+	\caption{Template Sequence Diagram}
+	\label{NavigationDiagram}
+\end{figure}
+\subsection{Screens}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{Screen ID} & \textbf{Description} \\
+	\hline
+	ID0001 & Home Page \\
+	\hline
+	ID0002 & Patron Page \\
+	\hline
+	ID0003 & Modify Class \\
+	\hline
+	ID0004 & Reserve Books \\
+	\hline
+	ID0005 & Add Book \\
+	\hline
+	ID0006 & Add Class \\
+	\hline
+	ID0007 & Check Books Out \\
+	\hline
+\end{tabular}
+\subsection{View Definitions}
+\subsubsection{Home Page}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & TOME \\
+	\hline
+	\textbf{Number} & ID0001 \\
+	\hline
+	\textbf{Description} & This is the main home page for TOME and contains links to all major functions.  It also displays basic information about the status of the system such as the current semester and the current user that is logged in. \\
+	\hline
+	\textbf{Scenario References} & None.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Patron Page}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Patron Page \\
+	\hline
+	\textbf{Number} & ID0002 \\
+	\hline
+	\textbf{Description} & This page displays information about the currently selected patron such as books currently checked out, books reserved, and classes for the current semester.  It serves as a starting point for many of the patron-related tasks.\\
+	\hline
+	\textbf{Scenario References} & None.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Modify Class}
+\label{modifyclass}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Class Information Page\\
+	\hline
+	\textbf{Number} & ID0003 \\
+	\hline
+	\textbf{Description} & From the class information page, information can be modified about a class.  Comments can be made, books for the class can be added, deleted, and modified, and other maintenance work can be done.\\
+	\hline
+	\textbf{Scenario References} & UC05.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Reserve Books}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Reserve Books\\
+	\hline
+	\textbf{Number} & ID0004 \\
+	\hline
+	\textbf{Description} & From the patron information page, classes can be added for that patron.  Once a class information table is built up, the TOMEkeeper can start to reserve books for that semester for the patron.  This process will happen in steps where information about a class and its book associations is presented to the TOMEkeeper, and the TOMEkeeper makes the appropriate selections.  After the selections are made, the books are reserved and the patron is emailed a notification of what all happened.\\
+	\hline
+	\textbf{Scenario References} & UC02.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Add Book}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Add TOME Book\\
+	\hline
+	\textbf{Number} & ID0005 \\
+	\hline
+	\textbf{Description} & When a patron desires to add a book, this is the interface that will be shown.  From this page, the TOMEkeeper will enter basic information about the book such as the ISBN and which patron donated the book.  If TOME is unaware of the ISBN, the TOMEkeeper will be presented with a form to fill out the rest of the information about the book.\\
+	\hline
+	\textbf{Scenario References} & UC01.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Add Class}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Add Class\\
+	\hline
+	\textbf{Number} & ID0006 \\
+	\hline
+	\textbf{Description} & If a TOMEkeeper desires to add a class to the system, they will use this interface.  Adding a class is as simple as entering in the class ID and a name for the class.  All class information is added through the interface defined in Section~\ref{modifyclass}.\\
+	\hline
+	\textbf{Scenario References} & UC04.\\
+	\hline
+\end{tabular}
+
+\subsubsection{Check Books Out}
+\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+	\hline
+	\textbf{View Title} & Check Book Out\\
+	\hline
+	\textbf{Number} & ID0007 \\
+	\hline
+	\textbf{Description} & When it comes time to actually check a physical instance of a book out, this is the interface that will be used.  The TOMEkeeper can either change an existing reservation into a checkout, or they can specify the exact book to be checked out.  After this is accomplished, the Patron can take the book for the semester.\\
+	\hline
+	\textbf{Scenario References} & UC03.\\
+	\hline
+\end{tabular}
+
+\section{Non-Functional Requirements Specification}
+The Business Scenario Model only represents part of the full set of requirements.  Although the Business Scenario Model represents the functional requirements that are included in the project, there are many intangible requirements that haven’t been covered.  The purpose of this section is to document the non-functional requirements of TOME.
+\subsection{Overview}
+The non-functional requirements outlined in this section include the technologies needed to allow TOME to run, capacity planning strategies, and operational parameters.
+\subsection{Enabling Technologies}
+\subsubsection{Target Hardware and Hardware Interfaces}
+TOME is a reasonably lightweight application.  It is targeted to run on any server-class computer.  If the computer is fast enough to run Apache, PostgreSQL, and Perl, it is fast enough for TOME.  Of course, the more users that access the system, the faster and bigger the server will have to be.
 
 \section{Database Structure}
 \label{tomedbsection}
