@@ -1121,6 +1121,16 @@ sub isbnview {
 
     my $q = $self->query;
     
+
+    my $semester;
+    if ($q->param('semester')) {
+        $semester = $q->param('semester')->{id};
+    } elsif ($self->session->param('currsemester')) {
+        $semester = $self->session->param('currsemester')->{id};
+    } else {
+        $semester = $self->param('currsemester')->{id};
+    }
+
     # to_libraries refers to libraries that the
     # reservation is going to, not the book.
     my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
@@ -1135,10 +1145,10 @@ sub isbnview {
                 available => $self->tomebook_availability_search({
                     isbn => $q->param('isbn'),
                     status => 'can_reserve',
-                    semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}),
+                    semester => $semester,
                     libraries => [$library->{id}],
                 }),
-                ours => $library_access->{'id'},
+                ours => $library_access->{$_->{'id'}} ? 1 : 0,
             };
         }
     }
@@ -1148,6 +1158,7 @@ sub isbnview {
             isbn => $q->param('isbn'),
             libraries_from => \@from_libraries,
             libraries_to => \@to_libraries,
+            semester => $semester,
         }
     });
 
