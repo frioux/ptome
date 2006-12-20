@@ -41,7 +41,7 @@
 		<b>Edition:</b> [% book.tomebookinfo.edition %]
 	</td>
 	<td>
-		[% book.borrower %]
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.borrower | html | uri %]">[% book.borrower_name | html %]</a> ([% book.borrower_email | html %])
 	</td>
 	<td>
 		[% book.comments %]
@@ -88,7 +88,7 @@
 		<b>Edition:</b> [% book.tomebookinfo.edition %]
 	</td>
 	<td>
-		[% book.borrower %]
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.borrower | html | uri %]">[% book.borrower_name | html %]</a> ([% book.borrower_email | html %])
 	</td>
 	<td>
 		[% book.comments %]
@@ -135,7 +135,7 @@
 		<b>Edition:</b> [% book.tomebookinfo.edition %]
 	</td>
 	<td>
-		[% book.tomebookinfo.originator %]
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.tomebookinfo.originator | html | uri %]">[% book.tomebookinfo.originator_name | html %]</a> ([% book.tomebookinfo.originator_email | html %])
 	</td>
 	<td>
 		[% semestershash.${book.tomebookinfo.expire}.name %]

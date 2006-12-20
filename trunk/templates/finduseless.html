@@ -30,7 +30,7 @@
 	<td>
 		[% book.edition %]
 	</td>
-	<td>[% book.originator %]</td>
+	<td><a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.originator | html | uri %]">[% book.originator_name | html %]</a> ([% book.originator_email | html %])</td>
 	<td>
 		[% FOREACH class = book.classes %]
 		<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
