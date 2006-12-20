@@ -287,6 +287,76 @@ sub isbn_search {
 }
 #}}}
 
+#{{{tomebook_availability_search 
+
+=head2 tomebook_availability_search 
+
+Returns the number of TOME books available given certain conditions
+
+It takes arguments in the form of a hash:
+
+=over
+
+=item isbn
+
+the isbn to look for
+
+=item status
+
+that status of the book (all, can_reserve, or in_collection)
+
+=item semester
+
+the semester id to consider when status is can_reserve or can_checkout.  Defaults to the current semester
+
+=item libraries
+
+the libraries to look in for the book (Note: this is an array reference...whatever thatmeans.)
+
+=back
+
+=cut
+
+sub tomebooks_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		isbn		=> { type => SCALAR, optional => 1 },
+		status		=> { type => SCALAR, regex => qr/^all|can_reserve|in_collection$/, default => 'all' },
+		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
+		libraries	=> { type => ARRAYREF },
+	});
+
+	# I've decided to require listing what libraries you want, if you give an empty list, no books can be found
+	unless(@{$params{libraries}}) {
+		return ();
+	}
+
+	my ($sql, @bind);
+
+	if($params{status} eq 'all') {
+		($sql, @bind) = sql_interp('SELECT count(*) FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}});
+	} elsif($params{status} eq 'in_collection') {
+		($sql, @bind) = sql_interp('SELECT count(*) FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
+	} elsif($params{status} eq 'can_reserve') {
+		push @library_reservations;
+		foreach(@{$params{libraries}}) {
+			push @library_reservations, 'tomebooks_available_to_reserve(?, ?, ?)';
+			push @bind, ($params{isbn}, $_, $params{semester});
+		}
+		$sql = 'SELECT ' . join(' + ', @library_reservations);
+	} else {
+		die 'Unknown status requested.';
+	}
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@values);
+	
+	return ($sth->fetchrow_array)[0];
+}
+#}}}
 #{{{tomebooks_search 
 
 =head2 tomebooks_search 
