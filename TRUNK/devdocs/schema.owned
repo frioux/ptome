@@ -17,7 +17,7 @@ COMMENT ON SCHEMA public IS 'Standard public namespace';
 -- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: 
 --
 
--- CREATE PROCEDURAL LANGUAGE plpgsql;
+CREATE PROCEDURAL LANGUAGE plpgsql;
 
 
 SET search_path = public, pg_catalog;
@@ -36,6 +36,8 @@ $$
     LANGUAGE plpgsql;
 
 
+ALTER FUNCTION public.isbn_force_upper() OWNER TO tome;
+
 SET default_tablespace = '';
 
 SET default_with_oids = true;
@@ -51,6 +53,8 @@ CREATE TABLE books (
     edition text
 );
 
+
+ALTER TABLE public.books OWNER TO tome;
 
 --
 -- Name: checkouts; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
@@ -72,6 +76,8 @@ CREATE TABLE checkouts (
 );
 
 
+ALTER TABLE public.checkouts OWNER TO tome;
+
 --
 -- Name: checkouts_id_seq; Type: SEQUENCE; Schema: public; Owner: tome
 --
@@ -82,6 +88,8 @@ CREATE SEQUENCE checkouts_id_seq
     NO MINVALUE
     CACHE 1;
 
+
+ALTER TABLE public.checkouts_id_seq OWNER TO tome;
 
 --
 -- Name: classbooks; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
@@ -97,6 +105,8 @@ CREATE TABLE classbooks (
 );
 
 
+ALTER TABLE public.classbooks OWNER TO tome;
+
 --
 -- Name: classes; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -108,6 +118,8 @@ CREATE TABLE classes (
 );
 
 
+ALTER TABLE public.classes OWNER TO tome;
+
 --
 -- Name: libraries; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -118,6 +130,8 @@ CREATE TABLE libraries (
 );
 
 
+ALTER TABLE public.libraries OWNER TO tome;
+
 --
 -- Name: library_access; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -127,6 +141,8 @@ CREATE TABLE library_access (
     library integer NOT NULL
 );
 
+
+ALTER TABLE public.library_access OWNER TO tome;
 
 --
 -- Name: patrons; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
@@ -139,6 +155,8 @@ CREATE TABLE patrons (
 );
 
 
+ALTER TABLE public.patrons OWNER TO tome;
+
 --
 -- Name: semesters; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -150,6 +168,8 @@ CREATE TABLE semesters (
 );
 
 
+ALTER TABLE public.semesters OWNER TO tome;
+
 --
 -- Name: sessions; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -159,6 +179,8 @@ CREATE TABLE sessions (
     a_session text NOT NULL
 );
 
+
+ALTER TABLE public.sessions OWNER TO tome;
 
 --
 -- Name: tomebooks; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
@@ -176,6 +198,8 @@ CREATE TABLE tomebooks (
 );
 
 
+ALTER TABLE public.tomebooks OWNER TO tome;
+
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
@@ -190,6 +214,8 @@ CREATE TABLE users (
     disabled boolean DEFAULT false NOT NULL
 );
 
+
+ALTER TABLE public.users OWNER TO tome;
 
 --
 -- Name: books_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
