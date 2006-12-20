@@ -1,9 +1,11 @@
 \documentclass[12pt,titlepage]{article}
+\usepackage{graphicx}
 \author{The TOME Team}
 \title{\textbf{TOME Project Plan}}
 \begin{document}
 \maketitle
 \tableofcontents
+\listoffigures
 \newpage
 \section{Introduction}
 \subsection{Purpose}
@@ -19,43 +21,72 @@ This document:
 	\item States which milestones depend on other milestones
         \item Assigns milestones to specific people on the team
 \end{itemize}
-\subsection{Audience}
-This document is directed to all personnel who may be considered stakeholders in the initiation, development, implementation, and ongoing support for this project.
-\section{Project Details}
-\textbf{Title:} TOME\\
-\textbf{Initiation Date:} September 19, 2006\\
-\textbf{Sponsoring Organization:} LeTourneau University Computer Science Department\\
-\textbf{Team Lead:} Curtis ``Fjord'' Hawthorne
-\section{Project Overview}
-\subsection{Problem Definition}
-Currently, when students are finished with a book they are using for the semester, they only have a few choices: keep the book, sell it to the bookstore or on the internet, or let a friend borrow it.  Keeping the book does not make any sense if the student is not likely to read it again, and selling the book usually results in a significant loss of money.  Letting a friend borrow the book is a great use of the book, but it can be difficult for the book owner to find out who needs what books and for the prospective borrower to determine what books are available for borrowing.
-\subsection{Purpose of Project}
-TOME is a solution to the problem of book borrowing.  Instead of the disorganized and inefficient borrowing that occurs naturally, TOME is an organized, centralized system.  All books for a region (such as a campus floor) are donated to a central repository and entered into a database.  This database keeps track of not only which books are available and which have been checked out, but also what books go with what classes.  TOME should make the book acquisition process as painless and inexpensive as possible for as many students as possible.
-\subsection{Project Goals}
-\begin{description}
-	\item[Automated Test Suite] This suite will be capable of creating a blank TOME database, starting a self-contained webserver, using the system like a normal user would, and checking the web and database output of the system.
-	\item[Patron-Centric Work Flow] TOME will be reorganized to focus the entire work flow of selecting classes, reserving books, and making checkouts to be centered around patrons instead of books.  This will make the job of the TOMEkeeper much easier.
-	\item[ISBN-Based Reservations] All reservations will be made on an ISBN basis instead of for specific book IDs.  Instead of reserving a specific, physical instance of a book, reservations will be made for ISBNs, and the database will ensure that the number of books reserved by ISBN does not exceed the number of physical books available.
-	\item[InterTOME Loans] The InterTOME Loan System will be reworked following research with TOMEkeepers and an analysis of the shortcomings of the current system.
-	\item[Documentation] The installation process for the system will be thoroughly documented, and current administrative documentation will be expanded.
-	\item[Usability] The look and feel of TOME will be improved.
-\end{description}
-\section{Operational Vision}
-Each team member is expected to contribute approximately six hours of work every week.  In addition, every team member should attend weekly team meetings where past progress and future direction will be discussed.  Project responsibilities will be roughly broken down as follows:
-\begin{description}
-	\item[Curtis ``Fjord'' Hawthorne] Team Lead.  Responsible for core design changes and implementation.
-	\item[fREW Schmidt] Responsible for intermediate-level design and implementation.
-	\item[Craig ``Fargo'' Miller] Responsible for presentation-level design and implementation.
-	\item[Clint Olson] Responsible for test suite design and implementation.
-\end{description}
-These roles are not set in stone, and some degree of overlap is expected to happen.  However, these will function as general guidelines for the duration of the project.
-\section{Risk Assessment}
-The project contains risks that will require monitoring to ensure that they are minimized and do prevent a successful, on time delivery.
+\section{Milestones}
+\subsection{Definitions}
+\subsubsection{Automated Test Suite}
+This suite will be capable of creating a blank TOME database, starting a self-contained webserver, using the system like a normal user would, and checking the web and database output of the system.
 
-These risks are identified below:
-\begin{description}
-	\item[Project left in an unusable state] All development will be kept in Subversion.  At the very least, the project can be rolled back to its current, working condition.  However, as a policy, no changes will be committed until the system is in a usable state.
-	\item[New work flows are not an improvement] No changes will be made to the work flow of the system without first discussing the changes with experienced users of the system.
-	\item[Maintainability concerns] The project's installation procedure, code, test suite, and overall structure will be documented.
-\end{description}
+The test suite milestone will have four checkpoints:
+\begin{enumerate}
+	\item Create an automated installation script. Currently, TOME installation must be done manually, and is complicated. This needs to change for the purposes of the test suite
+	\item Integrate a self-contained Perl-based webserver for test purposes. The test suite should not depend on Apache being installed.
+	\item Design a test framework. The capability to test should be independent from the individual tests.
+	\item Write the tests. With the framework in place, the tests themselves can be written and deployed.
+\end{enumerate}
+\subsubsection{ISBN vs. ID}
+All reservations will be made on an ISBN basis instead of for specific book IDs. Instead of reserving a specific, physical instance of a book, reservations will be made for ISBNs, and the database will ensure that the number of books reserved by ISBN does not exceed the number of physical books available. This will involve changes to the basic database structure as well as the code with which it interacts.
+\subsubsection{Class-Based Verification}
+In addition to the book verification TOME currently supports, class verification will be made available. This will allow TOMEkeepers to distinguish between classes which have no books and classes for which no books have been entered.
+\subsubsection{Patron Page}
+TOME will be reorganized to focus the entire work flow of selecting classes, reserving books, and making checkouts to be centered around patrons instead of books. This will make the job of the TOMEkeeper much easier.
+\subsubsection{TOMEkeeper Page}
+A page will be created with contact information for all current TOMEkeepers. The page will be generated dynamically from the database.
+\subsubsection{UI Redesign}
+The look and feel of TOME will be improved. The web interface will be refactored to be XHTML and CSS compliant, and any new workflows/pages required by other checkpoints will be created.
+\subsection{Schedule}
+\subsubsection{Automated Test Suite}
+Due to the nature of this milestone, it will be developed throughout the entirety of the project, much in tandem with the rest of the project.  This is because specific requirements for the project have not yet been defined, and therefore cannot be tested.
+\subsubsection{ISBN vs ID}
+This Milestone began on September 12, and is scheduled to finish on September 19.
+\subsubsection{Class-Based Verification}
+Milestone to begin on September 19 and end on October 19.
+\subsubsection{Patron Page}
+Milestone to begin on October 19 and to end on November 14.
+\subsubsection{TOME Keeper Page}
+Milestone to begin on November 21 and to end on December 14.  This milestone is not required.
+\subsubsection{UI Redesign}
+This Milestone is much like the Automated Test Suite in that it needs to be developed in tandem with all other parts of the system, and is therefore not set with specific dates yet.
+\subsection{Responsibilities}
+\subsubsection{Automated Test Suite}
+Clint Olson is responsible for this Milestone.
+\subsubsection{ISBN vs ID}
+Fjord (Curtis Hawthorne) is responsible for this Milestone.
+\subsubsection{Class-Based Verification}
+Fjord (Curtis Hawthorne) and fREW (Arthur Axel Schmidt) are responsible for this Milestone.
+\subsubsection{Patron Page}
+Fjord (Curtis Hawthorne) and fREW (Arthur Axel Schmidt) are responsible for this Milestone.
+\subsubsection{TOME Keeper Page}
+Fjord (Curtis Hawthorne) and fREW (Arthur Axel Schmidt) are responsible for this Milestone.
+\subsubsection{UI Redesign}
+Fargo (Craig Miller) is responsible for this Milestone.
+\subsection{Dependencies}
+\subsubsection{Automated Test Suite}
+This milestone depends on all of the other milestones.  No other milestones depend on it.
+\subsubsection{ISBN vs ID}
+This Milestones is dependent on no other milestones.
+\subsubsection{Class-Based Verification}
+This milestone depends on the ISBN vs ID milestone.  The Patron Page directly depends on this Milestone.
+\subsubsection{Patron Page}
+This milestone directly depends on the Class Based Verification Milestone and the ISBN vs ID Milestone.  No Milestones directly depend on this milestone except for the ATS.
+\subsubsection{TOME Keeper Page}
+This Milestone depends on no other milestones but could be considered a part of the UI Redesign Milestone.
+\subsubsection{UI Redesign}
+The UI Redesign is an effort that can take place without other milestones being completed, but it will also be active in development on the Patron Page, the Class Based Verification, and the TOME Keeper Page.  As such it depends on others somewhat, but not entirely.
+\section{GANTT Chart}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{GanttChart}
+	\caption{TOME Project GANTT Chart}
+\end{figure}
+\section{Overall Plan}
+We are planning on doing this project in iterations.  This is often called agile development.  What we will do is implement a feature and test it and document it, and then move on to another feature.  This way, we don't do 3 months worth of labor to find out that a low level error has been made and everything on top (everything) needs to be redesigned.
 \end{document}
