@@ -31,7 +31,12 @@ All project data will be stored in a combination Subversion repository and Trac 
 
 \texttt{http://enosh.letnet.net/trac/tome}
 
+References will be made to a number of standard Perl modules such as CGI::Application, Template Toolkit, and many others.  Documentation for these modules is available at the following URL:
+
+\texttt{http://search.cpan.org/}
+
 \section{Component Specifications}
+
 \subsection{admin.pl}
 \subsubsection{Role}
 The role of admin.pl is to load the system and serve as a starting point for the webserver
@@ -58,9 +63,69 @@ This component has no intrinsic need for its own data storage.
 This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
 \subsubsection{Packaging}
 admin.pl is packaged as a single, executable Perl file.
-\subsection{Interface.pm}
-\subsection{TOME.pm}
-\subsection{TemplateCallbacks.pm}
+
+
+\subsection{TOME::Interface}
+\subsubsection{Role}
+The role of TOME::Interface is to control almost all interaction between the user and TOME. Nearly every method is a CGI::Application runmode, with the exception of a few helper methods
+\subsubsection{Responsibilities}
+TOME::Interface is responsible for some of the set up of the CGI::Application framework.  It has all of the runmode methods that CGI::Application uses to dispatch requests served by the web server through admin.pl.  It should check all user input using the CGI::Application::Plugin::ValidateRM module.  It should also use ValidateRM's features to give good user feedback if something is wrong with their input. ValidateRM can nicely refill the form the way it was before and provide error messages.
+\subsubsection{Exclusions}
+TOME::Interface shouldn't know any details about the internal database structure or what things look like when they're displayed by the template.
+\subsubsection{Collaborators}
+TOME::Interface collaborates very closely with admin.pl.  admin.pl loads TOME::Interface and then relinquishes control.  TOME::Interface also interacts with CGI::Application::Plugin::ValidateRM to validate user input, CGI::Application::Plugin::Forward to transfer control from one runmode to another when necessary, and Crypt::PasswdMD5 to provide secure password authentication.  It also interacts with the TOME module in that it is a base class of TOME.
+\subsubsection{Key Scenarios}
+\paragraph{admin.pl loads TOME::Interface and calls the run method}
+Since the run method is not actually a part of TOME::Interface, it has no direct responsibilities in this case.  However, the run method sets in motion a chain of events controlled by CGI::Application including calling the setup and cgiapp\_prerun methods, which are implemented by TOME::Interface.
+\paragraph{A runmode dispatch occurs}
+TOME::Interface contains all of the runmode subs that CGI::Application will dispatch to.  A runmode dispatch will simply run one of these methods.  When the method runs, its usual course of action will be to acquire information from the user's CGI query, make appropriate calls into the TOME core to obtain or modify database information, format that information to be used in a template, and then make the call to Template Toolkit with the appropriate information.
+\subsubsection{Properties}
+TOME::Interface will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
+\subsubsection{Creation, Existence, and Management}
+TOME::Interface will exist as a single instantiation created by admin.pl.  The web server (usually Apache) will be responsible for calling admin.pl.  Multiple instantiations of admin.pl (and therefore TOME::Interface and any other classes) can exist only if Apache runs multiple copies, which is expected.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.
+\subsubsection{Data Storage}
+This component has no intrinsic need for its own data storage.  It will interact heavily with the database, but only through the TOME module.  It has no internal knowledge of anything storage-related.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+TOME::Interface is packaged as a single Perl module name Interface.pm in the TOME directory.
+
+
+\subsection{TOME}
+\subsubsection{Role}
+The role of the TOME module is to provide database connectivity and all utility functions used by other parts of the program.
+\subsubsection{Responsibilities}
+TOME needs to validate all subs with the Params::Validate module. Even if the data has already been validated inside TOME::Interface, it needs to do it again. Sooner or later, someone will make a call with unvalidated data, and catching it is critical.
+\subsubsection{Exclusions}
+TOME shouldn't know anything about users and especially nothing about templates.
+\subsubsection{Collaborators}
+TOME collaborates very closely with TOME::Interface.  TOME is the base class of TOME::Interface.  TOME is in turn implemented as a subclass of CGI::Interface.  TOME also interacts closely with several external modules such as Template Toolkit, DateTime, Params::Validate, SQL::Interpolate, and MIME::Lite.  It also uses the TOME::TemplateCallbacks modules to make dynamic callbacks available to templates.
+\subsubsection{Key Scenarios}
+\paragraph{admin.pl loads TOME::Interface and calls the run method}
+Since the run method is not actually a part of TOME::Interface, it has no direct responsibilities in this case.  However, the run method sets in motion a chain of events controlled by CGI::Application including calling the setup and cgiapp\_prerun methods, which are implemented by TOME::Interface.
+\paragraph{A runmode dispatch occurs}
+TOME::Interface contains all of the runmode subs that CGI::Application will dispatch to.  A runmode dispatch will simply run one of these methods.  When the method runs, its usual course of action will be to acquire information from the user's CGI query, make appropriate calls into the TOME core to obtain or modify database information, format that information to be used in a template, and then make the call to Template Toolkit with the appropriate information.
+\subsubsection{Properties}
+TOME::Interface will be a standard text file.  It will run everything under Perl's taint mode.  It will use strict.  It will use warnings. 
+\subsubsection{Creation, Existence, and Management}
+TOME::Interface will exist as a single instantiation created by admin.pl.  The web server (usually Apache) will be responsible for calling admin.pl.  Multiple instantiations of admin.pl (and therefore TOME::Interface and any other classes) can exist only if Apache runs multiple copies, which is expected.
+\subsubsection{Resource Usage/Management}
+No specific requirements exist for this component.  Resources will be limited only by the web server.
+\subsubsection{State/Session/Context Management}
+This component has no particular knowledge of states, sessions, or contexts.
+\subsubsection{Data Storage}
+This component has no intrinsic need for its own data storage.  It will interact heavily with the database, but only through the TOME module.  It has no internal knowledge of anything storage-related.
+\subsubsection{Performance}
+This component does not have any specific performance or speed requirements.  Faster is better, but that is determined entirely by the machine on which it is run.  The only impact of faster or slower performance is the quality of the end user's experience.
+\subsubsection{Packaging}
+TOME::Interface is packaged as a single Perl module name Interface.pm in the TOME directory.
+
+
+\subsection{TOME::TemplateCallbacks}
 \subsection{Templates}
 \subsection{Static Content}
 \end{document}
