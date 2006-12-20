@@ -127,7 +127,12 @@ Because of this, only reservations are allowed.
 [% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 [% END %]
 </select> [% errs.library %]</td></tr>
-<tr><td>Comments</td><td><input type="text" name="comments"></td></tr>
+<tr><td>
+Comments
+[% UNLESS librarieshash.${tomebook.library}.access %]
+<br>Please include the CPO Box of the borrower
+[% END %]
+</td><td><input type="text" name="comments"></td></tr>
 <tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %][% UNLESS librarieshash.${tomebook.library}.access %]disabled="disabled[% END %]"></td></tr>
 <tr><td colspan="2" align="center"><input type="submit" value="Checkout"></td></tr>
 </table>
