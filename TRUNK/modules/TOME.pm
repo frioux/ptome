@@ -2063,6 +2063,7 @@ sub _quote_like {
 
 1;
 
+#{{{ end pod
 =head1 AUTHOR
 
 Curtis "Fjord" Hawthornre
@@ -2086,5 +2087,5 @@ postgreSQL
 gpl?
 
 =cut
-
+#}}}
 # vim600: set foldmethod=marker
