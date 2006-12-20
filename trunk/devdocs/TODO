@@ -9,6 +9,7 @@ Don't let the system drop to less than 1 admin user
 Make sure a book cannot be removed unless it is checked in
 Orphan page links need to have libraries in them
 Streamline the "tome book"/book adding process - there should only be one page
+Prompt for current password when changing password
 
 Make pretty looking
 
