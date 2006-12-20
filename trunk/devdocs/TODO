@@ -12,6 +12,8 @@ Streamline the "tome book"/book adding process - there should only be one page
 Prompt for current password when changing password
 After selecting all libraries and doing a search, the owner's library will not be selected
 Can't delete a book from a class unless there aren't any more of those books around, or at least warn about it
+make usernames case insensitive - use a case insenstive unique key
+investigate form validation...
 
 Make pretty looking
 

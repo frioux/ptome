@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch addbook updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -104,7 +104,7 @@ sub mainsearch {
 		classes		=> $classes,
 		tomebooks	=> \@tomebooks,
 		libraries	=> $libraries,
-		librarieshash	=> { map { $_->{id} => $_ } @{$libraries} },
+		librarieshash	=> $self->_librarieshash(),
 	}});
 }
 
@@ -324,33 +324,8 @@ my $dueback = $self->dueback_search({ semester => $q->param('semester'), librari
 		reservation	=> $reservation,
 		dueback		=> $dueback,
 		expiring	=> $expiring,
-		libraries	=> { map { $_->{id} => $_ } @{$self->library_info} },
+		libraries	=> $self->_librarieshash(), 
 	}});
-}
-
-sub addbook {
-	my $self = shift;
-
-	my $q = $self->query;
-
-	# !!! Better way to detect input?
-	unless($q->param('add')) { return $self->template({ file => 'addbook.html' }); }
-
-	my %book = (
-		isbn => $q->param('isbn'),
-		title => $q->param('title'),
-		author => $q->param('author'),
-	);
-	
-	if($q->param('edition')) {
-		$book{edition} = $q->param('edition');
-	}
-
-	$self->add_book({%book});
-
-	$self->header_type('redirect');
-	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
-	return;
 }
 
 sub deleteclass {
@@ -412,7 +387,7 @@ sub addtomebook {
 
 	my $q = $self->query;
 
-	unless($q->param('add')) {
+	unless($q->param('addtomebook')) {
 		return $self->template({ file => 'addtomebook.html', vars => {
 			libraries => $self->_libraryaccess($self->param('user_info')->{id}),
 		}});
@@ -425,7 +400,23 @@ sub addtomebook {
 	);
 
 	unless($self->book_exists({ isbn => $book{isbn} })) {
-		return $self->template({ file => 'invalidisbn.html', vars => { isbn => $book{isbn} } });
+		if($q->param('addbook')) {
+			my %book = (
+				isbn => $q->param('isbn'),
+				title => $q->param('title'),
+				author => $q->param('author'),
+			);
+	
+			if($q->param('edition')) {
+				$book{edition} = $q->param('edition');
+			}
+
+			$self->add_book({%book});
+		} else {
+			return $self->template({ file => 'addbook.html', vars => {
+				librarieshash	=> $self->_librarieshash(),
+			}});
+		}
 	}
 
 	foreach(qw(expire comments)) {
@@ -580,7 +571,7 @@ sub tomebookinfo {
 		checkouts	=> $self->checkout_history({ id => $id }),
 		libraries	=> $libraries,
 		classes		=> $self->book_classes({ isbn => $info->{isbn} }),
-		librarieshash	=> { map { $_->{id} => $_ } @{$libraries} },
+		librarieshash	=> $self->_librarieshash(),
 	}});
 }
 
@@ -728,6 +719,12 @@ sub _libraryauthorized {
 	my ($uid, $library) = @_;
 
 	return scalar(grep { $_->{id} == $library } @{$self->library_access({user => $uid})}) == 1;
+}
+
+sub _librarieshash {
+	my $self = shift;
+
+	return { map { $_->{id} => $_ } @{$self->library_info} };
 }
 
 1;
