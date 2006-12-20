@@ -1,9 +1,7 @@
 TOME=/usr/local/webapps/tome-dev/ in=devdocs/in.vim out=devdocs/out.vim CD=. filter="*" {
 
 cgi=cgi{
- 
- admin.pl
- 
+  admin.pl
  }
 
  cosc4303=cosc4303 {
@@ -84,7 +82,6 @@ cgi=cgi{
  TOME=TOME{
    Interface.pm
    TemplateCallbacks.pm
-   svn-commit.tmp
   }
  }
  
@@ -98,17 +95,20 @@ cgi=cgi{
   regen-prototype.pl
   test.pl
   database_migrations=database_migrations{
-   01_ISBNvsID.sql
-   02_PatronClasses.sql
-   03_FloorInterTOMEAvailability.sql
-   04_InterTOMEConsistency.sql
-   05_InterTOMEBarriers.sql
-   06_ClassesTypeCorrection.sql
+   00_01_ISBNvsID.sql
+   00_02_PatronClasses.sql
+   00_03_FloorInterTOMEAvailability.sql
+   00_04_InterTOMEConsistency.sql
+   00_05_InterTOMEBarriers.sql
+   00_06_ClassesTypeCorrection.sql
+   01_DBVersioning.sql
   }
  }
  
  static=static/ {
-  
+  prototype.js
+  style.css
+  tome.png
   tome=tome{
    
    prototype.js
@@ -116,11 +116,6 @@ cgi=cgi{
    tome.png
   
   }
-  
-  prototype.js
-  style.css
-  tome.png
- 
  }
  
  templates=templates {
@@ -164,7 +159,9 @@ cgi=cgi{
  tests=tests {
   
   db=db{
+   bookremoval.t
    currsemester.t
+   intertome.t
    isbnupper.t
    patronemail.t
    username.t

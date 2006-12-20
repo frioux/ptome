@@ -1118,20 +1118,30 @@ sub isbnview {
     
     # to_libraries refers to libraries that the
     # reservation is going to, not the book.
-
+    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
+    my @from_libraries = keys %{$library_access};
     my @to_libraries;
 
-    my %libraries = $self->_libraries_hash();
-    foreach (values %libraries) {
-        if ($_->{'intertome'}) {
-            push @to_libraries, $_;
+    foreach (@{$self->library_info()}) {
+        my $library = $self->library_info({id => $_->{'id'}});
+        if ($library->{intertome}) {
+            push @to_libraries, {
+                id => $library->{id},
+                available => $self->tomebook_availability_search({
+                    isbn => $q->param('isbn'),
+                    status => 'can_reserve',
+                    semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}),
+                    libraries => [$library->{id}],
+                }),
+                ours => $library_access->{'id'},
+            };
         }
     }
 
     return $self->template({file => 'isbnview.html', 
         vars => {
             isbn => $q->param('isbn'),
-            libraries_from => $self->_libraryaccess($self->param('user_info')->{id}),
+            libraries_from => \@from_libraries,
             libraries_to => \@to_libraries,
         }
     });
@@ -1139,36 +1149,23 @@ sub isbnview {
 }
 #}}}
 
+#{{{_libraryaccesshash
+sub _libraryaccesshash {
+    my $self = shift;
+    my $uid = shift;
 
-#{{{_libraryaccess
-sub _libraryaccess {
-	my $self = shift;
-	my $uid = shift;
-	
-	my %library_access = map { $_ => 1 } ($self->library_access({ user => $uid }));
-	my $libraries = $self->library_info;
-	foreach my $library (@{$libraries}) {
-		$library->{access} = $library_access{$library->{id}} ? 1 : 0;
-	}
-
-	return $libraries;
+    return { map {$_ => 1} ($self->library_access({ user => $uid })) };
 }
 #}}}
+
+#{{{_libraries
 
 #{{{_libraryauthorized
 sub _libraryauthorized {
 	my $self = shift;
 	my ($uid, $library) = @_;
 
-	return scalar(grep { $_->{id} == $library } @{$self->library_access({user => $uid})}) == 1;
-}
-#}}}
-
-#{{{_librarieshash
-sub _librarieshash {
-	my $self = shift;
-
-	return { map { $_->{id} => $_ } @{$self->library_info} };
+	return scalar( grep { $_ == $library } ($self->library_access({user => $uid})) ) == 1;
 }
 #}}}
 
