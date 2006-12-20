@@ -639,8 +639,7 @@ sub addtomebook_process {
 		)],
 		filters		=> 'trim',
 		field_filters	=> {
-			isbn	=> 'uc',
-			isbn	=> sub { my $value = shift; $value =~ s/[- ]//g; return $value; },
+			isbn	=> sub { my $value = shift; $value =~ s/[- ]//g; $value = uc $value; return $value; },
 		},
 	}, { target => 'addtomebook' }) || return $self->check_rm_error_page;
 
