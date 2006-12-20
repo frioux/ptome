@@ -32,6 +32,12 @@ print ("Welcome to the TOME installer!\n");
 print ("This script will set up the database and configuration files that TOME needs.  \n");
 print ("\n");
 
+print ("Checking to make sure the installer has root privileges...\n");
+
+if (!(`whoami` eq "root\n")) {
+	die "\nYou must run the installer as root!\n";
+}
+
 #This will be operational only if we get rid of the need for installing plpgsql into the database
 #print ("First, do you wish to create a new database or use an existing one?\n");
 #prompt (-menu => ['Create a new database', 'Use an existing one']);
