@@ -1,0 +1,593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>TOME</title>
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#config">CONFIG</a></li>
+		<li><a href="#cgiapp_init">cgiapp_init</a></li>
+		<li><a href="#error_runmode">error_runmode</a></li>
+		<li><a href="#error">error</a></li>
+		<li><a href="#tomebooks_search">tomebooks_search</a></li>
+		<li><a href="#expire_search">expire_search</a></li>
+		<li><a href="#reservation_search">reservation_search</a></li>
+		<li><a href="#dueback_search">dueback_search</a></li>
+		<li><a href="#add_book">add_book</a></li>
+		<li><a href="#add_class">add_class</a></li>
+		<li><a href="#patrons_search">patrons_search</a></li>
+		<li><a href="#patron_add">patron_add</a></li>
+		<li><a href="#patron_update">patron_update</a></li>
+		<li><a href="#patron_info">patron_info</a></li>
+		<li><a href="#books_search">books_search</a></li>
+		<li><a href="#patron_classes">patron_classes</a></li>
+		<li><a href="#patron_add_class">patron_add_class</a></li>
+		<li><a href="#patron_delete_class">patron_delete_class</a></li>
+		<li><a href="#class_info">class_info</a></li>
+		<li><a href="#class_books">class_books</a></li>
+		<li><a href="#class_update_verified">class_update_verified</a></li>
+	</ul>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>TOME</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>This is the main module for all TOME interactions.</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>I really don't know how all of this works...</p>
+<p>
+</p>
+<h2><a name="config">CONFIG</a></h2>
+<p>The CONFIG hash describes various and sundry configurata.</p>
+<p>These configurata are:</p>
+<dl>
+<dt><strong><a name="item_cgibase">cgibase</a></strong><br />
+</dt>
+<dd>
+the relative location of the cgi stuff
+</dd>
+<p></p>
+<dt><strong><a name="item_staticbase">staticbase</a></strong><br />
+</dt>
+<dd>
+unsure
+</dd>
+<p></p>
+<dt><strong><a name="item_templatepath">templatepath</a></strong><br />
+</dt>
+<dd>
+the relative location of the templates
+</dd>
+<p></p>
+<dt><strong><a name="item_dbidbname">dbidbname</a></strong><br />
+</dt>
+<dd>
+the database name that TOME is stored under
+</dd>
+<p></p>
+<dt><strong><a name="item_dbihostname">dbihostname</a></strong><br />
+</dt>
+<dd>
+the hostname of the database server
+</dd>
+<p></p>
+<dt><strong><a name="item_dbiport">dbiport</a></strong><br />
+</dt>
+<dd>
+the port the database server is running on
+</dd>
+<p></p>
+<dt><strong><a name="item_dbiusername">dbiusername</a></strong><br />
+</dt>
+<dd>
+username for the database
+</dd>
+<p></p>
+<dt><strong><a name="item_dbipassword">dbipassword</a></strong><br />
+</dt>
+<dd>
+password for the database
+</dd>
+<p></p>
+<dt><strong><a name="item_notifyfrom">notifyfrom</a></strong><br />
+</dt>
+<dd>
+the ``address'' email messages are from
+</dd>
+<p></p>
+<dt><strong><a name="item_adminemail">adminemail</a></strong><br />
+</dt>
+<dd>
+the ``address'' email messages are sent to
+</dd>
+<p></p>
+<dt><strong><a name="item_devmode">devmode</a></strong><br />
+</dt>
+<dd>
+whether or not this is being run in development mode
+</dd>
+<p></p>
+<dt><strong><a name="item_devemailto">devemailto</a></strong><br />
+</dt>
+<dd>
+the ``address'' email messages are sent to when in development mode
+</dd>
+<p></p></dl>
+<p>Note: address format is 'Name &lt;email@domain&gt;`</p>
+<p>
+</p>
+<h2><a name="cgiapp_init">cgiapp_init</a></h2>
+<p>This appears to (and probably does considering the name) set up various variables that are needed for CGI stuff.  It takes no arguments.</p>
+<p>
+</p>
+<h2><a name="error_runmode">error_runmode</a></h2>
+<p>This is called when there is an error that we really don't know what caused.
+This takes one argument:</p>
+<dl>
+<dt><strong><a name="item_error">error</a></strong><br />
+</dt>
+<dd>
+the error message (I presume)
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="error">error</a></h2>
+<p>This function is called when there is a fatal error.</p>
+<p>This function takes a hash as an argument:</p>
+<dl>
+<dt><strong><a name="item_message">message</a></strong><br />
+</dt>
+<dd>
+the short error message
+</dd>
+<p></p>
+<dt><strong><a name="item_extended">extended</a></strong><br />
+</dt>
+<dd>
+the details of the error message
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="tomebooks_search">tomebooks_search</a></h2>
+<p>This returns an array of found textbooks.</p>
+<p>It takes arguments in the form of a hash:</p>
+<dl>
+<dt><strong><a name="item_isbn">isbn</a></strong><br />
+</dt>
+<dd>
+the isbn to look for
+</dd>
+<p></p>
+<dt><strong><a name="item_status">status</a></strong><br />
+</dt>
+<dd>
+that status of the book (all, can_reserve, can_checkout, or in_collection)
+</dd>
+<p></p>
+<dt><strong><a name="item_title">title</a></strong><br />
+</dt>
+<dd>
+the title of the book
+</dd>
+<p></p>
+<dt><strong><a name="item_author">author</a></strong><br />
+</dt>
+<dd>
+the author of the book
+</dd>
+<p></p>
+<dt><strong><a name="item_edition">edition</a></strong><br />
+</dt>
+<dd>
+the edition of the book
+</dd>
+<p></p>
+<dt><strong><a name="item_libraries">libraries</a></strong><br />
+</dt>
+<dd>
+the libraries to look in for the book (Note: this is an array reference...whatever thatmeans.)
+</dd>
+<p></p>
+<dt><strong><a name="item_semester">semester</a></strong><br />
+</dt>
+<dd>
+the semester that the book is here for???
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="expire_search">expire_search</a></h2>
+<p>This function returns a list of books that will expire on the given semester with the given libraries.</p>
+<p>The arguments are given as a hash:</p>
+<dl>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+The semester in which the books will expire
+</dd>
+<p></p>
+<dt><strong>libraries</strong><br />
+</dt>
+<dd>
+The libraries the books reside in
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="reservation_search">reservation_search</a></h2>
+<p>This function returns an array of books that are reserved in a given semester from given libraries.</p>
+<p>The arguments are given as a hash:</p>
+<dl>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+the semester that the books are reserved for
+</dd>
+<p></p>
+<dt><strong>libraries</strong><br />
+</dt>
+<dd>
+the libraries that the books are in
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="dueback_search">dueback_search</a></h2>
+<p>This function returns a list of books that are due back at the given semester from the given libraries.</p>
+<p>The arguments are given as a hash:</p>
+<dl>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+the semester that the books are due back
+</dd>
+<p></p>
+<dt><strong>libraries</strong><br />
+</dt>
+<dd>
+the libraries that the books are in
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="add_book">add_book</a></h2>
+<p>This function is used to add a book to TOME.  This is not for adding a real book, but for adding a book type.  Like adding a Class, not an Object.</p>
+<p>This function takes a hash as an argument:</p>
+<dl>
+<dt><strong>isbn</strong><br />
+</dt>
+<dd>
+The ISBN of the book
+</dd>
+<p></p>
+<dt><strong>title</strong><br />
+</dt>
+<dd>
+The Title of the book
+</dd>
+<p></p>
+<dt><strong>author</strong><br />
+</dt>
+<dd>
+The Author of the book
+</dd>
+<p></p>
+<dt><strong>edition</strong><br />
+</dt>
+<dd>
+The Edition of the book
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="add_class">add_class</a></h2>
+<p>This function adds a class to TOME.</p>
+<p>The arguments are given as a hash:</p>
+<dl>
+<dt><strong><a name="item_id">id</a></strong><br />
+</dt>
+<dd>
+The ``School Readable'' name of the class (that is, something like, MATH9999)
+</dd>
+<p></p>
+<dt><strong><a name="item_name">name</a></strong><br />
+</dt>
+<dd>
+The Human Readable name of the Class
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="patrons_search">patrons_search</a></h2>
+<p>This function finds patrons.</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the patron
+</dd>
+<p></p>
+<dt><strong>name</strong><br />
+</dt>
+<dd>
+The Real Name of the patron
+</dd>
+<p></p>
+<dt><strong><a name="item_email">email</a></strong><br />
+</dt>
+<dd>
+The Email of the patron
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="patron_add">patron_add</a></h2>
+<p>This function adds a patron to the database.</p>
+<p>This function takes arguments as a hash as follows:</p>
+<dl>
+<dt><strong>email</strong><br />
+</dt>
+<dd>
+The email address of the patron
+</dd>
+<p></p>
+<dt><strong>name</strong><br />
+</dt>
+<dd>
+The name of the patron (Often the patron's nickname)
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="patron_update">patron_update</a></h2>
+<p>This function changes the patron at a given id.</p>
+<p>The arguments to this function are given as a hash, as usual:</p>
+<dl>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The id of the patron to change
+</dd>
+<p></p>
+<dt><strong>email</strong><br />
+</dt>
+<dd>
+The email to set for the given id
+</dd>
+<p></p>
+<dt><strong>name</strong><br />
+</dt>
+<dd>
+The name to set to the given id
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="patron_info">patron_info</a></h2>
+<p>This function returns information about patrons matching certain critereon.</p>
+<p>The function looks for the following to parameters in a hash in this order:</p>
+<dl>
+<dt><strong>email</strong><br />
+</dt>
+<dd>
+The email to try to find
+</dd>
+<p></p>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The exact id to find
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="books_search">books_search</a></h2>
+<p>This function returns an array of books that match a number of critereon.</p>
+<p>frew</p>
+<p>
+</p>
+<h2><a name="patron_classes">patron_classes</a></h2>
+<p>This function finds the classes associated with a patron for a given semester.</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong><a name="item_patron">patron</a></strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the patron
+</dd>
+<p></p>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+The ID of the semester to retrieve classes for.
+</dd>
+<p></p></dl>
+<p>Returns: An arrayref containing class ids.</p>
+<p>
+</p>
+<h2><a name="patron_add_class">patron_add_class</a></h2>
+<p>This function adds a class associated with a patron for a given semester.</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>patron</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the patron
+</dd>
+<p></p>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+The ID of the semester to retrieve classes for.
+</dd>
+<p></p>
+<dt><strong><a name="item_class">class</a></strong><br />
+</dt>
+<dd>
+The ID of the class to add.
+</dd>
+<p></p></dl>
+<p>Returns: Nothing.</p>
+<p>
+</p>
+<h2><a name="patron_delete_class">patron_delete_class</a></h2>
+<p>This function deletes a class associated with a patron for a given semester.</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>patron</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the patron
+</dd>
+<p></p>
+<dt><strong>semester</strong><br />
+</dt>
+<dd>
+The ID of the semester to retrieve classes for.
+</dd>
+<p></p>
+<dt><strong>class</strong><br />
+</dt>
+<dd>
+The ID of the class to add.
+</dd>
+<p></p></dl>
+<p>Returns: Nothing.</p>
+<p>
+</p>
+<h2><a name="class_info">class_info</a></h2>
+<p>This method returns information about class</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the class
+</dd>
+<p></p></dl>
+<p>Returns a hash:</p>
+<dl>
+<dt><strong>name</strong><br />
+</dt>
+<dd>
+The text name of the class
+</dd>
+<p></p>
+<dt><strong><a name="item_comments">comments</a></strong><br />
+</dt>
+<dd>
+The text comments about the class
+</dd>
+<p></p>
+<dt><strong><a name="item_verified">verified</a></strong><br />
+</dt>
+<dd>
+Semester ID for which the class has been verified.
+</dd>
+<p></p>
+<dt><strong><a name="item_uid">uid</a></strong><br />
+</dt>
+<dd>
+User ID of the TOMEkeeper that did the last verification
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="class_books">class_books</a></h2>
+<p>This method returns books associated with a class</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the class
+</dd>
+<p></p></dl>
+<p>Returns an arrayref to an array of hashrefs:</p>
+<dl>
+<dt><strong>isbn</strong><br />
+</dt>
+<dd>
+ISBN of the book
+</dd>
+<p></p>
+<dt><strong>verified</strong><br />
+</dt>
+<dd>
+Semester ID for when the book was last verified
+</dd>
+<p></p>
+<dt><strong>comments</strong><br />
+</dt>
+<dd>
+Comments about the verification of the book
+</dd>
+<p></p>
+<dt><strong><a name="item_usable">usable</a></strong><br />
+</dt>
+<dd>
+Boolean indicating if the book is usable or not
+</dd>
+<p></p>
+<dt><strong>uid</strong><br />
+</dt>
+<dd>
+The user id of the TOMEkeeper who did the verification
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="class_update_verified">class_update_verified</a></h2>
+<p>This method upates information about a class</p>
+<p>Arguments are given as a hash:</p>
+<dl>
+<dt><strong>id</strong><br />
+</dt>
+<dd>
+The numeric, databasical id of the class
+</dd>
+<p></p>
+<dt><strong>verified</strong><br />
+</dt>
+<dd>
+The ID of the semester for which the class has been verified
+</dd>
+<p></p>
+<dt><strong>uid</strong><br />
+</dt>
+<dd>
+The ID of the TOMEkeeper that did the verification
+</dd>
+<p></p></dl>
+<p>Returns nothing.</p>
+<p>
+</p>
+
+</body>
+
+</html>
