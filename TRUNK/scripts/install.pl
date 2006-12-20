@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use lib "../modules";
-use TOME;
+#use TOME;
 use Crypt::PasswdMD5;
 use IO::Prompt;
 use DBI;
@@ -21,9 +21,11 @@ my @args = '';
 my $siteconfig = '';
 my $configfile = '';
 my $confighandle = '';
+my $FH = '';
 my $tomeuser = '';
 my $tomepass = '';
 my $tomeemail = '';
+
 
 print ("Welcome to the TOME installer!\n");
 print ("This script will set up the database and configuration files that TOME needs.  \n");
@@ -54,7 +56,7 @@ print ("What database do you want TOME to use?  For now, please enter a new data
 $database = prompt ("Database name: ", -default => 'tome');
 print ("Attempting to create database \'" . $database . "\'...\n");
 
-@args = ("sudo", "-u", "postgres", "createdb", "-O", $username, $database);
+@args = ("sudo", "-u", "postgres", "createdb", "-O", $username, '-T', 'template0', $database);
 system (@args);
 
 print ("Installing the plpgsql language on database \'" . $database . "\'...\n");
@@ -62,6 +64,12 @@ print ("Installing the plpgsql language on database \'" . $database . "\'...\n")
 @args = ("sudo", "-u", "postgres", "createlang", "plpgsql", $database);
 system (@args);
 
+print ("Inserting the TOME schema into the database...\n");
+
+@args = ("sudo", "-u", "postgres", 'psql', $database, $username, '-f', '../devdocs/schema.sql');
+system (@args);
+
+print ("\n");
 print ("Now that the database has been created, we need to initialize the site-config.pl file.  ");
 print ("The next series of questions will fill in the information necessary to produce a working config file.  ");
 print ("At this point, you'll have to make the necessary symlinks yourself, due to their distro-dependant nature.\n");
@@ -154,6 +162,14 @@ $siteconfig .= ');' . "\n";
 
 print ("\n");
 print ("Attempting to write site-config.pl...\n");
+print ("This will overwrite any existing site-config.pl, assuming this script has the permissions to do so\n");
+
+open (FH, ">", '../site-config.pl')
+	or die "Can't open site-config.pl: $!";
+
+print FH $siteconfig;
+
+close (FH);
 
 print ("Here are the contents of site-config.pl:\n");
 print ("\n");

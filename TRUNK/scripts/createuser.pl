@@ -43,8 +43,10 @@ if (!$email)
 
 if (!$passwd)
 {
-  $passwd = unix_md5_crypt(prompt ("Password: ", -echo => ''));
+  $passwd = prompt ("Password: ", -echo => '');
 }
+
+$passwd = unix_md5_crypt($passwd);
 
 #print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
 
