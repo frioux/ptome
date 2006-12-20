@@ -64,9 +64,17 @@ unsure
 
 the relative location of the templates
 
-=item dbidatasource 
+=item dbidbname
 
-the database source.  funky format, description please?
+the database name that TOME is stored under
+
+=item dbihostname
+
+the hostname of the database server
+
+=item dbiport
+
+the port the database server is running on
 
 =item dbiusername
 
@@ -103,7 +111,9 @@ our %CONFIG = (
 
 	templatepath	=> '../templates',
 
-	dbidatasource   => 'dbi:Pg:dbname=tome;host=127.0.0.1',
+	dbidbname	=> 'tome',
+	dbihostname	=> 'localhost',
+	dbiport		=> '5432',
 	dbiusername	=> 'tome',
 	dbipassword	=> 'password',
 
