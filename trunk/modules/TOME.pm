@@ -659,6 +659,42 @@ sub book_info {
 	return $sth->fetchrow_hashref;
 }
 
+sub class_search {
+	my $self = shift;
+	
+	my %params = validate(@_, {
+		id	=> { type => SCALAR, optional => 1 },
+		name	=> { type => SCALAR, optional => 1 },
+	});
+
+	my (@conditions, @values);
+
+	if(defined($params{id})) {
+		_quote_like($params{id});
+		push @conditions, "id ILIKE ? || '%'";
+		push @values, $params{id};
+	}
+	
+	if(defined($params{name})) {
+		_quote_like($params{id});
+		push @conditions, "name ILIKE '%' || ? || '%'";
+		push @values, $params{id};
+	}
+
+	my $statement = 'SELECT id, name FROM classes ' . (@conditions ? 'WHERE ' . join(' AND ', @conditions) : '') . ' ORDER BY id ASC';
+
+	my $sth = $self->dbh->prepare($statement);
+	
+	$sth->execute(@values);
+	
+	my @results;
+	while(my $result = $sth->fetchrow_hashref) {
+		push @results, $result;
+	}
+	
+	return \@results;
+}
+
 sub class_list {
 	my $self = shift;
 
@@ -992,6 +1028,10 @@ sub template {
 	$tt->process($params{file}, $params{vars}, \$output) or die $tt->error;
 
 	return $output;
+}
+
+sub _quote_like {
+	return ($_[0] =~ s/([\\%_])/\\$1/g);
 }
 
 1;

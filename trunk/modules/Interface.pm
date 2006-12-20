@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook updatetomebook addclass tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -87,6 +87,22 @@ sub autocomplete_isbn {
 	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
 }
 
+sub autocomplete_class {
+	my $self = shift;
+
+	my @classes;
+	foreach(@{$self->class_search({ id => $self->query->param('class') })}) {
+		my $name = $_->{name};
+		if(length($name) > 33) {
+			$name = substr($name, 0, 30) . '...';
+		}
+		push @classes, '<li class="auto_complete_item"><div class="primary">' . $_->{id} . '</div><span class="informal"><div class="secondary">' . $name . '</div></span></li>';
+	}
+
+	return '<ul class="auto_complete_list">' . join("\n", @classes) . '</ul>';
+}
+
+
 sub mainsearch {
 	my $self = shift;
 
@@ -110,7 +126,7 @@ sub mainsearch {
 		}
 	}
 	
-	my $classes = $self->class_list;
+	my $classes = $self->class_search;
 	
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	

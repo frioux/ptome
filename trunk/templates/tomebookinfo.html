@@ -6,7 +6,8 @@
 <p><table bgcolor="lightyellow" border="1" cellpadding="5">
 <tr>
 	<td><b>Book Information</b></td>
-	<td><b>Used in these classes:</b></td>
+	<td><b>Used in these classes</b></td>
+	<td><b>Associate Class</b></td>
 </tr>
 <tr>
 <td>
@@ -20,6 +21,24 @@
 	[% FOREACH class = classes %]
 	<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br>
 	[% END %]
+</td>
+<td>
+	<form action="[% config.cgibase %]/admin.pl" method="post">
+	<input type="hidden" name="rm" value="addclassbook">
+	<input type="hidden" name="isbn" value="[% tomebook.isbn | html %]">
+	Class ID: <input autocomplete="off" id="class" name="class" type="text">
+<div class="auto_complete" id="class_auto_complete"></div>
+[% prototype.auto_complete_field('class', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_class'" }) %]<br>
+Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br>
+When verified: <select name="verified">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select><br>
+Verification comments:<br><textarea name="comments" rows="4" cols="30"></textarea><br>
+
+	<input type="submit" value="Associate Class">
+	</form>
 </td>
 </tr></table>
 [% IF CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
