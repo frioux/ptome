@@ -64,4 +64,10 @@ sub libraries {
         return $self->{tome}->library_info();
 }
 
+sub library_access {
+	my $self = shift;
+
+	return [ $self->{tome}->library_access({ user => $self->{tome}->param('user_info')->{id} }) ];
+}
+
 1;

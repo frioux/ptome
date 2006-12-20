@@ -148,6 +148,7 @@ sub autocomplete_class {
 #{{{ mainsearch
 sub mainsearch {
     my $self = shift;
+    my $errs = shift;
 
     my $results = $self->check_rm('mainsearch', 
         {
@@ -166,7 +167,10 @@ sub mainsearch {
 
     return $self->template(
         file => 'mainsearch.html',
-        vars => {books=>\@books}
+        vars => {
+		books	=> \@books,
+		errs	=> $errs,
+	}
     );
 }
 #}}}
@@ -694,10 +698,7 @@ sub addtomebook {
 	my $self = shift;
 	my $errs = shift;
 	
-	return $self->template({ file => 'addtomebook.html', vars => {
-			libraries	=> $self->_libraryaccess($self->param('user_info')->{id}),
-			errs		=> $errs,
-	}});
+	return $self->template({ file => 'addtomebook.html', vars => { errs => $errs }});
 }
 #}}}
 
