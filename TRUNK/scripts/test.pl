@@ -45,7 +45,7 @@ GetOptions (
 print ("Blanking and re-creating database \'" . $database . "\'...\n");
 
 $ENV{'PGPASSWORD'} = $password;
-@args = ("psql", "-p", "-U", $username, "-h", $address, "-p", $port, "-d", $database, "-f", '../devdocs/clean.sql');
+@args = ("psql", "-p", "-U", $username, "-h", $address, "-p", $port, "-d", $database, "-f", '../devdocs/clean.sql', "-o", '/dev/null', "--variable", 'VERBOSITY=terse');
 system (@args);
 $ENV{'PGPASSWORD'} = '';
 
