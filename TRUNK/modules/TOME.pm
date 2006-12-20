@@ -142,7 +142,7 @@ This appears to (and probably does considering the name) set up various variable
 sub cgiapp_init {
 	my $self = shift;
 
-	$self->dbh_config($CONFIG{dbidatasource}, $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1});
+	$self->dbh_config("dbi:Pg:dbname=$CONFIG{dbidbname};host=$CONFIG{dbihostname};port=$CONFIG{dbiport}", $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1});
 	$self->session_config(
 		CGI_SESSION_OPTIONS	=> [ 'driver:PostgreSQL', $self->query, { Handle => $self->dbh } ],
 		SEND_COOKIE		=> 1,
