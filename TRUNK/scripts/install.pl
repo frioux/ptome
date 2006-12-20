@@ -73,7 +73,7 @@ system (@args);
 
 print ("Inserting the TOME schema into the database...\n");
 
-@args = ("su", "postgres", "-c", "psql $database $username -f ../devdocs/schema.sql");
+@args = ("su", "postgres", "-c", "psql $database $username -h 127.0.0.1 -f ../devdocs/schema.sql");
 system (@args);
 
 print ("\n");
