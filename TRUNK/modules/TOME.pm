@@ -645,6 +645,8 @@ A patron ID identifying the patron reserving the books
 
 =back
 
+Returns an array of reservation id's.
+
 =cut
 
 sub reservation_search {
