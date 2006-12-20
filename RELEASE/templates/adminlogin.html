@@ -1,0 +1,19 @@
+[% USE CGI %]
+<html>
+<head>
+	<title>TOME</title>
+</head>
+<body onLoad="document.login.username.focus();">
+<center>
+<img src="[% config.staticbase %]/tome.png">
+<form action="[% config.cgibase %]/admin.pl" method="post" name="login">
+[% IF error %]
+<p>Error: <font color="red">[% error %]</font>
+[% END %]
+<p>Username: [% CGI.textfield({ Name => "username" }) %]<br>
+Password: <input type="password" name="password"><br>
+<input type="submit" value="Submit">
+</form>
+</center>
+</body>
+</html>
