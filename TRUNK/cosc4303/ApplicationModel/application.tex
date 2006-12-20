@@ -1,6 +1,12 @@
 \documentclass[12pt,titlepage]{article}
 \usepackage{graphicx}
-\author{The TOME Team}
+\usepackage{longtable}
+\author{\textbf{The TOME Team}\\
+Curtis ``Fjord'' Hawthorne \\
+Craig Miller\\
+Clint Olson\\
+fREW Schmidt
+}
 \title{\textbf{TOME Application Model}}
 \begin{document}
 \maketitle
@@ -56,7 +62,7 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 \subsection{Actor Definitions}
 
 \subsubsection{Patron}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & The Patron is any student who wishes to use the TOME system.  Only students that reside on floors with an active TOME system can become Patrons. Patrons never interact directly with TOME, only through TOMEkeepers.  \\
 	\hline
@@ -66,10 +72,10 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 	\hline
 	\textbf{Actor Type} & Passive - Person. \\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{TOMEkeeper}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & The TOMEkeeper is the primary user of the TOME system.  They are responsible for all interactions with Patrons, all system administration, and all TOME activity. \\
 	\hline
@@ -79,11 +85,11 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 	\hline
 	\textbf{Actor Type} & Active - Person. \\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \section{Business Use Cases}
 \subsection{Use Case Listing}
-\begin{tabular}{|p{.10\textwidth}|p{.40\textwidth}|p{.50\textwidth}|}
+\begin{longtable}{|p{.10\textwidth}|p{.40\textwidth}|p{.50\textwidth}|}
 	\hline
 	\textbf{ID} & \textbf{Use Case Name} & \textbf{Comments} \\
 	\hline
@@ -97,7 +103,7 @@ Figure~\ref{userdiagram} shows an overview of the actors involved in the TOME sy
 	\hline
 	UC05 & Book Added To Class & When a TOMEkeeper adds a book to a particular class \\
 	\hline
-\end{tabular}
+\end{longtable}
 \subsection{Graphical Use Case Diagram}
 This section represents the business use cases of the TOME system in graphical form in Figure~\ref{usecase}.
 \begin{figure}[h]
@@ -275,7 +281,7 @@ Figure~\ref{BusinessModelDiagram} shows a graphical representation of the busine
 \end{figure}
 \subsection{Business Object Definitions}
 \subsubsection{TOME}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & TOME is the core module that processes database requests from the Web Interface.\\
 	\hline
@@ -285,9 +291,7 @@ Figure~\ref{BusinessModelDiagram} shows a graphical representation of the busine
 	\hline
 	\textbf{Business Rules} & TOME has dependencies on many Perl modules (listed in the install document that can be located by referencing Section~\ref{references}).  These must be installed before TOME will function properly.\\
 	\hline
-\end{tabular}
-\\
-\\
+\end{longtable}
 Figure~\ref{TOMESequenceDiagram} is an example sequence of events involving TOME.
 \begin{figure}[h]
 	\centering
@@ -298,7 +302,7 @@ Figure~\ref{TOMESequenceDiagram} is an example sequence of events involving TOME
 
 
 \subsubsection{Database}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & The database is where all the information for TOME is stored.  The current implementation uses PostgreSQL for the database and DBI for all database interactions. \\
 	\hline
@@ -308,9 +312,7 @@ Figure~\ref{TOMESequenceDiagram} is an example sequence of events involving TOME
 	\hline
 	\textbf{Business Rules} & PostgreSQL must be installed before the system will be functional. \\
 	\hline
-\end{tabular}
-\\
-\\
+\end{longtable}
 Figure~\ref{DatabaseSequenceDiagram} is an example sequence of events involving the database.
 \begin{figure}[h]
 	\centering
@@ -321,7 +323,7 @@ Figure~\ref{DatabaseSequenceDiagram} is an example sequence of events involving 
 
 
 \subsubsection{Web Interface}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & The Web Interface forms the connection between the Database and the Templates.  It processes information that TOME retrieves from the Database and sends it to the templates.  It also processes user requests and sends them to TOME.\\
 	\hline
@@ -331,9 +333,7 @@ Figure~\ref{DatabaseSequenceDiagram} is an example sequence of events involving 
 	\hline
 	\textbf{Business Rules} & The Web Interface depends on a number of Perl modules (see the Install document referenced in Section~\ref{references}) and these must be installed before it will be functional.\\
 	\hline
-\end{tabular}
-\\
-\\
+\end{longtable}
 Figure~\ref{WebInterfaceSequenceDiagram} is an example sequence of events involving the Web Interface.
 \begin{figure}[h]
 	\centering
@@ -343,7 +343,7 @@ Figure~\ref{WebInterfaceSequenceDiagram} is an example sequence of events involv
 \end{figure}
 
 \subsubsection{Templates}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Description} & Templates form the basis for the look and feel of the web interface.  They do not give any functionality in and of themselves, but are a way to display information that is given by the Web Interface\\
 	\hline
@@ -353,9 +353,7 @@ Figure~\ref{WebInterfaceSequenceDiagram} is an example sequence of events involv
 	\hline
 	\textbf{Business Rules} & The templates need to be XHTML and CSS compliant. \\
 	\hline
-\end{tabular}
-\\
-\\
+\end{longtable}
 Figure~\ref{TemplateSequenceDiagram} is an example sequence of events involving template generation.
 \begin{figure}[h]
 	\centering
@@ -376,7 +374,7 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\label{NavigationDiagram}
 \end{figure}
 \subsection{Screens}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{Screen ID} & \textbf{Description} \\
 	\hline
@@ -394,10 +392,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	ID0007 & Check Books Out \\
 	\hline
-\end{tabular}
+\end{longtable}
 \subsection{View Definitions}
 \subsubsection{Home Page}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & TOME \\
 	\hline
@@ -407,10 +405,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & None.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Patron Page}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Patron Page \\
 	\hline
@@ -420,11 +418,11 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & None.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Modify Class}
 \label{modifyclass}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Class Information Page\\
 	\hline
@@ -434,10 +432,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & UC05.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Reserve Books}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Reserve Books\\
 	\hline
@@ -447,10 +445,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & UC02.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Add Book}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Add TOME Book\\
 	\hline
@@ -460,10 +458,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & UC01.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Add Class}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Add Class\\
 	\hline
@@ -473,10 +471,10 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & UC04.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \subsubsection{Check Books Out}
-\begin{tabular}{|p{.25\textwidth}|p{.75\textwidth}|}
+\begin{longtable}{|p{.25\textwidth}|p{.75\textwidth}|}
 	\hline
 	\textbf{View Title} & Check Book Out\\
 	\hline
@@ -486,7 +484,7 @@ Figure~\ref{NavigationDiagram} graphically displays how the user interacts with 
 	\hline
 	\textbf{Scenario References} & UC03.\\
 	\hline
-\end{tabular}
+\end{longtable}
 
 \section{Non-Functional Requirements Specification}
 The Business Scenario Model only represents part of the full set of requirements.  Although the Business Scenario Model represents the functional requirements that are included in the project, there are many intangible requirements that haven’t been covered.  The purpose of this section is to document the non-functional requirements of TOME.
@@ -495,7 +493,91 @@ The non-functional requirements outlined in this section include the technologie
 \subsection{Enabling Technologies}
 \subsubsection{Target Hardware and Hardware Interfaces}
 TOME is a reasonably lightweight application.  It is targeted to run on any server-class computer.  If the computer is fast enough to run Apache, PostgreSQL, and Perl, it is fast enough for TOME.  Of course, the more users that access the system, the faster and bigger the server will have to be.
+\subsubsection{Target Development Environment}
+Development machines will utilize Vim, PostgreSQL, Subversion, and Perl on a Linux platform.
+\subsubsection{System Interfaces}
+TOME is a very high-level application, and as such will not have any direct interfaces to the system itself.  Apache will handle all network communication with the user, and PostgreSQL will handle all data storage.
+\subsection{Capacity Planning}
+\subsubsection{Traffic Volumes over Time}
+Because TOME is a web application, its traffic is very ``bursty.''  TOME will have a high draw on system resources during the time a request is handled, but after the request has been handled there is no load on the system.  So, TOME would go from a 0 when it isn't handling a request to a 1 when it is handling a request.
+\subsubsection{User Populations and Locations}
+TOME is intended to be used by TOMEkeepers.  They will primarily access the system using their personal computers on the floors they live.  However, during Christmas and Summer break, the TOMEkeepers will need to be able to access the system remotely.
+\subsubsection{Permanent Storage}
+The data that will be held is actually very small in volume.  It is all little chunks of text stored in a database.  A very large TOME installation will be on the order of tens of megabytes.
+\subsection{Printing}
+Any printing requirements will be handled by the user's web browser.  TOME has no intrinsic printing mechanisms.
+\subsection{Network}
+TOME has extensive network requirements, however they will be handled entirely by Apache and the host operating system.  TOME itself has no knowledge of network layout or transportation.
+\subsection{Workstations}
+Any workstation with a modern, standards-compliant web browser can be used to access TOME.
+\subsection{Operational Parameters}
+\subsubsection{Usability}
+In order to be successful, TOME must be very user-friendly.  Its target audience is limited, so it doesn't need to be completely intuitive, but the TOMEkeeper's technical skills will range from the extremely proficient to the beginner.  To improve usability, the interface will be designed to make most operations as obvious as possible.  Care has been taken to make the workflows logical.  Also, training will be given to every new user.
+\subsubsection{Reliability}
+TOME must be extremely reliable.  The database is especially important.  Without the data, the system becomes useless, and without the system, hundreds of books could be misplaced.  In order to ensure the reliability of the database, extensive checks have been put in place to make sure the data is consistent at all times (see Section~\ref{tomedbsection} for details).
 
+Nightly backups will be made of all the data in the system.  Restoring a backup after a catastrophic failure is as simple as reinstalling the system, and using the PostgreSQL data recovery tool to reload the database.
+\subsubsection{Maintainability}
+Maintainability is a large concern with TOME.  To improve maintainability, all code will be documented in both embedded POD and in overviews such as this one.  Development will always be done in a Subversion environment to ensure traceability of all changes.
+\subsubsection{Portability}
+TOME itself contains no platform-dependent code.  The install scripts do make assumptions about a Linux-based platform, but the install could be done manually on other platforms.  The bulk of the code is written to interface to other extremely portable libraries and systems such as PostgreSQL and CGI.
+\section{Design Approach}
+\subsection{Key Drivers}
+Continued development of TOME will follow the basic pattern that already exists.  In some ways this is good because it will not need to be redesigned.  However, in some ways it can be a hindrance because the original design does not use objects as extensively as it could.  Even though it is less than idea, it was determined that the benefit that would be gained by a complete redesign would not outweigh the cost in time lost on new development.
+\subsection{Issues}
+The primary issue was determining how to preserve orthogonality without changing too much of the existing design.  One of the best ideas was a way to separate template and interface interaction.  This is detailed in Section~\ref{templatecallbacks}.
+\subsection{Solution Approach}
+The solution that was chosen is to retain as much as possible while still aiming for orthogonality and development speed.  The system is broken into different modules that each have a well-defined problem domain and provide cohesion while minimizing coupling.
+\section{Design}
+\subsection{Overview}
+TOME is subdivided into several components to promote orthogonality in design.  The three main components (or ``modules'') are TOME, TOME::Interface, and TOME::TemplateCallbacks.
+\subsection{Assumptions}
+None.
+\subsection{Component Diagram}
+Figure~\ref{ComponentDiagram} graphically depicts the component layout of the TOME system.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{ComponentDiagram}
+	\caption{Component Diagram}
+	\label{ComponentDiagram}
+\end{figure}
+\subsection{Component Descriptions}
+\subsubsection{TOME}
+The purpose of this module is to provide database connectivity and all utility functions used by other parts of the program. Ideally, the TOME module shouldn't know anything about users and especially nothing about templates.
+\subsubsection{TOME::Interface}
+This is to control almost all interaction between the user and TOME. Nearly every method is a CGI::Application runmode, with the exception of a few helper subs. Ideally, TOME::Interface shouldn't know any details about the internal database structure or what things look like when they're displayed by the template.
+\subsubsection{TOME::TemplateCallbacks}
+\label{templatecallbacks}
+Implements the TOME::TemplateCallbacks module. All templates are given a ``tome'' object that is an instantiation of this class. The idea is that when the template is given ID numbers of various things in the database (patrons, books, tomebooks, etc.) by TOME::Interface, the template can use this object to query the database through the TOME module and get string representations of the data. This module has the kinda funny place of knowing a little bit about both the template and the database. Most subs will probably just be wrappers of TOME subs, but if there is any additional data manipulation that needs to take place before the template (without crossing the line of actually doing template work), this is the place to do it. The reason this is separate from TOME is to give an extra layer of abstraction between the actual database calls and the template. Giving direct database access from inside a template is a thought too horrible to contemplate.
+\section{Interfaces}
+\subsection{Offered Services}
+None.
+\subsection{Internal Support Services}
+Internal support services will be provided by TOME and TOME::TemplateCallbacks.
+\subsection{External Services Required}
+The services defined by the external libraries will be required.
+\subsection{External Libraries Required}
+In addition to Perl, Apache, PostgreSQL, and the Perl bindings for those technologies, the following Perl modules (and their dependencies) are required:
+\begin{itemize}
+	\item Template
+	\item Template::Plugin::Comma
+	\item Template::Plugin::CGI
+	\item CGI::Application
+	\item CGI::Application::Plugin::Session
+	\item CGI::Application::Plugin::DBH
+	\item CGI::Application::Plugin::HTMLPrototype
+	\item CGI::Application::Plugin::ValidateRM (needs Compress::Zlib, even though CPAN doesn't show it as a prerequisite)
+	\item CGI::Application::Plugin::Forward
+	\item DateTime
+	\item DateTime::Format::Pg
+	\item SQL::Interpolate
+	\item MIME::Lite
+	\item Crypt::PasswdMD5
+	\item DBD::Pg
+\end{itemize}
+\section{Test Strategy}
+A framework will be created that is capable of running automated tests on all parts of the TOME system to ensure functionality and to prevent regression.  Tests will be broken up into the following categories: Database, Core, and Web Interface.  Tests will be made for all levels of functionality, starting from the database level, to check the consistency mechanisms and triggers, all the way up to simulating interaction with a user and a web browser.
+
+Once completed, these tests will be run on a nightly basis.  They will be capable of creating a clean database and simulating a full range of activities.  All developers will be required to run and pass all tests before checking any new code in.
 \section{Database Structure}
 \label{tomedbsection}
 The overall structure of the database can be seen in Figure~\ref{tomedb}.  In addition to the structure, there are also triggers that ensure the consistency of the database at all times.
