@@ -47,6 +47,7 @@ sub error_runmode {
 	my $self = shift;
 
 	return $self->error({ message => "Internal exception error", extended => $@ });
+	warn "TOME Internal Exception Error:\n" . $self->dump();
 }
 
 sub tomebooks_search {
@@ -113,8 +114,8 @@ sub tomebooks_search {
 	push @conditions, 'tomebooks.isbn = books.isbn';
 	my $statement = 'SELECT tomebooks.id FROM books, tomebooks WHERE ' . join(' AND ', @conditions) . " ORDER BY timeremoved DESC, title, id ASC";
 
-	warn "Statement of doom: $statement";
-	warn "Binds: " . join(',', @values);
+	#warn "Statement of doom: $statement";
+	#warn "Binds: " . join(',', @values);
 
 	my $sth = $dbh->prepare($statement);
 	
