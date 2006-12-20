@@ -171,46 +171,6 @@ sub mainsearch {
 }
 #}}}
 
-#{{{mainsearch_deprecated
-sub mainsearch_deprecated {
-	my $self = shift;
-
-	my $q = $self->query;
-	
-	my %search;
-	foreach (qw(title author edition status semester)) {
-		if($q->param($_)) {
-			$search{$_} = $q->param($_);
-		}
-	}
-
-	$search{isbn} = uc $q->param('isbn') if $q->param('isbn'); # If there's an ISBN, it should be upper case
-
-	$search{libraries} = $self->_librariesselecteddefault();
-
-	my @tomebooks;
-
-	if($q->param('rm')) {
-		my @results = $self->tomebooks_search({%search});
-		foreach(@results) {
-			push @tomebooks, $self->tomebook_info_deprecated({ id => $_ });
-		}
-	}
-	
-	my $classes = $self->class_search;
-	
-	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
-	
-	return $self->template({ file => 'mainsearch.html', vars => {
-		classes			=> $classes,
-		tomebooks		=> \@tomebooks,
-		libraries		=> $libraries,
-		librarieshash		=> $self->_librarieshash(),
-		libraries_selected	=> $search{libraries},
-	}});
-}
-#}}}
-
 #{{{removetomebook
 sub removetomebook {
 	my $self = shift;
