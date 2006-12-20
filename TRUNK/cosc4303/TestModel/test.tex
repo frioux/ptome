@@ -37,19 +37,19 @@ These tests will be run in an automated fashion after any non-cosmetic change to
 When the tests reveals a bug (or any result that differs from the norm), the results will be automatically emailed to the relevant members of the TOME team for analysis.  If a bug is confirmed, it will be entered into the Trac environment and assigned to a team member as part of their weekly action items.
 
 \subsection{Risks}
-Stefan Posthuma once said, "It is impossible to make anything foolproof because fools are so ingenious."  The principle remains true to this day -- despite the best efforts of programmers worldwide, software continues to manifest bugs and behavior that its creators hadn't thought to test for.  True, this problem can be ameliorated to some extent by creating tests based on the specified design requirements of the software and using automation to ensure any bug only happens once, but the possibility will remain to one degree or another no matter what steps are taken.
+Stefan Posthuma once said, ``It is impossible to make anything foolproof because fools are so ingenious.''  The principle remains true to this day -- despite the best efforts of programmers worldwide, software continues to manifest bugs and behavior that its creators hadn't thought to test for.  True, this problem can be ameliorated to some extent by creating tests based on the specified design requirements of the software and using automation to ensure any bug only happens once, but the possibility will remain to one degree or another no matter what steps are taken.
 
 While it is ever-present, this risk of the unknown is manageable, especially with the aid of automated regression testing and a versioning system (such as Subversion) to roll back changes to a known working build.
 
 \section{Test Harness and Automation}
 \subsection{Test Framework}
-The TOME project will use the Perl module Test::More for its test framework.  This module provides an extremely flexible context to specify individual tests in, running the gamut from the simple "ok" test which evaluates and expression for truth to more advanced expressions like "is\_deeply" (which compares all members of a data structure) and "like" (which utilizes regular expressions to determine the outcome of the test).
+The TOME project will use the Perl module Test::More for its test framework.  This module provides an extremely flexible context to specify individual tests in, running the gamut from the simple ``ok'' test which evaluates and expression for truth to more advanced expressions like ``is\_deeply'' (which compares all members of a data structure) and ``like'' (which utilizes regular expressions to determine the outcome of the test).
 
 A more complete summary of the Test::More module can be found at the CPAN repository: \\
 \texttt{http://search.cpan.org/~mschwern/Test-Simple-0.64/lib/Test/More.pm}
 
 \subsection{Test Harness}
-In keeping with the standard operating procedure for Perl projects, the Test::Harness modules will be used for automation.  Using the easily-accessible "prove" command, Test::Harness recursively iterates through each file and directory in the tests folder, running the tests within and compiling the results.  Once it finishes, it outputs the results along with a summary section showing how many tests failed, if any.
+In keeping with the standard operating procedure for Perl projects, the Test::Harness modules will be used for automation.  Using the easily-accessible ``prove'' command, Test::Harness recursively iterates through each file and directory in the tests folder, running the tests within and compiling the results.  Once it finishes, it outputs the results along with a summary section showing how many tests failed, if any.
 
 The command-line nature of Test::Harness makes it ideal for automation with the cron utility, so that even if individual team members forget to run the tests after a change, any problems that have been introduced should be caught when the test suite is triggered by cron as part of the nightly build.  The results can then be captured and compiled into a report to be sent to one or all of the team members.
 
@@ -64,7 +64,7 @@ The command-line nature of Test::Harness makes it ideal for automation with the 
 \end{itemize}
 
 \paragraph{One current semester}
-\hspace{1pt}\\ The semesters table has a boolean flag to mark which semester is "current."
+\hspace{1pt}\\ The semesters table has a boolean flag to mark which semester is ``current''.
 \begin{itemize}
 	\item Ensure that only one semester can be marked as current. Check on both inserts and updates.
 \end{itemize}
