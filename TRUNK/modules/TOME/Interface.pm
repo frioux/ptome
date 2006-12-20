@@ -475,15 +475,15 @@ sub report {
 	my $semester_selected = $self->_semesterselecteddefault();
 	my $libraries_selected = $self->_librariesselecteddefault();
 
-	my $reservation = $self->reservation_search({ semester => $semester_selected, libraries => $libraries_selected });
+	my $reservation = $self->reservation_search({ semester => $semester_selected, library_from => $libraries_selected });
 	foreach(@$reservation) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
-	my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
+	my $dueback = $self->dueback_search({ semester => $semester_selected, library_from => $libraries_selected });
 	foreach(@$dueback) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
-	my $expiring = $self->expire_search({ semester => $semester_selected, libraries => $libraries_selected });
+	my $expiring = $self->expire_search({ semester => $semester_selected, library_from => $libraries_selected });
 	foreach(@$expiring) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
