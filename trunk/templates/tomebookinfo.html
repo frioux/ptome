@@ -50,7 +50,7 @@ Verification comments:<br><textarea name="comments" rows="4" cols="30"></textare
 [% IF library.access %]<option value="[% library.id | html %]" [% IF library.id == tomebook.library %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 [% END %]
 </select>
-<p><b>Originator:</b> <input name="originator" type="text" value="[% tomebook.originator | html %]"><br>
+<p><b>Originator:</b> <input name="originator" type="text" value="[% tomebook.originator_email | html %]"><br>
 <p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
@@ -85,7 +85,7 @@ Expiration Semester: <select name="expire">
 [% END %]
 [% ELSE %]
 <p><b>Library:</b> [% librarieshash.${tomebook.library}.name %]
-<p><b>Originator:</b> [% tomebook.originator | html %]
+<p><b>Originator:</b> [% tomebook.originator_name | html %] ([% tomebook.originator_email | html %])
 <p><b>Time donated:</b> [% tomebook.timedonated.strftime('%B %d, %Y at %r') | html %]
 [% IF tomebook.timeremoved %]
 <p><b>Time removed:</b> [% tomebook.timeremoved.strftime('%B %d, %Y at %r') | html %]
@@ -99,7 +99,7 @@ Expiration Semester: <select name="expire">
 <font color="green">This book will not expire</font>
 [% END %]
 [% END %]
-[% IF !CGI.param('edit') AND librarieshash.${tomebook.library}.access AND !tomebook.timeremoved %]
+[% IF !CGI.param('edit') AND librarieshash.${tomebook.library}.access %]
 <p><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% tomebook.id | uri | html %]&edit=1">Edit this TOME book</a>
 [% END %]
 <hr>
@@ -159,7 +159,7 @@ Because of this, only reservations are allowed.
 		[% semestershash.${checkout.semester}.name | html %]
 	</td>
 	<td>
-		[% checkout.borrower | html %]
+		[% checkout.borrower_name | html %] ([% checkout.borrower_email | html %])
 	</td>
 	<td>[% checkout.username | html %]</td>
 	<td>[% librarieshash.${checkout.library}.name | html %]</td>
@@ -209,7 +209,7 @@ Because of this, only reservations are allowed.
 	<input type="hidden" name="finalrm" value="cancelcheckout">
 	<input type="hidden" name="id" value="[% checkout.id | html %]">
 	<input type="hidden" name="tomebook" value="[% tomebook.id | html %]">
-	<input type="hidden" name="action" value="Cancel checkout for [% semestershash.${checkout.semester}.name %] for [% tomebook.title %] (ID [% tomebook.id %]) to [% checkout.borrower %]">
+	<input type="hidden" name="action" value="Cancel checkout for [% semestershash.${checkout.semester}.name %] for [% tomebook.title %] (ID [% tomebook.id %]) to [% checkout.borrower_name %]">
 	<td>
 		[% UNLESS checkout.checkin %]
 			[% IF librarieshash.${tomebook.library}.access %]

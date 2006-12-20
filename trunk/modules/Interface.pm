@@ -14,7 +14,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
 	$self->start_mode('mainsearch');
 }
 
@@ -86,6 +86,23 @@ sub autocomplete_isbn {
 	}
 
 	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
+}
+
+sub autocomplete_patron {
+	my $self = shift;
+
+	my @patrons;
+	foreach my $patron ($self->patrons_search({ email => $self->query->param('patron'), name => $self->query->param('patron') })) {
+		if(length($patron->{name}) > 33) {
+			$patron->{name} = substr($patron->{name}, 0, 30) . '...';
+		}
+		if(length($patron->{email}) > 33) {
+			$patron->{email} = substr($patron->{email}, 0, 30) . '...';
+		}
+		push @patrons, '<li class="auto_complete_item"><span class="informal"><div class="primary">' . $patron->{name} . '</div></span><div class="secondary">' . $patron->{email} . '</div></li>';
+	}
+
+	return '<ul class="auto_complete_list">' . join("\n", @patrons) . '</ul>';
 }
 
 sub autocomplete_class {
@@ -505,7 +522,7 @@ sub addtomebook_process {
 	my $addtomebook_results = $self->check_rm('addtomebook', {
 		required	=> [qw(
 			isbn
-			originator
+			patron
 			library
 		)],
 		filters		=> 'trim',
@@ -546,7 +563,7 @@ sub addtomebook_process {
 
 	my %book = (
 		isbn		=> $addtomebook_results->valid('isbn'),
-		originator	=> $addtomebook_results->valid('originator'),
+		originator	=> $addtomebook_results->valid('patron'),
 		library		=> $addtomebook_results->valid('library'),
 	);
 

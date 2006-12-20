@@ -149,7 +149,7 @@ sub expire_search {
 		libraries       => { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT id AS tomebook FROM tomebooks WHERE expire <=', $params{semester}, 'AND timeremoved IS NULL AND library IN', $params{libraries}, 'ORDER BY expire, originator ASC');
+	my ($sql, @bind) = sql_interp('SELECT id AS tomebook FROM tomebooks WHERE expire <=', $params{semester}, 'AND timeremoved IS NULL AND library IN', $params{libraries}, 'ORDER BY expire');
 	my $sth = $dbh->prepare($sql);
 
 	$sth->execute(@bind);
@@ -170,7 +170,7 @@ sub reservation_search {
 		libraries       => { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, comments, semester, checkout FROM checkouts WHERE semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower ASC');
+	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name as borrower_name, patrons.email as borrower_email, comments, semester, checkout FROM checkouts WHERE patrons.id = borrower AND semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -191,7 +191,7 @@ sub dueback_search {
 		libraries	=> { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, comments, semester, checkout FROM checkouts WHERE semester <=', $params{semester}, 'AND checkin IS NULL AND reservation = FALSE AND library IN', $params{libraries}, 'ORDER BY semester, borrower ASC');
+	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name AS borrower_name, patrons.email AS borrower_email, comments, semester, checkout FROM checkouts WHERE semester <=', $params{semester}, 'AND patrons.id = borrower AND checkin IS NULL AND reservation = FALSE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -230,6 +230,80 @@ sub add_class {
 
 	$dbh->do("INSERT INTO classes (id, name) VALUES (?, ?)", undef, @params{qw(id name)});
 }
+
+sub patrons_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		id		=> { type => SCALAR, optional => 1 },
+		name		=> { type => SCALAR, optional => 1 },
+		email		=> { type => SCALAR, optional => 1 },
+	});
+
+	my (@columns, @likecolumns, @conditions, @values);
+
+	foreach (qw(name email)) {
+		if(defined($params{$_})) {
+			$params{$_} =~ s/([\\%_])/\\$1/g;
+			push @likecolumns, $_;
+			push @values, $params{$_};
+		}
+	}
+
+	foreach (qw(id)) {
+		if(defined($params{$_})) {
+			push @columns, $_;
+			push @values, $params{$_};
+		}
+	}
+
+
+	foreach(@likecolumns) {
+		push @conditions, "$_ ILIKE '%' || ? || '%'";
+	}
+
+	foreach(@columns) {
+		push @conditions, "$_ = ?";
+	}
+
+	my $statement = 'SELECT id, name, email FROM patrons WHERE ' . join(' OR ', @conditions) . " ORDER BY email ASC";
+
+	my $sth = $dbh->prepare($statement);
+	
+	$sth->execute(@values);
+	
+	my @results;
+	while(my $result = $sth->fetchrow_hashref) {
+		push @results, $result;
+	}
+	
+	return @results;
+}
+
+sub patron_info {
+	my $self = shift;
+	
+	my %params = validate(@_, {
+		email	=> { type => SCALAR, optional => 1 },
+		id	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+	});
+
+	my ($sql, @bind);
+	if($params{email}) {
+		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE email ILIKE', $params{email});
+	} elsif($params{id}) {
+		($sql, @bind) = sql_interp('SELECT id, email, name FROM patrons WHERE id = ', $params{id});
+	} else {
+		die "Neither email nor id specified in patron_info";
+	}
+
+	my $sth = $self->dbh->prepare($sql);
+	$sth->execute(@bind);
+	return $sth->fetchrow_hashref;
+}
+		
 
 sub books_search {
 	my $self = shift;
@@ -320,7 +394,7 @@ sub add_tomebook {
 
 	my %params = validate(@_, {
 		isbn		=> { type => SCALAR },
-		originator 	=> { type => SCALAR },
+		originator 	=> { type => SCALAR, regex => qr/^\d+$/ },
 		expire		=> { type => SCALAR, optional => 1, regex => qr/^\d+$/ },
 		comments	=> { type => SCALAR, optional => 1 },
 		library		=> { type => SCALAR, regex => qr/^\d+$/ },
@@ -371,7 +445,7 @@ sub tomebook_info {
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare("SELECT tomebooks.isbn AS isbn, books.title AS title, books.author AS author, books.edition AS edition, originator, comments, expire, tomebooks.id AS id, timedonated, library, timeremoved FROM tomebooks, books WHERE tomebooks.isbn = books.isbn AND tomebooks.id = ?");
+	my $sth = $dbh->prepare("SELECT tomebooks.isbn AS isbn, books.title AS title, books.author AS author, books.edition AS edition, originator, patrons.name as originator_name, patrons.email as originator_email, comments, expire, tomebooks.id AS id, timedonated, library, timeremoved FROM tomebooks, books, patrons WHERE tomebooks.isbn = books.isbn AND patrons.id = originator AND tomebooks.id = ?");
 	$sth->execute($params{id});
 
 	my $results = $sth->fetchrow_hashref;
@@ -411,7 +485,7 @@ sub tome_stats {
 	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	($stats{semestercheckouts}) = $sth->fetchrow_array;
 
-	($sql, @bind) = sql_interp('SELECT originator, COUNT(id) AS books FROM tomebooks WHERE library IN', $params{libraries}, 'GROUP BY originator ORDER BY books DESC, originator ASC LIMIT 10');
+	($sql, @bind) = sql_interp('SELECT originator, patrons.name as originator_name, patrons.email as originator_email, COUNT(tomebooks.id) AS books FROM tomebooks, patrons WHERE orinator = patrons.id library IN', $params{libraries}, 'GROUP BY originator ORDER BY books DESC, originator_name ASC LIMIT 10');
 	$sth = $dbh->prepare($sql); $sth->execute(@bind);
 	while(my $result = $sth->fetchrow_hashref) {
 		push @{$stats{top10donators}}, $result;
@@ -440,7 +514,7 @@ sub tomebook_update {
 
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		originator 	=> { type => SCALAR },
+		originator 	=> { type => SCALAR, regex => qr/^\d+$/ },
 		expire		=> { type => SCALAR, optional => 1, regex => qr/^\d*$/ },
 		comments	=> { type => SCALAR, optional => 1 },
 		library		=> { type => SCALAR, regex => qr/^\d+$/ },
@@ -466,7 +540,7 @@ sub checkout_history {
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, checkout, reservation, checkin, comments, uid, username, library FROM checkouts, users WHERE uid = users.id AND tomebook = ? ORDER BY semester DESC");
+	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, reservation, checkin, comments, uid, username, library FROM checkouts, users WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
 	$sth->execute($params{id});
 	my @results;
 	while(my $result = $sth->fetchrow_hashref) {
@@ -522,7 +596,7 @@ sub tomebook_checkout {
 
 	my %params = validate(@_, {
 		tomebook	=> { type => SCALAR, regex => qr/^\d+$/ },
-		borrower	=> { type => SCALAR },
+		borrower	=> { type => SCALAR, regex => qr/^\d+$/ },
 		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
 		reservation	=> { type => SCALAR, regex => qr/^true|false$/ },
 		uid		=> { type => SCALAR, regex => qr/^\d+$/ },

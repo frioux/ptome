@@ -2,19 +2,32 @@
 <form action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="addtomebook_process">
 <input type="hidden" name="addtomebook" value="1">
-ISBN: [% PROCESS autocomplete_isbn.html %] [% errs.isbn %]<br>
-Originator: <input type="text" name="originator"> [% errs.originator %]<br>
-Expire Semester: <select name="expire">
+<table border="1" cellpadding="5">
+<tr>
+<td>ISBN</td><td>[% PROCESS autocomplete_isbn.html %] [% errs.isbn %]</td>
+</tr>
+<tr>
+<td>Originator<br>(email address)</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.patron %]</td>
+</tr>
+<tr>
+<td>Expire Semester</td><td><select name="expire">
 <option value="" selected="selected">Never</option>
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]">[% semester.name | html %]</option>
 [% END %]
-</select><br>
-Comments: <input type="text" name="comments"><br>
-Library: <select name="library">
+</select></td>
+</tr>
+<tr>
+<td>Comments</td><td><textarea name="comments"></textarea></td>
+</tr>
+<tr>
+<td>Library</td><td><select name="library">
 [% FOREACH library = libraries %]
 [% IF library.access %]<option value="[% library.id | html %]">[% library.name | html %]</option>[% END %]
 [% END %]
-</select>[% errs.library %]<br>
-<input type="submit" value="Add TOME Book">
+</select>[% errs.library %]</td>
+</tr>
+<tr>
+<td colspan="2" align="center"><input type="submit" value="Add TOME Book"></td>
+</tr></table>
 </form>

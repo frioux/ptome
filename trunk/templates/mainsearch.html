@@ -22,7 +22,7 @@
 <tr><td>
 <form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="classsearch">
-<select name="class" size="7">
+<select name="class" size="17">
 [% FOREACH class = classes %]
 <option value="[% class.id %]" [% IF loop.first %]selected="selected"[% END %]>[% class.id %] - [% class.name %]</option>
 [% END %]
@@ -31,7 +31,23 @@
 <tr><td align="center"><input type="submit" value="View Class"></td></tr>
 </form>
 </table>
-</td></tr></table>
+</td>
+<td valign="top">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Edit Patron</td></tr>
+<tr><td>
+Email
+</td>
+<td>
+[% PROCESS 'autocomplete_patron.html' %]
+</td>
+</tr>
+<tr><td align="center" colspan="2">
+<input type="submit" value="Edit">
+</td></tr>
+</table>
+</td>
+</tr></table>
 [% IF CGI.param('search') %]<p>[% tomebooks.size %] results[% END %]
 [% IF tomebooks.size > 0 %]
 <table border="1">
