@@ -259,7 +259,24 @@ sub classsearch {
 
 	my $q = $self->query;
 
-	my $classinfo = $self->class_info_deprecated({ id => $q->param('class') });
+	my $class = uc $q->param('class'); # Make sure that it got uppercased
+
+	my $classinfo = $self->class_info({ id => $class });
+
+	# Check to make sure we actually got something back
+	unless($classinfo) {
+		return $self->template({ file => 'classunknown.html',
+			vars	=> {
+				id	=> $class,
+			},
+		});
+	}
+
+
+	# This needs to be refactored at some point, because it still uses the deprecated method.  Everything above here uses the new, happy method.
+	# BEGIN NASTINESS:
+
+	$classinfo = $self->class_info_deprecated({ id => $q->param('class') });
 
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	my (@mylibraries, @otherlibraries);
