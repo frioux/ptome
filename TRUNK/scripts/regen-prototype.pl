@@ -14,6 +14,6 @@ my $genpage = $prototype->define_javascript_functions();
 $genpage =~ s#^\s*<script[^>]*>##;
 $genpage =~ s#</script>\s*$##;
 
-$genpage = "<!-- This file is automatically for the TOME system by devdocs/regen-prototype.pl -->\n\n" . $genpage;
+$genpage = "<!-- This file is automatically for the TOME system by scripts/regen-prototype.pl -->\n\n" . $genpage;
 
 print $genpage;

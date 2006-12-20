@@ -48,6 +48,9 @@ if (!$database) {
 
 $ENV{'PGPASSWORD'} = $password;
 $dump = `pg_dump --no-owner --schema-only --clean -h $address -p $port -U $username $database`;
+my $db_version = `psql -h $address -p $port -U $username $database --command "select max(version) from db_version;" --no-align`;
+$db_version = (split("\n", $db_version))[1]; # The result is stored in the second line
 $ENV{'PGPASSWORD'} = '';
 
 print ($dump);
+print "\n\nINSERT INTO db_version (version) VALUES ($db_version);\n";
