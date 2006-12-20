@@ -700,7 +700,7 @@ sub user_info {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ? ORDER BY disabled, username');
 		$sth->execute($params{id});
 	} elsif($params{username}) {
-		$sth = $self->dbh->prepare($statement . ' WHERE username = ? ORDER BY disabled, username');
+		$sth = $self->dbh->prepare($statement . ' WHERE username ILIKE ? ORDER BY disabled, username');
 		$sth->execute($params{username});
 	} else {
 		$sth = $self->dbh->prepare($statement . ' ORDER BY disabled, username');

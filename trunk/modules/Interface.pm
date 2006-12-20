@@ -49,7 +49,7 @@ sub login {
 	if($self->query->param('username')) {
 		my $username = $self->query->param('username');
 		my $user = $self->user_info({ username => $username });
-		if(unix_md5_crypt($self->query->param('password'), $user->{password}) eq $user->{password}) {
+		if(!$user->{disabled} && (unix_md5_crypt($self->query->param('password'), $user->{password}) eq $user->{password})) {
 			$self->session->clear;
 			$self->session->param('~logged-in', 1);
 			if($user->{admin}) { $self->session->param('admin', 1); }

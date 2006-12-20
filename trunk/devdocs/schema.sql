@@ -402,6 +402,8 @@ ALTER TABLE ONLY tomebooks
 ALTER TABLE ONLY classbooks
     ADD CONSTRAINT verifiedfk FOREIGN KEY (verified) REFERENCES semesters(id) MATCH FULL;
 
+---  Make usernames case insensitive
+create unique index upper_username on users (upper(username));
 
 SET SESSION AUTHORIZATION 'postgres';
 
