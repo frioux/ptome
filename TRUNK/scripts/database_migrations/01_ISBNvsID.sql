@@ -1,5 +1,5 @@
 BEGIN WORK;
-LOCK TABLE checkouts,tomebooks,reservations;
+LOCK TABLE checkouts,tomebooks;
 alter TABLE checkouts alter column tomebook type int;
 alter TABLE checkouts alter column semester type int;
 ALTER TABLE tomebooks alter column expire type integer;
