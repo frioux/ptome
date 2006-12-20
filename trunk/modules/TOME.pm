@@ -48,15 +48,15 @@ sub cgiapp_init {
 sub error_runmode {
 	my $self = shift;
 
-	warn "TOME Internal Exception Error:\n" . $self->dump();
+	my $debug = $@ . "\n\nUser: " . $self->param('user_info')->{username} . "\nTime: " . localtime(time) . "\n\n" . $self->dump();
 	my $message = MIME::Lite->new(
 		From	=> $TOME::CONFIG{notifyfrom},
 		To	=> $TOME::CONFIG{adminemail},
 		Subject	=> 'Unknown TOME Error',
-		Data	=> $@ . "\n\n" . $self->dump(),
+		Data	=> $debug,
 	);
 	$message->send;
-	return $self->error({ message => "Internal exception error", extended => $@ });
+	return $self->error({ message => "Internal exception error", extended => $debug });
 }
 
 sub tomebooks_search {

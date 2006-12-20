@@ -393,27 +393,35 @@ sub addtomebook {
 		}});
 	}
 
-	my %book = (
-		isbn		=> $q->param('isbn'),
-		originator	=> $q->param('originator'),
-		library		=> $q->param('library'),
-	);
-
-	$book{isbn} =~ s/-//g; # We don't want hyphens, they're useless
-
-	unless($self->book_exists({ isbn => $book{isbn} })) {
+	my $isbn = $q->param('isbn');
+	$isbn =~ s/-//g; # We don't want hyphens, they're useless
+	
+	unless($self->book_exists({ isbn => $isbn })) {
 		if($q->param('addbook')) {
+			my %addbook = (
+				isbn	=> $isbn,
+				title	=> $q->param('title'),
+				author	=> $q->param('author'),
+			);
+			
 			if($q->param('edition')) {
-				$book{edition} = $q->param('edition');
+				$addbook{edition} = $q->param('edition');
 			}
 
-			$self->add_book({%book});
+			$self->add_book({%addbook});
 		} else {
 			return $self->template({ file => 'addbook.html', vars => {
 				librarieshash	=> $self->_librarieshash(),
 			}});
 		}
 	}
+
+	my %book = (
+		isbn		=> $isbn,
+		originator	=> $q->param('originator'),
+		library		=> $q->param('library'),
+	);
+
 
 	foreach(qw(expire comments)) {
 		if($q->param($_)) {
