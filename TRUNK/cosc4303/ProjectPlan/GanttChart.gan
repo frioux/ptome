@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="TOME" company="TOME Development" webLink="" view-date="2006-09-03" view-index="0" gantt-divider-location="316" resource-divider-location="301" version="2.0">
+<project name="TOME" company="TOME Development" webLink="" view-date="2006-07-16" view-index="0" gantt-divider-location="285" resource-divider-location="301" version="2.0">
     <description/>
-    <view zooming-state="default:6"/>
+    <view zooming-state="default:7"/>
     <!-- -->
     <calendars>
         <day-types>
@@ -38,8 +38,23 @@
         <task id="3" name="Automated Test Suite" color="#009900" meeting="false" start="2006-09-11" duration="68" complete="0" priority="1" expand="true"/>
         <task id="4" name="UI Redesign" color="#0033cc" meeting="false" start="2006-09-11" duration="68" complete="0" priority="1" expand="true"/>
     </tasks>
-    <resources/>
-    <allocations/>
+    <resources>
+        <resource id="0" name="Curtis Fjord Hawthorne" function="SoftwareDevelopment:2" contacts="" phone=""/>
+        <resource id="1" name="Arthur Axel &quot;fREW&quot; Schmidt" function="SoftwareDevelopment:2" contacts="" phone="x6816"/>
+        <resource id="2" name="Clint" function="SoftwareDevelopment:4" contacts="" phone=""/>
+        <resource id="3" name="Craig Miller" function="SoftwareDevelopment:9" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="0" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="1" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="1" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="5" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="5" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="2" function="SoftwareDevelopment:4" responsible="true" load="100.0"/>
+        <allocation task-id="4" resource-id="3" function="SoftwareDevelopment:9" responsible="true" load="100.0"/>
+    </allocations>
     <vacations/>
     <taskdisplaycolumns>
         <displaycolumn property-id="tpd3" order="0" width="75"/>
