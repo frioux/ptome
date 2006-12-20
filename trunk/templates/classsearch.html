@@ -95,7 +95,7 @@ Verification comments:<br><textarea name="comments" rows="4" cols="30"></textare
 </form>
 <hr>
 <p>Delete class and all book associations:
-<form action="[% adminbase %]/admin.pl">
+<form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="deleteclass">
 <input type="hidden" name="action" value="Delete class [% id | html %]">
