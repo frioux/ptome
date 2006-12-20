@@ -47,7 +47,7 @@ if (!$database) {
 }
 
 $ENV{'PGPASSWORD'} = $password;
-$dump = `pg_dump --no-owner --schema-only --clean -h $address -p $port -U tome tome`;
+$dump = `pg_dump --no-owner --schema-only --clean -h $address -p $port -U $username $database`;
 $ENV{'PGPASSWORD'} = '';
 
 print ($dump);
