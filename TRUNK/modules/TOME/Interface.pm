@@ -133,12 +133,12 @@ sub autocomplete_class {
 	my $self = shift;
 
 	my @classes;
-	foreach(@{$self->class_search({ id => $self->query->param('class') })}) {
-		my $name = $_->{name};
+	foreach($self->class_search({ id => $self->query->param('class'), name => $self->query->param('class') })) {
+		my $name = $self->class_info({ id => $_ })->{name};
 		if(length($name) > 33) {
 			$name = substr($name, 0, 30) . '...';
 		}
-		push @classes, '<li class="auto_complete_item"><div class="primary">' . $_->{id} . '</div><span class="informal"><div class="secondary">' . $name . '</div></span></li>';
+		push @classes, '<li class="auto_complete_item"><div class="primary">' . $_ . '</div><span class="informal"><div class="secondary">' . $name . '</div></span></li>';
 	}
 
 	return '<ul class="auto_complete_list">' . join("\n", @classes) . '</ul>';

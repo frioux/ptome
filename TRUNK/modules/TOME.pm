@@ -2015,7 +2015,23 @@ sub book_info {
 
 =head2 class_search 
 
-foo
+This function can return either a complete listing of classes IDs or a list based on search criteria.  A match only has to satisfy one of the paramters specified to be returned.  In other words, the search criteria use OR instead of AND.
+
+The arguments are as a hashref:
+
+=over
+
+=item id
+
+A case-insensitive search will be performed on the ID given
+
+=item name
+
+A case-insensitive search will be performed on the class name given
+
+=back
+
+This function returns an array of class IDs.
 
 =cut
 
@@ -2029,30 +2045,26 @@ sub class_search {
 
 	my (@conditions, @values);
 
-	if(defined($params{id})) {
-		_quote_like($params{id});
-		push @conditions, "id ILIKE ? || '%'";
-		push @values, $params{id};
+	foreach(qw(id name)) {
+		if(defined($params{$_})) {
+			_quote_like($params{$_});
+			push @conditions, "$_ ILIKE '%' || ? || '%'";
+			push @values, $params{$_};
+		}
 	}
 	
-	if(defined($params{name})) {
-		_quote_like($params{id});
-		push @conditions, "name ILIKE '%' || ? || '%'";
-		push @values, $params{id};
-	}
-
-	my $statement = 'SELECT id, name FROM classes ' . (@conditions ? 'WHERE ' . join(' OR ', @conditions) : '') . ' ORDER BY id ASC';
+	my $statement = 'SELECT id FROM classes ' . (@conditions ? 'WHERE ' . join(' OR ', @conditions) : '') . ' ORDER BY id ASC';
 
 	my $sth = $self->dbh->prepare($statement);
 	
 	$sth->execute(@values);
 	
 	my @results;
-	while(my $result = $sth->fetchrow_hashref) {
-		push @results, $result;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
 	}
 	
-	return \@results;
+	return @results;
 }
 #}}}
 
