@@ -24,7 +24,7 @@ isnt ($port, undef);
 my $database = $config{'dbidbname'};
 isnt ($database, undef);
 
-my $dbh = DBI->connect("dbi:Pg:dbname=$database;host=$address;port=$port", $username, $password);
+my $dbh = DBI->connect("dbi:Pg:dbname=$database;host=$address;port=$port", $username, $password, { RaiseError => 1, PrintError => 0 });
 is ($DBI::errstr, undef);
 
 $dbh->disconnect;

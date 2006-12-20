@@ -2,7 +2,7 @@
 
 use lib "../modules";
 use TOMETest::DBTest;
-use Test::More tests => 6;
+use Test::More tests => 5;
 use DBI;
 
 my $dbt = TOMETest::DBTest->new();
@@ -13,8 +13,7 @@ my $address = $config{'dbihostname'};
 my $port = $config{'dbiport'};
 my $database = $config{'dbidbname'};
 
-my $dbh = DBI->connect("dbi:Pg:dbname=$database;host=$address;port=$port", $username, $password);
-is ($DBI::errstr, undef);
+my $dbh = DBI->connect("dbi:Pg:dbname=$database;host=$address;port=$port", $username, $password, { RaiseError => 1, PrintError => 0 });
 
 my $sth = $dbh->prepare("INSERT INTO books (isbn, title, author, edition) VALUES (?, ?, ?, ?)");
 $sth->execute("007027410x", "Blah", "Blah", "5th");
@@ -50,3 +49,5 @@ is($sth->fetchrow_array(), "007027410X");
 
 $sth = $dbh->prepare("DELETE FROM books WHERE isbn=?");
 $sth->execute("007027410X");
+
+$dbh->disconnect;
