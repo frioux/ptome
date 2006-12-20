@@ -523,7 +523,7 @@ Maintainability is a large concern with TOME.  To improve maintainability, all c
 TOME itself contains no platform-dependent code.  The install scripts do make assumptions about a Linux-based platform, but the install could be done manually on other platforms.  The bulk of the code is written to interface to other extremely portable libraries and systems such as PostgreSQL and CGI.
 \section{Design Approach}
 \subsection{Key Drivers}
-Continued development of TOME will follow the basic pattern that already exists.  In some ways this is good because it will not need to be redesigned.  However, in some ways it can be a hindrance because the original design does not use objects as extensively as it could.  Even though it is less than idea, it was determined that the benefit that would be gained by a complete redesign would not outweigh the cost in time lost on new development.
+Continued development of TOME will follow the basic pattern that already exists.  In some ways this is good because it will not need to be redesigned.  However, in some ways it can be a hindrance because the original design does not use objects as extensively as it could.  Even though it is less than ideal, it was determined that the benefit that would be gained by a complete redesign would not outweigh the cost in time lost on new development.
 \subsection{Issues}
 The primary issue was determining how to preserve orthogonality without changing too much of the existing design.  One of the best ideas was a way to separate template and interface interaction.  This is detailed in Section~\ref{templatecallbacks}.
 \subsection{Solution Approach}
