@@ -54,7 +54,12 @@
 <table width="95%" align="center">
 <tr>
 <td align="left" width="33%"><img src="/tome.png"></td>
-<td align="center" width="33%"><font size="+3">[% template.title %]</font></td>
+<td align="center" width="33%">
+	[% IF config.devmode %]
+	<font color="red" size="+3"><b>DEVELOPMENT</b></font><br>
+	[% END %]
+	<font size="+3">[% template.title %]</font>
+</td>
 <td align="right" width="33%">
 <font size="-1"><b>Current semester:</b><br>[% currsemester.name %]
 [% IF session.currsemester %]

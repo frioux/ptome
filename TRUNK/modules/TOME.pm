@@ -27,6 +27,9 @@ our %CONFIG = (
 
 	notifyfrom	=> 'TOMEkeeper <tomekeeper@tome>',
 	adminemail	=> 'TOMEadmin <tomeadmin@tome>',
+
+	devmode		=> 0,
+	devemailto	=> 'TOMEadmin <tomeadmin@tome>',
 );
 
 require 'site-config.pl';
@@ -38,6 +41,9 @@ sub cgiapp_init {
 	$self->session_config(
 		CGI_SESSION_OPTIONS	=> [ 'driver:PostgreSQL', $self->query, { Handle => $self->dbh } ],
 		SEND_COOKIE		=> 1,
+		COOKIE_PARAMS		=> {
+						-path	=> $TOME::CONFIG{cgibase},
+					},
 		DEFAULT_EXPIRY		=> '+24h',
 	);
 	$self->error_mode('error_runmode');
