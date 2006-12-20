@@ -370,7 +370,7 @@ sub tomebook_update {
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
 		originator 	=> { type => SCALAR },
-		expire		=> { type => SCALAR, optional => 1, regex => qr/^\d?$/ },
+		expire		=> { type => SCALAR, optional => 1, regex => qr/^\d+$/ },
 		comments	=> { type => SCALAR, optional => 1 },
 		library		=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
