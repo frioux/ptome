@@ -481,9 +481,9 @@ sub addclass_process {
 		)],
 		filters			=> 'trim',
 		field_filters		=> {
-			id	=> 'uc',
 			id	=> sub {
 				my $value = shift;
+				$value =~ tr/[a-z]/[A-Z]/;
 				$value =~ s/[^A-Z0-9]//g;
 				return $value;
 			},
