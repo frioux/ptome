@@ -336,7 +336,7 @@ sub patronaddclass {
             class => sub {
                 my $dfv = shift; 
                 $dfv->name_this('bad_class');
-                return !($self->class_info({ id => $dfv->get_current_constrain_value() } )->{name});
+                return !($self->class_info({ id => $dfv->get_current_constraint_value() } )->{name});
                           },
             msgs => {
                 constraints => {
