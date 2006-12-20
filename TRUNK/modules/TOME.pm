@@ -1114,16 +1114,18 @@ sub patron_checkouts {
 
 	my %params = validate(@_, {
 		patron	=> { type => SCALAR, regex => qr/^\d+$/ },
-		all	=> { default => 0 },
+		type	=> { type => SCALAR, regex => qr/^(reserved|checkedout|all)$/, default => 'checkedout' },
 	});
 
 	my $dbh = $self->dbh;
 
 	my ($sql, @bind);
-	if($params{all}) {
-		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE', { borrower => $params{patron} }, 'ORDER BY checkout');
+	if($params{type} eq 'checkedout') {
+		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE reservation = false AND checkin IS NULL AND', { borrower => $params{patron} }, 'ORDER BY checkout');
+	} elsif($params{type} eq 'reserved') {
+		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE reservation = true AND checkin IS NULL AND', { borrower => $params{patron} }, 'ORDER BY checkout');
 	} else {
-		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE checkin IS NULL and', { borrower => $params{patron} }, 'ORDER BY checkout');
+		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE', { borrower => $params{patron} }, 'ORDER BY checkout');
 	}
 
 	my $sth = $dbh->prepare($sql);
@@ -2054,7 +2056,7 @@ sub _quote_like {
 
 =head1 AUTHOR
 
-Curtis Fjord Hawthornre
+Curtis "Fjord" Hawthornre
 
 =cut
 

@@ -18,10 +18,16 @@ sub patron_info {
 	return $self->{tome}->patron_info({ id => $id });
 }
 
-sub patron_checkouts_outstanding {
+sub patron_checkouts_checkedout {
 	my $self = shift;
 	my $patron = shift;
-	return $self->{tome}->patron_checkouts({ patron => $patron, all => 0 });
+	return $self->{tome}->patron_checkouts({ patron => $patron, type => 'checkedout' });
+}
+
+sub patron_checkouts_reserved {
+	my $self = shift;
+	my $patron = shift;
+	return $self->{tome}->patron_checkouts({ patron => $patron, all => 'reserved' });
 }
 
 sub checkout_info {
