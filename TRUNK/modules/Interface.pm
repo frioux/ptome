@@ -83,7 +83,7 @@ sub autocomplete_isbn {
 	my $self = shift;
 
 	my @books;
-	foreach($self->books_search({ isbn => $self->query->param('isbn') })) {
+	foreach($self->books_search({ isbn => uc $self->query->param('isbn') })) { # We make the ISBN upper case for the user
 		my $book_info = $self->book_info({ isbn => $_ });
 		my $title = $book_info->{title};
 		if(length($title) > 33) {
@@ -137,11 +137,13 @@ sub mainsearch {
 	my $q = $self->query;
 	
 	my %search;
-	foreach (qw(isbn title author edition status semester)) {
+	foreach (qw(title author edition status semester)) {
 		if($q->param($_)) {
 			$search{$_} = $q->param($_);
 		}
 	}
+
+	$search{isbn} = uc $q->param('isbn') if $q->param('isbn'); # If there's an ISBN, it should be upper case
 
 	$search{libraries} = $self->_librariesselecteddefault();
 
@@ -371,7 +373,7 @@ sub addclassbook {
 
 	my $q = $self->query;
 	
-	my $isbn = $q->param('isbn');
+	my $isbn = uc $q->param('isbn'); # All ISBNs are uppercase, might as well convert it here
 	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
 	
 	unless($self->book_exists({ isbn => $isbn })) {

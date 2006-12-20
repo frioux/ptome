@@ -2,28 +2,48 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET check_function_bodies = false;
-
-SET SESSION AUTHORIZATION 'postgres';
+SET client_min_messages = warning;
 
 --
--- TOC entry 4 (OID 2200)
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+COMMENT ON SCHEMA public IS 'Standard public namespace';
 
 
-SET SESSION AUTHORIZATION 'tome';
+--
+-- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: 
+--
+
+CREATE PROCEDURAL LANGUAGE plpgsql;
+
 
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 6 (OID 42307)
--- Name: books; Type: TABLE; Schema: public; Owner: tome
+-- Name: isbn_force_upper(); Type: FUNCTION; Schema: public; Owner: tome
+--
+
+CREATE FUNCTION isbn_force_upper() RETURNS "trigger"
+    AS $$
+begin
+NEW.isbn := upper(NEW.isbn);
+return NEW;
+end;
+$$
+    LANGUAGE plpgsql;
+
+
+ALTER FUNCTION public.isbn_force_upper() OWNER TO tome;
+
+SET default_tablespace = '';
+
+SET default_with_oids = true;
+
+--
+-- Name: books; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE books (
@@ -34,59 +54,45 @@ CREATE TABLE books (
 );
 
 
---
--- TOC entry 7 (OID 42312)
--- Name: classes; Type: TABLE; Schema: public; Owner: tome
---
-
-CREATE TABLE classes (
-    id character varying(10) NOT NULL,
-    name text NOT NULL,
-    comments text
-);
-
+ALTER TABLE public.books OWNER TO tome;
 
 --
--- TOC entry 8 (OID 42319)
--- Name: tomebooks; Type: TABLE; Schema: public; Owner: tome
---
-
-CREATE TABLE tomebooks (
-    id serial NOT NULL,
-    isbn character varying(20) NOT NULL,
-    originator text NOT NULL,
-    expire smallint,
-    comments text,
-    timedonated timestamp with time zone DEFAULT now() NOT NULL,
-    library integer NOT NULL,
-    timeremoved timestamp with time zone
-);
-
-
---
--- TOC entry 9 (OID 42326)
--- Name: checkouts; Type: TABLE; Schema: public; Owner: tome
+-- Name: checkouts; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE checkouts (
     tomebook bigint NOT NULL,
     semester smallint NOT NULL,
-    borrower text NOT NULL,
     checkout timestamp with time zone DEFAULT now() NOT NULL,
     checkin timestamp with time zone,
     comments text,
     reservation boolean DEFAULT false NOT NULL,
     library integer NOT NULL,
     uid integer NOT NULL,
-    id integer DEFAULT nextval('public.checkouts_id_seq'::text) NOT NULL,
+    id integer DEFAULT nextval(('public.checkouts_id_seq'::text)::regclass) NOT NULL,
+    borrower integer NOT NULL,
     CONSTRAINT checkout_or_reservation CHECK ((NOT ((reservation = true) AND (checkin IS NOT NULL)))),
     CONSTRAINT timeline CHECK (((checkin IS NULL) OR (checkin > checkout)))
 );
 
 
+ALTER TABLE public.checkouts OWNER TO tome;
+
 --
--- TOC entry 10 (OID 42333)
--- Name: classbooks; Type: TABLE; Schema: public; Owner: tome
+-- Name: checkouts_id_seq; Type: SEQUENCE; Schema: public; Owner: tome
+--
+
+CREATE SEQUENCE checkouts_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.checkouts_id_seq OWNER TO tome;
+
+--
+-- Name: classbooks; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE classbooks (
@@ -99,25 +105,23 @@ CREATE TABLE classbooks (
 );
 
 
+ALTER TABLE public.classbooks OWNER TO tome;
+
 --
--- TOC entry 11 (OID 76080)
--- Name: users; Type: TABLE; Schema: public; Owner: tome
+-- Name: classes; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
-CREATE TABLE users (
-    id serial NOT NULL,
-    username text NOT NULL,
-    email text NOT NULL,
-    notifications boolean DEFAULT true NOT NULL,
-    admin boolean DEFAULT false NOT NULL,
-    "password" text NOT NULL,
-    disabled boolean DEFAULT false NOT NULL
+CREATE TABLE classes (
+    id character varying(10) NOT NULL,
+    name text NOT NULL,
+    comments text
 );
 
 
+ALTER TABLE public.classes OWNER TO tome;
+
 --
--- TOC entry 12 (OID 76090)
--- Name: libraries; Type: TABLE; Schema: public; Owner: tome
+-- Name: libraries; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE libraries (
@@ -126,9 +130,10 @@ CREATE TABLE libraries (
 );
 
 
+ALTER TABLE public.libraries OWNER TO tome;
+
 --
--- TOC entry 13 (OID 76098)
--- Name: library_access; Type: TABLE; Schema: public; Owner: tome
+-- Name: library_access; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE library_access (
@@ -137,20 +142,23 @@ CREATE TABLE library_access (
 );
 
 
+ALTER TABLE public.library_access OWNER TO tome;
+
 --
--- TOC entry 14 (OID 76129)
--- Name: sessions; Type: TABLE; Schema: public; Owner: tome
+-- Name: patrons; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
-CREATE TABLE sessions (
-    id character(32) NOT NULL,
-    a_session text NOT NULL
+CREATE TABLE patrons (
+    id serial NOT NULL,
+    email text NOT NULL,
+    name text NOT NULL
 );
 
 
+ALTER TABLE public.patrons OWNER TO tome;
+
 --
--- TOC entry 15 (OID 76186)
--- Name: semesters; Type: TABLE; Schema: public; Owner: tome
+-- Name: semesters; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
 CREATE TABLE semesters (
@@ -160,45 +168,57 @@ CREATE TABLE semesters (
 );
 
 
---
--- TOC entry 5 (OID 76259)
--- Name: checkouts_id_seq; Type: SEQUENCE; Schema: public; Owner: tome
---
-
-CREATE SEQUENCE checkouts_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
+ALTER TABLE public.semesters OWNER TO tome;
 
 --
--- TOC entry 20 (OID 76179)
--- Name: one_borrower; Type: INDEX; Schema: public; Owner: tome
+-- Name: sessions; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
-CREATE UNIQUE INDEX one_borrower ON checkouts USING btree (tomebook) WHERE ((checkin IS NULL) AND (reservation = false));
+CREATE TABLE sessions (
+    id character(32) NOT NULL,
+    a_session text NOT NULL
+);
 
 
---
--- TOC entry 21 (OID 76180)
--- Name: one_reservation; Type: INDEX; Schema: public; Owner: tome
---
-
-CREATE UNIQUE INDEX one_reservation ON checkouts USING btree (tomebook, semester) WHERE (reservation = true);
-
+ALTER TABLE public.sessions OWNER TO tome;
 
 --
--- TOC entry 27 (OID 76195)
--- Name: one_current; Type: INDEX; Schema: public; Owner: tome
+-- Name: tomebooks; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
 --
 
-CREATE UNIQUE INDEX one_current ON semesters USING btree (current) WHERE (current = true);
+CREATE TABLE tomebooks (
+    id serial NOT NULL,
+    isbn character varying(20) NOT NULL,
+    expire smallint,
+    comments text,
+    timedonated timestamp with time zone DEFAULT now() NOT NULL,
+    library integer NOT NULL,
+    timeremoved timestamp with time zone,
+    originator integer NOT NULL
+);
 
+
+ALTER TABLE public.tomebooks OWNER TO tome;
 
 --
--- TOC entry 16 (OID 43025)
--- Name: books_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
+-- Name: users; Type: TABLE; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE TABLE users (
+    id serial NOT NULL,
+    username text NOT NULL,
+    email text NOT NULL,
+    notifications boolean DEFAULT true NOT NULL,
+    "admin" boolean DEFAULT false NOT NULL,
+    "password" text NOT NULL,
+    disabled boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO tome;
+
+--
+-- Name: books_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
 --
 
 ALTER TABLE ONLY books
@@ -206,80 +226,7 @@ ALTER TABLE ONLY books
 
 
 --
--- TOC entry 17 (OID 43027)
--- Name: classes_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY classes
-    ADD CONSTRAINT classes_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 18 (OID 43029)
--- Name: tomebooks_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY tomebooks
-    ADD CONSTRAINT tomebooks_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 22 (OID 43033)
--- Name: classbooks_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY classbooks
-    ADD CONSTRAINT classbooks_pkey PRIMARY KEY ("class", isbn);
-
-
---
--- TOC entry 24 (OID 76086)
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 25 (OID 76096)
--- Name: libraries_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY libraries
-    ADD CONSTRAINT libraries_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 26 (OID 76134)
--- Name: sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY sessions
-    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 23 (OID 76140)
--- Name: usernameu; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY users
-    ADD CONSTRAINT usernameu UNIQUE (username);
-
-
---
--- TOC entry 28 (OID 76193)
--- Name: semesters_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY semesters
-    ADD CONSTRAINT semesters_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 19 (OID 76262)
--- Name: checkouts_pkey; Type: CONSTRAINT; Schema: public; Owner: tome
+-- Name: checkouts_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
 --
 
 ALTER TABLE ONLY checkouts
@@ -287,7 +234,122 @@ ALTER TABLE ONLY checkouts
 
 
 --
--- TOC entry 30 (OID 43035)
+-- Name: classbooks_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY classbooks
+    ADD CONSTRAINT classbooks_pkey PRIMARY KEY ("class", isbn);
+
+
+--
+-- Name: classes_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY classes
+    ADD CONSTRAINT classes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: libraries_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY libraries
+    ADD CONSTRAINT libraries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: patrons_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY patrons
+    ADD CONSTRAINT patrons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: semesters_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY semesters
+    ADD CONSTRAINT semesters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tomebooks_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY tomebooks
+    ADD CONSTRAINT tomebooks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: tome; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: one_borrower; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX one_borrower ON checkouts USING btree (tomebook) WHERE ((checkin IS NULL) AND (reservation = false));
+
+
+--
+-- Name: one_current; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX one_current ON semesters USING btree (current) WHERE (current = true);
+
+
+--
+-- Name: one_reservation; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX one_reservation ON checkouts USING btree (tomebook, semester) WHERE (reservation = true);
+
+
+--
+-- Name: upper_email_unique; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX upper_email_unique ON patrons USING btree (upper(email));
+
+
+--
+-- Name: upper_isbn; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX upper_isbn ON books USING btree (upper((isbn)::text));
+
+
+--
+-- Name: upper_username; Type: INDEX; Schema: public; Owner: tome; Tablespace: 
+--
+
+CREATE UNIQUE INDEX upper_username ON users USING btree (upper(username));
+
+
+--
+-- Name: isbn_force_upper; Type: TRIGGER; Schema: public; Owner: tome
+--
+
+CREATE TRIGGER isbn_force_upper
+    BEFORE INSERT OR UPDATE ON books
+    FOR EACH ROW
+    EXECUTE PROCEDURE isbn_force_upper();
+
+
+--
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -296,7 +358,6 @@ ALTER TABLE ONLY tomebooks
 
 
 --
--- TOC entry 34 (OID 43039)
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -305,7 +366,6 @@ ALTER TABLE ONLY checkouts
 
 
 --
--- TOC entry 37 (OID 43043)
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -314,16 +374,6 @@ ALTER TABLE ONLY classbooks
 
 
 --
--- TOC entry 38 (OID 43047)
--- Name: $2; Type: FK CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY classbooks
-    ADD CONSTRAINT "$2" FOREIGN KEY (isbn) REFERENCES books(isbn);
-
-
---
--- TOC entry 40 (OID 76100)
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -332,7 +382,14 @@ ALTER TABLE ONLY library_access
 
 
 --
--- TOC entry 41 (OID 76104)
+-- Name: $2; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY classbooks
+    ADD CONSTRAINT "$2" FOREIGN KEY (isbn) REFERENCES books(isbn);
+
+
+--
 -- Name: $2; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -341,52 +398,14 @@ ALTER TABLE ONLY library_access
 
 
 --
--- TOC entry 29 (OID 76110)
--- Name: libraryfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY tomebooks
-    ADD CONSTRAINT libraryfk FOREIGN KEY (library) REFERENCES libraries(id) MATCH FULL;
-
-
---
--- TOC entry 36 (OID 76117)
--- Name: userfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY classbooks
-    ADD CONSTRAINT userfk FOREIGN KEY (uid) REFERENCES users(id) MATCH FULL;
-
-
---
--- TOC entry 32 (OID 76121)
--- Name: libraryfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+-- Name: borrower_fk; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
 ALTER TABLE ONLY checkouts
-    ADD CONSTRAINT libraryfk FOREIGN KEY (library) REFERENCES libraries(id) MATCH FULL;
+    ADD CONSTRAINT borrower_fk FOREIGN KEY (borrower) REFERENCES patrons(id);
 
 
 --
--- TOC entry 33 (OID 76125)
--- Name: userfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY checkouts
-    ADD CONSTRAINT userfk FOREIGN KEY (uid) REFERENCES users(id) MATCH FULL;
-
-
---
--- TOC entry 35 (OID 76205)
--- Name: semesterfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
---
-
-ALTER TABLE ONLY checkouts
-    ADD CONSTRAINT semesterfk FOREIGN KEY (semester) REFERENCES semesters(id) MATCH FULL;
-
-
---
--- TOC entry 31 (OID 76221)
 -- Name: expirefk; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
@@ -395,26 +414,71 @@ ALTER TABLE ONLY tomebooks
 
 
 --
--- TOC entry 39 (OID 76225)
+-- Name: libraryfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY tomebooks
+    ADD CONSTRAINT libraryfk FOREIGN KEY (library) REFERENCES libraries(id) MATCH FULL;
+
+
+--
+-- Name: libraryfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY checkouts
+    ADD CONSTRAINT libraryfk FOREIGN KEY (library) REFERENCES libraries(id) MATCH FULL;
+
+
+--
+-- Name: originator_fk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY tomebooks
+    ADD CONSTRAINT originator_fk FOREIGN KEY (originator) REFERENCES patrons(id);
+
+
+--
+-- Name: semesterfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY checkouts
+    ADD CONSTRAINT semesterfk FOREIGN KEY (semester) REFERENCES semesters(id) MATCH FULL;
+
+
+--
+-- Name: userfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY classbooks
+    ADD CONSTRAINT userfk FOREIGN KEY (uid) REFERENCES users(id) MATCH FULL;
+
+
+--
+-- Name: userfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
+--
+
+ALTER TABLE ONLY checkouts
+    ADD CONSTRAINT userfk FOREIGN KEY (uid) REFERENCES users(id) MATCH FULL;
+
+
+--
 -- Name: verifiedfk; Type: FK CONSTRAINT; Schema: public; Owner: tome
 --
 
 ALTER TABLE ONLY classbooks
     ADD CONSTRAINT verifiedfk FOREIGN KEY (verified) REFERENCES semesters(id) MATCH FULL;
 
----  Make usernames case insensitive
-create unique index upper_username on users (upper(username));
-
---- Prevent duplicate ISBNs by case
-create UNIQUE INDEX upper_isbn on books upper(isbn);
-
-SET SESSION AUTHORIZATION 'postgres';
 
 --
--- TOC entry 3 (OID 2200)
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
-COMMENT ON SCHEMA public IS 'Standard public namespace';
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
+
+--
+-- PostgreSQL database dump complete
+--
 
