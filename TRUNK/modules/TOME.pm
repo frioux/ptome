@@ -37,6 +37,8 @@ our %CONFIG = (
 
 require '../site-config.pl';
 
+$ENV{PATH} = '/usr/sbin:/usr/bin:/sbin:/bin';
+
 sub cgiapp_init {
 	my $self = shift;
 
@@ -500,6 +502,23 @@ sub tomebook_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
+		tomebook	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('SELECT id, isbn, expire, comments, timedonated, library, timeremoved, originator FROM tomebooks WHERE', { id => $params{tomebook} });
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	return $sth->fetchrow_hashref();
+}
+
+sub tomebook_info_deprecated {
+	my $self = shift;
+
+	my %params = validate(@_, {
 		id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
@@ -590,6 +609,50 @@ sub tomebook_update {
 	}
 }
 
+sub patron_checkouts {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		patron	=> { type => SCALAR, regex => qr/^\d+$/ },
+		all	=> { default => 0 },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind);
+	if($params{all}) {
+		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE', { borrower => $params{patron} }, 'ORDER BY checkout');
+	} else {
+		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE checkin IS NULL and', { borrower => $params{patron} }, 'ORDER BY checkout');
+	}
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	my @results;
+	while(my @result = $sth->fetchrow_array()) {
+		push @results, $result[0];
+	}
+
+	return \@results;
+}
+
+sub checkout_info {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		checkout	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{checkout} });
+	
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	return $sth->fetchrow_hashref();
+}
 
 sub checkout_history {
 	my $self = shift;

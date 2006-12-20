@@ -1,0 +1,9 @@
+[%# Takes isbn as an argument %]
+
+[% bookinfo = tome.book_info(isbn) %]
+<table border="0">
+<tr><td><b>ISBN:</b></td><td>[% bookinfo.isbn %]</td></tr>
+<tr><td><b>Title:</b></td><td>[% bookinfo.title %]</td></tr>
+<tr><td><b>Author:</b></td><td>[% bookinfo.author %]</td></tr>
+<tr><td><b>Edition:</b></td><td>[% bookinfo.edition %]</td></tr>
+</table>

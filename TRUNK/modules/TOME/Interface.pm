@@ -150,7 +150,7 @@ sub mainsearch {
 	if($q->param('rm')) {
 		my @results = $self->tomebooks_search({%search});
 		foreach(@results) {
-			push @tomebooks, $self->tomebook_info({ id => $_ });
+			push @tomebooks, $self->tomebook_info_deprecated({ id => $_ });
 		}
 	}
 	
@@ -178,7 +178,7 @@ sub removetomebook {
 		}
 	}
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $params{id} })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $params{id} })->{library})) {
 		$self->tomebook_remove(\%params);
 	}
 
@@ -211,7 +211,7 @@ sub finduseless {
 
 	my @tomebooks;
 	foreach($self->find_useless({ libraries => $libraries_selected })) {
-		push @tomebooks, $self->tomebook_info({ id => $_ });
+		push @tomebooks, $self->tomebook_info_deprecated({ id => $_ });
 		$tomebooks[-1]{classes} = $self->book_classes({ isbn => $tomebooks[-1]{isbn} });
 	}
 
@@ -315,7 +315,7 @@ sub updatetomebook {
 	);
 	
 	# Verify that they're authorized for the library this book is in and authorized for the library they're trying to move the book to
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook{id} })->{library}) && $self->_libraryauthorized($self->param('user_info')->{id}, $tomebook{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $tomebook{id} })->{library}) && $self->_libraryauthorized($self->param('user_info')->{id}, $tomebook{library})) {
 		$self->tomebook_update({ %tomebook });
 	}
 
@@ -421,15 +421,15 @@ sub report {
 
 	my $reservation = $self->reservation_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$reservation) {
-		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
+		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
 	my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$dueback) {
-		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
+		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
 	my $expiring = $self->expire_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$expiring) {
-		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
+		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
 
 	return $self->template({ file => 'report.html', vars => {
@@ -542,7 +542,7 @@ sub patronview {
 		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
 	}
 
-	return $self->template({ file => 'patronview.html', vars => { patron => $patron, errs => $errs }});
+	return $self->template({ file => 'patronview.html', vars => { patron => $patron->{id}, errs => $errs }});
 }
 
 sub patronupdate {
@@ -736,7 +736,7 @@ sub checkout {
 
 	my $checkoutid;
 	if($self->_libraryauthorized($self->param('user_info')->{id}, $results->valid('library'))) {
-		my $tomebook = $self->tomebook_info({id => $id});
+		my $tomebook = $self->tomebook_info_deprecated({id => $id});
 		# InterTOME loans may only be on a reservation basis
 		unless($self->_libraryauthorized($self->param('user_info')->{id}, $tomebook->{library})) {
 			$reservation = 'true';
@@ -780,7 +780,7 @@ sub checkin {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $tomebook })->{library})) {
 		$self->tomebook_checkin({ id => $self->query->param('id') });
 	}
 
@@ -812,7 +812,7 @@ sub fillreservation {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $tomebook })->{library})) {
 		$self->tomebook_fill_reservation({id => $id});
 	}
 
@@ -829,7 +829,7 @@ sub cancelcheckout {
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
 
-	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info({ id => $tomebook })->{library})) {
+	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $tomebook })->{library})) {
 		$self->tomebook_cancel_checkout({id => $id});
 	}
 
@@ -847,7 +847,7 @@ sub tomebookinfo {
 	my $id = $q->param('id');
 	my $info;
 	
-	eval { $info = $self->tomebook_info({ id => $id }); };
+	eval { $info = $self->tomebook_info_deprecated({ id => $id }); };
 
 	if($@ || !$info->{isbn}) {
 		return $self->error({ message => 'Unable to find TOME book with ID "' . $id . '"' });
