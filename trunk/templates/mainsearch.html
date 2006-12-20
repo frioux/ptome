@@ -85,7 +85,7 @@ Email
 		[% tomebook.edition %]
 	</td>
 	<td>
-		[% tomebook.originator %]
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% tomebook.originator | html | uri %]">[% tomebook.originator_name | html %]</a> ([% tomebook.originator_email | html %])
 	</td>
 	<td>
 		[% tomebook.comments %]
