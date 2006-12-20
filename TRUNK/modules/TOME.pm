@@ -221,6 +221,72 @@ sub error {
 }
 #}}}
 
+#{{{isbn_search 
+
+=head2 isbn_search 
+
+This returns an array of found isbns.
+
+It takes arguments in the form of a hash:
+
+=over
+
+=item title
+
+the title of the book
+
+=item author
+
+the author of the book
+
+=item edition
+
+the edition of the book
+
+=back
+
+=cut
+
+sub isbn_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		title		=> { type => SCALAR, optional => 1 },
+		author		=> { type => SCALAR, optional => 1 },
+		edition		=> { type => SCALAR, optional => 1 },
+	});
+
+	my (@likecolumns, @values, @conditions);
+
+	foreach (qw(title author edition)) {
+		if(defined($params{$_})) {
+			_quote_like($params{$_});
+			push @likecolumns, $_;
+			push @values, $params{$_};
+		}
+	}
+	
+	foreach(@likecolumns) {
+		push @conditions, "$_ ILIKE '%' || ? || '%'";
+	}
+
+	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . ' ORDER BY isbn';
+
+	my $sth = $dbh->prepare($statement);
+	
+	$sth->execute(@values);
+	
+	my @results;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
+	}
+	
+	return @results;
+}
+#}}}
+
 #{{{tomebooks_search 
 
 =head2 tomebooks_search 
