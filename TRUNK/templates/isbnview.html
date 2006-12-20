@@ -1,12 +1,11 @@
 [% META title = 'View Book' %]
-[% bookinfo = tome.book_info(isbn) %]
-[%# Book Data Table %]
-<table>
-<tr><td>Title</td><td>Author</td><td>Edition</td></tr>
-<tr><td>[% bookinfo.title %]</td><td>[% bookinfo.author  %]</td><td>[% bookinfo.edition  %]</td></tr>
-</table>
+[% INCLUDE 'blocks/book.html' isbn=isbn %]
 
 [%# Book Reservation Table  %]
+[%# This needs to have:
+    Patron reserving to, Floor patron is on, semester reserving to, button(reserve from here) || button(reserve from other floor) w/ listbox of available floors( intertome floors, floors with the book)
+%]
 <table>
-
+<tr><td>Patron:</td><td>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron'  %]</td></tr>
+<tr><td>Floor:</td><td></td></tr>
 </table>

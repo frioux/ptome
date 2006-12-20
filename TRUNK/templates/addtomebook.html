@@ -4,7 +4,7 @@
 <input type="hidden" name="addtomebook" value="1">
 <table border="1" cellpadding="5">
 <tr>
-<td>ISBN</td><td>[% PROCESS autocomplete_isbn.html %] [% errs.isbn %]</td>
+<td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %] [% errs.isbn %]</td>
 </tr>
 <tr>
 <td>Originator<br />(email address)</td><td>[% PROCESS 'autocomplete_patron.html' %] [% errs.patron %]</td>

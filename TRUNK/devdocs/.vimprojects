@@ -85,31 +85,27 @@ cgi=cgi{
  }
  
  modules=modules {
- 
+  TOME.pm
+  less
+  pod2htmd.tmp
+  pod2htmi.tmp
+  tmp
  TOME=TOME{
-   
    Interface.pm
    TemplateCallbacks.pm
-  
+   tags
   }
- 
-  TOMETest
-  TOME.pm
-  TOMETest.pm
- 
  }
  
  scripts=scripts {
   
   database_migrations=database_migrations{
-   
    01_ISBNvsID.sql
    02_PatronClasses.sql
    03_FloorInterTOMEAvailability.sql
    04_InterTOMEConsistency.sql
    05_InterTOMEBarriers.sql
    06_ClassesTypeCorrection.sql
-  
   }
   
   createsemester.pl
@@ -141,11 +137,11 @@ cgi=cgi{
  templates=templates {
   
   blocks=blocks{
-   
    autocomplete_class.html
+   autocomplete_isbn.html
+   autocomplete_patron.html
    book.html
    datetime.html
-  
   }
   
   addclass.html

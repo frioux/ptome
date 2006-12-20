@@ -85,7 +85,7 @@ General Class Comments:<br />
 <form action="[% config.cgibase %]/admin.pl">
 <input type="hidden" name="rm" value="addclassbook">
 <input type="hidden" name="class" value="[% id %]">
-ISBN: [% PROCESS autocomplete_isbn.html %]<br />
+ISBN: [% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]<br />
 Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
 When verified: <select name="verified">
 [% FOREACH semester = semesters %]

@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview ) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -207,7 +207,6 @@ sub mainsearch_deprecated {
 		libraries		=> $libraries,
 		librarieshash		=> $self->_librarieshash(),
 		libraries_selected	=> $search{libraries},
-		semester_selected	=> $self->_semesterselecteddefault(),
 	}});
 }
 #}}}
@@ -408,7 +407,6 @@ sub patronaddclass {
    $self->patron_add_class({
      patron     => $results->valid('patronid'),
      class      => $results->valid('class'),
-     semester   => $self->_semesterselecteddefault(),
     });
     
     return $self->forward('patronview');
@@ -1134,6 +1132,18 @@ sub sessionsemester {
 }
 #}}}
 
+#{{{isbnview
+sub isbnview {
+
+    my $self = shift;
+
+    my $q = $self->query;
+
+    return $self->template({file => 'isbnview.html', vars => {isbn => $q->param('isbn')}});
+
+}
+#}}}
+
 #{{{_libraryaccess
 sub _libraryaccess {
 	my $self = shift;
@@ -1183,6 +1193,7 @@ sub _librariesselecteddefault {
 #}}}
 
 #{{{_semesterselecteddefault
+# !!! This logic is duplicated in blocks/semesterbox.html.  There's probably a good way to consolidate these...
 sub _semesterselecteddefault {
 	my $self = shift;
 
