@@ -1,4 +1,4 @@
-#!/usr/bin/perl -T
+#!/usr/bin/perl 
 
 use strict;
 use warnings;
@@ -46,15 +46,16 @@ if (!$passwd)
   $passwd = prompt ("Password: ", -echo => '');
 }
 
+#$username = "theclint";
 $passwd = unix_md5_crypt($passwd);
 
 #print('Username ' . $username . "\n" . 'Email ' . $email . "\n");
 
 my $app = TOME->new();
-$userid = $app->user_add({username => $username, email => $email, password => $passwd});
+$userid = $app->user_add({username => $username, email => "admin", password => $passwd});
 
 #print("UserID created is: \"" . $userid . "\", Admin flag is \"" . $admin . "\"\n");
 
-$app->user_update({id => $userid, username => $username, email => $email, notifications => 'true', admin => $admin});
+$app->user_update({id => $userid, username => $username, email => "admin", notifications => 'true', admin => $admin});
 
 print('Success!' . "\n");
