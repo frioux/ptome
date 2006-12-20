@@ -1,0 +1,9 @@
+[% META title = 'View Patron' %]
+<form action="[% config.cgibase %]/admin.pl" name="patronupdate" method="post">
+<input type="hidden" name="rm" value="patronupdate">
+<input type="hidden" name="id" value="[% patron.id | html %]">
+ID: [% patron.id | html %]<br>
+Email: <input type="text" name="email" value="[% patron.email | html %]" size="40"> [% errs.email %]<br>
+Display Name: <input type="text" name="name" value="[% patron.name | html %]"> [% errs.name %]<br>
+<input type="submit" value="Update">
+</form>

@@ -1,0 +1,3 @@
+<input autocomplete="off" id="patron" name="patron" type="text" value="[% default_patron %]">
+<div class="auto_complete" id="patron_auto_complete"></div>
+[% prototype.auto_complete_field('patron', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_patron'" }) %]
