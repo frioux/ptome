@@ -10,6 +10,7 @@ use DateTime::Format::Pg;
 use Template;
 use Params::Validate ':all';
 use SQL::Interpolate qw(sql_interp);
+use MIME::Lite;
 
 use strict;
 use warnings;
@@ -24,6 +25,7 @@ our %CONFIG = (
 	dbipassword	=> 'password',
 
 	notifyfrom	=> 'TOMEkeeper <tomekeeper@tome>',
+	adminemail	=> 'TOMEadmin <tomeadmin@tome>',
 );
 
 require 'site-config.pl';
@@ -46,8 +48,15 @@ sub cgiapp_init {
 sub error_runmode {
 	my $self = shift;
 
-	return $self->error({ message => "Internal exception error", extended => $@ });
 	warn "TOME Internal Exception Error:\n" . $self->dump();
+	my $message = MIME::Lite->new(
+		From	=> $TOME::CONFIG{notifyfrom},
+		To	=> $TOME::CONFIG{adminemail},
+		Subject	=> 'Unknown TOME Error',
+		Data	=> $@ . "\n\n" . $self->dump(),
+	);
+	$message->send;
+	return $self->error({ message => "Internal exception error", extended => $@ });
 }
 
 sub tomebooks_search {
