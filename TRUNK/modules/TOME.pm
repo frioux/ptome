@@ -2450,7 +2450,45 @@ sub user_add {
 
 =head2 user_update 
 
-foo
+This method updates a user (not a patron).
+
+Arguments are as a hashref.  Everything other than id is optional.
+
+=over
+
+=item id
+
+The user to be modified
+
+=back
+
+=item username
+
+The new username
+
+=item email
+
+The new email
+
+=item notifications
+
+The new notifications flag.  Either 'true' or 'false'.
+
+=item disabled.
+
+The new disabled flag.  Either 'true' or 'false'.
+
+=item admin
+
+The new admin flag.  Either 'true' or 'false'.
+
+=item password
+
+The new password
+
+=back
+
+This method returns nothing.
 
 =cut
 
@@ -2459,9 +2497,9 @@ sub user_update {
 
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		username	=> { type => SCALAR },
-		email		=> { type => SCALAR },
-		notifications	=> { type => SCALAR, regex => qr/^true|false$/ },
+		username	=> { type => SCALAR, optional => 1 },
+		email		=> { type => SCALAR, optional => 1 },
+		notifications	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		disabled	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		admin		=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		password	=> { type => SCALAR, optional => 1 },
@@ -2555,6 +2593,49 @@ sub semester_add {
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.semesters_id_seq')");
 	return $id;
 }
+#}}}
+
+#{{{ library_update
+=head2 library_update 
+
+This method updates a library.
+
+Arguments are as a hashref.  Everything other than id is optional.
+
+=over
+
+=item id
+
+The ID of the library to be updated.
+
+=item name
+
+The new name of the library.
+
+=item intertome
+
+The InterTOME status of the library.  Either 'true' or 'false'.
+
+=cut
+
+sub library_update {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id		=> { type => SCALAR, regex => qr/^\d+$/ },
+		name		=> { type => SCALAR, optional => 1 },
+		intertome	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
+	});
+
+	my %library;
+	foreach(qw(name intertome)) {
+		if(defined($params{$_})) { $library{$_} = $params{$_}; }
+	}
+
+	my ($sql, @bind) = sql_interp('UPDATE libraries SET', \%library, 'WHERE id =', $params{id});
+	$self->dbh->do($sql, undef, @bind);
+}
+
 #}}}
 
 #{{{library_add 
