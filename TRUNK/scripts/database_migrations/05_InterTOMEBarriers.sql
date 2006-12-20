@@ -7,9 +7,15 @@ drop function reservation_insert () cascade;
 CREATE FUNCTION reservation_insert() RETURNS "trigger" AS $$
 declare library record;
 BEGIN
-	select into library * from libraries where id = NEW.library_to;
-	IF NEW.library_from != NEW.library_to AND library.intertome is false THEN
-		raise exception 'Cannot make InterTOME reservations to a library not in the InterTOME system.';
+	IF NEW.library_from != NEW.library_to THEN
+		select into library * from libraries where id = NEW.library_to;
+	       	IF library.intertome is false THEN
+			raise exception 'Cannot make InterTOME reservations to a library not in the InterTOME system.';
+		end if;
+		select into library * from libraries where id = NEW.library_from;
+	       	IF library.intertome is false THEN
+			raise exception 'Cannot make InterTOME reservations from a library not in the InterTOME system.';
+		end if;
 	end if;
 
 	IF tomebooks_reserved(NEW.isbn, NEW.library_to, NEW.semester) + 1 <= tomebooks_available_to_reserve(NEW.isbn, NEW.library_to, NEW.semester) THEN
@@ -33,6 +39,10 @@ BEGIN
 	select into tomebook * from tomebooks where id = NEW.tomebook;
 	IF tomebook.library != NEW.library THEN
 		select into library * from libraries where id = tomebook.library;
+		IF library.intertome is false THEN
+			raise exception 'Cannot make an InterTOME loan to a library that is not in the InterTOME system.';
+		end if;
+		select into library * from libraries where id = NEW.library;
 		IF library.intertome is false THEN
 			raise exception 'Cannot make an InterTOME loan from a library that is not in the InterTOME system.';
 		end if;

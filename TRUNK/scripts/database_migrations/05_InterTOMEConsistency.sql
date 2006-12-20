@@ -1,5 +1,0 @@
-BEGIN WORK;
-
-
-
-COMMIT WORK;
