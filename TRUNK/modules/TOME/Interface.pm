@@ -1128,7 +1128,7 @@ sub _libraryaccess {
 	my $self = shift;
 	my $uid = shift;
 	
-	my %library_access = map { $_ => 1 } @{$self->library_access({ user => $uid })};
+	my %library_access = map { $_ => 1 } ($self->library_access({ user => $uid }));
 	my $libraries = $self->library_info;
 	foreach my $library (@{$libraries}) {
 		$library->{access} = $library_access{$library->{id}} ? 1 : 0;
