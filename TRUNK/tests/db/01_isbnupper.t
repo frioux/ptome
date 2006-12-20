@@ -48,5 +48,5 @@ $sth = $dbh->prepare("SELECT isbn FROM books WHERE isbn=?");
 $sth->execute("007027410X");
 is($sth->fetchrow_array(), "007027410X");
 
-$sth = $dbh->prepare("DELETE FROM TABLE books WHERE isbn=?");
+$sth = $dbh->prepare("DELETE FROM books WHERE isbn=?");
 $sth->execute("007027410X");
