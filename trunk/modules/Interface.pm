@@ -101,10 +101,11 @@ sub mainsearch {
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	
 	return $self->template({ file => 'mainsearch.html', vars => {
-		classes		=> $classes,
-		tomebooks	=> \@tomebooks,
-		libraries	=> $libraries,
-		librarieshash	=> $self->_librarieshash(),
+		classes			=> $classes,
+		tomebooks		=> \@tomebooks,
+		libraries		=> $libraries,
+		librarieshash		=> $self->_librarieshash(),
+		semester_selected	=> $self->_semesterselecteddefault(),
 	}});
 }
 
@@ -143,17 +144,10 @@ sub findorphans {
 sub finduseless {
 	my $self = shift;
 
-	my @libraries_selected = $self->query->param('libraries');
-	unless(@libraries_selected) {
-		foreach (@{$self->_libraryaccess($self->param('user_info')->{id})}) {
-			if($_->{access}) {
-				push @libraries_selected, $_->{id};
-			}
-		}
-	}
+	my $libraries_selected = $self->_librariesselecteddefault;
 
 	my @tomebooks;
-	foreach($self->find_useless({ libraries => \@libraries_selected })) {
+	foreach($self->find_useless({ libraries => $libraries_selected })) {
 		push @tomebooks, $self->tomebook_info({ id => $_ });
 		$tomebooks[-1]{classes} = $self->book_classes({ isbn => $tomebooks[-1]{isbn} });
 	}
@@ -161,7 +155,7 @@ sub finduseless {
 	return $self->template({ file => 'finduseless.html', vars => {
 		tomebooks		=> \@tomebooks,
 		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
-		libraries_selected	=> \@libraries_selected,
+		libraries_selected	=> $libraries_selected,
 	}});
 }
 
@@ -315,27 +309,29 @@ sub report {
 
 	my $q = $self->query;
 
-	unless($q->param('semester')) {  return $self->template({ file => 'reportchoose.html', vars => { libraries => $self->_libraryaccess($self->param('user_info')->{id}) }}); }
+	my $semester_selected = $self->_semesterselecteddefault();
+	my $libraries_selected = $self->_librariesselecteddefault();
 
-	my $reservation = $self->reservation_search({ semester => $q->param('semester'), libraries => [ $q->param('libraries') ] });
+	my $reservation = $self->reservation_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$reservation) {
 		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
 	}
-my $dueback = $self->dueback_search({ semester => $q->param('semester'), libraries => [ $q->param('libraries') ] });
+my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$dueback) {
 		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
 	}
-	my $expiring = $self->expire_search({ semester => $q->param('semester'), libraries => [ $q->param('libraries') ] });
+	my $expiring = $self->expire_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$expiring) {
 		$_->{tomebookinfo} = $self->tomebook_info({ id => $_->{tomebook} });
 	}
 
 	return $self->template({ file => 'report.html', vars => {
-		semester	=> $q->param('semester'),
-		reservation	=> $reservation,
-		dueback		=> $dueback,
-		expiring	=> $expiring,
-		libraries	=> $self->_librarieshash(), 
+		reservation		=> $reservation,
+		dueback			=> $dueback,
+		expiring		=> $expiring,
+		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries_selected	=> $libraries_selected,
+		semester_selected	=> $semester_selected,
 	}});
 }
 
@@ -740,6 +736,30 @@ sub _librarieshash {
 	my $self = shift;
 
 	return { map { $_->{id} => $_ } @{$self->library_info} };
+}
+
+sub _librariesselecteddefault {
+	my $self = shift;
+
+	my @libraries_selected = $self->query->param('libraries');
+	unless(@libraries_selected) {
+		foreach (@{$self->_libraryaccess($self->param('user_info')->{id})}) {
+			if($_->{access}) {
+				push @libraries_selected, $_->{id};
+			}
+		}
+	}
+	return \@libraries_selected;
+}
+
+sub _semesterselecteddefault {
+	my $self = shift;
+
+	my $semester_selected = $self->query->param('semester');
+	unless($semester_selected) {
+		$semester_selected = ($self->session->param('currsemester') || $self->param('currsemester'))->{id};
+	}
+	return $semester_selected;
 }
 
 1;

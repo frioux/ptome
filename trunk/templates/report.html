@@ -1,6 +1,12 @@
 [% META title = 'Semester Report' %]
-<h2>Semester: [% semestershash.${semester}.name %]</h2>
-<b>Libraries:</b><br><blockquote>[% FOREACH library = CGI.param('libraries') %][% libraries.${library}.name %]<br>[% END %]</blockquote>
+<form name="report" action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="report">
+<table border="1" cellpadding="5">
+[% PROCESS librariesbox.html %]
+[% PROCESS semestersbox.html %]
+<tr><td colspan="2" align="center"><input type="submit" value="Generate Report"></td></tr>
+</table>
+</form>
 <h3>Reservations not yet filled</h3>
 <table border="1">
 <tr>

@@ -10,12 +10,8 @@
 <tr><td>Edition</td><td>[% CGI.textfield({ Name => 'edition' }) %]</td></tr>
 <tr><td>Include</td><td>[% FOREACH button = CGI.radio_group({ Name => 'status', Values => ['all' 'can_reserve' 'can_checkout'], Default => 'can_reserve', Labels => { all => 'All', can_reserve => 'Available for reservation', can_checkout => 'Available for checkout' } }) %][% button %]<br>
 [% END %]
-<select name="semester">
-[% FOREACH semester = semesters %]
-<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
-[% END %]
-</select>
 </td></tr>
+[% PROCESS semestersbox.html %]
 <tr><td>Libraries</td><td>
 <select name="libraries" size="5" multiple="multiple">
 [% FOREACH library = libraries %]
