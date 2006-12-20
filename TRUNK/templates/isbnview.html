@@ -1,0 +1,12 @@
+[% META title = 'View Book' %]
+[% bookinfo = tome.book_info(isbn) %]
+[%# Book Data Table %]
+<table>
+<tr><td>Title</td><td>Author</td><td>Edition</td></tr>
+<tr><td>[% bookinfo.title %]</td><td>[% bookinfo.author  %]</td><td>[% bookinfo.edition  %]</td></tr>
+</table>
+
+[%# Book Reservation Table  %]
+<table>
+
+</table>

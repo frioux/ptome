@@ -13,18 +13,40 @@
 <tr><td colspan="2" align="center"><input type="submit" value="Search"></td></tr>
 </table>
 </form>
+</td>
+<td valign="top" align="center">
 
-</td><td valign="top">
+[%# Class jump box %]
+<form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<input type="hidden" name="rm" value="classsearch">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Jump to Class</td></tr>
+<tr><td>Class</td><td>[% PROCESS 'blocks/autocomplete_class.html' name='class' %]</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
+</table>
+
+[%# ISBN jump box %]
+<p><form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<input type="hidden" name="rm" value="isbnview">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Jump to ISBN</td></tr>
+<tr><td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
+</table>
+
+</td>
+
+<td valign="top">
 [%# Edit Patron box %]
+<form action="[% config.cgibase | html %]/admin.pl" method="post">
 <table cellpadding="5" border="1">
 <tr><td colspan="2" align="center">Edit Patron</td></tr>
-<form action="[% config.cgibase %]/admin.pl" method="post">
 <tr><td>
 <input type="hidden" name="rm" value="patronview">
 Email
 </td>
 <td>
-[% PROCESS 'autocomplete_patron.html' %]
+[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %]
 </td>
 </tr>
 <tr><td align="center" colspan="2">
@@ -37,7 +59,7 @@ Email
 
 [%# Search results area %]
 
-[% IF books %]<p>[% books.size %] result(s)
+[% IF books.size > 0 %]<p>[% books.size %] result(s)
 <table border="1">
 [% FOREACH book = books %]
 <tr><td>
