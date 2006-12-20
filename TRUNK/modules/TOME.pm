@@ -18,6 +18,7 @@ use warnings;
 
 our %CONFIG = (
 	cgibase		=> '/perl/tome/cgi',
+	staticbase	=> '/tome',
 
 	templatepath	=> '../templates',
 
@@ -241,6 +242,8 @@ sub add_book {
 	});
 
 	my $dbh = $self->dbh;
+
+	$params{isbn} = uc $params{isbn};
 
 	my $sth = $dbh->prepare("INSERT INTO books (isbn, title, author, edition) VALUES (?, ?, ?, ?)");
 	$sth->execute($params{isbn}, $params{title}, $params{author}, $params{edition});

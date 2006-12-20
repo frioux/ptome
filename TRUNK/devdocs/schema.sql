@@ -405,6 +405,9 @@ ALTER TABLE ONLY classbooks
 ---  Make usernames case insensitive
 create unique index upper_username on users (upper(username));
 
+--- Prevent duplicate ISBNs by case
+create UNIQUE INDEX upper_isbn on books upper(isbn);
+
 SET SESSION AUTHORIZATION 'postgres';
 
 --

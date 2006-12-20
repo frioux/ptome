@@ -53,7 +53,7 @@
 <body [% IF errs and CGI.param('anchor') %]onLoad="javascript:window.location.href='#[% CGI.param('anchor') | html %]';"[% END %]>
 <table width="95%" align="center">
 <tr>
-<td align="left" width="33%"><img src="/tome.png"></td>
+<td align="left" width="33%"><img src="[% config.staticbase %]/tome.png"></td>
 <td align="center" width="33%">
 	[% IF config.devmode %]
 	<font color="red" size="+3"><b>DEVELOPMENT</b></font><br>
