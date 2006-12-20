@@ -1,5 +1,8 @@
 [% META title = 'Search' %]
+
 <p><table cellpadding="5"><tr><td valign="top">
+
+[%# Main search box ]
 <form action="[% config.cgibase %]/admin.pl" method="post" name="report">
 <input type="hidden" name="rm" value="mainsearch">
 <input type="hidden" name="search" value="1">
@@ -17,6 +20,8 @@
 </table>
 </form>
 </td><td valign="top">
+
+[%# Class selection box %]
 <table cellpadding="5" border="1">
 <tr><td align="center">Class</td></tr>
 <tr><td>
@@ -33,6 +38,8 @@
 </table>
 </td>
 <td valign="top">
+
+[%# Edit Patron box %]
 <table cellpadding="5" border="1">
 <tr><td colspan="2" align="center">Edit Patron</td></tr>
 <form action="[% config.cgibase %]/admin.pl" method="post">
@@ -51,6 +58,9 @@ Email
 </table>
 </td>
 </tr></table>
+
+[%# Search results area %]
+
 [% IF CGI.param('search') %]<p>[% tomebooks.size %] results[% END %]
 [% IF tomebooks.size > 0 %]
 <table border="1">
