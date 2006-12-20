@@ -2030,7 +2030,37 @@ sub update_checkout_comments {
 
 =head2 book_info 
 
-foo
+Takes a hash as an argument:
+
+=over
+ 
+=item isbn
+
+isbn of book
+
+=back
+
+returns a hash:
+
+=over
+ 
+=item isbn
+
+isbn of book
+
+=item title
+
+title of book
+
+=item author
+
+author of book
+
+=item edition
+
+edition of book
+
+=back
 
 =cut
 
