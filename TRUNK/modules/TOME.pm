@@ -211,7 +211,7 @@ sub error {
 	
 	my $output;
 	eval {
-		$output = $self->template({ file => 'error.html', vars => { message => $params->{message} }});
+		$output = $self->template({ file => 'error.html', vars => { message => $params->{message}, extended => $params->{extended} }});
 	};
 	if($@) {
 		$output = "TOME experienced a fatal error.";
