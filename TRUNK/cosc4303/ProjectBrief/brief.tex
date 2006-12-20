@@ -1,9 +1,11 @@
 \documentclass[12pt,titlepage]{article}
+\usepackage{graphicx}
 \author{The TOME Team}
 \title{\textbf{TOME Project Brief}}
 \begin{document}
 \maketitle
 \tableofcontents
+\listoffigures
 \newpage
 \section{Introduction}
 \subsection{Purpose}
@@ -32,7 +34,15 @@ Currently, when students are finished with a book they are using for the semeste
 \subsection{Purpose of Project}
 TOME is a solution to the problem of book borrowing.  Instead of the disorganized and inefficient borrowing that occurs naturally, TOME is an organized, centralized system.  All books for a region (such as a campus floor) are donated to a central repository and entered into a database.  This repository is generally a closet or bookshelf in the TOMEkeeper's room.  This database keeps track of not only which books are available and which have been checked out, but also what books go with what classes.  Currently, books are checked out on a first come, first serve basis, and all checkouts are done free of charge.  Because the system is run by TOMEkeepers and not users, needs can be worked around as they arise.  Books are donated to the library for free.  Types of book are managed by ISBN.  This works well because every edition of every book has a unique ISBN.  TOME should make the book acquisition process as painless as possible for as many students as possible.
 \subsection{Current Situation}
-TOME is already quite robust and successful.  It consists of a web frontend that the TOMEkeepers use to manipulate a postgresql database.  The database has very many builtin consistency checks.  The underlying program is made with apache and Perl and a number of perl modules.  The details of this can be seen in the Trac Wiki.
+TOME is already quite robust and successful.  It consists of a web front end that the TOMEkeepers use to manipulate a PostgreSQL database.  The database has many built-in consistency checks.  The underlying program is made with Apache, Perl, and a number of Perl modules.  The details of this can be seen in the Trac Wiki.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{userdiagram}
+	\caption{TOME Actor Diagram}
+\end{figure}
+\subsection{References}
+All project data will be stored in a combination Subversion repository and Trac environment.  All of this will be made viewable at the following URL:
+
+\texttt{http://enosh.letnet.net/trac/tome}
 \subsection{Project Goals}
 \begin{description}
 	\item[Automated Test Suite] This suite will be capable of creating a blank TOME database, starting a self-contained webserver, using the system like a normal user would, and checking the web and database output of the system.
