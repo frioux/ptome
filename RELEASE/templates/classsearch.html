@@ -1,0 +1,106 @@
+[% META title = 'Class Information' %]
+<h3>Books for [% id %] - [% name %]</h3>
+<table border="1" cellpadding="5">
+<tr>
+	<td align="center"><b>Book Information</b></td>
+	<td align="center"><b>Usable</b></td>
+	<td align="center"><b>Semester Verified For</b></td>
+	<td align="center"><b>Verified By</b></td>
+	<td align="center"><b>Verification Comments</b></td>
+	<td align="center"><b>Number Available</b></td>
+	<td align="center"><b>Tools</b></td>
+	</tr>
+[% FOREACH book = books %]
+[% IF book.usable %]
+<tr>
+[% ELSE %]
+<tr bgcolor="lightgrey">
+[% END %]
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="updateclassinfo">
+<input type="hidden" name="class" value="[% id %]">
+<input type="hidden" name="isbn" value="[% book.isbn | html %]">
+	<td>
+		<b>Title:</b> [% book.info.title %]<br><br>
+		<b>Author:</b> [% book.info.author %]<br>
+		<b>Edition:</b> [% book.info.edition %]<br>
+		<b>ISBN:</b> [% book.isbn %]<br><br>
+		<b>Buy it online:</b> <a href="http://isbn.nu/[% book.isbn | html | uri %]">http://isbn.nu/[% book.isbn | html | uri %]</a>
+	</td>
+	<td align="center">
+		<select name="usable">
+			<option value="1" [% IF book.usable %]selected[% END %]>Yes</option>
+			<option value="0"[% IF !book.usable %]selected[% END %]>No</option>
+		</select>
+	</td>
+	[% IF book.verified >= (session.currsemester.id || currsemester.id) %]
+	<td align="center" bgcolor="lightgreen">
+	[% ELSE %]
+	<td align="center">
+	[% END %]
+		<select name="verified">
+		[% FOREACH semester = semesters %]
+		<option value="[% semester.id | html %]" [% IF book.verified == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+		[% END %]
+		</select>
+	</td>
+	<td align="center">[% book.username %]</td>
+	<td>
+		<textarea name="comments" rows="4" cols="30">[% book.comments | html %]</textarea>
+	</td>
+	<td align="center">
+		[% FOREACH library = book.mylibraries %]
+			<p><a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | html | uri %]&status=can_reserve&libraries=[% library.id | html | uri %]&semester=[% (session.currsemester.id || currsemester.id) | html | uri %]">[% library.name %]</a>: [% library.available %]/[% library.total %]
+		[% END %]
+		[% IF book.otherlibraries.ids.size > 0 %]
+			<p><a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | html | uri %]&status=can_reserve&semester=[% (session.currsemester.id || currsemester.id) | html | uri %]&libraries=[% book.otherlibraries.ids.join('&libraries=') | html | uri %]">All other libraries:</a> [% book.otherlibraries.available %]/[% book.otherlibraries.total %]
+		[% END %]
+		<p>
+		<!--<a href="http://www.half.ebay.com/search-isbn?m=books&isbn=[% book.isbn | html | uri %]">Half.com</a><br>
+		<a href="http://www.amazon.com/exec/obidos/ASIN/[% book.isbn | html | uri %]">Amazon.com</a>-->
+	</td>
+	<td align="center">
+		<input type="submit" value="Update">
+		</form>
+
+		<form action="[% config.cgibase %]/admin.pl" method="post">
+		<input type="hidden" name="rm" value="deleteclassbook">
+		<input type="hidden" name="class" value="[% id | html %]">
+		<input type="hidden" name="isbn" value="[% book.isbn | html %]">
+		<p><input type="submit" value="Delete">
+		</form>
+	</td>
+</tr>
+[% END %]
+</table>
+<hr>
+General Class Comments:<br>
+<form action="[% config.cgibase %]/admin.pl">
+<input type="hidden" name="rm" value="updateclasscomments">
+<input type="hidden" name="class" value="[% id | html %]">
+<textarea name="comments" rows="6" cols="80">[% comments %]</textarea><input type="submit" value="Update">
+</form>
+<hr>
+<p>Add new book for class:
+<form action="[% config.cgibase %]/admin.pl">
+<input type="hidden" name="rm" value="addclassbook">
+<input type="hidden" name="class" value="[% id %]">
+ISBN: [% PROCESS autocomplete_isbn.html %]<br>
+Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br>
+When verified: <select name="verified">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester.id || currsemester.id) == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select><br>
+Verification comments:<br><textarea name="comments" rows="4" cols="30"></textarea><br>
+<input type="submit" value="Add">
+</form>
+<hr>
+<p>Delete class and all book associations:
+<form action="[% config.cgibase %]/admin.pl">
+<input type="hidden" name="rm" value="confirm">
+<input type="hidden" name="finalrm" value="deleteclass">
+<input type="hidden" name="action" value="Delete class [% id | html %]">
+<input type="hidden" name="id" value="[% id | html %]">
+<input type="submit" value="Delete Class">
+</form>

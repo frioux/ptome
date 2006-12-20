@@ -1,0 +1,5 @@
+<tr><td>Semester</td><td><select name="semester">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF semester_selected == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
+[% END %]
+</select></td></tr>
