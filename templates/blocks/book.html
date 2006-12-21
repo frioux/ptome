@@ -1,0 +1,9 @@
+[%# Takes isbn as an argument %]
+
+[% bookinfo = tome.book_info(isbn) %]
+<table border="0">
+<tr><td><strong>ISBN:</strong></td><td><a href="[% config.cgibase %]/admin.pl?rm=isbnview&isbn=[% bookinfo.isbn %]">[% bookinfo.isbn | html %]</a></td></tr>
+<tr><td><strong>Title:</strong></td><td>[% bookinfo.title | html %]</td></tr>
+<tr><td><strong>Author:</strong></td><td>[% bookinfo.author | html %]</td></tr>
+<tr><td><strong>Edition:</strong></td><td>[% bookinfo.edition | html %]</td></tr>
+</table>

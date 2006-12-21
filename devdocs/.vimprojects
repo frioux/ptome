@@ -1,0 +1,174 @@
+TOME=/usr/local/webapps/tome-dev/ in=devdocs/in.vim out=devdocs/out.vim CD=. filter="*" {
+
+cgi=cgi{
+  admin.pl
+ }
+
+ cosc4303=cosc4303 {
+ 
+ ApplicationModel=ApplicationModel{
+   
+   ApplicationModelDiagrams.cdr
+   BusinessModelDiagram.pdf
+   ComponentDiagram.pdf
+   DatabaseSequenceDiagram.pdf
+   GraphicalUseCaseDiagram.pdf
+   NavigationDiagram.pdf
+   TOMESequenceDiagram.pdf
+   TemplateSequenceDiagram.pdf
+   WebInterfaceSequenceDiagram.pdf
+   application.pdf
+   application.tex
+   tomedb.pdf
+   tomedb.vsd
+   userdiagram.pdf
+   userdiagram.wmf
+ 
+ }
+  
+  ComponentModel=ComponentModel{
+   
+   ComponentDiagram.pdf
+   EventDiagram.pdf
+   POD.html
+   SEComponentModel.cdr
+   component.pdf
+   component.tex
+   tomedb.pdf
+  
+  }
+  
+  Presentation=Presentation{
+   
+   slideshow.odp
+  
+  }
+  
+  ProjectBrief=ProjectBrief{
+  
+   brief.pdf
+   brief.tex
+   userdiagram.dia
+   userdiagram.png
+  
+  }
+  
+  ProjectPlan=ProjectPlan{
+  
+   GanttChart.gan
+   GanttChart.png
+   ProjectPlan.odt
+   plan.pdf
+   plan.tex
+  
+  }
+ 
+ }
+ 
+ devdocs=devdocs {
+  TODO
+  clean.sql
+  in.vim
+  out.vim
+  schema.sql
+ }
+ 
+ docs=docs {
+  site-config.pl
+ }
+ 
+ modules=modules {
+  TOME.pm
+ TOME=TOME{
+   Interface.pm
+   TemplateCallbacks.pm
+  }
+ }
+ 
+ scripts=scripts {
+  createsemester.pl
+  createuser.pl
+  dumpclean.pl
+  dumpdb.pl
+  dumpschema.pl
+  install.pl
+  regen-prototype.pl
+  test.pl
+  database_migrations=database_migrations{
+   00_01_ISBNvsID.sql
+   00_02_PatronClasses.sql
+   00_03_FloorInterTOMEAvailability.sql
+   00_04_InterTOMEConsistency.sql
+   00_05_InterTOMEBarriers.sql
+   00_06_ClassesTypeCorrection.sql
+   01_DBVersioning.sql
+  }
+ }
+ 
+ static=static/ {
+  prototype.js
+  style.css
+  tome.png
+  tome=tome{
+   
+   prototype.js
+   style.css
+   tome.png
+  
+  }
+ }
+ 
+ templates=templates {
+
+  blocks=blocks{
+   autocomplete_class.html
+   autocomplete_isbn.html
+   autocomplete_patron.html
+   book.html
+   datetime.html
+   librariesbox.html
+   reservation.html
+   semestersbox.html
+  }
+
+  addclass.html
+  addclassbook-isbn.html
+  addpatron.html
+  addtomebook.html
+  addtomebook_isbn.html
+  adminlogin.html
+  classsearch.html
+  confirm.html
+  error.html
+  findorphans.html
+  finduseless.html
+  footer.html
+  header.html
+  interTOMEnotify.email
+  isbnview.html
+  mainsearch.html
+  management.html
+  patronview.html
+  report.html
+  stats.html
+  tomebookinfo.html
+  updatebook.html
+
+ }
+ 
+ tests=tests {
+  
+  db=db{
+   bookremoval.t
+   currsemester.t
+   intertome.t
+   isbnupper.t
+   patronemail.t
+   username.t
+  }
+ 
+ }
+ 
+ site-config.pl
+
+}

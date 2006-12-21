@@ -1,0 +1,22 @@
+[%# Receives reservations as an argument %]
+[% META title = 'View Patron' %]
+[% patroninfo = tome.patron_info(patron) %]
+<form action="[% url %]" name="patronupdate" method="post">
+<input type="hidden" name="rm" value="patronupdate" />
+<input type="hidden" name="id" value="[% patron | html %]" />
+ID: [% patroninfo.id | html %]<br />
+Email: <input type="text" name="email" value="[% patroninfo.email | html %]" size="40"> [% errs.email %]<br />
+Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]<br />
+<input type="submit" value="Update"/>
+</form>
+
+<h2>Books Reserved</h2>
+<table>
+[% FOREACH reservation = reservations %]
+<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' reservation=reservation %]</td></tr>
+[% END %]
+</table>
+
+<h2>Books Checked Out</h2>
+<table>
+</table>

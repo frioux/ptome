@@ -1,0 +1,45 @@
+[% META title = 'View Book' %]
+
+[% INCLUDE 'blocks/book.html' isbn=isbn %]
+<h2>Reserve Book</h2>
+[%# Book Reservation Table  %]
+<form action="[% url %]" name="isbnreserve" method="post">
+<input type="hidden" name="rm" value="isbnupdate" />
+<table>
+<tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %]</td></tr>
+[%# Since most people only ever have access to one library, we make this a variable thinger. %]
+[% IF libraries_from.size > 1 %]
+    <tr><td><strong>Reserve to:</strong></td><td><select>
+        [% FOREACH library = libraries_from %]
+            <option value="[% library | html %]">[% tome.library_info(library).name | html %]</option>
+        [% END %]
+    </select></td></tr>
+[% END %]
+<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %]</td></tr>
+[%#should be if it is in our library %]
+<tr><td>
+<input type="submit" value="Reserve Book from Library:"/></td><td><select>
+    [%# This ugly mofo is supposed to make it so that if your library has a book, you have to reserve from your library. %]
+    [% our_library_contains_the_book = 0 %]
+    [% FOREACH library = libraries_to %]
+        [% IF library.ours %]
+            [% our_library_contains_the_book = 1 %]
+            [% LAST %]
+        [% END %]
+    [% END %]
+    [% FOREACH library = libraries_to.nsort('available').reverse %]
+        [% library_info = tome.library_info(library.id) %]
+        [% IF library.available > 0 && library_info.intertome %]
+            [% IF our_library_contains_the_book==1 %]
+                [% IF library.ours %]
+                    <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
+                [% END %]
+            [% ELSE %]
+                <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
+            [% END %]
+        [% END %]
+    [% END %]
+</select>
+</td></tr>
+</table>
+</form>

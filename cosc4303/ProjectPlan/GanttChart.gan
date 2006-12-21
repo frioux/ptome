@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TOME" company="TOME Development" webLink="" view-date="2006-07-16" view-index="0" gantt-divider-location="285" resource-divider-location="301" version="2.0">
+    <description/>
+    <view zooming-state="default:7"/>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <calendar id="1" name="default">
+                <default-week sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+                <overriden-day-types/>
+                <days/>
+            </calendar>
+        </day-types>
+    </calendars>
+    <tasks color="#8cb6ce">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="ISBN vs ID (database)" color="#ffff00" meeting="false" start="2006-09-12" duration="5" complete="0" priority="1" expand="true">
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="2" name="Class Based Verification" color="#ff9900" meeting="false" start="2006-09-19" duration="22" complete="0" priority="1" expand="true">
+            <depend id="1" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="1" name="Patron Page" color="#ff9900" meeting="false" start="2006-10-19" duration="18" complete="0" priority="1" expand="true"/>
+        <task id="5" name="TOME Keeper Page" color="#ff9900" meeting="false" start="2006-11-21" duration="15" complete="0" priority="1" expand="true"/>
+        <task id="3" name="Automated Test Suite" color="#009900" meeting="false" start="2006-09-11" duration="68" complete="0" priority="1" expand="true"/>
+        <task id="4" name="UI Redesign" color="#0033cc" meeting="false" start="2006-09-11" duration="68" complete="0" priority="1" expand="true"/>
+    </tasks>
+    <resources>
+        <resource id="0" name="Curtis Fjord Hawthorne" function="SoftwareDevelopment:2" contacts="" phone=""/>
+        <resource id="1" name="Arthur Axel &quot;fREW&quot; Schmidt" function="SoftwareDevelopment:2" contacts="" phone="x6816"/>
+        <resource id="2" name="Clint" function="SoftwareDevelopment:4" contacts="" phone=""/>
+        <resource id="3" name="Craig Miller" function="SoftwareDevelopment:9" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="0" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="1" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="1" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="5" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="5" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="2" function="SoftwareDevelopment:4" responsible="true" load="100.0"/>
+        <allocation task-id="4" resource-id="3" function="SoftwareDevelopment:9" responsible="true" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <taskdisplaycolumns>
+        <displaycolumn property-id="tpd3" order="0" width="75"/>
+        <displaycolumn property-id="tpd4" order="1" width="75"/>
+        <displaycolumn property-id="tpd5" order="2" width="75"/>
+    </taskdisplaycolumns>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>

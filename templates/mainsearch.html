@@ -1,0 +1,74 @@
+[% META title = 'Search' %]
+
+<p><table cellpadding="5"><tr><td valign="top">
+
+[%# Main search box %]
+<form action="[% config.cgibase | html %]/admin.pl" method="post" name="mainsearch">
+<input type="hidden" name="rm" value="mainsearch">
+<table border="1" cellpadding="5">
+<tr><td colspan="2" align="center">Book Search</a></td></tr>
+<tr><td>Title</td><td>[% CGI.textfield({ Name => 'title' }) %]</td></tr>
+<tr><td>Author</td><td>[% CGI.textfield({ Name => 'author' }) %]</td></tr>
+<tr><td>Edition</td><td>[% CGI.textfield({ Name => 'edition' }) %]</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Search"></td></tr>
+</table>
+</form>
+</td>
+<td valign="top" align="center">
+
+[%# Class jump box %]
+<form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<input type="hidden" name="rm" value="classsearch">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Jump to Class</td></tr>
+<tr><td>Class</td><td>[% PROCESS 'blocks/autocomplete_class.html' name='class' %]</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
+</table>
+</form>
+
+[%# ISBN jump box %]
+<p><form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<input type="hidden" name="rm" value="isbnview">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Jump to ISBN</td></tr>
+<tr><td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]</td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
+</table>
+</form>
+
+</td>
+
+<td valign="top">
+[%# Edit Patron box %]
+<form action="[% config.cgibase | html %]/admin.pl" method="post">
+<table cellpadding="5" border="1">
+<tr><td colspan="2" align="center">Edit Patron</td></tr>
+<tr><td>
+<input type="hidden" name="rm" value="patronview">
+Email
+</td>
+<td>
+[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %]
+</td>
+</tr>
+<tr><td align="center" colspan="2">
+<input type="submit" value="Edit">
+</form>
+</td></tr>
+</table>
+</td>
+</tr></table>
+
+[%# Search results area %]
+
+[% IF books.size > 0 %]<p>[% books.size %] result(s)
+<table border="1">
+[% FOREACH book = books %]
+<tr><td>
+[% INCLUDE 'blocks/book.html' isbn = book %]
+</td></tr>
+[% END %]
+</table>
+[% END %]
+</body>
+</html>
