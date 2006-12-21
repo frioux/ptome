@@ -39,7 +39,7 @@ Implements the TOME module.  The purpose of this module is to provide database c
 
  * In most cases, the output from the database should be returned without modification.  However, all dates from the database should be turned into DateTime objects.
 
-== !TemplateCallbacks.pm ==
+== TemplateCallbacks.pm ==
 
 Implements the TOME::!TemplateCallbacks module.  All templates are given a "tome" object that is an instantiation of this class.  The idea is that when the template is given ID numbers of various things in the database (patrons, books, tomebooks, etc.) by TOME::Interface, the template can use this object to query the database through the TOME module and get string representations of the data.  This module has the kinda funny place of knowing a little bit about both the template and the database.  Most subs will probably just be wrappers of TOME subs, but if there is any additional data manipulation that needs to take place before the template (without crossing the line of actually doing template work), this is the place to do it.  The reason this is separate from TOME is to give an extra layer of abstraction between the actual database calls and the template.  Giving direct database access from inside a template is a thought too horrible to contemplate.
 
