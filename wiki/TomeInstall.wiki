@@ -5,7 +5,7 @@ Prerequisites: Apache, PostgreSQL, Perl, TomeModules
 
 Note: If you are going to set things up the way that this guide suggests, you need to allow symlinks in you apache configuration.
 
-First, you'll need a copy of TOME out of version control.  See TomeVc for information on how to do that.
+First, you'll need a copy of TOME out of version control.  See the "Source" tab above for information on how to do that.
 
 Assuming the target filesystem layout is similar to Debian, the recommended path to check the repository out to is /usr/local/webapps/tome-dev.  Then, put a symlink from /usr/lib/cgi-bin/tome to /usr/local/webapps/tome-dev/cgi and from /var/www/tome to /usr/local/webapps/tome-dev/static.
 {{{
