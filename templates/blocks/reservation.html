@@ -1,9 +1,0 @@
-[%# Takes reservation as an argument %]
-
-[% reservation = tome.reservation_info(reservation) %]
-[% free_books = tome.get_free_books(reservation.isbn, reservation.library) %]
-<table>
-<tr><td><strong>Library:</strong></td><td>[% tome.library_info(reservation.library).name %]</td></tr>
-<tr><td><strong>Checkout:</strong></td><td><select><option id="0">Please select a Book ID</option>[% FOREACH book = free_books %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>
-<tr><td><input type="sumbit" value="Fill Reservation"/></td><td><input type="submit" value="Cancel Reservation" /></td></tr>
-</table>

@@ -9,17 +9,14 @@ use CGI::Application::Plugin::Forward;
 use strict;
 use warnings;
 
-#{{{setup
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron ) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
-#}}}
 
-#{{{autoload_rm
 sub autoload_rm {
 	my $self = shift;
 	my $attempted_rm = shift;
@@ -29,9 +26,7 @@ sub autoload_rm {
 		extended	=> "Attempted runmode: '$attempted_rm'",
 	});
 }
-#}}}
 
-#{{{cgiapp_prerun
 sub cgiapp_prerun {
 	my $self = shift;
 	
@@ -47,9 +42,7 @@ sub cgiapp_prerun {
 		return;
 	}
 }
-#}}}
 
-#{{{logout
 sub logout {
 	my $self = shift;
 	$self->session->delete;
@@ -58,9 +51,7 @@ sub logout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
 	return;
 }
-#}}}
 
-#{{{login
 sub login {
 	my $self = shift;
 	my $error = '';
@@ -85,9 +76,7 @@ sub login {
 
 	return $self->template({ file => 'adminlogin.html', vars => { error => $error }, plain => 1 });
 }
-#}}}
 
-#{{{autocomplete_isbn
 sub autocomplete_isbn {
 	my $self = shift;
 
@@ -107,9 +96,7 @@ sub autocomplete_isbn {
 
 	return '<ul class="auto_complete_list">' . join("\n", @books) . '</ul>';
 }
-#}}}
 
-#{{{autocomplete_patron
 sub autocomplete_patron {
 	my $self = shift;
 
@@ -126,56 +113,61 @@ sub autocomplete_patron {
 
 	return '<ul class="auto_complete_list">' . join("\n", @patrons) . '</ul>';
 }
-#}}}
 
-#{{{autocomplete_class
 sub autocomplete_class {
 	my $self = shift;
 
 	my @classes;
-	foreach($self->class_search({ id => $self->query->param('class'), name => $self->query->param('class') })) {
-		my $name = $self->class_info({ id => $_ })->{name};
+	foreach(@{$self->class_search({ id => $self->query->param('class') })}) {
+		my $name = $_->{name};
 		if(length($name) > 33) {
 			$name = substr($name, 0, 30) . '...';
 		}
-		push @classes, '<li class="auto_complete_item"><div class="primary">' . $_ . '</div><span class="informal"><div class="secondary">' . $name . '</div></span></li>';
+		push @classes, '<li class="auto_complete_item"><div class="primary">' . $_->{id} . '</div><span class="informal"><div class="secondary">' . $name . '</div></span></li>';
 	}
 
 	return '<ul class="auto_complete_list">' . join("\n", @classes) . '</ul>';
 }
-#}}}
 
-#{{{ mainsearch
 sub mainsearch {
-    my $self = shift;
-    my $errs = shift;
+	my $self = shift;
 
-    my $results = $self->check_rm('mainsearch', 
-        {
-            optional => [qw(author title edition)],
-            filters => ['trim'],
-        },
-        {target => 'mainsearch'} 
-    ) || return $self->check_rm_error_page;
-    
-    my %search;
-    foreach ($results->valid()) {
-        $search{$_} = $results->valid($_);
-    }
-
-    my @books = $self->isbn_search (\%search);
-
-    return $self->template(
-        file => 'mainsearch.html',
-        vars => {
-		books	=> \@books,
-		errs	=> $errs,
+	my $q = $self->query;
+	
+	my %search;
+	foreach (qw(title author edition status semester)) {
+		if($q->param($_)) {
+			$search{$_} = $q->param($_);
+		}
 	}
-    );
-}
-#}}}
 
-#{{{removetomebook
+	$search{isbn} = uc $q->param('isbn') if $q->param('isbn'); # If there's an ISBN, it should be upper case
+
+	$search{libraries} = $self->_librariesselecteddefault();
+
+	my @tomebooks;
+
+	if($q->param('rm')) {
+		my @results = $self->tomebooks_search({%search});
+		foreach(@results) {
+			push @tomebooks, $self->tomebook_info_deprecated({ id => $_ });
+		}
+	}
+	
+	my $classes = $self->class_search;
+	
+	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
+	
+	return $self->template({ file => 'mainsearch.html', vars => {
+		classes			=> $classes,
+		tomebooks		=> \@tomebooks,
+		libraries		=> $libraries,
+		librarieshash		=> $self->_librarieshash(),
+		libraries_selected	=> $search{libraries},
+		semester_selected	=> $self->_semesterselecteddefault(),
+	}});
+}
+
 sub removetomebook {
 	my $self = shift;
 
@@ -194,9 +186,7 @@ sub removetomebook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$params{id}");
 	return;
 }
-#}}}
 
-#{{{findorphans
 sub findorphans {
 	my $self = shift;
 
@@ -213,9 +203,7 @@ sub findorphans {
 		libraries_selected	=> $libraries_selected,
 	}});
 }
-#}}}
 
-#{{{finduseless
 sub finduseless {
 	my $self = shift;
 
@@ -233,9 +221,7 @@ sub finduseless {
 		libraries_selected	=> $libraries_selected,
 	}});
 }
-#}}}
 
-#{{{stats
 sub stats {
 	my $self = shift;
 
@@ -247,40 +233,19 @@ sub stats {
 		stats			=> $self->tome_stats({ libraries => $libraries_selected })
 	}});
 }
-#}}}
 
-#{{{confirm
 sub confirm {
 	my $self = shift;
 
 	return $self->template({ file => 'confirm.html' });
 }
-#}}}
 
-#{{{classsearch
 sub classsearch {
 	my $self = shift;
 
 	my $q = $self->query;
 
-	my $class = uc $q->param('class'); # Make sure that it got uppercased
-
-	my $classinfo = $self->class_info({ id => $class });
-
-	# Check to make sure we actually got something back
-	unless($classinfo) {
-		return $self->template({ file => 'classunknown.html',
-			vars	=> {
-				id	=> $class,
-			},
-		});
-	}
-
-
-	# This needs to be refactored at some point, because it still uses the deprecated method.  Everything above here uses the new, happy method.
-	# BEGIN NASTINESS:
-
-	$classinfo = $self->class_info_deprecated({ id => $q->param('class') });
+	my $classinfo = $self->class_info({ id => $q->param('class') });
 
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	my (@mylibraries, @otherlibraries);
@@ -316,9 +281,7 @@ sub classsearch {
 		books		=> $classinfo->{books},
 	}});
 }
-#}}}
 
-#{{{updatetomebook
 sub updatetomebook {
 	my $self = shift;
 	
@@ -362,39 +325,7 @@ sub updatetomebook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id&edit=1");
 	return;
 }
-#}}}
 
-#{{{patronaddclass
-sub patronaddclass {
-    my $self = shift;
-
-    my $results = $self->check_rm('patronview', {
-        required                => ['class', 'patronid'],
-	filters			=> ['trim'],
-        constraint_methods      => {
-            class => sub {
-                my $dfv = shift; 
-                $dfv->name_this('bad_class');
-                return $self->class_info({ id => $dfv->get_current_constraint_value() });
-		  },
-	  },
-    msgs => {
-                constraints => {
-                    'bad_class'    => 'Class does not exist',
-                },
-            },
-    }, { target => 'patronaddclass' }) || return $self->check_rm_error_page;
-        
-   $self->patron_add_class({
-     patron     => $results->valid('patronid'),
-     class      => $results->valid('class'),
-    });
-    
-    return $self->forward('patronview');
-}
-#}}}
-
-#{{{updateclassinfo
 sub updateclassinfo {
 	my $self = shift;
 
@@ -408,9 +339,7 @@ sub updateclassinfo {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
-#}}}
 
-#{{{updateclasscomments
 sub updateclasscomments {
 	my $self = shift;
 
@@ -423,9 +352,7 @@ sub updateclasscomments {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
-#}}}
 
-#{{{deleteclassbook
 sub deleteclassbook {
 	my $self = shift;
 
@@ -438,9 +365,7 @@ sub deleteclassbook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
 	return;
 }
-#}}}
 
-#{{{addclassbook
 sub addclassbook {
 	my $self = shift;
 
@@ -465,7 +390,7 @@ sub addclassbook {
 		} else {
 			return $self->template({ file => 'addclassbook-isbn.html', vars => {
 				librarieshash	=> $self->_librarieshash(),
-				classinfo	=> $self->class_info_deprecated({ id => $q->param('class') }),
+				classinfo	=> $self->class_info({ id => $q->param('class') }),
 			}});
 		}
 	}
@@ -485,9 +410,7 @@ sub addclassbook {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$book{class}");
 	return;
 }
-#}}}
 
-#{{{report
 sub report {
 	my $self = shift;
 
@@ -496,15 +419,15 @@ sub report {
 	my $semester_selected = $self->_semesterselecteddefault();
 	my $libraries_selected = $self->_librariesselecteddefault();
 
-	my $reservation = $self->reservation_search({ semester => $semester_selected, library_from => $libraries_selected });
+	my $reservation = $self->reservation_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$reservation) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
-	my $dueback = $self->dueback_search({ semester => $semester_selected, library_from => $libraries_selected });
+	my $dueback = $self->dueback_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$dueback) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
-	my $expiring = $self->expire_search({ semester => $semester_selected, library_from => $libraries_selected });
+	my $expiring = $self->expire_search({ semester => $semester_selected, libraries => $libraries_selected });
 	foreach(@$expiring) {
 		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
 	}
@@ -518,9 +441,7 @@ sub report {
 		semester_selected	=> $semester_selected,
 	}});
 }
-#}}}
 
-#{{{deleteclass
 sub deleteclass {
 	my $self = shift;
 
@@ -532,9 +453,7 @@ sub deleteclass {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
 	return;
 }
-#}}}
 
-#{{{updatebook
 sub updatebook {
 	my $self = shift;
 
@@ -556,9 +475,7 @@ sub updatebook {
 
 	return $self->template({ file => 'updatebook.html', vars => $self->book_info({ isbn => $q->param('isbn') }) });
 }
-#}}}
 
-#{{{addclass
 sub addclass {
 	my $self = shift;
 	my $errs = shift;
@@ -566,9 +483,7 @@ sub addclass {
 
 	return $self->template({ file => 'addclass.html', vars => { errs => $errs } });
 }
-#}}}
 
-#{{{addclass_process
 sub addclass_process {
 	my $self = shift;
 
@@ -590,7 +505,7 @@ sub addclass_process {
 			id	=> sub {
 				my $dfv = shift;
 				$dfv->name_this('class_exists');
-				return !($self->class_info_deprecated({ id => $dfv->get_current_constraint_value() })->{name});
+				return !($self->class_info({ id => $dfv->get_current_constraint_value() })->{name});
 			},
 		},
 		msgs			=> {
@@ -611,9 +526,7 @@ sub addclass_process {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class{id}");
 	return;
 }
-#}}}
 
-#{{{patronview
 sub patronview {
 	my $self = shift;
 	my $errs = shift;
@@ -624,16 +537,14 @@ sub patronview {
 	if($q->param('patron')) {
 		$patron = $self->patron_info({ email => $self->query->param('patron') });
 		return $self->error({ message => 'Unable to locate patron with email ' . $self->query->param('patron') }) unless $patron;
-	} elsif($q->param('patronid')) {
-		$patron = $self->patron_info({ id => $self->query->param('patronid') });
-		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('patronid') }) unless $patron;
+	} elsif($q->param('id')) {
+		$patron = $self->patron_info({ id => $self->query->param('id') });
+		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
 	}
 
 	return $self->template({ file => 'patronview.html', vars => { patron => $patron->{id}, errs => $errs }});
 }
-#}}}
 
-#{{{patronupdate
 sub patronupdate {
 	my $self = shift;
 
@@ -652,18 +563,14 @@ sub patronupdate {
 
 	return $self->forward('patronview');
 }	
-#}}}
 
-#{{{addpatron
 sub addpatron {
 	my $self = shift;
 	my $errs = shift;
 	
 	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }}); 
 }
-#}}}
 
-#{{{addpatron_process
 sub addpatron_process {
 	my $self = shift;
 	my $results = $self->check_rm('addpatron', {
@@ -691,18 +598,17 @@ sub addpatron_process {
 
 	return $self->forward($self->query->param('finalrm'));
 }
-#}}}
 
-#{{{addtomebook
 sub addtomebook {
 	my $self = shift;
 	my $errs = shift;
 	
-	return $self->template({ file => 'addtomebook.html', vars => { errs => $errs }});
+	return $self->template({ file => 'addtomebook.html', vars => {
+			libraries	=> $self->_libraryaccess($self->param('user_info')->{id}),
+			errs		=> $errs,
+	}});
 }
-#}}}
 
-#{{{addtomebook_isbn
 sub addtomebook_isbn {
 	my $self = shift;
 	my $errs = shift;
@@ -712,9 +618,8 @@ sub addtomebook_isbn {
 		errs		=> $errs,
 	}});
 }
-#}}}
 
-#{{{addtomebook_process
+
 sub addtomebook_process {
 	my $self = shift;
 
@@ -793,9 +698,7 @@ sub addtomebook_process {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
 	return;
 }
-#}}}
 
-#{{{checkout
 sub checkout {
 	my $self = shift;
 	
@@ -867,9 +770,8 @@ sub checkout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
 	return;
 }
-#}}}
 
-#{{{checkin
+
 sub checkin {
 	my $self = shift;
 
@@ -886,9 +788,7 @@ sub checkin {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
-#}}}
 
-#{{{updatecheckoutcomments
 sub updatecheckoutcomments {
 	my $self = shift;
 
@@ -903,9 +803,7 @@ sub updatecheckoutcomments {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
-#}}}
 
-#{{{fillreservation
 sub fillreservation {
 	my $self = shift;
 
@@ -922,9 +820,7 @@ sub fillreservation {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
-#}}}
 
-#{{{cancelcheckout
 sub cancelcheckout {
 	my $self = shift;
 
@@ -941,9 +837,7 @@ sub cancelcheckout {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
 }
-#}}}
 
-#{{{tomebookinfo
 sub tomebookinfo {
 	my $self = shift;
 	my $errs = shift;
@@ -970,9 +864,7 @@ sub tomebookinfo {
 		errs		=> $errs,
 	}});
 }
-#}}}
 
-#{{{management
 sub management {
 	my $self = shift;
 
@@ -1017,36 +909,12 @@ sub management {
 	}
 
 	foreach my $userinfo (@$users) {
-		$userinfo->{libraries} = $self->library_info();
-		my $library_access = $self->_libraryaccesshash($userinfo->{id});
-		foreach(@{$userinfo->{libraries}}) {
-			$_->{access} = $library_access->{$_->{id}} ? 1 : 0;
-		}
+		$userinfo->{libraries} = $self->_libraryaccess($userinfo->{id});
 	}
 
 	return $self->template({ file => 'management.html', vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
 }
-#}}}
 
-#{{{libraryupdate
-sub libraryupdate {
-	my $self = shift;
-
-	if($self->user_info({ id => $self->session->param('id') })->{admin}) {
-		$self->library_update({
-			id		=> $self->query->param('id'),
-			name		=> $self->query->param('name'),
-			intertome	=> $self->query->param('intertome') ? 'true' : 'false',
-		});
-	}
-
-	$self->header_type('redirect');
-	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
-	return;
-}
-#}}}
-
-#{{{useradd
 sub useradd {
 	my $self = shift;
 
@@ -1061,9 +929,7 @@ sub useradd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
-#}}}
 
-#{{{libraryadd
 sub libraryadd {
 	my $self = shift;
 
@@ -1077,9 +943,7 @@ sub libraryadd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
-#}}}
 
-#{{{semesteradd
 sub semesteradd {
 	my $self = shift;
 
@@ -1093,9 +957,7 @@ sub semesteradd {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
-#}}}
 
-#{{{semesterset
 sub semesterset {
 	my $self = shift;
 
@@ -1109,9 +971,7 @@ sub semesterset {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
-#}}}
 
-#{{{sessionsemester
 sub sessionsemester {
 	my $self = shift;
 
@@ -1130,80 +990,33 @@ sub sessionsemester {
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
 }
-#}}}
 
-#{{{isbnview
-sub isbnview {
+sub _libraryaccess {
+	my $self = shift;
+	my $uid = shift;
+	
+	my %library_access = map { $_->{id} => 1 } @{$self->library_access({ user => $uid })};
+	my $libraries = $self->library_info;
+	foreach my $library (@{$libraries}) {
+		$library->{access} = $library_access{$library->{id}} ? 1 : 0;
+	}
 
-    my $self = shift;
-
-    my $q = $self->query;
-    
-
-    my $semester;
-    if ($q->param('semester')) {
-        $semester = $q->param('semester')->{id};
-    } elsif ($self->session->param('currsemester')) {
-        $semester = $self->session->param('currsemester')->{id};
-    } else {
-        $semester = $self->param('currsemester')->{id};
-    }
-
-    # to_libraries refers to libraries that the
-    # reservation is going to, not the book.
-    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
-    my @from_libraries = keys %{$library_access};
-    my @to_libraries;
-
-    foreach (@{$self->library_info()}) {
-        my $library = $self->library_info({id => $_->{'id'}});
-        if ($library->{intertome}) {
-            push @to_libraries, {
-                id => $library->{id},
-                available => $self->tomebook_availability_search({
-                    isbn => $q->param('isbn'),
-                    status => 'can_reserve',
-                    semester => $semester,
-                    libraries => [$library->{id}],
-                }),
-                ours => $library_access->{$_->{'id'}} ? 1 : 0,
-            };
-        }
-    }
-
-    return $self->template({file => 'isbnview.html', 
-        vars => {
-            isbn => $q->param('isbn'),
-            libraries_from => \@from_libraries,
-            libraries_to => \@to_libraries,
-            semester => $semester,
-        }
-    });
-
+	return $libraries;
 }
-#}}}
 
-#{{{_libraryaccesshash
-sub _libraryaccesshash {
-    my $self = shift;
-    my $uid = shift;
-
-    return { map {$_ => 1} ($self->library_access({ user => $uid })) };
-}
-#}}}
-
-#{{{_libraries
-
-#{{{_libraryauthorized
 sub _libraryauthorized {
 	my $self = shift;
 	my ($uid, $library) = @_;
 
-	return scalar( grep { $_ == $library } ($self->library_access({user => $uid})) ) == 1;
+	return scalar(grep { $_->{id} == $library } @{$self->library_access({user => $uid})}) == 1;
 }
-#}}}
 
-#{{{_librariesselecteddefault
+sub _librarieshash {
+	my $self = shift;
+
+	return { map { $_->{id} => $_ } @{$self->library_info} };
+}
+
 sub _librariesselecteddefault {
 	my $self = shift;
 
@@ -1217,10 +1030,7 @@ sub _librariesselecteddefault {
 	}
 	return \@libraries_selected;
 }
-#}}}
 
-#{{{_semesterselecteddefault
-# !!! This logic is duplicated in blocks/semesterbox.html.  There's probably a good way to consolidate these...
 sub _semesterselecteddefault {
 	my $self = shift;
 
@@ -1230,6 +1040,5 @@ sub _semesterselecteddefault {
 	}
 	return $semester_selected;
 }
-#}}}
 
 1;

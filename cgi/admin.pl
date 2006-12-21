@@ -5,7 +5,7 @@ use warnings;
 
 use lib '../modules';
 
-use TOME::Interface;
+use base 'TOME::Interface';
 
 my $app = TOME::Interface->new();
 $app->run;

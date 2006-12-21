@@ -64,17 +64,9 @@ unsure
 
 the relative location of the templates
 
-=item dbidbname
+=item dbidatasource 
 
-the database name that TOME is stored under
-
-=item dbihostname
-
-the hostname of the database server
-
-=item dbiport
-
-the port the database server is running on
+the database source.  funky format, description please?
 
 =item dbiusername
 
@@ -105,7 +97,22 @@ the "address" email messages are sent to when in development mode
 Note: address format is 'Name <email@domain>`
 
 =cut
-our %CONFIG;
+our %CONFIG = (
+	cgibase		=> '/perl/tome/cgi',
+	staticbase	=> '/tome',
+
+	templatepath	=> '../templates',
+
+	dbidatasource   => 'dbi:Pg:dbname=tome;host=127.0.0.1',
+	dbiusername	=> 'tome',
+	dbipassword	=> 'password',
+
+	notifyfrom	=> 'TOMEkeeper <tomekeeper@tome>',
+	adminemail	=> 'TOMEadmin <tomeadmin@tome>',
+
+	devmode		=> 0,
+	devemailto	=> 'TOMEadmin <tomeadmin@tome>',
+);
 #}}}
 
 require '../site-config.pl';
@@ -125,11 +132,7 @@ This appears to (and probably does considering the name) set up various variable
 sub cgiapp_init {
 	my $self = shift;
 
-        # Note that it is important that RaiseError and AutoCommit get turned on.  RaiseError means that if there is ever any sort of
-        # SQL error,then the DBI will cause a 'die' that gets handled by the error_runmode.  AutoCommit means that every SQL statement
-        # is executed inside of its own transaction by default.  This can be temporarily turned off by using the DBI begin_work method
-        # and then turned back on with the commit method.
-	$self->dbh_config("dbi:Pg:dbname=$CONFIG{dbidbname};host=$CONFIG{dbihostname}", $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1, AutoCommit => 1});
+	$self->dbh_config($CONFIG{dbidatasource}, $CONFIG{dbiusername}, $CONFIG{dbipassword}, { RaiseError => 1});
 	$self->session_config(
 		CGI_SESSION_OPTIONS	=> [ 'driver:PostgreSQL', $self->query, { Handle => $self->dbh } ],
 		SEND_COOKIE		=> 1,
@@ -215,7 +218,7 @@ sub error {
 	
 	my $output;
 	eval {
-		$output = $self->template({ file => 'error.html', vars => { message => $params->{message}, extended => $params->{extended} }});
+		$output = $self->template({ file => 'error.html', vars => { message => $params->{message} }});
 	};
 	if($@) {
 		$output = "TOME experienced a fatal error.";
@@ -225,82 +228,11 @@ sub error {
 }
 #}}}
 
-#{{{isbn_search 
+#{{{tomebooks_search 
 
-=head2 isbn_search 
+=head2 tomebooks_search 
 
-This returns an array of found isbns.
-
-It takes arguments in the form of a hash:
-
-=over
-
-=item title
-
-the title of the book
-
-=item author
-
-the author of the book
-
-=item edition
-
-the edition of the book
-
-=back
-
-=cut
-
-sub isbn_search {
-	my $self = shift;
-
-	my $dbh = $self->dbh;
-
-	my %params = validate(@_, {
-		title		=> { type => SCALAR, optional => 1 },
-		author		=> { type => SCALAR, optional => 1 },
-		edition		=> { type => SCALAR, optional => 1 },
-	});
-
-	my (@likecolumns, @values, @conditions);
-
-	foreach (qw(title author edition)) {
-		if(defined($params{$_})) {
-			_quote_like($params{$_});
-			push @likecolumns, $_;
-			push @values, $params{$_};
-		}
-	}
-
-        # If there are no parameters specified, don't run the search
-        unless(@likecolumns) {
-            return ();
-        }
-	
-	foreach(@likecolumns) {
-		push @conditions, "$_ ILIKE '%' || ? || '%'";
-	}
-
-	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . ' ORDER BY isbn';
-
-	my $sth = $dbh->prepare($statement);
-	
-	$sth->execute(@values);
-	
-	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
-	}
-	
-	return @results;
-}
-#}}}
-
-#{{{tomebook_availability_search 
-
-=head2 tomebook_availability_search 
-
-Returns the number of TOME books available given certain conditions
+This returns an array of found textbooks.
 
 It takes arguments in the form of a hash:
 
@@ -312,30 +244,45 @@ the isbn to look for
 
 =item status
 
-that status of the book (all, can_reserve, or in_collection).  Defaults to in_collection.
+that status of the book (all, can_reserve, can_checkout, or in_collection)
 
-=item semester
+=item title
 
-the semester id to consider when status is can_reserve.  Defaults to the current semester
+the title of the book
+
+=item author
+
+the author of the book
+
+=item  edition
+
+the edition of the book
 
 =item libraries
 
-the libraries to look in for the book (Note: this is an array reference)
+the libraries to look in for the book (Note: this is an array reference...whatever thatmeans.)
+
+=item semester
+
+the semester that the book is here for???
 
 =back
 
 =cut
 
-sub tomebook_availability_search {
+sub tomebooks_search {
 	my $self = shift;
 
 	my $dbh = $self->dbh;
 
 	my %params = validate(@_, {
-		isbn		=> { type => SCALAR },
-		status		=> { type => SCALAR, regex => qr/^all|can_reserve|in_collection$/, default => 'in_collection' },
-		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
+		isbn		=> { type => SCALAR, optional => 1 },
+		status		=> { type => SCALAR, regex => qr/^all|can_reserve|can_checkout|in_collection$/, default => 'all' },
+		title		=> { type => SCALAR, optional => 1 },
+		author		=> { type => SCALAR, optional => 1 },
+		edition		=> { type => SCALAR, optional => 1 },
 		libraries	=> { type => ARRAYREF },
+		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
 	});
 
 	# I've decided to require listing what libraries you want, if you give an empty list, no books can be found
@@ -343,27 +290,63 @@ sub tomebook_availability_search {
 		return ();
 	}
 
-	my ($sql, @bind);
+	my (@likecolumns, @columns, @conditions, @values);
 
-	if($params{status} eq 'all') {
-		($sql, @bind) = sql_interp('SELECT count(*) FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}});
-	} elsif($params{status} eq 'in_collection') {
-		($sql, @bind) = sql_interp('SELECT count(*) FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
-	} elsif($params{status} eq 'can_reserve') {
-		my @library_reservations;
-		foreach(@{$params{libraries}}) {
-			push @library_reservations, 'tomebooks_available_to_reserve(?, ?, ?)';
-			push @bind, ($params{isbn}, $_, $params{semester});
+	foreach (qw(title author edition)) {
+		if(defined($params{$_})) {
+			$params{$_} =~ s/([\\%_])/\\$1/g;
+			push @likecolumns, $_;
+			push @values, $params{$_};
 		}
-		$sql = 'SELECT ' . join(' + ', @library_reservations);
-	} else {
-		die 'Unknown status requested.';
+	}
+	if(defined($params{isbn})) {
+		push @columns, 'tomebooks.isbn';
+		push @values, $params{isbn};
+	}
+	
+	foreach(@likecolumns) {
+		push @conditions, "$_ ILIKE '%' || ? || '%'";
+	}
+	foreach(@columns) {
+		push @conditions, "$_ = ?";
 	}
 
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
+	if($params{status} eq 'can_reserve' || $params{status} eq 'can_checkout') {
+		push @conditions, "timeremoved IS NULL AND (expire IS NULL OR expire >= ?)";
+		push @values, $params{semester};
+		if($params{status} eq 'can_reserve') {
+			# books that are not reserved or checked out for this semester (may still be checked out to a previous semester)
+			# Note that we check for checkouts on this semester and future ones.  It seemed like a good idea the time...
+			push @conditions, "NOT EXISTS(SELECT 1 FROM checkouts WHERE checkin IS NULL AND tomebook = tomebooks.id AND ((semester >= ? AND reservation = FALSE) OR (semester = ? AND reservation = TRUE)))";
+			push @values, ($params{semester}) x 2;
+		} else {
+			# books with no outstanding checkouts and no reservations for this semester
+			push @conditions, "NOT EXISTS(SELECT 1 FROM checkouts WHERE checkin IS NULL AND tomebook = tomebooks.id AND ((reservation = FALSE) OR (semester = ? AND reservation = TRUE)))";
+			push @values, $params{semester};
+		}
+	} elsif($params{status} eq 'in_collection') {
+		push @conditions, "timeremoved IS NULL";
+	}
 	
-	return ($sth->fetchrow_array)[0];
+	push @conditions, "library IN (" . join(',', ('?') x @{$params{libraries}}) . ")";
+	push @values, @{$params{libraries}};
+
+	push @conditions, 'tomebooks.isbn = books.isbn';
+	my $statement = 'SELECT tomebooks.id FROM books, tomebooks WHERE ' . join(' AND ', @conditions) . " ORDER BY timeremoved DESC, title, id ASC";
+
+	#warn "Statement of doom: $statement";
+	#warn "Binds: " . join(',', @values);
+
+	my $sth = $dbh->prepare($statement);
+	
+	$sth->execute(@values);
+	
+	my @results;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
+	}
+	
+	return @results;
 }
 #}}}
 
@@ -411,241 +394,25 @@ sub expire_search {
 }
 #}}}
 
-#{{{reservation_info 
-
-=head2 reservation_info 
-
-This function returns an array of hashrefs about a reservations given an ID.
-
-Arguments are as a hashref:
-
-=over
-
-=item id
-
-The reservation ID
-
-=back
-
-The returned hashref contains:
-
-=over
-
-=item id
-
-The reservation ID
-
-=item isbn
-
-The ISBN the reservation is for
-
-=item uid
-
-The user id of the TOMEkeeper responsible for the reservation
-
-=item patron
-
-The id of the patron the reservation is for
-
-=item reserved
-
-The time of the reservation
-
-=item fulfilled
-
-The time of the fulfilment of the reservation.  If this is null, then the reservation has not been fulfilled.
-
-=item comment
-
-Any comments about the reservation
-
-=item library_from
-
-The library that is responsible for the reservation
-
-=item library_to
-
-The library that has the book that is being reserved
-
-=item semester
-
-The semester that the reservation is for
-
-=back
-
-=cut
-
-sub reservation_info {
-	my $self = shift;
-
-	my $dbh = $self->dbh;
-
-	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
-
-	my ($sql, @bind) = sql_interp('SELECT id, isbn, uid, patron, reserved, fulfilled, comment, library_from, library_to, library_from, semester FROM reservations WHERE', { id => $params{id} });
-	
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-
-	my $reservation = $sth->fetchrow_hashref;
-
-	foreach(qw(reserved fulfilled)) {
-		if(defined($reservation->{$_})) {
-			$reservation->{$_} = DateTime::Format::Pg->parse_timestamptz($reservation->{$_});
-		}
-	}
-
-	return $reservation;
-}
-#}}}
-
-#{{{reservation_fulfill
-=head2 reservation_fulfill
-
-This function turns reservations into checkouts
-
-Arguments are given as a hashref
-
-=over
-
-=item reservation_id
-
-The ID of the reservation to turn into a checkout
-
-=item tomebook_id
-
-The ID of the tomebook to be used for the checkout
-
-=back
-
-The function returns the ID of the checkout that was created
-
-=cut
-
-sub reservation_fulfill {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		reservation_id	=> { type => SCALAR, regex => qr/^\d+$/ },
-		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});			
-
-	$self->dbh->begin_work;
-        $self->dbh->do('LOCK TABLE reservations, checkouts');
-        my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
-        $self->dbh->do($sql, undef, @bind);
-
-        # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
-        # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
-        # putting that info into the query.  Using SQL also makes it easy to do an embedded check to ensure that the type
-        # of TOME book we're turning the reservation into matches the type of book the reservation was for (that's what the
-        # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
-        ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', $params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE tomebooks.isbn = reservations.isbn', { 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
-        $self->dbh->do($sql, undef, @bind);
-
-	$self->dbh->commit;
-	
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
-	return $id;
-}
-
-
-#}}}
-
-#{{{reservation_create
-=head2 reservation_create
-
-This function creates a reservation.
-
-Arguments are in a hashref.  Unless otherwise noted, all parameters are required.
-
-=over
-
-=item isbn
-
-The ISBN of the book to reserve
-
-=item uid
-
-The user ID of the TOMEkeeper responsible for the checkout
-
-=item patron
-
-The patron ID of the borrower
-
-=item comment (optional)
-
-Any comments about the reservation
-
-=item library_from
-
-The library responsible for making the reservation (the library that is requesting the book)
-
-=item library_to
-
-The library the reservation is being made to (the library that has the book that is being requested)
-
-=item semester
-
-The semester the reservation is valid for
-
-=back
-
-=cut
-
-sub reservation_create {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		isbn		=> { type => SCALAR, regex => qr/^\d+$/ },
-		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
-		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
-		comment		=> { type => SCALAR, optional => 1 },
-		library_from	=> { type => SCALAR, regex => qr/^\d+$/ },
-		library_to	=> { type => SCALAR, regex => qr/^\d+$/ },
-		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});			
-
-	my ($sql, @bind) = sql_interp('INSERT INTO reservations', \%params);
-	$self->dbh->do($sql, undef, @bind);
-	
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.reservations_id_seq')");
-	return $id;
-}
-
-#}}}
-
 #{{{reservation_search 
 
 =head2 reservation_search 
 
-This function returns an array of reservation ids matching search criteria
+This function returns an array of books that are reserved in a given semester from given libraries.
 
-The arguments are given as a hash.  They're all optional, but if you don't give any, then just an empty array will be returned.
+The arguments are given as a hash:
 
 =over
 
 =item semester
 
-The semester that the books are reserved for
+the semester that the books are reserved for
 
-=item library_to
+=item libraries
 
-An arrayref of libraries the reservations can be going to (the libraries that have the books)
-
-=item library_from
-
-An arrayref of libraries the reservations can be coming from (the libraries that are requesting the books)
-
-=item patron
-
-A patron ID identifying the patron reserving the books
+the libraries that the books are in
 
 =back
-
-Returns an array of reservation id's.
 
 =cut
 
@@ -655,31 +422,19 @@ sub reservation_search {
 	my $dbh = $self->dbh;
 
 	my %params = validate(@_, {
-		semester	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1  },
-		library_to	=> { type => ARRAYREF, optional => 1 },
-		library_from	=> { type => ARRAYREF, optional => 1 },
-		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
+		libraries       => { type => ARRAYREF },
 	});
 
-	my @conditions;
-	foreach (keys %params) {
-		push @conditions, { $_ => $params{$_} };
-	}
-
-	# If we aren't given anything to do, don't do anything
-	unless(@conditions) {
-		return ();
-	}
-	
-	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', @conditions);
+	my ($sql, @bind) = sql_interp('SELECT tomebook, borrower, patrons.name as borrower_name, patrons.email as borrower_email, comments, semester, checkout FROM checkouts, patrons WHERE patrons.id = borrower AND semester <=', $params{semester}, 'AND reservation = TRUE AND library IN', $params{libraries}, 'ORDER BY semester, borrower_name ASC');
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
+	while(my $result = $sth->fetchrow_hashref) {
+		push @results, $result;
 	}
-	return @results;
+	return \@results;
 }
 #}}}
 
@@ -1194,45 +949,7 @@ sub classbook_add {
 
 =head2 tomebook_info 
 
-Takes an argument in the form of a hash:
-
-=over
-
-=item tomebook
-
-The id of the tomebook to lookup
-
-=back
-
-Returns a hash:
-
-=over
-
-=item id
-
-id of the tomebook found
-
-=item isbn
-
-isbn of the tomebook found
-
-=item expire
-
-when the book expires
-
-=item comments
-
-any comments on the book
-
-=item timedonated
-
-when the book was donated
-
-=item originator
-
-originator of tomebook
-
-=back
+foo
 
 =cut
 
@@ -1423,303 +1140,11 @@ sub patron_checkouts {
 }
 #}}}
 
-#{{{patron_classes 
-
-=head2 patron_classes 
-
-This function finds the classes associated with a patron for a given semester.
-
-Arguments are given as a hash:
-
-=over
-
-=item patron
-
-The numeric, databasical id of the patron
-
-=item semester
-
-The ID of the semester to retrieve classes for.
-
-=back
-
-Returns: An arrayref containing class ids.
-
-=cut
-
-sub patron_classes {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
-		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
-
-	my $dbh = $self->dbh;
-
-	my ($sql, @bind) = sql_interp('SELECT class FROM patron_classes WHERE', \%params);
-
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-
-	my @results;
-	while(my @result = $sth->fetchrow_array()) {
-		push @results, $result[0];
-	}
-
-	return \@results;
-
-}
-
-#}}}
-
-#{{{patron_add_class 
-
-=head2 patron_add_class
-
-This function adds a class associated with a patron for a given semester.
-
-Arguments are given as a hash:
-
-=over
-
-=item patron
-
-The numeric, databasical id of the patron
-
-=item semester
-
-The ID of the semester to retrieve classes for.
-
-=item class
-
-The ID of the class to add.
-
-=back
-
-Returns: Nothing.
-
-=cut
-
-sub patron_add_class {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
-		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-		class		=> { type => SCALAR },
-	});
-
-	my $dbh = $self->dbh;
-
-	my ($sql, @bind) = sql_interp('INSERT into patron_classes', \%params);
-
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-}
-
-#}}}
-
-#{{{patron_delete_class
-
-=head2 patron_delete_class
-
-This function deletes a class associated with a patron for a given semester.
-
-Arguments are given as a hash:
-
-=over
-
-=item patron
-
-The numeric, databasical id of the patron
-
-=item semester
-
-The ID of the semester to retrieve classes for.
-
-=item class
-
-The ID of the class to add.
-
-=back
-
-Returns: Nothing.
-
-=cut
-
-sub patron_delete_class {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
-		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-		class		=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
-
-	my $dbh = $self->dbh;
-
-	my ($sql, @bind) = sql_interp('DELETE FROM patron_classes WHERE', \%params);
-
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-}
-
-#}}}
-
-#{{{checkout_search 
-
-=head2 checkout_search 
-
-This function returns an array of checkout ids matching search criteria
-
-The arguments are given as a hash.  They're all optional, but something other than just status must be specified before anything other than an empty array will be returned.
-
-=over
-
-=item semester
-
-The semester that the books are checked out for
-
-=item library_to
-
-An arrayref of libraries the checkout can be going to (the libraries that have the books)
-
-=item library_from
-
-An arrayref of libraries the checkouts can be coming from (the libraries that are requesting the books)
-
-=item patron
-
-A patron ID identifying the patron checking out the books
-
-=item tomebook
-
-The id of a TOME book
-
-=item status
-
-Either checked_out (still checked out), checked_in (the checkout is finished), or all.  Defaults to checked_out
-
-=back
-
-=cut
-
-sub checkout_search {
-	my $self = shift;
-
-	my $dbh = $self->dbh;
-
-	my %params = validate(@_, {
-		semester	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1  },
-		library_to	=> { type => ARRAYREF, optional => 1 },
-		library_from	=> { type => ARRAYREF, optional => 1 },
-		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
-		tomebook	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
-		status		=> { type => SCALAR, regex => qr/^checked_out|checked_in|all$/, default => 'checked_out' },
-	});
-
-	my @conditions;
-	foreach (qw(semester patron tomebook)) {
-		if($params{$_}) {
-			push @conditions, { 'checkouts.' . $_ => $params{$_} };
-		}
-	}
-
-	if($params{library_from}) {
-		push @conditions, { 'checkouts.library' => $params{library_from} };
-	}
-
-	if($params{library_to}) {
-		push @conditions, { 'tomebooks.library' => $params{library_to} };
-	}
-
-	# If we aren't given anything to do, don't do anything
-	# Note that this check happens /before/ the conditions are added for 'status'
-	# This is because 'status' has a default and will always result in a condition
-	unless(@conditions) {
-		return ();
-	}
-
-	if($params{status} eq 'checked_out') {
-		push @conditions, 'checkouts.checkin IS NULL';
-	} elsif($params{status} eq 'checked_in') {
-		push @conditions, 'checkouts.checkin IS NOT NULL';
-	} elsif($params{status} eq 'all') {
-		# Nothing special to do here
-	} else {
-		die 'An unknown status was selected';
-	}
-
-	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
-	
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
-	}
-	return @results;
-}
-#}}}
-
 #{{{checkout_info 
 
 =head2 checkout_info 
 
-Returns info about a checkout, given an id.
-
-Arguments are as a hashref:
-
-=over
-
-=item id
-
-The ID of the checkout to retrieve info about
-
-=back
-
-Returns a hashref:
-
-=over
-
-=item tomebook
-
-The tomebook ID of the checkout
-
-=item semester
-
-The semester of the checkout
-
-=item checkout
-
-The time of the checkout
-
-=item checkin
-
-The time of the check in.  If this is null, the book is still checked out.
-
-=item comments
-
-Comments about the checkout
-
-=item library
-
-The library responsible for the checkout
-
-=item uid
-
-The id of the TOMEkeeper responsible for the checkout
-
-=item id
-
-The id of the checkout
-
-=item borrower
-
-The id of the patron that checked the book out
-
-=back
+foo
 
 =cut
 
@@ -1727,12 +1152,12 @@ sub checkout_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+		checkout	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
 	my $dbh = $self->dbh;
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{id} });
+	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{checkout} });
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1930,6 +1355,27 @@ sub tomebook_can_reserve {
 }
 #}}}
 
+#{{{tomebook_fill_reservation 
+
+=head2 tomebook_fill_reservation 
+
+foo
+
+=cut
+
+sub tomebook_fill_reservation {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		id	=> { type => SCALAR, regex => qr/^\d+$/ },
+	});
+
+	my $dbh = $self->dbh;
+
+	$dbh->do('UPDATE checkouts set checkout = now(), reservation = FALSE WHERE id = ?', undef, @params{qw(id)});
+}
+#}}}
+
 #{{{tomebook_cancel_checkout 
 
 =head2 tomebook_cancel_checkout 
@@ -1955,15 +1401,7 @@ sub tomebook_cancel_checkout {
 
 =head2 tomebook_checkin 
 
-This function checks in a TOME book.  Nothing is returned.  Arguments are a hashref:
-
-=over
-
-=item id
-
-The id of the TOME book
-
-=back
+foo
 
 =cut
 
@@ -1976,6 +1414,7 @@ sub tomebook_checkin {
 
 	my $dbh = $self->dbh;
 
+	$dbh->do('UPDATE checkouts set reservation = FALSE WHERE id = ?', undef, @params{qw(id)}); # Obviously can't be reserved if it's checked in...
 	$dbh->do('UPDATE checkouts SET checkin = now() WHERE id = ?', undef, @params{qw(id)});
 }
 #}}}
@@ -2032,37 +1471,7 @@ sub update_checkout_comments {
 
 =head2 book_info 
 
-Takes a hash as an argument:
-
-=over
- 
-=item isbn
-
-isbn of book
-
-=back
-
-returns a hash:
-
-=over
- 
-=item isbn
-
-isbn of book
-
-=item title
-
-title of book
-
-=item author
-
-author of book
-
-=item edition
-
-edition of book
-
-=back
+foo
 
 =cut
 
@@ -2085,23 +1494,7 @@ sub book_info {
 
 =head2 class_search 
 
-This function can return either a complete listing of classes IDs or a list based on search criteria.  A match only has to satisfy one of the paramters specified to be returned.  In other words, the search criteria use OR instead of AND.
-
-The arguments are as a hashref:
-
-=over
-
-=item id
-
-A case-insensitive search will be performed on the ID given
-
-=item name
-
-A case-insensitive search will be performed on the class name given
-
-=back
-
-This function returns an array of class IDs.
+foo
 
 =cut
 
@@ -2115,26 +1508,30 @@ sub class_search {
 
 	my (@conditions, @values);
 
-	foreach(qw(id name)) {
-		if(defined($params{$_})) {
-			_quote_like($params{$_});
-			push @conditions, "$_ ILIKE '%' || ? || '%'";
-			push @values, $params{$_};
-		}
+	if(defined($params{id})) {
+		_quote_like($params{id});
+		push @conditions, "id ILIKE ? || '%'";
+		push @values, $params{id};
 	}
 	
-	my $statement = 'SELECT id FROM classes ' . (@conditions ? 'WHERE ' . join(' OR ', @conditions) : '') . ' ORDER BY id ASC';
+	if(defined($params{name})) {
+		_quote_like($params{id});
+		push @conditions, "name ILIKE '%' || ? || '%'";
+		push @values, $params{id};
+	}
+
+	my $statement = 'SELECT id, name FROM classes ' . (@conditions ? 'WHERE ' . join(' AND ', @conditions) : '') . ' ORDER BY id ASC';
 
 	my $sth = $self->dbh->prepare($statement);
 	
 	$sth->execute(@values);
 	
 	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
+	while(my $result = $sth->fetchrow_hashref) {
+		push @results, $result;
 	}
 	
-	return @results;
+	return \@results;
 }
 #}}}
 
@@ -2166,177 +1563,11 @@ sub class_list {
 
 =head2 class_info 
 
-This method returns information about class
-
-Arguments are given as a hash:
-
-=over
-
-=item id
-
-The numeric, databasical id of the class
-
-=back
-
-Returns a hash:
-
-=over
-
-=item name
-
-The text name of the class
-
-=item comments
-
-The text comments about the class
-
-=item verified
-
-Semester ID for which the class has been verified.
-
-=item uid
-
-User ID of the TOMEkeeper that did the last verification
-
-=back
-
-=cut
-
-sub class_info {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		id	=> { type => SCALAR },
-	});
-
-	my $dbh = $self->dbh;
-
-	my $sth = $dbh->prepare("SELECT name, comments, verified, uid FROM classes WHERE id = ?");
-	$sth->execute($params{id});
-	return $sth->fetchrow_hashref;
-}
-#}}}
-
-#{{{class_books 
-
-=head2 class_books 
-
-This method returns books associated with a class
-
-Arguments are given as a hash:
-
-=over
-
-=item id
-
-The numeric, databasical id of the class
-
-=back
-
-Returns an arrayref to an array of hashrefs:
-
-=over
-
-=item isbn
-
-ISBN of the book
-
-=item verified
-
-Semester ID for when the book was last verified
-
-=item comments
-
-Comments about the verification of the book
-
-=item usable
-
-Boolean indicating if the book is usable or not
-
-=item uid
-
-The user id of the TOMEkeeper who did the verification
-
-=back
-
-=cut
-
-sub class_books {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
-
-	my $dbh = $self->dbh;
-
-	my $sth = $dbh->prepare("SELECT isbn, usable, verified, comments, uid FROM classbooks WHERE class = ? ORDER BY usable,isbn DESC");
-	$sth->execute($params{id});
-	my @books;
-	while(my $result = $sth->fetchrow_hashref) {
-		push @books, $result;
-	}
-
-	return \@books;
-}
-#}}}
-
-#{{{class_update_verified 
-
-=head2 class_update_verified 
-
-This method upates information about a class
-
-Arguments are given as a hash:
-
-=over
-
-=item id
-
-The numeric, databasical id of the class
-
-=item verified
-
-The ID of the semester for which the class has been verified
-
-=item uid
-
-The ID of the TOMEkeeper that did the verification
-
-=back
-
-Returns nothing.
-
-=cut
-
-sub class_update_verified {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		verified	=> { type => SCALAR, regex => qr/^\d+$/ },
-		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
-
-	});
-
-	my $dbh = $self->dbh;
-
-	my ($sql, @bind) = sql_interp('UPDATE classes SET', {verified => $params{verified}, uid => $params{uid}}, 'WHERE', {id => $params{id}});
-	my $sth = $dbh->prepare($sql);
-
-	$sth->execute(@bind);
-}
-#}}}
-
-#{{{class_info_deprecated
-
-=head2 class_info_deprecated
-
 foo
 
 =cut
 
-sub class_info_deprecated {
+sub class_info {
 	my $self = shift;
 
 	my %params = validate(@_, {
@@ -2358,7 +1589,6 @@ sub class_info_deprecated {
 
 	return { name => $name, comments => $comments, books => \@books };
 }
-
 #}}}
 
 #{{{class_update_comments 
@@ -2373,8 +1603,8 @@ sub class_update_comments {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		comments	=> { type => SCALAR, regex => qr/^\d+$/ },
+		id		=> { type => SCALAR },
+		comments	=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
@@ -2510,9 +1740,6 @@ sub user_add {
 
 	my ($sql, @bind) = sql_interp('INSERT INTO users', \%params);
 	$self->dbh->do($sql, undef, @bind);
-
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.users_id_seq')");
-	return $id;
 }
 #}}}
 
@@ -2520,45 +1747,7 @@ sub user_add {
 
 =head2 user_update 
 
-This method updates a user (not a patron).
-
-Arguments are as a hashref.  Everything other than id is optional.
-
-=over
-
-=item id
-
-The user to be modified
-
-=back
-
-=item username
-
-The new username
-
-=item email
-
-The new email
-
-=item notifications
-
-The new notifications flag.  Either 'true' or 'false'.
-
-=item disabled.
-
-The new disabled flag.  Either 'true' or 'false'.
-
-=item admin
-
-The new admin flag.  Either 'true' or 'false'.
-
-=item password
-
-The new password
-
-=back
-
-This method returns nothing.
+foo
 
 =cut
 
@@ -2567,9 +1756,9 @@ sub user_update {
 
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		username	=> { type => SCALAR, optional => 1 },
-		email		=> { type => SCALAR, optional => 1 },
-		notifications	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
+		username	=> { type => SCALAR },
+		email		=> { type => SCALAR },
+		notifications	=> { type => SCALAR, regex => qr/^true|false$/ },
 		disabled	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		admin		=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		password	=> { type => SCALAR, optional => 1 },
@@ -2632,9 +1821,7 @@ sub semester_set {
 		id => { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-        # This must happen within a transaction, because, for a little while, the semesters table has no active semesters
 	$self->dbh->begin_work;
-        $self->dbh->do('LOCK TABLE semesters');
 	$self->dbh->do('UPDATE semesters SET current = FALSE');
 	my($sql, @bind) = sql_interp('UPDATE semesters SET current = TRUE WHERE', { id => $params{id} });
 	$self->dbh->do($sql, undef, @bind);
@@ -2659,53 +1846,7 @@ sub semester_add {
 
 	my ($sql, @bind) = sql_interp('INSERT INTO semesters', { name => $params{name} });
 	$self->dbh->do($sql, undef, @bind);
-
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.semesters_id_seq')");
-	return $id;
 }
-#}}}
-
-#{{{ library_update
-=head2 library_update 
-
-This method updates a library.
-
-Arguments are as a hashref.  Everything other than id is optional.
-
-=over
-
-=item id
-
-The ID of the library to be updated.
-
-=item name
-
-The new name of the library.
-
-=item intertome
-
-The InterTOME status of the library.  Either 'true' or 'false'.
-
-=cut
-
-sub library_update {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		name		=> { type => SCALAR, optional => 1 },
-		intertome	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
-	});
-
-	my %library;
-	foreach(qw(name intertome)) {
-		if(defined($params{$_})) { $library{$_} = $params{$_}; }
-	}
-
-	my ($sql, @bind) = sql_interp('UPDATE libraries SET', \%library, 'WHERE id =', $params{id});
-	$self->dbh->do($sql, undef, @bind);
-}
-
 #}}}
 
 #{{{library_add 
@@ -2732,17 +1873,7 @@ sub library_add {
 
 =head2 library_info 
 
-Returns information about the libraries in the system.  If a Library ID is given, then a hashref containing the id, name, and InterTOME status (true or false) of that particular library will be returned.  If no id is given, then an arrayref containing hashrefs about every library in the system will be returned.
-
-It takes arguments in the form of a hash:
-
-=over
-
-=item id
-
-The id of the library to retrieve information about.
-
-=back
+foo
 
 =cut
 
@@ -2753,7 +1884,7 @@ sub library_info {
 		id		=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, name, intertome FROM libraries';
+	my $statement = 'SELECT id, name FROM libraries';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ?');
@@ -2803,23 +1934,7 @@ sub library_users {
 
 =head2 library_access 
 
-This function returns the libraries that a user has access to and can also be used to modify the list of libraries the user has access to.  Arguments are as a hashref:
-
-=over
-
-=item user
-
-The ID of the user (note, this is not a patron) to retrieve (or modify) library access information
-
-=item libraries
-
-This parameter should be specified only when you want to modify the access list of the user given in the user parameter.  Their library access list will be changed to reflect the libraries specified here.
-
-The library list should be passed in as an arrayref of library IDs.
-
-=back
-
-This function will return an array of libraries that the specified user has access to.
+foo
 
 =cut
 
@@ -2831,22 +1946,19 @@ sub library_access {
 		libraries	=> { type => ARRAYREF, optional => 1 },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT library FROM library_access WHERE', { uid => $params{user} });
+	my ($sql, @bind) = sql_interp('SELECT id, name FROM library_access, libraries WHERE library_access.library = libraries.id AND ', { uid => $params{user} }, 'ORDER BY name');
 
 	my $sth = $self->dbh->prepare($sql);
 	$sth->execute(@bind);
 	
 	my @results;
-	while(my @result = $sth->fetchrow_array) {
-		push @results, $result[0];
+	while(my $result = $sth->fetchrow_hashref) {
+		push @results, $result;
 	}
 
-        # If we don't need to change anything, just return the list now
-	unless($params{libraries}) { return @results; }
+	unless($params{libraries}) { return \@results; }
 
-        # Convert the array into a hash for easy reference
-	my %access = map { $_ => 1 } @results;
-        # Add libraries that were requested but not already in the list
+	my %access = map { $_->{id} => 1 } @results;
 	foreach my $library (@{$params{libraries}}) {
 		unless($access{$library}) {
 			my ($sql, @bind) = sql_interp('INSERT INTO library_access', { library => $library, uid => $params{user} });
@@ -2855,13 +1967,10 @@ sub library_access {
 			delete $access{$library};
 		}
 	}
-        # Remove libraries that were not requested but were in the list
 	foreach my $library (keys %access) {
 		my ($sql, @bind) = sql_interp('DELETE FROM library_access WHERE', { library => $library, uid => $params{user} });
 		$self->dbh->do($sql, undef, @bind);
 	}
-
-        return @{$params{libraries}};
 }
 #}}}
 
@@ -2954,7 +2063,6 @@ sub _quote_like {
 
 1;
 
-#{{{ end pod
 =head1 AUTHOR
 
 Curtis "Fjord" Hawthornre
@@ -2978,5 +2086,5 @@ postgreSQL
 gpl?
 
 =cut
-#}}}
+
 # vim600: set foldmethod=marker

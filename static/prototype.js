@@ -1,4 +1,4 @@
-<!-- This file is automatically for the TOME system by scripts/regen-prototype.pl -->
+<!-- This file is automatically for the TOME system by devdocs/regen-prototype.pl -->
 
 
 <!--
