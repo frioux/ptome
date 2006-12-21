@@ -1,4 +1,5 @@
 #summary Home Page
+#labels Featured
 
 = Welcome to the TOME Project =
 
