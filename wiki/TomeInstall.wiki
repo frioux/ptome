@@ -1,7 +1,6 @@
 #summary TOME Installation procedure
 #labels Featured
 
-= TOME Installation Procedure =
 Prerequisites: Apache, PostgreSQL, Perl, TomeModules
 
 Note: If you are going to set things up the way that this guide suggests, you need to allow symlinks in you apache configuration.
