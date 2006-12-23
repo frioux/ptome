@@ -133,7 +133,6 @@ Comments
 <br />Please include the CPO Box of the borrower
 [% END %]
 </td><td><input type="text" name="comments"></td></tr>
-<tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %][% UNLESS librarieshash.${tomebook.library}.access %]disabled="disabled[% END %]"></td></tr>
 [% IF librarieshash.${tomebook.library}.access %]
 <tr><td>Reservation</td><td><input type="checkbox" name="reservation" value="1" [% IF session.currsemester.id > currsemester.id OR NOT librarieshash.${tomebook.library}.access %]checked="checked"[% END %]></td></tr>
 [% ELSE %]
