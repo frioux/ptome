@@ -489,24 +489,35 @@ sub addclassbook {
 
 #{{{report
 sub report {
-	my $self = shift;
+=over
+my $self = shift;
 
 	my $q = $self->query;
 
 	my $semester_selected = $self->_semesterselecteddefault();
 	my $libraries_selected = $self->_librariesselecteddefault();
+        my $our_libraries = keys %{$self->_libraryaccesshash($self->param('user_info')->{id})};
 
-	my $reservation = $self->reservation_search({ semester => $semester_selected, library_from => $libraries_selected });
-	foreach(@$reservation) {
-		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
-	}
+        # Reservations needing to be filled
+
+        #  TOME Reservations 
+        my $tome_reservations = $self->reservation_search({ semester => $semester_selected, library_to => $our_libraries, library_from => $our_libraries});
+        my $tome_reservation_data;
+        foreach (@$tome_reservations) {
+               $tome_reservation_data->{reservation_info} = $self->reservation_info{$_};
+               $_->{book_info} = $self->book_info ({ isbn => $_ });
+        }
+
+        # Books Due Back
 	my $dueback = $self->dueback_search({ semester => $semester_selected, library_from => $libraries_selected });
 	foreach(@$dueback) {
-		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
+		$_->{tomebookinfo} = $self->tomebook_info ({ tomebook => $_->{tomebook} });
 	}
+
+        # Books Expiring
 	my $expiring = $self->expire_search({ semester => $semester_selected, library_from => $libraries_selected });
 	foreach(@$expiring) {
-		$_->{tomebookinfo} = $self->tomebook_info_deprecated({ id => $_->{tomebook} });
+		$_->{tomebookinfo} = $self->tomebook_info ({ tomebook => $_->{tomebook} });
 	}
 
 	return $self->template({ file => 'report.html', vars => {
@@ -517,6 +528,7 @@ sub report {
 		libraries_selected	=> $libraries_selected,
 		semester_selected	=> $semester_selected,
 	}});
+=cut
 }
 #}}}
 
@@ -1209,10 +1221,8 @@ sub _librariesselecteddefault {
 
 	my @libraries_selected = $self->query->param('libraries');
 	unless(@libraries_selected) {
-		foreach (@{$self->_libraryaccess($self->param('user_info')->{id})}) {
-			if($_->{access}) {
-				push @libraries_selected, $_->{id};
-			}
+		foreach ($self->library_access({user =>$self->param('user_info')->{id}})) {
+				push @libraries_selected, $_;
 		}
 	}
 	return \@libraries_selected;
