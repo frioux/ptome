@@ -2,8 +2,8 @@
 <form name="report" action="[% url %]" method="post">
 <input type="hidden" name="rm" value="report">
 <table border="1" cellpadding="5">
-[% PROCESS librariesbox.html %]
-[% PROCESS semestersbox.html %]
+[% PROCESS blocks/librariesbox.html name='library' libraries=tome.libraries %]
+[% PROCESS blocks/semestersbox.html %]
 <tr><td colspan="2" align="center"><input type="submit" value="Generate Report"></td></tr>
 </table>
 </form>
@@ -11,7 +11,7 @@
 <table border="1">
 <tr>
 	<td>
-		TOME ID
+		Reservation ID
 	</td>
 	<td>
 		Book
@@ -25,29 +25,31 @@
 	<td>
 		Semester
 	</td>
+        <td>
+                Fill Reservation
+        </td>
 </tr>
-[% FOREACH book = reservation %]
-[% IF book.semester < semester_selected %]
+[% FOREACH reservation_id = tome_reservations %]
+[% reservation_info = tome.reservation_info(reservation_id) %]
+[% patron = tome.patron_info(reservation_info.patron) %]
+[% semester = semestershash.${reservation_info.semester}.name %]
+[% IF semester < semester_selected %]
 <tr bgcolor="pink">
 [% ELSE %]
 <tr>
 [% END %]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+		<a href="[% url(rm='reservationinfo', id=reservation_id) %]">[% reservation_id | html%]</a>
+	</td>
+        <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+	<td>
+		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
 	<td>
-		<b>Title:</b> [% book.tomebookinfo.title %]<br />
-		<b>Author:</b> [% book.tomebookinfo.author %]<br />
-		<b>Edition:</b> [% book.tomebookinfo.edition %]
+		[% reservation_info.comments %]
 	</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.borrower | html | uri %]">[% book.borrower_name | html %]</a> ([% book.borrower_email | html %])
-	</td>
-	<td>
-		[% book.comments %]
-	</td>
-	<td>
-		[% semestershash.${book.semester}.name %]
+		[% semester.name %]
 	</td>
 </tr>
 [% END %]

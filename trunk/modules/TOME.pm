@@ -661,17 +661,12 @@ sub reservation_search {
 		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
 	});
 
-	my @conditions;
-	foreach (keys %params) {
-		push @conditions, { $_ => $params{$_} };
-	}
-
 	# If we aren't given anything to do, don't do anything
-	unless(@conditions) {
+	unless(%params) {
 		return ();
 	}
 	
-	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', @conditions);
+	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', \%params);
 	
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);

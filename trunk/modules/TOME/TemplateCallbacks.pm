@@ -70,4 +70,11 @@ sub library_access {
 	return [ $self->{tome}->library_access({ user => $self->{tome}->param('user_info')->{id} }) ];
 }
 
+sub reservation_info {
+    my $self = shift;
+    my $reservation = shift;
+
+    return $self->{tome}->reservation_info({ id => $reservation });
+}
+
 1;
