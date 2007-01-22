@@ -4,67 +4,6 @@ cgi=cgi{
   admin.pl
  }
 
- cosc4303=cosc4303 {
- 
- ApplicationModel=ApplicationModel{
-   
-   ApplicationModelDiagrams.cdr
-   BusinessModelDiagram.pdf
-   ComponentDiagram.pdf
-   DatabaseSequenceDiagram.pdf
-   GraphicalUseCaseDiagram.pdf
-   NavigationDiagram.pdf
-   TOMESequenceDiagram.pdf
-   TemplateSequenceDiagram.pdf
-   WebInterfaceSequenceDiagram.pdf
-   application.pdf
-   application.tex
-   tomedb.pdf
-   tomedb.vsd
-   userdiagram.pdf
-   userdiagram.wmf
- 
- }
-  
-  ComponentModel=ComponentModel{
-   
-   ComponentDiagram.pdf
-   EventDiagram.pdf
-   POD.html
-   SEComponentModel.cdr
-   component.pdf
-   component.tex
-   tomedb.pdf
-  
-  }
-  
-  Presentation=Presentation{
-   
-   slideshow.odp
-  
-  }
-  
-  ProjectBrief=ProjectBrief{
-  
-   brief.pdf
-   brief.tex
-   userdiagram.dia
-   userdiagram.png
-  
-  }
-  
-  ProjectPlan=ProjectPlan{
-  
-   GanttChart.gan
-   GanttChart.png
-   ProjectPlan.odt
-   plan.pdf
-   plan.tex
-  
-  }
- 
- }
- 
  devdocs=devdocs {
   TODO
   clean.sql

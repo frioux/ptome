@@ -489,6 +489,18 @@ sub addclassbook {
 
 #{{{report
 sub report {
+    my $self = shift;
+
+    my $q = $self->query;
+
+    return $self->template({ file => 'report.html', vars => {
+        tome_reservations       => [ $self->reservation_search({
+                semester            => $self->_semesterselecteddefault(),
+                library_to          => $self->_librariesselecteddefault(),
+                library_from        => $self->_librariesselecteddefault(),
+            }) ],
+        libraries_selected  => $self->_librariesselecteddefault(),
+    }});       
 =over
 my $self = shift;
 
