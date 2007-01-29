@@ -667,13 +667,16 @@ sub reservation_search {
 	}
 	
 	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', \%params);
-	
+        warn $sql;
+        warn join(',', @bind);
+
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
 	}
+
 	return @results;
 }
 #}}}

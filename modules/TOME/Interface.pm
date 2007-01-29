@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -492,6 +492,14 @@ sub report {
     my $self = shift;
 
     my $q = $self->query;
+
+    foreach($self->reservation_search({
+                semester            => $self->_semesterselecteddefault(),
+                library_to          => $self->_librariesselecteddefault(),
+                library_from        => $self->_librariesselecteddefault(),
+            })) {
+            warn keys %$_;
+    }
 
     return $self->template({ file => 'report.html', vars => {
         tome_reservations       => [ $self->reservation_search({
@@ -1158,15 +1166,15 @@ sub sessionsemester {
 
 #{{{isbnview
 sub isbnview {
-
     my $self = shift;
+    my $errs = shift;
 
     my $q = $self->query;
     
 
     my $semester;
     if ($q->param('semester')) {
-        $semester = $q->param('semester')->{id};
+        $semester = $q->param('semester');
     } elsif ($self->session->param('currsemester')) {
         $semester = $self->session->param('currsemester')->{id};
     } else {
@@ -1201,9 +1209,58 @@ sub isbnview {
             libraries_from => \@from_libraries,
             libraries_to => \@to_libraries,
             semester => $semester,
+            errs        => $errs,
         }
     });
 
+}
+#}}}
+
+#{{{isbnreserve
+sub isbnreserve {
+
+=head2 isbnreserve
+
+foo
+
+=cut
+
+    my $self = shift;
+
+    my $q = $self->query();
+    
+
+    my $results = $self->check_rm('isbnview', {
+            required		=> [qw(
+                    isbn
+                    patron
+                    library_to
+                    library_from
+                    semester
+            )],
+            optional		=> [qw(
+                    comment
+            )],
+            filters			=> 'trim',
+    }, { target => 'isbnreserve' }) || return $self->check_rm_error_page;
+
+    my $patron_info = $self->patron_info({ email => $results->valid('patron') });
+    unless($patron_info) {
+            return $self->forward('addpatron');
+    }
+
+    my $id = $self->reservation_create({
+        isbn => $q->param('isbn'),
+        uid  => $self->param('user_info')->{id},
+        patron => $self->patron_info({
+            email => $q->param('patron')})->{id},
+        comment => $q->param('comment')?$q->param('comment'):"",
+        library_from => $q->param('library_from'), 
+        library_to => $q->param('library_to'),
+        semester => $q->param('semester'), 
+    });
+    
+    return $self->forward($self->query->param('patronview'));
 }
 #}}}
 
