@@ -4,21 +4,23 @@
 <h2>Reserve Book</h2>
 [%# Book Reservation Table  %]
 <form action="[% url %]" name="isbnreserve" method="post">
-<input type="hidden" name="rm" value="isbnupdate" />
+<input type="hidden" name="rm" value="isbnreserve" />
+<input type="hidden" name="isbn" value="[% isbn | html %]" />
 <table>
-<tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %]</td></tr>
+<tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
 [%# Since most people only ever have access to one library, we make this a variable thinger. %]
 [% IF libraries_from.size > 1 %]
-    <tr><td><strong>Reserve to:</strong></td><td><select>
+    <tr><td><strong>Reserve to:</strong></td><td><select name="library_to">
         [% FOREACH library = libraries_from %]
             <option value="[% library | html %]">[% tome.library_info(library).name | html %]</option>
         [% END %]
-    </select></td></tr>
+    </select>[% errs.libraries_from %]</td></tr>
 [% END %]
-<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %]</td></tr>
+<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
 [%#should be if it is in our library %]
+<tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
 <tr><td>
-<input type="submit" value="Reserve Book from Library:"/></td><td><select>
+<input type="submit" value="Reserve Book from Library:"/></td><td><select name="library_from">
     [%# This ugly mofo is supposed to make it so that if your library has a book, you have to reserve from your library. %]
     [% our_library_contains_the_book = 0 %]
     [% FOREACH library = libraries_to %]
