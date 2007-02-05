@@ -19,29 +19,36 @@
 <tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
 [%#should be if it is in our library %]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
-<tr><td>
-<input type="submit" value="Reserve Book from Library:"/></td><td><select name="library_from">
-    [%# This ugly mofo is supposed to make it so that if your library has a book, you have to reserve from your library. %]
-    [% our_library_contains_the_book = 0 %]
-    [% FOREACH library = libraries_to %]
-        [% IF library.ours %]
-            [% our_library_contains_the_book = 1 %]
-            [% LAST %]
-        [% END %]
-    [% END %]
-    [% FOREACH library = libraries_to.nsort('available').reverse %]
-        [% library_info = tome.library_info(library.id) %]
-        [% IF library.available > 0 && library_info.intertome %]
-            [% IF our_library_contains_the_book==1 %]
-                [% IF library.ours %]
-                    <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
-                [% END %]
-            [% ELSE %]
-                <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
+<tr>
+[% IF libraries_to.size == 0  %]
+    <td colspan="2">There are no books available with this ISBN.  Sorry.</td>
+[% ELSE %]
+    <td>
+    <input type="submit" value="Reserve Book from Library:"/></td><td><select name="library_from">
+        [%# This ugly mofo is supposed to make it so that if your library has a book, you have to reserve from your library. %]
+        [% our_library_contains_the_book = 0 %]
+        [% FOREACH library = libraries_to %]
+            [% IF library.ours %]
+                [% our_library_contains_the_book = 1 %]
+                [% LAST %]
             [% END %]
         [% END %]
-    [% END %]
-</select>
-</td></tr>
+            
+            [% FOREACH library = libraries_to.nsort('available').reverse %]
+                [% library_info = tome.library_info(library.id) %]
+                [% IF library_info.intertome %]
+                    [% IF our_library_contains_the_book==1 %]
+                        [% IF library.ours %]
+                            <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
+                        [% END %]
+                    [% ELSE %]
+                        <option value="[% library.id | html %]">[% library_info.name | html %] ([% library.available | html %] Free)</option>
+                    [% END %]
+                [% END %]
+            [% END %]
+    </select>
+    </td>
+[% END %]
+</tr>
 </table>
 </form>

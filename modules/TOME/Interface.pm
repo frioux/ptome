@@ -1187,18 +1187,48 @@ sub isbnview {
     my @from_libraries = keys %{$library_access};
     my @to_libraries;
 
-    foreach (@{$self->library_info()}) {
-        my $library = $self->library_info({id => $_->{'id'}});
-        if ($library->{intertome}) {
+    my $eligible_for_intertome = 0;
+    # This will set it to true if /any/ of your libraries have intertome
+    # This should probably be fixed at some point so that there is either
+    # one TOMEkeeper per library, or something dynamic happens on the webpage
+    # when you select a library of yours that is not InterTOME
+    foreach(@from_libraries) {
+        if($self->library_info({id => $_})->{intertome}) {
+            $eligible_for_intertome = 1;
+            last;
+        }
+    }
+
+    if($eligible_for_intertome) {
+        foreach (@{$self->library_info()}) {
+            my $library = $self->library_info({id => $_->{'id'}});
+            if ($library->{intertome}) {
+                my $availability = {
+                    id => $library->{id},
+                    available => $self->tomebook_availability_search({
+                        isbn => $q->param('isbn'),
+                        status => 'can_reserve',
+                        semester => $semester,
+                        libraries => [$library->{id}],
+                    }),
+                    ours => $library_access->{$_->{'id'}} ? 1 : 0,
+                };
+                if($availability->{available} > 0) {
+                    push @to_libraries, $availability;
+                }
+            }
+        }
+     } else {
+        foreach my $library_id (@from_libraries) {
             push @to_libraries, {
-                id => $library->{id},
+                id => $library_id,
                 available => $self->tomebook_availability_search({
                     isbn => $q->param('isbn'),
                     status => 'can_reserve',
                     semester => $semester,
-                    libraries => [$library->{id}],
+                    libraries => [$library_id],
                 }),
-                ours => $library_access->{$_->{'id'}} ? 1 : 0,
+                ours => 1,
             };
         }
     }
