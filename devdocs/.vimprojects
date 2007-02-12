@@ -65,6 +65,7 @@ cgi=cgi{
    autocomplete_patron.html
    book.html
    datetime.html
+   libraries_selection.html
    librariesbox.html
    reservation.html
    semestersbox.html

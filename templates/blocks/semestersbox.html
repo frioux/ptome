@@ -1,6 +1,6 @@
 [%# Takes name as an input %]
 
-<select name="[% name | html %]">
+<select name="[% name | html %]" id="[% name | html %]" >
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]"
 
