@@ -609,6 +609,10 @@ sub reservation_create {
 	});			
 
 	my ($sql, @bind) = sql_interp('INSERT INTO reservations', \%params);
+
+        warn $sql;
+        warn join(',', @bind);
+
 	$self->dbh->do($sql, undef, @bind);
 	
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.reservations_id_seq')");
