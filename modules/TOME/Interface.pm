@@ -1181,6 +1181,31 @@ sub isbnview {
         $semester = $self->param('currsemester')->{id};
     }
 
+    # from_libraries refers to libraries that the
+    # reservation is coming from, not the book.
+    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
+    my @from_libraries = keys %{$library_access};
+
+    return $self->template({file => 'isbnview.html', 
+        vars => {
+            isbn => $q->param('isbn'),
+            libraries_from => \@from_libraries,
+            libraries_to => $self->isbnview_to_libraries($semester),
+            semester => $semester,
+            errs        => $errs,
+        }
+    });
+
+}
+#}}}
+
+#{{{isbnview_to_libraries
+sub isbnview_to_libraries {
+    my $self = shift;
+    my $semester = shift;
+
+    my $q = $self->query;
+    
     # to_libraries refers to libraries that the
     # reservation is going to, not the book.
     my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
@@ -1233,16 +1258,7 @@ sub isbnview {
         }
     }
 
-    return $self->template({file => 'isbnview.html', 
-        vars => {
-            isbn => $q->param('isbn'),
-            libraries_from => \@from_libraries,
-            libraries_to => \@to_libraries,
-            semester => $semester,
-            errs        => $errs,
-        }
-    });
-
+    return \@to_libraries;
 }
 #}}}
 
@@ -1285,8 +1301,8 @@ foo
         patron => $self->patron_info({
             email => $q->param('patron')})->{id},
         comment => $q->param('comment')?$q->param('comment'):"",
-        library_from => $q->param('library_from'), 
-        library_to => $q->param('library_to'),
+        library_from => $q->param('library_to'), 
+        library_to => $q->param('library_from'),
         semester => $q->param('semester'), 
     });
     
@@ -1306,10 +1322,16 @@ sub _libraryaccesshash {
 #{{{ajax_libaries_selection_list
 
 sub ajax_libraries_selection_list {
-
     my $self = shift;
+
+    my $semester = $self->query->param('semester');
     
-    return "<td colspan=2 align='center'>llama!</td>";
+    return $self->template({file => 'blocks/libraries_selection.html', 
+        vars => {
+            semester => $semester,
+            libraries => $self->isbnview_to_libraries($semester),
+        }, plain => 1,
+    });
 }
 
 #}}}

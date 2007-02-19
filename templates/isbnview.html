@@ -3,19 +3,20 @@
 [% INCLUDE 'blocks/book.html' isbn=isbn %]
 <h2>Reserve Book</h2>
 [%# Book Reservation Table  %]
-<form action="[% url %]" name="isbnreserve" method="post">
+<form action="[% url %]" name="isbnreserve" id="isbnreserve" method="post">
 <input type="hidden" name="rm" value="isbnreserve" />
 <input type="hidden" name="isbn" value="[% isbn | html %]" />
 <table>
 <tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
 [%# Since most people only ever have access to one library, we make this a variable thinger. %]
 [% IF libraries_from.size > 1 %]
-    <tr><td><strong>Reserve to:</strong></td><td><select name="library_to">
+    <tr><td><strong>Reserve to:</strong></td><td><select name="library_to" id="library_to">
         [% FOREACH library = libraries_from %]
             <option value="[% library | html %]">[% tome.library_info(library).name | html %]</option>
         [% END %]
     </select>[% errs.libraries_from %]</td></tr>
 [% END %]
+[%# TODO: Need a default value here. %]
 <tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
 [%#should be if it is in our library %]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
@@ -24,7 +25,14 @@
 </tr>
 [% prototype.observe_field('semester', {
     url => url,
-    with => "value+'&rm=ajax_libraries_selection_list'",
+    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from=document.isbnreserve.library_to.value'",
+    update=> 'libraries_selection',
+})
+%]
+
+[% prototype.observe_field('library_to', {
+    url => url,
+    with => "'semester=document.isbnreserve.semester.value&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
     update=> 'libraries_selection',
 })
 %]
