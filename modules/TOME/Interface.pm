@@ -1190,7 +1190,7 @@ sub isbnview {
         vars => {
             isbn => $q->param('isbn'),
             libraries_from => \@from_libraries,
-            libraries_to => $self->isbnview_to_libraries($semester),
+            libraries_to => $from_libraries[0] ? $self->isbnview_to_libraries($semester, $from_libraries[0]) : [],
             semester => $semester,
             errs        => $errs,
         }
@@ -1203,28 +1203,17 @@ sub isbnview {
 sub isbnview_to_libraries {
     my $self = shift;
     my $semester = shift;
+    my $from_library = shift;
 
     my $q = $self->query;
     
+    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
+
     # to_libraries refers to libraries that the
     # reservation is going to, not the book.
-    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
-    my @from_libraries = keys %{$library_access};
     my @to_libraries;
 
-    my $eligible_for_intertome = 0;
-    # This will set it to true if /any/ of your libraries have intertome
-    # This should probably be fixed at some point so that there is either
-    # one TOMEkeeper per library, or something dynamic happens on the webpage
-    # when you select a library of yours that is not InterTOME
-    foreach(@from_libraries) {
-        if($self->library_info({id => $_})->{intertome}) {
-            $eligible_for_intertome = 1;
-            last;
-        }
-    }
-
-    if($eligible_for_intertome) {
+    if($self->library_info({id => $from_library})->{intertome}) {
         foreach (@{$self->library_info()}) {
             my $library = $self->library_info({id => $_->{'id'}});
             if ($library->{intertome}) {
@@ -1244,18 +1233,16 @@ sub isbnview_to_libraries {
             }
         }
      } else {
-        foreach my $library_id (@from_libraries) {
-            push @to_libraries, {
-                id => $library_id,
-                available => $self->tomebook_availability_search({
-                    isbn => $q->param('isbn'),
-                    status => 'can_reserve',
-                    semester => $semester,
-                    libraries => [$library_id],
-                }),
-                ours => 1,
-            };
-        }
+        push @to_libraries, {
+            id => $from_library,
+            available => $self->tomebook_availability_search({
+                isbn => $q->param('isbn'),
+                status => 'can_reserve',
+                semester => $semester,
+                libraries => [$from_library],
+            }),
+            ours => 1,
+        };
     }
 
     return \@to_libraries;
@@ -1325,11 +1312,12 @@ sub ajax_libraries_selection_list {
     my $self = shift;
 
     my $semester = $self->query->param('semester');
+    my $library_from = $self->query->param('library_from');
     
     return $self->template({file => 'blocks/libraries_selection.html', 
         vars => {
             semester => $semester,
-            libraries => $self->isbnview_to_libraries($semester),
+            libraries => $self->isbnview_to_libraries($semester, $library_from),
         }, plain => 1,
     });
 }
