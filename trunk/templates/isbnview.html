@@ -10,9 +10,9 @@
 <tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
 [%# Since most people only ever have access to one library, we make this a variable thinger. %]
 [% IF libraries_from.size > 1 %]
-    <tr><td><strong>Reserve to:</strong></td><td><select name="library_to" id="library_to">
+    <tr><td><strong>Create Reservation from:</strong></td><td><select name="library_from" id="library_from">
         [% FOREACH library = libraries_from %]
-            <option value="[% library | html %]">[% tome.library_info(library).name | html %]</option>
+            <option value="[% library | html %]" [% IF loop.first%]selected="selected"[% END %]>[% tome.library_info(library).name | html %]</option>
         [% END %]
     </select>[% errs.libraries_from %]</td></tr>
 [% END %]
@@ -21,20 +21,24 @@
 [%#should be if it is in our library %]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
 <tr id="libraries_selection">
-[% INCLUDE 'blocks/libraries_selection.html' libraries=libraries_to %]
+[% INCLUDE 'blocks/libraries_selection.html' libraries=libraries_from%]
 </tr>
 [% prototype.observe_field('semester', {
     url => url,
-    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from=document.isbnreserve.library_to.value'",
+    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+document.isbnreserve.library_from.value",
     update=> 'libraries_selection',
+    loading=>'document.isbnreserve.submit.disabled = true',
+    loaded=>prototype.visual_effect('highlight', 'isbnreserve.library_to', { duration=>'0.5' }),
 })
 %]
 
-[% prototype.observe_field('library_to', {
+[% prototype.observe_field('library_from', {
     url => url,
-    with => "'semester=document.isbnreserve.semester.value&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
+    with => "'semester='+document.isbnreserve.semester.value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
     update=> 'libraries_selection',
+    loading=>'document.isbnreserve.submit.disabled = true',
 })
+
 %]
 </table>
 </form>
