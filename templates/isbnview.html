@@ -21,14 +21,14 @@
 [%#should be if it is in our library %]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
 <tr id="libraries_selection">
-[% INCLUDE 'blocks/libraries_selection.html' libraries=libraries_from%]
+[% INCLUDE 'blocks/libraries_selection.html' libraries=libraries_to%]
 </tr>
 [% prototype.observe_field('semester', {
     url => url,
     with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+document.isbnreserve.library_from.value",
     update=> 'libraries_selection',
     loading=>'document.isbnreserve.submit.disabled = true',
-    loaded=>prototype.visual_effect('highlight', 'isbnreserve.library_to', { duration=>'0.5' }),
+    loaded=>prototype.visual_effect('highlight', 'libraries_selection', { duration=>'0.5' }),
 })
 %]
 
@@ -37,8 +37,19 @@
     with => "'semester='+document.isbnreserve.semester.value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
     update=> 'libraries_selection',
     loading=>'document.isbnreserve.submit.disabled = true',
+    loaded=>prototype.visual_effect('highlight', 'libraries_selection', { duration=>'0.5' }),
 })
 
+%]
+
+[%# prototype.update_element_function ( 'libraries_selection', {
+    action=>'update',
+    url => url,
+    with => "'semester='+document.isbnreserve.semester.value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
+    update=> 'libraries_selection',
+    loading=>'document.isbnreserve.submit.disabled = true',
+    loaded=>prototype.visual_effect('highlight', 'libraries_selection', { duration=>'0.5' }),
+})
 %]
 </table>
 </form>
