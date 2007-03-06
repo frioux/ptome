@@ -9,11 +9,11 @@ list = {
 that have books as `libraries'
 %]
 
-[% IF libraries.first.length  == 0  %]
+[% UNLESS libraries.first.available %]
     <td colspan="2">There are no books available with this ISBN.  Sorry.</td>
 [% ELSE %]
     <td>
-    <input type="submit" value="Create Reservation to Library:[% libraries.size%][%libraries.first %]" id="submit"/></td><td><select name="library_to" id="library_to">
+    <input type="submit" value="Create Reservation to Library:" id="submit"/></td><td><select name="library_to" id="library_to">
         [%# This ugly mofo is supposed to make it so that if your library has a book, you have to reserve from your library. %]
         [% our_library_contains_the_book = 0 %]
         [% FOREACH library = libraries %]
