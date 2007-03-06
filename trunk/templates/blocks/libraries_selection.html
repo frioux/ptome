@@ -9,6 +9,7 @@ list = {
 that have books as `libraries'
 %]
 
+[%# This little hack doesn't even give you an option if there are no books %]
 [% UNLESS libraries.first.available %]
     <td colspan="2">There are no books available with this ISBN.  Sorry.</td>
 [% ELSE %]
