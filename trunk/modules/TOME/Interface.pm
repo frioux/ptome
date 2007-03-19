@@ -34,7 +34,7 @@ sub autoload_rm {
 #{{{cgiapp_prerun
 sub cgiapp_prerun {
 	my $self = shift;
-	
+
 	unless($self->session->param('~logged-in')) {
 		$self->prerun_mode('login');
 		return;
@@ -64,7 +64,7 @@ sub logout {
 sub login {
 	my $self = shift;
 	my $error = '';
-	
+
 	if($self->query->param('username')) {
 		my $username = $self->query->param('username');
 		my $user = $self->user_info({ username => $username });
@@ -73,7 +73,7 @@ sub login {
 			$self->session->param('~logged-in', 1);
 			if($user->{admin}) { $self->session->param('admin', 1); }
 			$self->session->param('id', $user->{id});
-			
+
 			$self->header_type('redirect');
 			$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
 			return;
@@ -150,14 +150,14 @@ sub mainsearch {
     my $self = shift;
     my $errs = shift;
 
-    my $results = $self->check_rm('mainsearch', 
+    my $results = $self->check_rm('mainsearch',
         {
             optional => [qw(author title edition)],
             filters => ['trim'],
         },
-        {target => 'mainsearch'} 
+        {target => 'mainsearch'}
     ) || return $self->check_rm_error_page;
-    
+
     my %search;
     foreach ($results->valid()) {
         $search{$_} = $results->valid($_);
@@ -240,7 +240,7 @@ sub stats {
 	my $self = shift;
 
 	my $libraries_selected = $self->_librariesselecteddefault;
-	
+
 	return $self->template({ file => 'stats.html', vars => {
 		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
 		libraries_selected	=> $libraries_selected,
@@ -292,7 +292,7 @@ sub classsearch {
 		}
 	}
 	my @otherlibraryids = map { $_->{id} } @otherlibraries;
-		
+
 	foreach my $book (@{$classinfo->{books}}) {
 		$book->{info} = $self->book_info({ isbn => $book->{isbn} });
 		$book->{mylibraries} = [ @mylibraries ];
@@ -301,7 +301,7 @@ sub classsearch {
 			$library->{total} = scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'in_collection', libraries => [ $library->{id} ] }));
 			$library->{available} = scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => [ $library->{id} ] }));
 		}
-		
+
 		$book->{otherlibraries} = {
 			ids		=> \@otherlibraryids,
 			total		=> scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'in_collection', libraries => \@otherlibraryids })),
@@ -321,7 +321,7 @@ sub classsearch {
 #{{{updatetomebook
 sub updatetomebook {
 	my $self = shift;
-	
+
 	my $results = $self->check_rm('tomebookinfo', {
 		required		=> [qw(
 			id
@@ -350,7 +350,7 @@ sub updatetomebook {
 		expire		=> $results->valid('expire') || 0,
 		library		=> $results->valid('library'),
 	);
-	
+
 	# Verify that they're authorized for the library this book is in and authorized for the library they're trying to move the book to
 	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $tomebook{id} })->{library}) && $self->_libraryauthorized($self->param('user_info')->{id}, $tomebook{library})) {
 		$self->tomebook_update({ %tomebook });
@@ -373,7 +373,7 @@ sub patronaddclass {
 	filters			=> ['trim'],
         constraint_methods      => {
             class => sub {
-                my $dfv = shift; 
+                my $dfv = shift;
                 $dfv->name_this('bad_class');
                 return $self->class_info({ id => $dfv->get_current_constraint_value() });
 		  },
@@ -384,12 +384,12 @@ sub patronaddclass {
                 },
             },
     }, { target => 'patronaddclass' }) || return $self->check_rm_error_page;
-        
+
    $self->patron_add_class({
      patron     => $results->valid('patronid'),
      class      => $results->valid('class'),
     });
-    
+
     return $self->forward('patronview');
 }
 #}}}
@@ -445,10 +445,10 @@ sub addclassbook {
 	my $self = shift;
 
 	my $q = $self->query;
-	
+
 	my $isbn = uc $q->param('isbn'); # All ISBNs are uppercase, might as well convert it here
 	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
-	
+
 	unless($self->book_exists({ isbn => $isbn })) {
 		if($q->param('addbook')) {
 			my %addbook = (
@@ -456,7 +456,7 @@ sub addclassbook {
 				title	=> $q->param('title'),
 				author	=> $q->param('author'),
 			);
-			
+
 			if($q->param('edition')) {
 				$addbook{edition} = $q->param('edition');
 			}
@@ -493,6 +493,7 @@ sub report {
 
     my $q = $self->query;
 
+    # DEBUG CODE
     foreach($self->reservation_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
@@ -508,7 +509,7 @@ sub report {
                 library_from        => $self->_librariesselecteddefault(),
             }) ],
         libraries_selected  => $self->_librariesselecteddefault(),
-    }});       
+    }});
 =over
 my $self = shift;
 
@@ -520,7 +521,7 @@ my $self = shift;
 
         # Reservations needing to be filled
 
-        #  TOME Reservations 
+        #  TOME Reservations
         my $tome_reservations = $self->reservation_search({ semester => $semester_selected, library_to => $our_libraries, library_from => $our_libraries});
         my $tome_reservation_data;
         foreach (@$tome_reservations) {
@@ -578,7 +579,7 @@ sub updatebook {
 			title => $q->param('title'),
 			author => $q->param('author'),
 		);
-	
+
 		if($q->param('edition')) {
 			$book{edition} = $q->param('edition');
 		}
@@ -636,7 +637,7 @@ sub addclass_process {
 		id	=> $results->valid('id'),
 		name	=> $results->valid('name'),
 	);
-	
+
 	$self->add_class({%class});
 
 	$self->header_type('redirect');
@@ -683,15 +684,15 @@ sub patronupdate {
 	$self->patron_update({ id => $update->{id}, email => $update->{email}, name => $update->{name} });
 
 	return $self->forward('patronview');
-}	
+}
 #}}}
 
 #{{{addpatron
 sub addpatron {
 	my $self = shift;
 	my $errs = shift;
-	
-	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }}); 
+
+	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }});
 }
 #}}}
 
@@ -729,7 +730,7 @@ sub addpatron_process {
 sub addtomebook {
 	my $self = shift;
 	my $errs = shift;
-	
+
 	return $self->template({ file => 'addtomebook.html', vars => { errs => $errs }});
 }
 #}}}
@@ -784,13 +785,13 @@ sub addtomebook_process {
 				)],
 				filters		=> 'trim',
 			}, { target => 'addtomebook_isbn' }) || return $self->check_rm_error_page;
-			
+
 			my %addbook = (
 				isbn	=> $addtomebook_results->valid('isbn'),
 				title	=> $addtomebook_isbn_results->valid('title'),
 				author	=> $addtomebook_isbn_results->valid('author'),
 			);
-			
+
 			if($addtomebook_isbn_results->valid('edition')) {
 				$addbook{edition} = $addtomebook_isbn_results->valid('edition');
 			}
@@ -802,7 +803,7 @@ sub addtomebook_process {
 	}
 
 	my $patron_info = $self->patron_info({ email => $addtomebook_results->valid('patron') });
-	
+
 	my %book = (
 		isbn		=> $addtomebook_results->valid('isbn'),
 		originator	=> $patron_info->{id},
@@ -830,7 +831,7 @@ sub addtomebook_process {
 #{{{checkout
 sub checkout {
 	my $self = shift;
-	
+
 	my $results = $self->check_rm('tomebookinfo', {
 		required	=> [qw(
 			id
@@ -855,7 +856,7 @@ sub checkout {
 	my $error;
 	if($reservation eq 'true') {
 		$error = $self->tomebook_can_reserve({tomebook => $id, semester => $results->valid('semester')});
-	} else { 
+	} else {
 		$error = $self->tomebook_can_checkout({tomebook => $id, semester => $results->valid('semester')});
 	}
 	return $error if $error;
@@ -890,7 +891,7 @@ sub checkout {
 		}
 		$checkoutid = $self->tomebook_checkout({tomebook => $id, borrower => $patron_info->{id}, semester => $results->valid('semester'), reservation => $reservation, uid => $self->param('user_info')->{id}, library => $results->valid('library') });
 	}
-	
+
 	if($results->valid('comments')) {
 		$self->update_checkout_comments({id => $checkoutid, comments => $results->valid('comments')});
 	}
@@ -928,9 +929,9 @@ sub updatecheckoutcomments {
 
 	my $id = $q->param('id');
 	my $tomebook = $q->param('tomebook');
-	
+
 	$self->update_checkout_comments({id => $id, comments => $q->param('comments')});
-	
+
 	$self->header_type('redirect');
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$tomebook");
 	return;
@@ -984,7 +985,7 @@ sub tomebookinfo {
 
 	my $id = $q->param('id');
 	my $info;
-	
+
 	eval { $info = $self->tomebook_info_deprecated({ id => $id }); };
 
 	if($@ || !$info->{isbn}) {
@@ -1013,21 +1014,21 @@ sub management {
 		unless(($self->query->param('id') == $self->session->param('id')) or $self->param('user_info')->{admin}) {
 			return $self->error({ message => 'You do not have permissions to update that user', extended => $self->session->param('id') . ' tried to update ' . $self->query->param('id') });
 		}
-		
+
 		my %update = (
 			id		=> $self->query->param('id'),
 			username	=> $self->query->param('username'),
 			email		=> $self->query->param('email'),
 			notifications	=> $self->query->param('notifications') ? 'true' : 'false',
 		);
-		
+
 		if($self->param('user_info')->{admin}) {
 			$update{admin} = $self->query->param('admin') ? 'true' : 'false',
 			$update{disabled} = $self->query->param('disabled') ? 'true' : 'false',
 			my @libraries = $self->query->param('libraries');
 			$self->library_access({ user => $self->query->param('id'), libraries => \@libraries });
 		}
-		
+
 		if($self->query->param('password1')) {
 			if($self->query->param('password1') ne $self->query->param('password2')) {
 				return $self->error({ message => 'The two passwords do not match' });
@@ -1035,12 +1036,12 @@ sub management {
 				$update{password} = unix_md5_crypt($self->query->param('password1'));
 			}
 		}
-	
+
 		$self->user_update({ %update });
 		$self->param('user_info', $self->user_info({ id => $self->session->param('id') }));
 		$update = 1;
 	}
-	
+
 	my $users;
 	if($self->param('user_info')->{admin}) {
 		$users = $self->user_info;
@@ -1157,7 +1158,7 @@ sub sessionsemester {
 			$self->session->param('currsemester', $sessionsemester);
 		}
 	}
-	
+
 	$self->header_type('redirect');
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
 	return;
@@ -1170,7 +1171,7 @@ sub isbnview {
     my $errs = shift;
 
     my $q = $self->query;
-    
+
 
     my $semester;
     if ($q->param('semester')) {
@@ -1186,7 +1187,7 @@ sub isbnview {
     my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
     my @from_libraries = keys %{$library_access};
 
-    return $self->template({file => 'isbnview.html', 
+    return $self->template({file => 'isbnview.html',
         vars => {
             isbn => $q->param('isbn'),
             libraries_from => \@from_libraries,
@@ -1206,7 +1207,7 @@ sub isbnview_to_libraries {
     my $from_library = shift;
 
     my $q = $self->query;
-    
+
     my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
 
     # to_libraries refers to libraries that the
@@ -1261,7 +1262,7 @@ foo
     my $self = shift;
 
     my $q = $self->query();
-    
+
 
     my $results = $self->check_rm('isbnview', {
             required		=> [qw(
@@ -1288,12 +1289,12 @@ foo
         patron => $self->patron_info({
             email => $q->param('patron')})->{id},
         comment => $q->param('comment')?$q->param('comment'):"",
-        library_from => $q->param('library_to'), 
-        library_to => $q->param('library_from'),
-        semester => $q->param('semester'), 
+        library_from => $q->param('library_from'),
+        library_to => $q->param('library_to'),
+        semester => $q->param('semester'),
     });
-    
-    return $self->forward($self->query->param('patronview'));
+
+    return $self->forward('patronview');
 }
 #}}}
 
@@ -1313,8 +1314,8 @@ sub ajax_libraries_selection_list {
 
     my $semester = $self->query->param('semester');
     my $library_from = $self->query->param('library_from');
-    
-    return $self->template({file => 'blocks/libraries_selection.html', 
+
+    return $self->template({file => 'blocks/libraries_selection.html',
         vars => {
             semester => $semester,
             libraries => $self->isbnview_to_libraries($semester, $library_from),

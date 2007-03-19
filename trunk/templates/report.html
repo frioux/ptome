@@ -3,7 +3,7 @@
 <input type="hidden" name="rm" value="report">
 <table border="1" cellpadding="5">
 [% PROCESS blocks/librariesbox.html name='library' libraries=tome.libraries %]
-[% PROCESS blocks/semestersbox.html %]
+<tr><td>Semester</td><td>[% PROCESS blocks/semestersbox.html %]</td></tr>
 <tr><td colspan="2" align="center"><input type="submit" value="Generate Report"></td></tr>
 </table>
 </form>
@@ -54,7 +54,7 @@
 </tr>
 [% END %]
 </table>
-<h3>Books due back</h3>
+<h3>TOME Books due back</h3>
 <table border="1">
 <tr>
 	<td>
@@ -101,7 +101,7 @@
 </tr>
 [% END %]
 </table>
-<h3>Books expiring</h3>
+<h3>TOME Books expiring</h3>
 <table border="1">
 <tr>
 	<td>

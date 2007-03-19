@@ -60,7 +60,7 @@ the relative location of the cgi stuff
 
 unsure
 
-=item templatepath 
+=item templatepath
 
 the relative location of the templates
 
@@ -166,12 +166,12 @@ sub error_runmode {
 	my $self = shift;
 
 	my $error = shift;
-	
+
 	my $debug = $error . "\n\nTime: " . localtime(time);
 	if(ref $self) { # Make sure we really have an object here
 		$debug = $error . "\n\nUser: " . $self->param('user_info')->{username} . "\n\n" . $self->dump();
 	}
-	
+
 	$self->sendmail({
 		To	=> $TOME::CONFIG{adminemail},
 		Subject	=> 'Unknown TOME Error',
@@ -210,9 +210,9 @@ the details of the error message
 sub error {
 	my $self = shift;
 	my $params = shift;
-	
+
 	warn "$params->{message}" . ($params->{extended} ? " - $params->{extended}" : '');
-	
+
 	my $output;
 	eval {
 		$output = $self->template({ file => 'error.html', vars => { message => $params->{message}, extended => $params->{extended} }});
@@ -225,9 +225,9 @@ sub error {
 }
 #}}}
 
-#{{{isbn_search 
+#{{{isbn_search
 
-=head2 isbn_search 
+=head2 isbn_search
 
 This returns an array of found isbns.
 
@@ -276,7 +276,7 @@ sub isbn_search {
         unless(@likecolumns) {
             return ();
         }
-	
+
 	foreach(@likecolumns) {
 		push @conditions, "$_ ILIKE '%' || ? || '%'";
 	}
@@ -284,21 +284,21 @@ sub isbn_search {
 	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . ' ORDER BY isbn';
 
 	my $sth = $dbh->prepare($statement);
-	
+
 	$sth->execute(@values);
-	
+
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
 	}
-	
+
 	return @results;
 }
 #}}}
 
-#{{{tomebook_availability_search 
+#{{{tomebook_availability_search
 
-=head2 tomebook_availability_search 
+=head2 tomebook_availability_search
 
 Returns the number of TOME books available given certain conditions
 
@@ -352,8 +352,8 @@ sub tomebook_availability_search {
 	} elsif($params{status} eq 'can_reserve') {
 		my @library_reservations;
 		foreach(@{$params{libraries}}) {
-			push @library_reservations, 'tomebooks_available_to_reserve(?, ?, ?)';
-			push @bind, ($params{isbn}, $_, $params{semester});
+			push @library_reservations, 'tomebooks_available_to_reserve(?, ?, ?) - tomebooks_reserved(?, ?, ?)';
+			push @bind, (($params{isbn}, $_, $params{semester}) x 2);
 		}
 		$sql = 'SELECT ' . join(' + ', @library_reservations);
 	} else {
@@ -362,14 +362,14 @@ sub tomebook_availability_search {
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
-	
+
 	return ($sth->fetchrow_array)[0];
 }
 #}}}
 
-#{{{expire_search 
+#{{{expire_search
 
-=head2 expire_search 
+=head2 expire_search
 
 This function returns a list of books that will expire on the given semester with the given libraries.
 
@@ -411,9 +411,9 @@ sub expire_search {
 }
 #}}}
 
-#{{{reservation_info 
+#{{{reservation_info
 
-=head2 reservation_info 
+=head2 reservation_info
 
 This function returns an array of hashrefs about a reservations given an ID.
 
@@ -485,7 +485,7 @@ sub reservation_info {
 	});
 
 	my ($sql, @bind) = sql_interp('SELECT id, isbn, uid, patron, reserved, fulfilled, comment, library_from, library_to, library_from, semester FROM reservations WHERE', { id => $params{id} });
-	
+
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
@@ -530,7 +530,7 @@ sub reservation_fulfill {
 	my %params = validate(@_, {
 		reservation_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});			
+	});
 
 	$self->dbh->begin_work;
         $self->dbh->do('LOCK TABLE reservations, checkouts');
@@ -546,7 +546,7 @@ sub reservation_fulfill {
         $self->dbh->do($sql, undef, @bind);
 
 	$self->dbh->commit;
-	
+
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
 	return $id;
 }
@@ -606,7 +606,7 @@ sub reservation_create {
 		library_from	=> { type => SCALAR, regex => qr/^\d+$/ },
 		library_to	=> { type => SCALAR, regex => qr/^\d+$/ },
 		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});			
+	});
 
 	my ($sql, @bind) = sql_interp('INSERT INTO reservations', \%params);
 
@@ -614,16 +614,16 @@ sub reservation_create {
         warn join(',', @bind);
 
 	$self->dbh->do($sql, undef, @bind);
-	
+
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.reservations_id_seq')");
 	return $id;
 }
 
 #}}}
 
-#{{{reservation_search 
+#{{{reservation_search
 
-=head2 reservation_search 
+=head2 reservation_search
 
 This function returns an array of reservation ids matching search criteria
 
@@ -669,7 +669,7 @@ sub reservation_search {
 	unless(%params) {
 		return ();
 	}
-	
+
 	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', \%params);
         warn $sql;
         warn join(',', @bind);
@@ -685,9 +685,9 @@ sub reservation_search {
 }
 #}}}
 
-#{{{dueback_search 
+#{{{dueback_search
 
-=head2 dueback_search 
+=head2 dueback_search
 
 This function returns a list of books that are due back at the given semester from the given libraries.
 
@@ -729,9 +729,9 @@ sub dueback_search {
 }
 #}}}
 
-#{{{add_book 
+#{{{add_book
 
-=head2 add_book 
+=head2 add_book
 
 This function is used to add a book to TOME.  This is not for adding a real book, but for adding a book type.  Like adding a Class, not an Object.
 
@@ -778,9 +778,9 @@ sub add_book {
 }
 #}}}
 
-#{{{add_class 
+#{{{add_class
 
-=head2 add_class 
+=head2 add_class
 
 This function adds a class to TOME.
 
@@ -814,9 +814,9 @@ sub add_class {
 }
 #}}}
 
-#{{{patrons_search 
+#{{{patrons_search
 
-=head2 patrons_search 
+=head2 patrons_search
 
 This function finds patrons.
 
@@ -880,21 +880,21 @@ sub patrons_search {
 	my $statement = 'SELECT id, name, email FROM patrons WHERE ' . join(' OR ', @conditions) . " ORDER BY email ASC";
 
 	my $sth = $dbh->prepare($statement);
-	
+
 	$sth->execute(@values);
-	
+
 	my @results;
 	while(my $result = $sth->fetchrow_hashref) {
 		push @results, $result;
 	}
-	
+
 	return @results;
 }
 #}}}
 
-#{{{patron_add 
+#{{{patron_add
 
-=head2 patron_add 
+=head2 patron_add
 
 This function adds a patron to the database.
 
@@ -928,9 +928,9 @@ sub patron_add {
 }
 #}}}
 
-#{{{patron_update 
+#{{{patron_update
 
-=head2 patron_update 
+=head2 patron_update
 
 This function changes the patron at a given id.
 
@@ -969,9 +969,9 @@ sub patron_update {
 }
 #}}}
 
-#{{{patron_info 
+#{{{patron_info
 
-=head2 patron_info 
+=head2 patron_info
 
 This function returns information about patrons matching certain critereon.
 
@@ -993,7 +993,7 @@ The exact id to find
 
 sub patron_info {
 	my $self = shift;
-	
+
 	my %params = validate(@_, {
 		email	=> { type => SCALAR, optional => 1 },
 		id	=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
@@ -1014,9 +1014,9 @@ sub patron_info {
 }
 #}}}
 
-#{{{books_search 
+#{{{books_search
 
-=head2 books_search 
+=head2 books_search
 
 This function returns an array of books that match a number of critereon.
 
@@ -1055,25 +1055,25 @@ sub books_search {
 		push @conditions, "isbn ILIKE ? || '%'";
 		push @values, $params{isbn};
 	}
-	
+
 	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . " ORDER BY isbn ASC";
 
 	my $sth = $dbh->prepare($statement);
-	
+
 	$sth->execute(@values);
-	
+
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
 	}
-	
+
 	return @results;
 }
 #}}}
 
-#{{{book_exists 
+#{{{book_exists
 
-=head2 book_exists 
+=head2 book_exists
 
 foo
 
@@ -1098,9 +1098,9 @@ sub book_exists {
 }
 #}}}
 
-#{{{book_classes 
+#{{{book_classes
 
-=head2 book_classes 
+=head2 book_classes
 
 foo
 
@@ -1127,9 +1127,9 @@ sub book_classes {
 }
 #}}}
 
-#{{{add_tomebook 
+#{{{add_tomebook
 
-=head2 add_tomebook 
+=head2 add_tomebook
 
 foo
 
@@ -1167,9 +1167,9 @@ sub add_tomebook {
 }
 #}}}
 
-#{{{classbook_add 
+#{{{classbook_add
 
-=head2 classbook_add 
+=head2 classbook_add
 
 foo
 
@@ -1192,9 +1192,9 @@ sub classbook_add {
 }
 #}}}
 
-#{{{tomebook_info 
+#{{{tomebook_info
 
-=head2 tomebook_info 
+=head2 tomebook_info
 
 Takes an argument in the form of a hash:
 
@@ -1256,9 +1256,9 @@ sub tomebook_info {
 }
 #}}}
 
-#{{{tomebook_info_deprecated 
+#{{{tomebook_info_deprecated
 
-=head2 tomebook_info_deprecated 
+=head2 tomebook_info_deprecated
 
 foo
 
@@ -1287,9 +1287,9 @@ sub tomebook_info_deprecated {
 }
 #}}}
 
-#{{{tome_stats 
+#{{{tome_stats
 
-=head2 tome_stats 
+=head2 tome_stats
 
 foo
 
@@ -1333,9 +1333,9 @@ sub tome_stats {
 }
 #}}}
 
-#{{{book_update 
+#{{{book_update
 
-=head2 book_update 
+=head2 book_update
 
 foo
 
@@ -1356,9 +1356,9 @@ sub book_update {
 }
 #}}}
 
-#{{{tomebook_update 
+#{{{tomebook_update
 
-=head2 tomebook_update 
+=head2 tomebook_update
 
 foo
 
@@ -1386,9 +1386,9 @@ sub tomebook_update {
 }
 #}}}
 
-#{{{patron_checkouts 
+#{{{patron_checkouts
 
-=head2 patron_checkouts 
+=head2 patron_checkouts
 
 foo
 
@@ -1425,9 +1425,9 @@ sub patron_checkouts {
 }
 #}}}
 
-#{{{patron_classes 
+#{{{patron_classes
 
-=head2 patron_classes 
+=head2 patron_classes
 
 This function finds the classes associated with a patron for a given semester.
 
@@ -1475,7 +1475,7 @@ sub patron_classes {
 
 #}}}
 
-#{{{patron_add_class 
+#{{{patron_add_class
 
 =head2 patron_add_class
 
@@ -1569,9 +1569,9 @@ sub patron_delete_class {
 
 #}}}
 
-#{{{checkout_search 
+#{{{checkout_search
 
-=head2 checkout_search 
+=head2 checkout_search
 
 This function returns an array of checkout ids matching search criteria
 
@@ -1654,7 +1654,7 @@ sub checkout_search {
 	}
 
 	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
-	
+
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 	my @results;
@@ -1665,9 +1665,9 @@ sub checkout_search {
 }
 #}}}
 
-#{{{checkout_info 
+#{{{checkout_info
 
-=head2 checkout_info 
+=head2 checkout_info
 
 Returns info about a checkout, given an id.
 
@@ -1735,7 +1735,7 @@ sub checkout_info {
 	my $dbh = $self->dbh;
 
 	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{id} });
-	
+
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
@@ -1752,9 +1752,9 @@ sub checkout_info {
 
 #}}}
 
-#{{{checkout_history 
+#{{{checkout_history
 
-=head2 checkout_history 
+=head2 checkout_history
 
 foo
 
@@ -1785,9 +1785,9 @@ sub checkout_history {
 }
 #}}}
 
-#{{{find_orphans 
+#{{{find_orphans
 
-=head2 find_orphans 
+=head2 find_orphans
 
 foo
 
@@ -1814,9 +1814,9 @@ sub find_orphans {
 }
 #}}}
 
-#{{{find_useless 
+#{{{find_useless
 
-=head2 find_useless 
+=head2 find_useless
 
 foo
 
@@ -1824,7 +1824,7 @@ foo
 
 sub find_useless {
 	my $self = shift;
-	
+
 	my %params = validate(@_, {
 		libraries       => { type => ARRAYREF },
 	});
@@ -1844,9 +1844,9 @@ sub find_useless {
 }
 #}}}
 
-#{{{tomebook_checkout 
+#{{{tomebook_checkout
 
-=head2 tomebook_checkout 
+=head2 tomebook_checkout
 
 foo
 
@@ -1862,19 +1862,19 @@ sub tomebook_checkout {
 		reservation	=> { type => SCALAR, regex => qr/^true|false$/ },
 		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
 		library		=> { type => SCALAR, regex => qr/^\d+$/ },
-	});			
+	});
 
 	my ($sql, @bind) = sql_interp('INSERT INTO checkouts', \%params);
 	$self->dbh->do($sql, undef, @bind);
-	
+
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
 	return $id;
 }
 #}}}
 
-#{{{tomebook_can_checkout 
+#{{{tomebook_can_checkout
 
-=head2 tomebook_can_checkout 
+=head2 tomebook_can_checkout
 
 foo
 
@@ -1902,9 +1902,9 @@ sub tomebook_can_checkout {
 }
 #}}}
 
-#{{{tomebook_can_reserve 
+#{{{tomebook_can_reserve
 
-=head2 tomebook_can_reserve 
+=head2 tomebook_can_reserve
 
 foo
 
@@ -1932,9 +1932,9 @@ sub tomebook_can_reserve {
 }
 #}}}
 
-#{{{tomebook_cancel_checkout 
+#{{{tomebook_cancel_checkout
 
-=head2 tomebook_cancel_checkout 
+=head2 tomebook_cancel_checkout
 
 foo
 
@@ -1953,9 +1953,9 @@ sub tomebook_cancel_checkout {
 }
 #}}}
 
-#{{{tomebook_checkin 
+#{{{tomebook_checkin
 
-=head2 tomebook_checkin 
+=head2 tomebook_checkin
 
 This function checks in a TOME book.  Nothing is returned.  Arguments are a hashref:
 
@@ -1982,9 +1982,9 @@ sub tomebook_checkin {
 }
 #}}}
 
-#{{{tomebook_remove 
+#{{{tomebook_remove
 
-=head2 tomebook_remove 
+=head2 tomebook_remove
 
 foo
 
@@ -2008,9 +2008,9 @@ sub tomebook_remove {
 }
 #}}}
 
-#{{{update_checkout_comments 
+#{{{update_checkout_comments
 
-=head2 update_checkout_comments 
+=head2 update_checkout_comments
 
 foo
 
@@ -2030,14 +2030,14 @@ sub update_checkout_comments {
 }
 #}}}
 
-#{{{book_info 
+#{{{book_info
 
-=head2 book_info 
+=head2 book_info
 
 Takes a hash as an argument:
 
 =over
- 
+
 =item isbn
 
 isbn of book
@@ -2047,7 +2047,7 @@ isbn of book
 returns a hash:
 
 =over
- 
+
 =item isbn
 
 isbn of book
@@ -2083,9 +2083,9 @@ sub book_info {
 }
 #}}}
 
-#{{{class_search 
+#{{{class_search
 
-=head2 class_search 
+=head2 class_search
 
 This function can return either a complete listing of classes IDs or a list based on search criteria.  A match only has to satisfy one of the paramters specified to be returned.  In other words, the search criteria use OR instead of AND.
 
@@ -2109,7 +2109,7 @@ This function returns an array of class IDs.
 
 sub class_search {
 	my $self = shift;
-	
+
 	my %params = validate(@_, {
 		id	=> { type => SCALAR, optional => 1 },
 		name	=> { type => SCALAR, optional => 1 },
@@ -2124,25 +2124,25 @@ sub class_search {
 			push @values, $params{$_};
 		}
 	}
-	
+
 	my $statement = 'SELECT id FROM classes ' . (@conditions ? 'WHERE ' . join(' OR ', @conditions) : '') . ' ORDER BY id ASC';
 
 	my $sth = $self->dbh->prepare($statement);
-	
+
 	$sth->execute(@values);
-	
+
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
 	}
-	
+
 	return @results;
 }
 #}}}
 
-#{{{class_list 
+#{{{class_list
 
-=head2 class_list 
+=head2 class_list
 
 foo
 
@@ -2164,9 +2164,9 @@ sub class_list {
 }
 #}}}
 
-#{{{class_info 
+#{{{class_info
 
-=head2 class_info 
+=head2 class_info
 
 This method returns information about class
 
@@ -2219,9 +2219,9 @@ sub class_info {
 }
 #}}}
 
-#{{{class_books 
+#{{{class_books
 
-=head2 class_books 
+=head2 class_books
 
 This method returns books associated with a class
 
@@ -2283,9 +2283,9 @@ sub class_books {
 }
 #}}}
 
-#{{{class_update_verified 
+#{{{class_update_verified
 
-=head2 class_update_verified 
+=head2 class_update_verified
 
 This method upates information about a class
 
@@ -2363,9 +2363,9 @@ sub class_info_deprecated {
 
 #}}}
 
-#{{{class_update_comments 
+#{{{class_update_comments
 
-=head2 class_update_comments 
+=head2 class_update_comments
 
 foo
 
@@ -2385,9 +2385,9 @@ sub class_update_comments {
 }
 #}}}
 
-#{{{classbook_update 
+#{{{classbook_update
 
-=head2 classbook_update 
+=head2 classbook_update
 
 foo
 
@@ -2411,9 +2411,9 @@ sub classbook_update {
 }
 #}}}
 
-#{{{class_delete 
+#{{{class_delete
 
-=head2 class_delete 
+=head2 class_delete
 
 foo
 
@@ -2421,7 +2421,7 @@ foo
 
 sub class_delete {
 	my $self = shift;
-	
+
 	my %params = validate(@_, {
 		id	=> { type => SCALAR, regex => qr/^\w+$/ },
 	});
@@ -2433,9 +2433,9 @@ sub class_delete {
 }
 #}}}
 
-#{{{class_delete_book 
+#{{{class_delete_book
 
-=head2 class_delete_book 
+=head2 class_delete_book
 
 foo
 
@@ -2455,9 +2455,9 @@ sub class_delete_book {
 }
 #}}}
 
-#{{{user_info 
+#{{{user_info
 
-=head2 user_info 
+=head2 user_info
 
 foo
 
@@ -2493,9 +2493,9 @@ sub user_info {
 }
 #}}}
 
-#{{{user_add 
+#{{{user_add
 
-=head2 user_add 
+=head2 user_add
 
 foo
 
@@ -2518,9 +2518,9 @@ sub user_add {
 }
 #}}}
 
-#{{{user_update 
+#{{{user_update
 
-=head2 user_update 
+=head2 user_update
 
 This method updates a user (not a patron).
 
@@ -2587,9 +2587,9 @@ sub user_update {
 }
 #}}}
 
-#{{{semester_info 
+#{{{semester_info
 
-=head2 semester_info 
+=head2 semester_info
 
 foo
 
@@ -2597,7 +2597,7 @@ foo
 
 sub semester_info {
 	my $self = shift;
-	
+
 	my %params = validate(@_, {
 		current	=> { type => SCALAR, regex => qr/^true|false$/, default => 'false' },
 	});
@@ -2619,9 +2619,9 @@ sub semester_info {
 }
 #}}}
 
-#{{{semester_set 
+#{{{semester_set
 
-=head2 semester_set 
+=head2 semester_set
 
 foo
 
@@ -2644,9 +2644,9 @@ sub semester_set {
 }
 #}}}
 
-#{{{semester_add 
+#{{{semester_add
 
-=head2 semester_add 
+=head2 semester_add
 
 foo
 
@@ -2668,7 +2668,7 @@ sub semester_add {
 #}}}
 
 #{{{ library_update
-=head2 library_update 
+=head2 library_update
 
 This method updates a library.
 
@@ -2710,9 +2710,9 @@ sub library_update {
 
 #}}}
 
-#{{{library_add 
+#{{{library_add
 
-=head2 library_add 
+=head2 library_add
 
 foo
 
@@ -2730,9 +2730,9 @@ sub library_add {
 }
 #}}}
 
-#{{{library_info 
+#{{{library_info
 
-=head2 library_info 
+=head2 library_info
 
 Returns information about the libraries in the system.  If a Library ID is given, then a hashref containing the id, name, and InterTOME status (true or false) of that particular library will be returned.  If no id is given, then an arrayref containing hashrefs about every library in the system will be returned.
 
@@ -2774,9 +2774,9 @@ sub library_info {
 }
 #}}}
 
-#{{{library_users 
+#{{{library_users
 
-=head2 library_users 
+=head2 library_users
 
 foo
 
@@ -2801,9 +2801,9 @@ sub library_users {
 }
 #}}}
 
-#{{{library_access 
+#{{{library_access
 
-=head2 library_access 
+=head2 library_access
 
 This function returns the libraries that a user has access to and can also be used to modify the list of libraries the user has access to.  Arguments are as a hashref:
 
@@ -2837,7 +2837,7 @@ sub library_access {
 
 	my $sth = $self->dbh->prepare($sql);
 	$sth->execute(@bind);
-	
+
 	my @results;
 	while(my @result = $sth->fetchrow_array) {
 		push @results, $result[0];
@@ -2867,9 +2867,9 @@ sub library_access {
 }
 #}}}
 
-#{{{template 
+#{{{template
 
-=head2 template 
+=head2 template
 
 foo
 
@@ -2908,9 +2908,9 @@ sub template {
 }
 #}}}
 
-#{{{sendmail 
+#{{{sendmail
 
-=head2 sendmail 
+=head2 sendmail
 
 foo
 
@@ -2941,9 +2941,9 @@ sub sendmail {
 }
 #}}}
 
-#{{{_quote_like 
+#{{{_quote_like
 
-=head2 _quote_like 
+=head2 _quote_like
 
 foo
 

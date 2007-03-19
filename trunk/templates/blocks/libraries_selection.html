@@ -11,7 +11,7 @@ that have books as `libraries'
 
 [%# This little hack doesn't even give you an option if there are no books %]
 [% UNLESS libraries.first.available %]
-    <td colspan="2">There are no books available with this ISBN.  Sorry.</td>
+    <td colspan="2">There are no books available for the options you have selected.  Sorry.</td>
 [% ELSE %]
     <td>
     <input type="submit" value="Create Reservation to Library:" id="submit"/></td><td><select name="library_to" id="library_to">
@@ -23,7 +23,7 @@ that have books as `libraries'
                 [% LAST %]
             [% END %]
         [% END %]
-            
+
             [% FOREACH library = libraries.nsort('available').reverse %]
                 [% library_info = tome.library_info(library.id) %]
                 [% IF library_info.intertome %]
