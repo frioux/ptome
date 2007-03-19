@@ -1,4 +1,4 @@
-[%# Takes name, and libraries as an argument %]
+[%# Takes name and libraries as an argument %]
 <tr><td>Libraries</td><td><select name="[% name | html %]" size="5" multiple="multiple">
 [% FOREACH library = libraries %]
 <option value="[% library.id | html %]" [% IF libraries_selected.grep("^${library.id}\$").size == 1 %]selected="selected"[% END %]>[% library.name | html %]</option>
