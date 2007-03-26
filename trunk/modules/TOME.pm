@@ -663,16 +663,20 @@ sub reservation_search {
 		library_to	=> { type => ARRAYREF, optional => 1 },
 		library_from	=> { type => ARRAYREF, optional => 1 },
 		patron		=> { type => SCALAR, regex => qr/^\d+$/, optional => 1 },
+                all             => { type => SCALAR, regex => qr/^true|false$/, default => 'false' },
 	});
 
-	# If we aren't given anything to do, don't do anything
-	unless(%params) {
-		return ();
-	}
+        my %conditions;
+        foreach(qw(semester library_to library_from patron)) {
+		if(defined($params{$_})) {
+                  $conditions{$_} = $params{$_};
+                }
+        }
 
-	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', \%params);
-        warn $sql;
-        warn join(',', @bind);
+	# If we aren't given anything to do, don't do anything
+	return unless(%conditions);
+
+	my ($sql, @bind) = sql_interp('SELECT id FROM reservations WHERE', \%conditions, $params{all} eq 'false' ? 'AND fulfilled IS NULL' : '');
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1386,45 +1390,6 @@ sub tomebook_update {
 }
 #}}}
 
-#{{{patron_checkouts
-
-=head2 patron_checkouts
-
-foo
-
-=cut
-
-sub patron_checkouts {
-	my $self = shift;
-
-	my %params = validate(@_, {
-		patron	=> { type => SCALAR, regex => qr/^\d+$/ },
-		type	=> { type => SCALAR, regex => qr/^(reserved|checkedout|all)$/, default => 'checkedout' },
-	});
-
-	my $dbh = $self->dbh;
-
-	my ($sql, @bind);
-	if($params{type} eq 'checkedout') {
-		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE reservation = false AND checkin IS NULL AND', { borrower => $params{patron} }, 'ORDER BY checkout');
-	} elsif($params{type} eq 'reserved') {
-		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE reservation = true AND checkin IS NULL AND', { borrower => $params{patron} }, 'ORDER BY checkout');
-	} else {
-		($sql, @bind) = sql_interp('SELECT id FROM checkouts WHERE', { borrower => $params{patron} }, 'ORDER BY checkout');
-	}
-
-	my $sth = $dbh->prepare($sql);
-	$sth->execute(@bind);
-
-	my @results;
-	while(my @result = $sth->fetchrow_array()) {
-		push @results, $result[0];
-	}
-
-	return \@results;
-}
-#}}}
-
 #{{{patron_classes
 
 =head2 patron_classes
@@ -1622,10 +1587,14 @@ sub checkout_search {
 	});
 
 	my @conditions;
-	foreach (qw(semester patron tomebook)) {
+	foreach (qw(semester tomebook)) {
 		if($params{$_}) {
 			push @conditions, { 'checkouts.' . $_ => $params{$_} };
 		}
+	}
+
+	if($params{patron}) {
+		push @conditions, { 'checkouts.borrower' => $params{patron} };
 	}
 
 	if($params{library_from}) {
@@ -1653,7 +1622,13 @@ sub checkout_search {
 		die 'An unknown status was selected';
 	}
 
+        # Note that the unary + must be here to make sure Perl interprets the {} as a block
+        @conditions = map {+"AND", $_} @conditions;
+
 	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
+
+        warn $sql;
+        warn join(',',@bind);
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1756,7 +1731,7 @@ sub checkout_info {
 
 =head2 checkout_history
 
-foo
+slated for deletion
 
 =cut
 

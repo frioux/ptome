@@ -33,7 +33,7 @@
 [% reservation_info = tome.reservation_info(reservation_id) %]
 [% patron = tome.patron_info(reservation_info.patron) %]
 [% semester = semestershash.${reservation_info.semester}.name %]
-[% IF semester < semester_selected %]
+[% IF reservation_info.semester < CGI.param(semester) %]
 <tr bgcolor="pink">
 [% ELSE %]
 <tr>
@@ -49,8 +49,11 @@
 		[% reservation_info.comments %]
 	</td>
 	<td>
-		[% semester.name %]
+		[% semester %]
 	</td>
+        <td>
+                Spiffy button
+        </td>
 </tr>
 [% END %]
 </table>
@@ -73,30 +76,29 @@
 		Semester
 	</td>
 </tr>
-[% FOREACH book = dueback %]
-[% IF book.semester == semester_selected - 1%]
+[% FOREACH checkout_id = tome_dueback %]
+[% checkout_info = tome.checkout_info(checkout_id) %]
+[% semester = semestershash.${checkout_info.semester}.name %]
+[% patron = tome.patron_info(checkout_info.patron) %]
+[% IF checkout_info.semester == CGI.param(semester) - 1%]
 <tr bgcolor="pink">
-[% ELSIF book.semester < semester_selected - 1 %]
+[% ELSIF checkout_info.semester < CGI.param(semester) - 1 %]
 <tr bgcolor="red">
 [% ELSE %]
 <tr>
 [% END %]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
+	</td>
+        <td>[% INCLUDE blocks/book.html isbn=checkout_info.isbn %]</td>
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
 	<td>
-		<b>Title:</b> [% book.tomebookinfo.title %]<br />
-		<b>Author:</b> [% book.tomebookinfo.author %]<br />
-		<b>Edition:</b> [% book.tomebookinfo.edition %]
+		[% checkout_info.comments %]
 	</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.borrower | html | uri %]">[% book.borrower_name | html %]</a> ([% book.borrower_email | html %])
-	</td>
-	<td>
-		[% book.comments %]
-	</td>
-	<td>
-		[% semestershash.${book.semester}.name %]
+		[% semester.name %]
 	</td>
 </tr>
 [% END %]

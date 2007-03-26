@@ -18,16 +18,16 @@ sub patron_info {
 	return $self->{tome}->patron_info({ id => $id });
 }
 
-sub patron_checkouts_checkedout {
+sub patron_checkouts {
 	my $self = shift;
 	my $patron = shift;
-	return $self->{tome}->patron_checkouts({ patron => $patron, type => 'checkedout' });
+	return $self->{tome}->checkout_search({ patron => $patron, status => 'checked_out' });
 }
 
-sub patron_checkouts_reserved {
+sub patron_reservations {
 	my $self = shift;
 	my $patron = shift;
-	return $self->{tome}->patron_checkouts({ patron => $patron, type => 'reserved' });
+	return $self->{tome}->reservation_search({ patron => $patron });
 }
 
 sub checkout_info {

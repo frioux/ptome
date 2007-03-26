@@ -12,11 +12,31 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 
 <h2>Books Reserved</h2>
 <table>
+[% reservations = tome.patron_reservations(patron) %]
 [% FOREACH reservation = reservations %]
+[% reservation_info = tome.reservation_info(reservation) %]
+<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' reservation=reservation %]</td></tr>
+[% END %]
+</table>
+<h2>Books Checked Out</h2>
+<table>
+[% checkouts = tome.patron_checkouts(patron) %]
+[% FOREACH checkout = checkouts %]
 <tr><td>[% PROCESS 'blocks/book.html' isbn=reservation.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' reservation=reservation %]</td></tr>
 [% END %]
 </table>
+<form name='books_donated'>
+<h2>[% prototype.link_to_remote( "+ Books Donated", {
 
-<h2>Books Checked Out</h2>
-<table>
-</table>
+  update=>'books_donated_table',
+  url => url,
+  #with => "'rm=ajax_books_donated_list&patronid='" + patron,
+  #loading => 'document.books_donated.books_donated_label.value="Loading..."',
+  #loaded => 'document.books_donated.books_donated_lable.value="-Books Donated",
+
+}) %]</h2>
+<div id='books_donated_table'>
+<table/>
+</div>
+</form>
+
