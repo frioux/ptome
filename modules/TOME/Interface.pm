@@ -493,20 +493,17 @@ sub report {
 
     my $q = $self->query;
 
-    # DEBUG CODE
-    foreach($self->reservation_search({
-                semester            => $self->_semesterselecteddefault(),
-                library_to          => $self->_librariesselecteddefault(),
-                library_from        => $self->_librariesselecteddefault(),
-            })) {
-            warn keys %$_;
-    }
-
     return $self->template({ file => 'report.html', vars => {
         tome_reservations       => [ $self->reservation_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
                 library_from        => $self->_librariesselecteddefault(),
+            }) ],
+        tome_dueback            => [ $self->checkout_search({
+                semester            => $self->_semesterselecteddefault(),
+                library_to          => $self->_librariesselecteddefault(),
+                library_from        => $self->_librariesselecteddefault(),
+                status              => 'checked_out',
             }) ],
         libraries_selected  => $self->_librariesselecteddefault(),
     }});
@@ -1308,6 +1305,24 @@ sub _libraryaccesshash {
 #}}}
 
 #{{{ajax_libaries_selection_list
+
+sub ajax_libraries_selection_list {
+    my $self = shift;
+
+    my $semester = $self->query->param('semester');
+    my $library_from = $self->query->param('library_from');
+
+    return $self->template({file => 'blocks/libraries_selection.html',
+        vars => {
+            semester => $semester,
+            libraries => $self->isbnview_to_libraries($semester, $library_from),
+        }, plain => 1,
+    });
+}
+
+#}}}
+
+#{{{ajax_linbaries_selection_list
 
 sub ajax_libraries_selection_list {
     my $self = shift;
