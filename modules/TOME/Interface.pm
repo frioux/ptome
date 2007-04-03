@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -506,6 +506,7 @@ sub report {
                 status              => 'checked_out',
             }) ],
         libraries_selected  => $self->_librariesselecteddefault(),
+        semester_selected   => $self->_semesterselecteddefault(),
     }});
 =over
 my $self = shift;
@@ -1217,7 +1218,7 @@ sub isbnview_to_libraries {
             if ($library->{intertome}) {
                 my $availability = {
                     id => $library->{id},
-                    available => $self->tomebook_availability_search({
+                    available => $self->tomebook_availability_search_amount({
                         isbn => $q->param('isbn'),
                         status => 'can_reserve',
                         semester => $semester,
@@ -1233,7 +1234,7 @@ sub isbnview_to_libraries {
      } else {
         push @to_libraries, {
             id => $from_library,
-            available => $self->tomebook_availability_search({
+            available => $self->tomebook_availability_search_amount({
                 isbn => $q->param('isbn'),
                 status => 'can_reserve',
                 semester => $semester,
@@ -1322,23 +1323,30 @@ sub ajax_libraries_selection_list {
 
 #}}}
 
-#{{{ajax_linbaries_selection_list
+#{{{ajax_books_donated_list
 
-sub ajax_libraries_selection_list {
+sub ajax_books_donated_list {
     my $self = shift;
 
-    my $semester = $self->query->param('semester');
-    my $library_from = $self->query->param('library_from');
+    my $patronid = $self->query->param('patronid');
 
-    return $self->template({file => 'blocks/libraries_selection.html',
+    return $self->template({file => 'blocks/books_donated.html',
         vars => {
-            semester => $semester,
-            libraries => $self->isbnview_to_libraries($semester, $library_from),
+            ids => $self->tomebook_availability_search({'patron'=>$patronid}),
         }, plain => 1,
     });
+
 }
 
 #}}}
+
+sub ajax_fill_reservation {
+  my $self = shift;
+
+  warn "llamas!";
+
+  return "llamas!";
+}
 
 #{{{_libraries
 

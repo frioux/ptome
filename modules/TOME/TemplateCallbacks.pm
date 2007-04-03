@@ -77,4 +77,14 @@ sub reservation_info {
     return $self->{tome}->reservation_info({ id => $reservation });
 }
 
+sub tomebooks_available_for_checkout {
+  my $self = shift;
+  my $isbn = shift;
+  my $library = shift;
+  my $semester = shift;
+
+  return $self->{tome}->tomebook_availability_search({ isbn => $isbn, libraries => [ $library ], semester => $semester, status => 'can_checkout' });
+}
+
+
 1;

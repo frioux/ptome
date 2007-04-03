@@ -300,6 +300,79 @@ sub isbn_search {
 
 =head2 tomebook_availability_search
 
+Returns a list of TOME books available given certain conditions
+
+It takes arguments in the form of a hash:
+
+=over
+
+=item isbn
+
+the isbn to look for
+
+=item status
+
+that status of the book (all, can_checkout, or in_collection).  Defaults to in_collection.
+
+=item semester
+
+the semester id to consider when status is can_checkout.  Defaults to the current semester
+
+=item libraries
+
+the libraries to look in for the book (Note: this is an array reference)
+
+=back
+
+=cut
+
+sub tomebook_availability_search {
+	my $self = shift;
+
+	my $dbh = $self->dbh;
+
+	my %params = validate(@_, {
+		isbn		=> { type => SCALAR },
+		status		=> { type => SCALAR, regex => qr/^all|can_checkout|in_collection$/, default => 'in_collection' },
+		semester	=> { type => SCALAR, default => $self->param('currsemester')->{id} },
+		libraries	=> { type => ARRAYREF },
+	});
+
+	# I've decided to require listing what libraries you want, if you give an empty list, no books can be found
+	unless(@{$params{libraries}}) {
+		return ();
+	}
+
+	my ($sql, @bind);
+
+	if($params{status} eq 'all') {
+		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}});
+	} elsif($params{status} eq 'in_collection') {
+		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
+	} elsif($params{status} eq 'can_checkout') {
+		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL AND id NOT IN (SELECT tomebook FROM checkouts WHERE', {semester => $params{semester}}, 'AND checkin IS NOT NULL)');
+	} else {
+		die 'Unknown status requested.';
+	}
+
+        warn $sql;
+        warn join(',',@bind);
+
+	my $sth = $dbh->prepare($sql);
+	$sth->execute(@bind);
+
+	my @results;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
+	}
+
+	return \@results;
+}
+#}}}
+#{{{tomebook_availability_search_amount
+
+=head2 tomebook_availability_search_amount
+
 Returns the number of TOME books available given certain conditions
 
 It takes arguments in the form of a hash:
@@ -326,7 +399,7 @@ the libraries to look in for the book (Note: this is an array reference)
 
 =cut
 
-sub tomebook_availability_search {
+sub tomebook_availability_search_amount {
 	my $self = shift;
 
 	my $dbh = $self->dbh;
@@ -484,7 +557,7 @@ sub reservation_info {
 		id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT id, isbn, uid, patron, reserved, fulfilled, comment, library_from, library_to, library_from, semester FROM reservations WHERE', { id => $params{id} });
+	my ($sql, @bind) = sql_interp('SELECT id, isbn, uid, patron, reserved, fulfilled, comment, library_from, library_to, semester FROM reservations WHERE', { id => $params{id} });
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);

@@ -64,6 +64,7 @@ cgi=cgi{
    autocomplete_isbn.html
    autocomplete_patron.html
    book.html
+   books_donated.html
    datetime.html
    libraries_selection.html
    librariesbox.html

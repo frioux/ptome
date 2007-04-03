@@ -33,7 +33,7 @@
 [% reservation_info = tome.reservation_info(reservation_id) %]
 [% patron = tome.patron_info(reservation_info.patron) %]
 [% semester = semestershash.${reservation_info.semester}.name %]
-[% IF reservation_info.semester < CGI.param(semester) %]
+[% IF reservation_info.semester < semester_selected %]
 <tr bgcolor="pink">
 [% ELSE %]
 <tr>
@@ -52,7 +52,7 @@
 		[% semester %]
 	</td>
         <td>
-                Spiffy button
+                [% INCLUDE blocks/reservation.html reservation=reservation_id %]
         </td>
 </tr>
 [% END %]
@@ -80,9 +80,9 @@
 [% checkout_info = tome.checkout_info(checkout_id) %]
 [% semester = semestershash.${checkout_info.semester}.name %]
 [% patron = tome.patron_info(checkout_info.patron) %]
-[% IF checkout_info.semester == CGI.param(semester) - 1%]
+[% IF checkout_info.semester == semester_selected - 1%]
 <tr bgcolor="pink">
-[% ELSIF checkout_info.semester < CGI.param(semester) - 1 %]
+[% ELSIF checkout_info.semester < semester_selected - 1 %]
 <tr bgcolor="red">
 [% ELSE %]
 <tr>
