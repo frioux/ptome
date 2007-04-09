@@ -758,7 +758,7 @@ sub reservation_search {
 		push @results, $result[0];
 	}
 
-	return @results;
+	return \@results;
 }
 #}}}
 
