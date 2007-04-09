@@ -2,17 +2,18 @@
 
 [% reservation = tome.reservation_info(reservation) %]
 [% tomebooks_available = tome.tomebooks_available_for_checkout(reservation.isbn, reservation.library_to, reservation.semester) %]
-<div id="reservation[% reservation.id %]">
+<div name="reservation[% reservation.id | html %]" id="reservation[% reservation.id | html %]">
 <table>
-<form>
+[% prototype.form_remote_tag({
+  url    => "http://awesome.com",
+  update => 'reservation' _ reservation.id,
+}) %]
+<input type="hidden" id="reservation_id" name="reservation_id" value="[% reservation.id | html %]">
+<input type="hidden" id="rm" name="rm" value="ajax_fill_reservation">
 <tr><td><strong>Library:</strong></td><td>[% tome.library_info(reservation.library_to).name %]</td></tr>
 <tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>
 <tr><td>Cancel!</td>
-<td>[% prototype.submit_to_remote('fill', 'Fill Reservation', {
-  url    => url,
-  with   => "'rm=ajax_fill_reservation'",
-  update => 'reservation' _ reservation.id,
-}) %]</td>
+<td><input type="submit" name="submit" value="Fill Reservation"></td>
 </tr>
 </form>
 </table>

@@ -150,6 +150,8 @@ sub mainsearch {
     my $self = shift;
     my $errs = shift;
 
+    die "death";
+
     my $results = $self->check_rm('mainsearch',
         {
             optional => [qw(author title edition)],
@@ -494,11 +496,11 @@ sub report {
     my $q = $self->query;
 
     return $self->template({ file => 'report.html', vars => {
-        tome_reservations       => [ $self->reservation_search({
+        tome_reservations       =>  $self->reservation_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
                 library_from        => $self->_librariesselecteddefault(),
-            }) ],
+            }) ,
         tome_dueback            => [ $self->checkout_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
@@ -508,46 +510,6 @@ sub report {
         libraries_selected  => $self->_librariesselecteddefault(),
         semester_selected   => $self->_semesterselecteddefault(),
     }});
-=over
-my $self = shift;
-
-	my $q = $self->query;
-
-	my $semester_selected = $self->_semesterselecteddefault();
-	my $libraries_selected = $self->_librariesselecteddefault();
-        my $our_libraries = keys %{$self->_libraryaccesshash($self->param('user_info')->{id})};
-
-        # Reservations needing to be filled
-
-        #  TOME Reservations
-        my $tome_reservations = $self->reservation_search({ semester => $semester_selected, library_to => $our_libraries, library_from => $our_libraries});
-        my $tome_reservation_data;
-        foreach (@$tome_reservations) {
-               $tome_reservation_data->{reservation_info} = $self->reservation_info{$_};
-               $_->{book_info} = $self->book_info ({ isbn => $_ });
-        }
-
-        # Books Due Back
-	my $dueback = $self->dueback_search({ semester => $semester_selected, library_from => $libraries_selected });
-	foreach(@$dueback) {
-		$_->{tomebookinfo} = $self->tomebook_info ({ tomebook => $_->{tomebook} });
-	}
-
-        # Books Expiring
-	my $expiring = $self->expire_search({ semester => $semester_selected, library_from => $libraries_selected });
-	foreach(@$expiring) {
-		$_->{tomebookinfo} = $self->tomebook_info ({ tomebook => $_->{tomebook} });
-	}
-
-	return $self->template({ file => 'report.html', vars => {
-		reservation		=> $reservation,
-		dueback			=> $dueback,
-		expiring		=> $expiring,
-		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
-		libraries_selected	=> $libraries_selected,
-		semester_selected	=> $semester_selected,
-	}});
-=cut
 }
 #}}}
 
@@ -1224,7 +1186,7 @@ sub isbnview_to_libraries {
                         semester => $semester,
                         libraries => [$library->{id}],
                     }),
-                    ours => $library_access->{$_->{'id'}} ? 1 : 0,
+                    ours => $from_library == $library->{id} ? 1 : 0,
                 };
                 if($availability->{available} > 0) {
                     push @to_libraries, $availability;
@@ -1343,9 +1305,9 @@ sub ajax_books_donated_list {
 sub ajax_fill_reservation {
   my $self = shift;
 
-  warn "llamas!";
+  die "death";
 
-  return "llamas!";
+  return $self->query->param('reservation_id') . ':' . $self->query->param('tomebook_id');
 }
 
 #{{{_libraries
