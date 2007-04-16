@@ -615,7 +615,7 @@ sub reservation_fulfill {
         # putting that info into the query.  Using SQL also makes it easy to do an embedded check to ensure that the type
         # of TOME book we're turning the reservation into matches the type of book the reservation was for (that's what the
         # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
-        ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', $params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE tomebooks.isbn = reservations.isbn', { 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
+        ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', \$params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE', { 'tomebooks.isbn' => 'reservations.isbn', 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
         $self->dbh->do($sql, undef, @bind);
 
 	$self->dbh->commit;
