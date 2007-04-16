@@ -29,14 +29,9 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <h2 name="books_donated_label" id="books_donated_label">[% prototype.link_to_remote( "+", {
 
   update=>'books_donated_table',
-  url => 'http://awesome.com',
-  with => "'rm=ajax_books_donated_list&patronid='" + patron,
-  loading => 'document.books_donated.books_donated_label.value=\'Loading...\'',
-  loaded => 'document.books_donated.books_donated_label.value=\'-Books Donated\'',
+  url => url(rm='ajax_books_donated_list'),
 
 }) %] Books Donated</h2>
-<div name="books_donated_table" id="books_donated_table">
-<table />
-</div>
+<div  id="books_donated_table"/>
 </form>
 

@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list ) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -149,8 +149,6 @@ sub autocomplete_class {
 sub mainsearch {
     my $self = shift;
     my $errs = shift;
-
-    die "death";
 
     my $results = $self->check_rm('mainsearch',
         {
@@ -1305,9 +1303,9 @@ sub ajax_books_donated_list {
 sub ajax_fill_reservation {
   my $self = shift;
 
-  die "death";
+  my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
 
-  return $self->query->param('reservation_id') . ':' . $self->query->param('tomebook_id');
+  return "Checkout #$checkout";
 }
 
 #{{{_libraries
