@@ -34,7 +34,7 @@ sub checkout_info {
 	my $self = shift;
 	my $checkout = shift;
 
-	return $self->{tome}->checkout_info({ checkout => $checkout });
+	return $self->{tome}->checkout_info({ id => $checkout });
 }
 
 sub tomebook_info {

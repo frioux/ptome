@@ -1786,7 +1786,7 @@ sub checkout_info {
 
 	my $dbh = $self->dbh;
 
-	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, reservation, library, uid, id, borrower FROM checkouts WHERE', { id => $params{id} });
+	my ($sql, @bind) = sql_interp('SELECT tomebook, semester, checkout, checkin, comments, library, uid, id, borrower FROM checkouts WHERE', { id => $params{id} });
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
