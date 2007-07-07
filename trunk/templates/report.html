@@ -86,7 +86,7 @@
 [% FOREACH checkout_id = tome_dueback %]
 [% checkout_info = tome.checkout_info(checkout_id) %]
 [% semester = semestershash.${checkout_info.semester}.name %]
-[% patron = tome.patron_info(checkout_info.patron) %]
+[% patron = tome.patron_info(checkout_info.borrower) %]
 [% IF checkout_info.semester == semester_selected - 1%]
 <tr bgcolor="pink">
 [% ELSIF checkout_info.semester < semester_selected - 1 %]
