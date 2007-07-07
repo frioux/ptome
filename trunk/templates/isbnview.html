@@ -15,8 +15,9 @@
             <option value="[% library | html %]" [% IF loop.first%]selected="selected"[% END %]>[% tome.library_info(library).name | html %]</option>
         [% END %]
     </select>[% errs.libraries_from %]</td></tr>
+[% ELSE %]
+<input type="hidden" name="library_from" value="[% libraries_from.0 | html %]">
 [% END %]
-[%# TODO: Need a default value here. %]
 <tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
 [%#should be if it is in our library %]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
