@@ -169,7 +169,11 @@ sub error_runmode {
 
 	my $debug = $error . "\n\nTime: " . localtime(time);
 	if(ref $self) { # Make sure we really have an object here
-		$debug = $error . "\n\nUser: " . $self->param('user_info')->{username} . "\n\n" . $self->dump();
+		$debug = $error;
+	       	if($self->param('user_info')) {
+			$debug .= "\n\nUser: " . $self->param('user_info')->{username};
+		}
+		$debug .= "\n\n" . $self->dump();
 	}
 
 	$self->sendmail({
