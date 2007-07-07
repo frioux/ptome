@@ -1,3 +1,10 @@
+[%# This template expects the following:
+  local_reservations
+  local_dueback
+  local_expiring
+  reserved_from_local_to_remote
+  reserved_from_remote_to_local
+%]
 [% META title = 'Semester Report' %]
 <form name="report" action="[% url %]" method="post">
 <input type="hidden" name="rm" value="report">
@@ -109,7 +116,7 @@
 	<td>
 		TOME ID
 	</td>
-	<td>
+
 		Book
 	</td>
 	<td>
