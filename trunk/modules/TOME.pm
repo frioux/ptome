@@ -622,9 +622,10 @@ sub reservation_fulfill {
         ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', \$params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE', { 'tomebooks.isbn' => 'reservations.isbn', 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
         $self->dbh->do($sql, undef, @bind);
 
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
+
 	$self->dbh->commit;
 
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
 	return $id;
 }
 
