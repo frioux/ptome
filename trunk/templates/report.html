@@ -4,6 +4,8 @@
   local_expiring
   reserved_from_local_to_remote
   reserved_from_remote_to_local
+  libraries_selected
+  semester_selected
 %]
 [% META title = 'Semester Report' %]
 <form name="report" action="[% url %]" method="post">
@@ -15,28 +17,18 @@
 </table>
 </form>
 <h3>TOME Reservations not yet filled</h3>
-<table border="1">
-<tr>
-	<td>
-		Reservation ID
-	</td>
-	<td>
-		Book
-	</td>
-	<td>
-		Borrower
-	</td>
-	<td>
-		Comments
-	</td>
-	<td>
-		Semester
-	</td>
-        <td>
-                Fill Reservation
-        </td>
-</tr>
-[% FOREACH reservation_id = tome_reservations %]
+<table border="1" class="sortable">
+  <thead>
+    <tr>
+	<th>Book</th>
+	<th>Borrower</th>
+	<th>Comments</th>
+	<th>Semester</th>
+        <th>Fill Reservation</th>
+      </tr>
+    </thead>
+    <tbody>
+[% FOREACH reservation_id IN local_reservations %]
 [% reservation_info = tome.reservation_info(reservation_id) %]
 [% patron = tome.patron_info(reservation_info.patron) %]
 [% semester = semestershash.${reservation_info.semester}.name %]
@@ -45,9 +37,6 @@
 [% ELSE %]
 <tr>
 [% END %]
-	<td>
-		<a href="[% url(rm='reservationinfo', id=reservation_id) %]">[% reservation_id | html%]</a>
-	</td>
         <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
 	<td>
 		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
@@ -63,27 +52,21 @@
         </td>
 </tr>
 [% END %]
+</tbody>
 </table>
 <h3>TOME Books due back</h3>
 <table border="1">
-<tr>
-	<td>
-		TOME ID
-	</td>
-	<td>
-		Book
-	</td>
-	<td>
-		Borrower
-	</td>
-	<td>
-		Comments
-	</td>
-	<td>
-		Semester
-	</td>
-</tr>
-[% FOREACH checkout_id = tome_dueback %]
+  <thead>
+    <tr>
+      <th>TOME ID</th>
+      <th>Book</th>
+      <th>Borrower</th>
+      <th>Comments</th>
+      <th>Semester</th>
+    </tr>
+  </thead>
+  <tbody>
+[% FOREACH checkout_id IN local_dueback %]
 [% checkout_info = tome.checkout_info(checkout_id) %]
 [% semester = semestershash.${checkout_info.semester}.name %]
 [% patron = tome.patron_info(checkout_info.borrower) %]
@@ -109,26 +92,20 @@
 	</td>
 </tr>
 [% END %]
+</tbody>
 </table>
 <h3>TOME Books expiring</h3>
 <table border="1">
-<tr>
-	<td>
-		TOME ID
-	</td>
-
-		Book
-	</td>
-	<td>
-		Originator
-	</td>
-	<td>
-		Expire
-	</td>
-	<td>
-		Comments
-	</td>
-</tr>
+  <thead>
+    <tr>
+      <th>TOME ID</th>
+      <th>Book</th>
+      <th>Originator</th>
+      <th>Expire</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
 [% FOREACH book = expiring %]
 [% IF book.expire == semester_selected + 1 %]
 <tr bgcolor="pink">
@@ -156,6 +133,7 @@
 	</td>
 </tr>
 [% END %]
+</tbody>
 </table>
 <h3>InterTOME Reservations not yet filled</h3>
 <h4>Books reserved from this library to others</h4>
