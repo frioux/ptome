@@ -6,7 +6,7 @@
 <form action="[% config.cgibase | html %]/admin.pl" method="post" name="mainsearch">
 <input type="hidden" name="rm" value="mainsearch">
 <table border="1" cellpadding="5">
-<tr><td colspan="2" align="center">Book Search</a></td></tr>
+  <thead> <tr><th colspan="2">Book Search</a></th></tr></thead>
 <tr><td>Title</td><td>[% CGI.textfield({ Name => 'title' }) %]</td></tr>
 <tr><td>Author</td><td>[% CGI.textfield({ Name => 'author' }) %]</td></tr>
 <tr><td>Edition</td><td>[% CGI.textfield({ Name => 'edition' }) %]</td></tr>
@@ -20,7 +20,7 @@
 <form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
 <input type="hidden" name="rm" value="classsearch">
 <table cellpadding="5" border="1">
-<tr><td colspan="2" align="center">Jump to Class</td></tr>
+  <thead><tr><th colspan="2">Jump to Class</th></tr></thead>
 <tr><td>Class</td><td>[% PROCESS 'blocks/autocomplete_class.html' name='class' %]</td></tr>
 <tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
 </table>
@@ -30,7 +30,7 @@
 <p><form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
 <input type="hidden" name="rm" value="isbnview">
 <table cellpadding="5" border="1">
-<tr><td colspan="2" align="center">Jump to ISBN</td></tr>
+  <thead> <tr><th colspan="2">Jump to ISBN</th></tr></thead>
 <tr><td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]</td></tr>
 <tr><td colspan="2" align="center"><input type="submit" value="Jump"></td></tr>
 </table>
@@ -42,7 +42,7 @@
 [%# Edit Patron box %]
 <form action="[% config.cgibase | html %]/admin.pl" method="post">
 <table cellpadding="5" border="1">
-<tr><td colspan="2" align="center">Edit Patron</td></tr>
+  <thead><tr><th colspan="2" align="center">Edit Patron</th></tr></thead>
 <tr><td>
 <input type="hidden" name="rm" value="patronview">
 Email

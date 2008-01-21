@@ -282,6 +282,7 @@ sub classsearch {
 
 	$classinfo = $self->class_info_deprecated({ id => $q->param('class') });
 
+        #_libraryaccess is gone - see sub report
 	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
 	my (@mylibraries, @otherlibraries);
 	foreach(@$libraries) {
@@ -494,12 +495,12 @@ sub report {
     my $q = $self->query;
 
     return $self->template({ file => 'report.html', vars => {
-        tome_reservations       =>  $self->reservation_search({
+        local_reservations       =>  $self->reservation_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
                 library_from        => $self->_librariesselecteddefault(),
             }) ,
-        tome_dueback            => [ $self->checkout_search({
+        local_dueback            => [ $self->checkout_search({
                 semester            => $self->_semesterselecteddefault(),
                 library_to          => $self->_librariesselecteddefault(),
                 library_from        => $self->_librariesselecteddefault(),

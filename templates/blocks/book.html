@@ -1,7 +1,7 @@
 [%# Takes isbn as an argument also, if id is defined id will be shown %]
 
 [% bookinfo = tome.book_info(isbn) %]
-<table border="0">
+<table class="book">
 
 [% IF (id) %]<tr><td><strong>Book ID:</strong></td><td><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% id %]">[% id | html %]</a></td></tr>[% END %]
 <tr><td><strong>ISBN:</strong></td><td><a href="[% config.cgibase %]/admin.pl?rm=isbnview&isbn=[% bookinfo.isbn %]">[% bookinfo.isbn | html %]</a></td></tr>
