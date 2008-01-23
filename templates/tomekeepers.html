@@ -1,0 +1,9 @@
+[%# This template expects: users %]
+
+[% META title = 'TOMEkeepers' %]
+<table class="sortable"><thead><tr><th>User</th><th>Email</th></tr></thead>
+  <tbody>
+[% FOREACH user IN users %]
+<tr><td>[% user.username %]</td><td>[% user.email %]</td></tr>
+[% END %]
+</tbody></table>
