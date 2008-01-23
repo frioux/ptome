@@ -1,9 +1,9 @@
 [% META title = 'Search' %]
-
-<p><table cellpadding="5"><tr><td valign="top">
+<div style="text-align:center;">
+   <table cellpadding="5"><tr><td valign="top" style="text-align: right;">
 
 [%# Main search box %]
-<form action="[% config.cgibase | html %]/admin.pl" method="post" name="mainsearch">
+<form action="[% config.cgibase | html %]/admin.pl" style="text-align: right" method="post" name="mainsearch">
 <input type="hidden" name="rm" value="mainsearch">
 <table border="1" cellpadding="5">
   <thead> <tr><th colspan="2">Book Search</a></th></tr></thead>
@@ -70,5 +70,4 @@ Email
 [% END %]
 </table>
 [% END %]
-</body>
-</html>
+</div>
