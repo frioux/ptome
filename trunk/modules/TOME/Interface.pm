@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list ) ]);
+	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers ) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -172,6 +172,30 @@ sub mainsearch {
 		errs	=> $errs,
 	}
     );
+}
+#}}}
+
+#{{{tomekeepers
+sub tomekeepers {
+
+=head2 tomekeepers
+
+
+
+=cut
+
+# Code Goes Here
+
+    my $self = shift;
+  my $users = $self->user_info;
+
+  return $self->template(
+    {
+      file => 'tomekeepers.html', vars => {
+        users => $users
+      }
+    }
+  );
 }
 #}}}
 
@@ -1301,6 +1325,7 @@ sub ajax_books_donated_list {
 
 #}}}
 
+#{{{ ajax_fill_reservation
 sub ajax_fill_reservation {
   my $self = shift;
 
@@ -1308,6 +1333,7 @@ sub ajax_fill_reservation {
 
   return "Checkout #$checkout";
 }
+#}}}
 
 #{{{_libraries
 
