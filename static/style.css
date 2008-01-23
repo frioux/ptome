@@ -3,9 +3,10 @@
 body {
   background-color: #fff;
   margin: 0;
-  padding: 0;
+  padding: 8px;
+  /*border: 1px solid rgb(235,235,235);*/
   text-align: center;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 80%;
 }
 
@@ -18,6 +19,43 @@ body {
   background: url(tome.png);
   background-repeat: no-repeat;
   background-position: left;
+  padding: 10px 0 10px 0;
+}
+#header #banner h1 {
+}
+#header #banner #status {
+  float: right;
+  width: 30%;
+  margin-top: -70px;
+  font-weight: bold;
+  text-align: right;
+}
+#header #banner #status dt {
+  font-weight: normal;
+}
+#header #navigation {
+  -moz-border-radius: 8px; /* This is temporary, will be replaced by a more compliant rounding method eventually */
+  padding: 4px 0 4px 0;
+  text-align: center;
+  clear: both;
+  background-color: #1B5790;
+  color: #5481AC;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+#header #navigation a {
+  color: #D2DCF3;
+  text-decoration: none;
+}
+#header #navigation a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+#header #navigation form {
+  display: inline;
+}
+#body {
+  padding: 10px 0 0 0;
 }
 #footer {
   text-align: center;
@@ -41,6 +79,25 @@ div.line {
 form {
   margin-bottom:0px;
 }
+form input[type=text] {
+  border: 1px solid #D7D7D7;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+   background: #eee;
+    color: #222;
+     border: 1px outset #ccc;
+      padding: .1em .5em;
+    }
+    input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+       background: #ccb;
+     }
+     input[type=button][disabled], input[type=submit][disabled],
+     input[type=reset][disabled] {
+        background: #f6f6f6;
+         border-style: solid;
+          c
+
 div.auto_complete {
   position:absolute;
   width:250px;
