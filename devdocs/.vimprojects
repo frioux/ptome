@@ -94,6 +94,8 @@ cgi=cgi{
   stats.html
   tomebookinfo.html
   updatebook.html
+  tomekeepers.html
+  classes.html
 
  }
 

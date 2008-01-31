@@ -1,0 +1,7 @@
+[%# Expects array classes %]
+<table class="sortable"><thead><tr><th>Course Number</th><th>Course Name</th></tr></thead><tbody>
+[% FOREACH class IN classes %]
+<tr><td>[% class.id %]</td><td>[% class.name %]</td></tr>
+[% END %]
+</tbody></table>
+
