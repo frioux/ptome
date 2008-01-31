@@ -1,7 +1,9 @@
 [% USE CGI %]
 [% USE url("${config.cgibase}/admin.pl") %]
 [% USE Comma %]
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <title>TOME - [% template.title %]</title>
   <script src="[% config.staticbase %]/prototype.js" type="text/javascript"></script>
@@ -9,6 +11,7 @@
   <script src="[% config.staticbase %]/scriptaculous.js" type="text/javascript"></script>
   <script src="[% config.staticbase %]/tablesort.js" type="text/javascript"></script>
   <link href="[% config.staticbase %]/style.css" media="screen" rel="Stylesheet" type="text/css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body [% IF errs and CGI.param('anchor') %]onLoad="javascript:window.location.href='#[% CGI.param('anchor') | html %]';"[% END %]>
   <div id="container">
@@ -17,7 +20,7 @@
         <h1>[% IF config.devmode %]<span style="color: red;">Development</span><br />[% END %][% template.title %]</h1>
         <dl id="status">
           <dt>Current semester</dt>
-          <dd>[% currsemester.name %]<dd>
+          <dd>[% currsemester.name %]</dd>
           [% IF session.currsemester %]
           <dt>Current semester overridden</dt>
           <dd>[% session.currsemester.name %] <a href="[% config.cgibase %]/admin.pl?rm=sessionsemester&semester=[% currsemester.id %]">[reset]</a></dd>
@@ -32,9 +35,11 @@
         <a href="[% config.cgibase %]/admin.pl?rm=findorphans">Orphans</a> |
         <a href="[% config.cgibase %]/admin.pl?rm=finduseless">Useless</a> |
         <a href="[% config.cgibase %]/admin.pl?rm=stats">Stats</a> |
+        <a href="[% config.cgibase %]/admin.pl?rm=tomekeepers">Tomekeepers</a> |
+        <a href="[% config.cgibase %]/admin.pl?rm=classes">Class List</a> |
         <form action="[% config.cgibase %]/admin.pl">
-          <input type="hidden" name="rm" value="tomebookinfo">
-          Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search"/>
+          <input type="hidden" name="rm" value="tomebookinfo" />
+          Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search" />
         </form>
       </div><!-- end navigation -->
     </div><!-- end header -->
