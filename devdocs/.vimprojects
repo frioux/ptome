@@ -46,7 +46,8 @@ cgi=cgi{
 
  static=static/ {
   prototype.js
-  style.css
+  screen.css
+  print.css
   tome.png
   tome=tome{
 
@@ -78,25 +79,37 @@ cgi=cgi{
   addtomebook.html
   addtomebook_isbn.html
   adminlogin.html
+
+  classes.html
   classsearch.html
   confirm.html
+
   error.html
+
   findorphans.html
   finduseless.html
   footer.html
+
   header.html
+
   interTOMEnotify.email
   isbnview.html
+
   mainsearch.html
   management.html
-  patronview.html
-  report.html
-  stats.html
-  tomebookinfo.html
-  updatebook.html
-  tomekeepers.html
-  classes.html
+
   newadmin.html
+
+  patronview.html
+
+  report.html
+
+  stats.html
+
+  tomebookinfo.html
+  tomekeepers.html
+
+  updatebook.html
 
  }
 
