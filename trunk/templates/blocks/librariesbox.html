@@ -2,6 +2,5 @@
 <tr><td>Libraries</td><td><select id="libraries" name="[% name | html %]" size="5" multiple="multiple">
 [% FOREACH library = libraries %]<option value="[% library.id | html %]"[% IF libraries_selected.grep("^${library.id}\$").size == 1 %]selected="selected"[% END %]>[% library.name | html %]</option>[% END %]
 </select><br />
-[%# Yuck.  Javascript. %]
-<a href="#" onClick="$$('#libraries option').each( function(n) { n.selected=true;})">Select All</a> | <a href="#" onClick="$$('#libraries option').each( function(n) { n.selected=false;}); [[% tome.library_access.join(', ') %]].each( function (n) { $('libraries').options[n].selected=true;})">Select Mine</a>
+<a href="#" onClick="$$('#libraries option').each( function(n) { n.selected=true;})">Select All</a> | <a href="#" onClick="$$('#libraries option').each( function(n) { n.selected=false;}); [[% tome.library_access.join(', ') | html %]].each( function (n) { $('libraries').options[n].selected=true;})">Select Mine</a>
 </td></tr>
