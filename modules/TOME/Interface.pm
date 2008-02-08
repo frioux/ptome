@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw( mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers ) ]);
+	$self->run_modes([ qw(newadmin mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -145,6 +145,80 @@ sub autocomplete_class {
 }
 #}}}
 
+#{{{classes
+sub classes {
+
+=head2 classes
+
+
+
+=cut
+
+my $self = shift;
+my $classes = $self->class_list();
+
+return $self->template(
+  file => 'classes.html',
+  vars => {
+    classes => $classes,
+  }
+);
+
+}
+#}}}
+
+#{{{newadmin
+sub newadmin {
+
+=head2 newadmin
+
+new admin page
+
+=cut
+my $self = shift;
+
+	my $update = 0;
+	if($self->query->param('update')) {
+		unless(($self->query->param('id') == $self->session->param('id')) or $self->param('user_info')->{admin}) {
+			return $self->error({ message => 'You do not have permissions to update that user',
+                            extended => $self->session->param('id') . ' tried to update ' . $self->query->param('id') });
+		}
+
+		my %update = (
+			id		=> $self->query->param('id'),
+			username	=> $self->query->param('username'),
+			email		=> $self->query->param('email'),
+			notifications	=> $self->query->param('notifications') ? 'true' : 'false',
+                        second_contact  => $self->query->param('secondary'),
+
+                );
+		if($self->param('user_info')->{admin}) {
+			$update{admin} = $self->query->param('admin') ? 'true' : 'false',
+			$update{disabled} = $self->query->param('disabled') ? 'true' : 'false',
+			my @libraries = $self->query->param('libraries');
+			$self->library_access({ user => $self->query->param('id'), libraries => \@libraries });
+		}
+
+		if($self->query->param('password1')) {
+			if($self->query->param('password1') ne $self->query->param('password2')) {
+				return $self->error({ message => 'The two passwords do not match' });
+			} else {
+				$update{password} = unix_md5_crypt($self->query->param('password1'));
+			}
+		}
+
+		$self->user_update({ %update });
+		$update = 1;
+              }
+
+return $self->template({
+  file => "newadmin.html",
+  vars => {},
+});
+}
+#}}}
+
+
 #{{{ mainsearch
 sub mainsearch {
     my $self = shift;
@@ -188,6 +262,14 @@ sub tomekeepers {
 
     my $self = shift;
   my $users = $self->user_info;
+
+  foreach my $userinfo (@$users) {
+    $userinfo->{libraries} = $self->library_info();
+    my $library_access = $self->_libraryaccesshash($userinfo->{id});
+    foreach(@{$userinfo->{libraries}}) {
+      $_->{access} = $library_access->{$_->{id}} ? 1 : 0;
+    }
+  }
 
   return $self->template(
     {
@@ -300,37 +382,33 @@ sub classsearch {
 		});
 	}
 
-
-	# This needs to be refactored at some point, because it still uses the deprecated method.  Everything above here uses the new, happy method.
-	# BEGIN NASTINESS:
-
 	$classinfo = $self->class_info_deprecated({ id => $q->param('class') });
 
-        #_libraryaccess is gone - see sub report
-	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
-	my (@mylibraries, @otherlibraries);
+	my $libraries = $self->library_info;
+
+        my %mylibraries = %{$self->_libraryaccesshash($self->param('user_info')->{id})};
+	my @otherlibraries;
 	foreach(@$libraries) {
-		if($_->{access}) {
-			push @mylibraries, $_;
-		} else {
+		if(!$mylibraries{$_->{id}}) {
 			push @otherlibraries, $_;
 		}
 	}
+        my @mylibraries = keys(%mylibraries);
 	my @otherlibraryids = map { $_->{id} } @otherlibraries;
 
 	foreach my $book (@{$classinfo->{books}}) {
 		$book->{info} = $self->book_info({ isbn => $book->{isbn} });
 		$book->{mylibraries} = [ @mylibraries ];
 		foreach my $library (@{$book->{mylibraries}}) {
-			$library = { %$library }; # Ugly, but I have to make a "deep copy" of the hash ref
-			$library->{total} = scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'in_collection', libraries => [ $library->{id} ] }));
-			$library->{available} = scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => [ $library->{id} ] }));
+			my $library = $self->library_info({id => $library});
+			$library->{total} = $self->tomebook_availability_search_amount({ isbn => $book->{isbn}, status => 'in_collection', libraries => [ $library->{id} ] });
+			$library->{available} = $self->tomebook_availability_search_amount({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => [ $library->{id} ] });
 		}
 
 		$book->{otherlibraries} = {
 			ids		=> \@otherlibraryids,
-			total		=> scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'in_collection', libraries => \@otherlibraryids })),
-			available	=> scalar($self->tomebooks_search({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => \@otherlibraryids })),
+			total		=> $self->tomebook_availability_search_amount({ isbn => $book->{isbn}, status => 'in_collection', libraries => \@otherlibraryids }),
+			available	=> $self->tomebook_availability_search_amount({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => \@otherlibraryids }),
 		};
 	}
 
@@ -995,7 +1073,8 @@ sub management {
 	my $update = 0;
 	if($self->query->param('update')) {
 		unless(($self->query->param('id') == $self->session->param('id')) or $self->param('user_info')->{admin}) {
-			return $self->error({ message => 'You do not have permissions to update that user', extended => $self->session->param('id') . ' tried to update ' . $self->query->param('id') });
+			return $self->error({ message => 'You do not have permissions to update that user',
+                            extended => $self->session->param('id') . ' tried to update ' . $self->query->param('id') });
 		}
 
 		my %update = (
@@ -1040,7 +1119,9 @@ sub management {
 		}
 	}
 
-	return $self->template({ file => 'management.html', vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
+	return $self->template({
+            file => 'management.html',
+            vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
 }
 #}}}
 
