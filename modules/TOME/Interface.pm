@@ -218,7 +218,6 @@ return $self->template({
 }
 #}}}
 
-
 #{{{ mainsearch
 sub mainsearch {
     my $self = shift;
@@ -315,7 +314,7 @@ sub findorphans {
 
 	return $self->template({ file => 'findorphans.html', vars => {
 		books => \@books,
-		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries		=> keys(%{$self->_libraryaccesshash($self->param('user_info')->{id})}),
 		libraries_selected	=> $libraries_selected,
 	}});
 }
@@ -335,7 +334,7 @@ sub finduseless {
 
 	return $self->template({ file => 'finduseless.html', vars => {
 		tomebooks		=> \@tomebooks,
-		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries		=> keys(%{$self->_libraryaccesshash($self->param('user_info')->{id})}),
 		libraries_selected	=> $libraries_selected,
 	}});
 }
@@ -348,7 +347,7 @@ sub stats {
 	my $libraries_selected = $self->_librariesselecteddefault;
 
 	return $self->template({ file => 'stats.html', vars => {
-		libraries		=> $self->_libraryaccess($self->param('user_info')->{id}),
+		libraries		=> keys(%{$self->_libraryaccesshash($self->param('user_info')->{id})}),
 		libraries_selected	=> $libraries_selected,
 		stats			=> $self->tome_stats({ libraries => $libraries_selected })
 	}});
