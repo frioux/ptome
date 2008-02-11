@@ -1,0 +1,112 @@
+[% META title = 'Admin' %]
+[% IF update %]
+<p><font color="red">Update successful</font>
+<p>
+[% END %]
+<h3>Semester Preference</h3>
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="sessionsemester">
+<select name="semester" multiple="multiple" size="10">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF (session.currsemester && (session.currsemester.id == semester.id)) || (!session.currsemester && (semester.id == currsemester.id)) %]selected="selected"[% END %]>[% semester.name %]</option>
+[% END %]
+</select><br />
+<input type="submit" value="Change">
+</form>
+This setting will temporarily change the current semester of the system for your session.
+<hr>
+[% IF admin %]
+<h3>Semester Setting</h3>
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="semesterset">
+<select name="semester" multiple="multiple" size="10">
+[% FOREACH semester = semesters %]
+<option value="[% semester.id | html %]" [% IF semester.id == currsemester.id %]selected="selected"[% END %]>[% semester.name %]</option>
+[% END %]
+</select><br />
+<input type="submit" value="Change">
+</form>
+This setting will permanently change the global semester setting.
+<hr>
+<h3>Add semester</h3>
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="confirm">
+<input type="hidden" name="finalrm" value="semesteradd">
+<input type="hidden" name="action" value="Add semester.  This action cannot be undone.">
+Semester name: <input type="text" name="name"> <input type="submit" value="Add Semester"><br />
+<b>WARNING: Semesters MUST be added IN ORDER</b>
+</form>
+<hr>
+[% END %]
+<h3>User Preferences</h3>
+[% FOREACH user = users %]
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="management">
+<input type="hidden" name="update" value="1">
+<input type="hidden" name="id" value="[% user.id | html %]">
+<p><table border="1" cellpadding="5">
+<tr><td colspan="2"><b>User</b></td><td><b>Libraries</b></td></tr>
+<tr><td>Username</td><td><input type="text" name="username" value="[% user.username | html %]"></td>
+<td rowspan="[% IF admin %]7[% ELSE %]5[% END %]">
+<p>My Libraries:
+<p>
+[% IF admin %]
+<select name="libraries" multiple="multiple" size="10">
+[% FOREACH library = user.libraries %]
+<option value="[% library.id | html %]" [% IF library.access %]selected="selected"[% END %]>[% library.name | html %]</option>
+[% END %]
+</select>
+[% ELSE %]
+[% FOREACH library = user.libraries %]
+[% IF library.access %][% library.name %][% END %]<br />
+[% END %]
+[% END %]
+</td></tr>
+<tr><td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
+<tr><td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
+<tr><td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
+[% IF admin %]
+<tr><td>Admin</td><td><input name="admin" type="checkbox" value="1" [% IF user.admin %]checked="checked"[% END %]></td></tr>
+<tr><td>Disabled</td><td><input name="disabled" type="checkbox" value="1" [% IF user.disabled %]checked="checked"[% END %]></td></tr>
+[% END %]
+<tr><td>New Password</td><td><input type="password" name="password1"></td></tr>
+<tr><td>Confirm</td><td><input type="password" name="password2"></td></tr>
+<tr><td colspan="3" align="center"><input type="submit" value="Update"></td></tr>
+</table>
+</form>
+[% END %]
+[% IF admin %]
+<hr>
+<h3>Add user</h3>
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="useradd">
+<table border="1" cellpadding="5">
+<tr><td>Username</td><td><input type="text" name="username"></td></tr>
+<tr><td>Email</td><td><input type="text" name="email"></td></tr>
+<tr><td colspan="2" align="center"><input type="Submit" value="Add User"><br />
+(Note: Password and other options must be set after adding)</td></tr>
+</table>
+</form>
+<hr>
+<h3>Add library</h3>
+<form action="[% config.cgibase %]/admin.pl" method="post">
+<input type="hidden" name="rm" value="confirm">
+<input type="hidden" name="finalrm" value="libraryadd">
+<input type="hidden" name="action" value="Add library.  This action cannot be undone.">
+Library name: <input type="text" name="name"> <input type="submit" value="Add Library">
+</form>
+<hr>
+<h3>Library Management</h3>
+[% FOREACH library = tome.libraries %]
+<form action="[% url %]" method="post">
+<input type="hidden" name="rm" value="libraryupdate">
+<p><table cellpadding="5" border="1">
+	<input type="hidden" name="id" value="[% library.id | html %]">
+	<tr><td>ID</td><td>[% library.id | html %]</td></tr>
+	<tr><td>Name</td><td><input type="text" name="name" value="[% library.name | html %]"></td></tr>
+	<tr><td>InterTOME</td><td><input type="checkbox" name="intertome" value="1" [% IF library.intertome %]checked="checked"[% END %]></td></tr>
+	<tr><td colspan="2" align="center"><input type="submit" value="Update"></td></tr>
+</table>
+</form>
+[% END %]
+[% END %]
