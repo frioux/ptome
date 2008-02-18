@@ -3,6 +3,18 @@
 <p><font color="red">Update successful</font>
 <p>
 [% END %]
+<h3>User List</h3>
+<table class="sortable"><thead><tr><th>User</th><th>Name</th><th>Library</tr></thead>
+  <tbody>
+    [% FOREACH user IN users %]
+
+[% FOREACH library IN user.libraries %]
+<tr><td>[% user.username | html %]</td><td>[% user.last_name | html %], [% user.first_name | html %]</td><td> [% library.name | html %]</td>
+[% END %]
+[% END %]
+          </td></tr>
+</tbody></table>
+
 <h3>Semester Preference</h3>
 <form action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="sessionsemester">
