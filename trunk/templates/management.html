@@ -1,4 +1,4 @@
-[% META title = 'Management' %]
+[% META title = 'Admin' %]
 [% IF update %]
 <p><font color="red">Update successful</font>
 <p>
@@ -63,6 +63,9 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 </td></tr>
 <tr><td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
+<tr><td>First Name</td><td><input type="text" name="first_name" value="[% user.first_name | html %]"></td></tr>
+<tr><td>Last Name</td><td><input type="text" name="last_name" value="[% user.last_name | html %]"></td></tr>
+<tr><td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
 <tr><td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
 [% IF admin %]
 <tr><td>Admin</td><td><input name="admin" type="checkbox" value="1" [% IF user.admin %]checked="checked"[% END %]></td></tr>
