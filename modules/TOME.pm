@@ -622,10 +622,9 @@ sub reservation_fulfill {
         ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', \$params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE', { 'tomebooks.isbn' => 'reservations.isbn', 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
         $self->dbh->do($sql, undef, @bind);
 
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
-
 	$self->dbh->commit;
 
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
 	return $id;
 }
 
@@ -2524,7 +2523,7 @@ sub user_info {
 		username	=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, username, email, notifications, admin, disabled, password FROM users';
+	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, admin, disabled, password FROM users';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ? ORDER BY disabled, username');
@@ -2622,8 +2621,11 @@ sub user_update {
 
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
+                first_name      => { type => SCALAR, optional => 0 },
+                last_name       => { type => SCALAR, optional => 0 },
 		username	=> { type => SCALAR, optional => 1 },
 		email		=> { type => SCALAR, optional => 1 },
+		second_contact	=> { type => SCALAR, optional => 1 },
 		notifications	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		disabled	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		admin		=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
@@ -2631,7 +2633,7 @@ sub user_update {
 	});
 
 	my %user;
-	foreach(qw(username email notifications admin disabled password)) {
+	foreach(qw(username email first_name last_name second_contact notifications admin disabled password)) {
 		if(defined($params{$_})) { $user{$_} = $params{$_}; }
 	}
 
