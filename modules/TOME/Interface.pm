@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(newadmin mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -167,10 +167,10 @@ return $self->template(
 }
 #}}}
 
-#{{{newadmin
-sub newadmin {
+#{{{management
+sub management {
 
-=head2 newadmin
+=head2 management
 
 new admin page
 
@@ -186,10 +186,12 @@ my $self = shift;
 
 		my %update = (
 			id		=> $self->query->param('id'),
+                        first_name      => $self->query->param('first_name'),
+                        last_name       => $self->query->param('last_name'),
 			username	=> $self->query->param('username'),
 			email		=> $self->query->param('email'),
 			notifications	=> $self->query->param('notifications') ? 'true' : 'false',
-                        second_contact  => $self->query->param('secondary'),
+                        second_contact  => $self->query->param('second_contact'),
 
                 );
 		if($self->param('user_info')->{admin}) {
@@ -208,13 +210,28 @@ my $self = shift;
 		}
 
 		$self->user_update({ %update });
+                # removed line, might need to add back
 		$update = 1;
               }
+	my $users;
+	if($self->param('user_info')->{admin}) {
+		$users = $self->user_info;
+	} else {
+		$users = [ $self->param('user_info') ];
+	}
+
+	foreach my $userinfo (@$users) {
+		$userinfo->{libraries} = $self->library_info();
+		my $library_access = $self->_libraryaccesshash($userinfo->{id});
+		foreach(@{$userinfo->{libraries}}) {
+			$_->{access} = $library_access->{$_->{id}} ? 1 : 0;
+		}
+	}
+
 
 return $self->template({
-  file => "newadmin.html",
-  vars => {},
-});
+  file => "management.html",
+  vars => {admin => $self->param('user_info')->{admin}, users => $users, update => $update}});
 }
 #}}}
 
@@ -1065,8 +1082,8 @@ sub tomebookinfo {
 }
 #}}}
 
-#{{{management
-sub management {
+#{{{management_old
+sub management_old {
 	my $self = shift;
 
 	my $update = 0;
@@ -1119,7 +1136,7 @@ sub management {
 	}
 
 	return $self->template({
-            file => 'management.html',
+            file => 'management_old.html',
             vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
 }
 #}}}
