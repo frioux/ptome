@@ -1,242 +1,38 @@
-/* --- Page Body ----------------------------------------- */
-
 body {
-  background-color: #fff;
-  margin: 0;
-  padding: 8px;
-  /*border: 1px solid rgb(235,235,235);*/
-  text-align: center;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
-  font-size: 80%;
-}
-
-/* --- Layout -------------------------------------------- */
-
-#container {
-  text-align: center;
   width: 100%;
-}
-#header {
-
-}
-#header #banner {
-  background: url(tome.png);
-  background-repeat: no-repeat;
-  background-position: left;
-  padding: 10px 0 10px 0;
-}
-#header #banner h1 {
-}
-#header #banner #status {
-  float: right;
-  width: 30%;
-  margin-top: -70px;
-  font-weight: bold;
-  text-align: right;
-}
-#header #banner #status dt {
-  font-weight: normal;
-}
-#header #navigation {
-  -moz-border-radius: 8px; /* This is temporary and will be replaced by a more compliant rounding method eventually */
-  padding: 4px 0 4px 0;
-  text-align: center;
-  clear: both;
-  background-color: #1B5790;
-  color: #5481AC;
-  font-size: 1.1em;
-  font-weight: bold;
-}
-#header #navigation a {
-  color: #D2DCF3;
-  text-decoration: none;
-}
-#header #navigation a:hover {
-  color: #FFFFFF;
-  text-decoration: underline;
-}
-#header #navigation form {
-  display: inline;
-}
-div#body {
-  padding: 10px 0 0 0;
-  width: 600px;
-  margin: 0 auto;
-}
-#footer {
-  text-align: center;
-  margin-top: 8px;
-  border-top: 2px solid rgb(235,235,235);
-  padding: 8px 0 0 0;
-  width: auto;
-}
-
-/* --- General Styles ------------------------------------ */
-
-div.line {
-  border-top: 2px solid rgb(235,235,235);
-  width: auto;
-  margin: 8px 0 8px 0;
+  font: 12pt "Times New Roman", "TimesNR", Times, serif !important;
+  background: #FFFFFF !important;
+  margin: 0;
   padding: 0;
-  clear: both;
 }
-pre {
-  text-align: left;
-}
-.link {
-  cursor: pointer;
-}
-.draggable {
-  cursor: move;
-}
-.hidden {
+#header,
+#footer {
   display: none;
 }
-
-/* --- Print Controls ------------------------------------ */
-
-.print-only {
-  display: none;
+#body {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: black;
+  background: transparent none;
 }
 
-/* --- Forms --------------------------------------------- */
-
-form {
-  margin-bottom: 0px;
-}
-form input[type=text] {
-  border: 1px solid #D7D7D7;
-}
-
-input[type=button],
-input[type=submit],
-input[type=reset] {
-  background: #eee;
-  color: #222;
-  border: 1px outset #ccc;
-  padding: .1em .5em
-}
-input[type=button]:hover,
-input[type=submit]:hover,
-input[type=reset]:hover {
-   background: #ccb;
- }
-input[type=button][disabled],
-input[type=submit][disabled],
-input[type=reset][disabled] {
-  background: #f6f6f6;
-  border-style: solid;
-}
-
-div.auto_complete {
-  position:absolute;
-  width:250px;
-  background-color:white;
-  border:1px solid #888;
-  margin:0px;
-  padding:0px;
-}
-ul.auto_complete_list  {
-  list-style-type: none;
-  margin:0px;
-  padding:0px;
-}
-ul.auto_complete_list li.selected {
-  background-color:#ffb;
-}
-li.auto_complete_item {
-  list-style-type: none;
-  display:block;
-  margin:0;
-  padding:2px;
-  height:42px;
-}
-li.auto_complete_item div.primary {
-  font-weight:bold;
-  font-size:12px;
-  line-height:1.2em;
-}
-li.auto_complete_item div.secondary {
-  font-size:10px;
-  color:#888;
-}
-#list {
-  margin:0;
-  margin-top:10px;
-  padding:0;
-  list-style-type: none;
-  width:250px;
-}
-#list li {
-  margin:0;
-  margin-bottom:4px;
-  padding:5px;
-  border:1px solid #888;
-  cursor:move;
-}
-#content {
-  padding:3em;
-}
-
-/* --- Tables -------------------------------------------- */
+/* --- Table styles --------------------------- */
 
 table {
   border-collapse: collapse;
 }
-table#main {
-  width: 95%;
-  text-align: center;
-}
-td, th {
-  padding: 0.5em;
-  border: 1px solid #CCC;
-}
-thead, tfoot {
-  background-color: #DDD;
-}
-th {
-  text-align: center;
-  font-size: 1.1em;
-}
-td {
-  text-align: left;
-}
-form td.submit {
-  text-align: center;
-}
-tr.rowodd {
-}
-tr.roweven {
-  background-color:#F2F2F2;
+table td {
+  border: 1px solid rgb(220,220,220);
 }
 
-/* --- Table sorting ----------------------------- */
+/* --- General styles --------------------------*/
 
-.sortcol {
-  cursor: pointer;
-  padding-right: 20px;
-  background-repeat: no-repeat;
-  background-position: right center;
-}
-.sortasc {
-  background-color: #DDFFAC;
-  background-image: url(up.gif);
-}
-.sortdesc {
-  background-color: #B9DDFF;
-  background-image: url(down.gif);
-}
-.nosort {
-  cursor:default;
-}
-.scroll-table-head {
-  width:800px;
-}
-.scroll-table-body {
-  width: 800px;
-  height: 400px;
-}
-.scroll-table-body td {
-  padding-right: 20px;
-  overflow: hidden;
+#body div.line {
+  border-top: 1px solid rgb(235,235,235);
+  width: auto;
+  margin: 8px 0 8px 0;
+  padding: 0;
+  clear: both;
 }
