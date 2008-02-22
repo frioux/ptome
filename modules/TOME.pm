@@ -359,9 +359,6 @@ sub tomebook_availability_search {
 		die 'Unknown status requested.';
 	}
 
-        warn $sql;
-        warn join(',',@bind);
-
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 
@@ -613,19 +610,46 @@ sub reservation_fulfill {
         $self->dbh->do('LOCK TABLE reservations, checkouts');
         my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
         $self->dbh->do($sql, undef, @bind);
+        undef ($sql); undef(@bind);
 
         # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
         # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
         # putting that info into the query.  Using SQL also makes it easy to do an embedded check to ensure that the type
         # of TOME book we're turning the reservation into matches the type of book the reservation was for (that's what the
         # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
-        ($sql, @bind) = sql_interp('INSERT INTO checkouts (tomebook, semester, comments, library, uid, borrower) SELECT', \$params{tomebook_id}, 'as tomebook, reservations.semester, reservations.comment as comments, reservations.library_from as library, reservations.uid, reservations.patron as borrower FROM reservations, tomebooks WHERE', { 'tomebooks.isbn' => 'reservations.isbn', 'reservations.id' => $params{reservation_id}, 'tomebooks.id' => $params{tomebook_id} });
-        $self->dbh->do($sql, undef, @bind);
+          ($sql, @bind) = sql_interp('SELECT ',
+          \$params{tomebook_id}, ' as tomebook, ',
+          'reservations.semester,',
+          'reservations.comment as comments,',
+          'reservations.library_from as library,',
+          'reservations.uid, ',
+          'reservations.patron as borrower',
+          'FROM reservations, tomebooks',
+          'WHERE ', {
+            'tomebooks.isbn' => 'reservations.isbn',
+            'reservations.id' => $params{reservation_id},
+            'tomebooks.id' => $params{tomebook_id}
+          }
+        );
+
+        #'INSERT INTO ',
+          #'checkouts (',
+            #'tomebook,',
+            #'semester,',
+            #'comments,',
+            #'library,',
+            #'uid,',
+            #'borrower',
+          #')',
+        warn $sql;
+        warn join(', ', @bind);
+
+        warn join(', ', $self->dbh->selectrow_array($sql, undef, @bind));
 
 	$self->dbh->commit;
 
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('checkouts_id_seq')");
-	return $id;
+	#my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
+	return "frew";#$id;
 }
 
 
@@ -687,8 +711,6 @@ sub reservation_create {
 
 	my ($sql, @bind) = sql_interp('INSERT INTO reservations', \%params);
 
-        warn $sql;
-        warn join(',', @bind);
 
 	$self->dbh->do($sql, undef, @bind);
 
@@ -1703,9 +1725,6 @@ sub checkout_search {
         @conditions = map {+"AND", $_} @conditions;
 
 	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
-
-        warn $sql;
-        warn join(',',@bind);
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
