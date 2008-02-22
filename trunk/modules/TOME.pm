@@ -606,8 +606,8 @@ sub reservation_fulfill {
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-	#$self->dbh->begin_work;
-        #$self->dbh->do('LOCK TABLE reservations, checkouts');
+	$self->dbh->begin_work;
+        $self->dbh->do('LOCK TABLE reservations, checkouts');
         my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
         $self->dbh->do($sql, undef, @bind);
 
@@ -618,38 +618,35 @@ sub reservation_fulfill {
         # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
           ($sql, @bind) = sql_interp(
         'INSERT INTO ',
-          'checkouts (',
-            'tomebook,',
-            'semester,',
-            'comments,',
-            'library,',
-            'uid,',
-            'borrower',
-          ')',
+          'checkouts ('.
+            'tomebook, '.
+            'semester, '.
+            'comments, '.
+            'library, '.
+            'uid, '.
+            'borrower '.
+          ') '.
             'SELECT ',
-          \$params{tomebook_id}, ' as tomebook, ',
-          'reservations.semester,',
-          'reservations.comment as comments,',
-          'reservations.library_from as library,',
-          'reservations.uid, ',
-          'reservations.patron as borrower',
-          'FROM reservations, tomebooks',
-          'WHERE ', {
-            'tomebooks.isbn' => 'reservations.isbn',
+          \$params{tomebook_id}, ' as tomebook, '.
+          'reservations.semester, '.
+          'reservations.comment as comments, '.
+          'reservations.library_from as library, '.
+          'reservations.uid, '.
+          'reservations.patron as borrower '.
+          'FROM reservations, tomebooks '.
+          'WHERE '.
+          'tomebooks.isbn = reservations.isbn and ', {
             'reservations.id' => $params{reservation_id},
             'tomebooks.id' => $params{tomebook_id}
           }
         );
 
-        warn $sql;
-        warn join(', ', @bind);
         $self->dbh->do($sql, undef, @bind);
-        #warn join(', ', );
 
-	#$self->dbh->commit;
+	$self->dbh->commit;
 
-	#my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
-	return "frew";#$id;
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
+	return $id;
 }
 
 
