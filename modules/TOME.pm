@@ -606,18 +606,27 @@ sub reservation_fulfill {
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-	$self->dbh->begin_work;
-        $self->dbh->do('LOCK TABLE reservations, checkouts');
+	#$self->dbh->begin_work;
+        #$self->dbh->do('LOCK TABLE reservations, checkouts');
         my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
         $self->dbh->do($sql, undef, @bind);
-        undef ($sql); undef(@bind);
 
         # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
         # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
         # putting that info into the query.  Using SQL also makes it easy to do an embedded check to ensure that the type
         # of TOME book we're turning the reservation into matches the type of book the reservation was for (that's what the
         # tomebooks.isbn = reservations.isbn part of the WHERE clause is for)
-          ($sql, @bind) = sql_interp('SELECT ',
+          ($sql, @bind) = sql_interp(
+        'INSERT INTO ',
+          'checkouts (',
+            'tomebook,',
+            'semester,',
+            'comments,',
+            'library,',
+            'uid,',
+            'borrower',
+          ')',
+            'SELECT ',
           \$params{tomebook_id}, ' as tomebook, ',
           'reservations.semester,',
           'reservations.comment as comments,',
@@ -632,21 +641,12 @@ sub reservation_fulfill {
           }
         );
 
-        #'INSERT INTO ',
-          #'checkouts (',
-            #'tomebook,',
-            #'semester,',
-            #'comments,',
-            #'library,',
-            #'uid,',
-            #'borrower',
-          #')',
         warn $sql;
         warn join(', ', @bind);
+        $self->dbh->do($sql, undef, @bind);
+        #warn join(', ', );
 
-        warn join(', ', $self->dbh->selectrow_array($sql, undef, @bind));
-
-	$self->dbh->commit;
+	#$self->dbh->commit;
 
 	#my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
 	return "frew";#$id;
