@@ -624,7 +624,34 @@ sub report {
                 library_from        => $self->_librariesselecteddefault(),
                 status              => 'checked_out',
             }) ],
+        local_expiring      =>      [ $self->expire_search({
+            semester                =>$self->_semesterselecteddefault(),
+            libraries               => $self->_librariesselecteddefault(),
+          }) ],
+        reserved_from_remote_to_local =>  $self->reservation_search({
+            semester => $self->_semesterselecteddefault(),
+            library_from  => $self->_librariesnotselecteddefault(),
+            library_to  => $self->_librariesselecteddefault(),
+          }) ,
+        reserved_from_local_to_remote =>  $self->reservation_search({
+            semester => $self->_semesterselecteddefault(),
+            library_from  => $self->_librariesselecteddefault(),
+            library_to  => $self->_librariesnotselecteddefault(),
+          }) ,
+        dueback_from_local_to_remote  => [ $self->checkout_search({
+                semester            => $self->_semesterselecteddefault(),
+                library_to          => $self->_librariesnotselecteddefault(),
+                library_from        => $self->_librariesselecteddefault(),
+                status              => 'checked_out',
+            }) ],
+        dueback_from_remote_to_local => [ $self->checkout_search({
+                semester            => $self->_semesterselecteddefault(),
+                library_to          => $self->_librariesselecteddefault(),
+                library_from        => $self->_librariesnotselecteddefault(),
+                status              => 'checked_out',
+            }) ],
         libraries_selected  => $self->_librariesselecteddefault(),
+        libraries_not_selected  => $self->_librariesnotselecteddefault(),
         semester_selected   => $self->_semesterselecteddefault(),
     }});
 }
@@ -1443,6 +1470,20 @@ sub _libraryauthorized {
 }
 #}}}
 
+#{{{_librariesnotselecteddefault
+sub _librariesnotselecteddefault {
+	my $self = shift;
+
+	my @libraries_not_selected = $self->query->param('not_libraries');
+	unless(@libraries_not_selected) {
+		foreach ($self->library_not_access({user =>$self->param('user_info')->{id}})) {
+				push @libraries_not_selected, $_;
+		}
+	}
+	return \@libraries_not_selected;
+}
+#}}}
+
 #{{{_librariesselecteddefault
 sub _librariesselecteddefault {
 	my $self = shift;
@@ -1455,6 +1496,8 @@ sub _librariesselecteddefault {
 	}
 	return \@libraries_selected;
 }
+#}}}
+
 #}}}
 
 #{{{_semesterselecteddefault

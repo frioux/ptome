@@ -2872,6 +2872,36 @@ sub library_users {
 }
 #}}}
 
+#{{{library_not_access
+sub library_not_access {
+
+=head2 library_not_access
+
+foo
+
+=cut
+
+my $self = shift;
+
+my %params = validate(@_, {
+    user		=> { type => SCALAR, regex => qr/^\d+$/ },
+  });
+
+my ($sql, @bind) = sql_interp('SELECT library FROM library_access WHERE library not in ( SELECT library FROM library_access WHERE', {uid => $params{user}}, ') ');
+
+my $sth = $self->dbh->prepare($sql);
+$sth->execute(@bind);
+
+my @results;
+while(my @result = $sth->fetchrow_array) {
+  push @results, $result[0];
+}
+
+return @results;
+
+}
+#}}}
+
 #{{{library_access
 
 =head2 library_access
