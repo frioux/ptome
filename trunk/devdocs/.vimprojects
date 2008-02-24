@@ -45,21 +45,52 @@ cgi=cgi{
  }
 
  static=static/ {
+  builder.js
+  controls.js
+  down.gif
+  dragdrop.js
+  effects.js
+  fastinit.js
+  print.css
   prototype.js
   screen.css
-  print.css
+  scriptaculous.js
+  slider.js
+  sort-asc.png
+  sort-desc.png
+  style2.css
+  tablesort.js
   tome.png
-  tome=tome{
-
-   prototype.js
-   style.css
-   tome.png
-
-  }
+  up.gif
  }
 
  templates=templates {
-
+  addclass.html
+  addclassbook-isbn.html
+  addpatron.html
+  addtomebook.html
+  addtomebook_isbn.html
+  adminlogin.html
+  classes.html
+  classsearch.html
+  classunknown.html
+  confirm.html
+  error.html
+  findorphans.html
+  finduseless.html
+  footer.html
+  header.html
+  interTOMEnotify.email
+  isbnview.html
+  mainsearch.html
+  management.html
+  management_old.html
+  patronview.html
+  report.html
+  stats.html
+  tomebookinfo.html
+  tomekeepers.html
+  updatebook.html
   blocks=blocks{
    autocomplete_class.html
    autocomplete_isbn.html
@@ -72,45 +103,6 @@ cgi=cgi{
    reservation.html
    semestersbox.html
   }
-
-  addclass.html
-  addclassbook-isbn.html
-  addpatron.html
-  addtomebook.html
-  addtomebook_isbn.html
-  adminlogin.html
-
-  classes.html
-  classsearch.html
-  confirm.html
-
-  error.html
-
-  findorphans.html
-  finduseless.html
-  footer.html
-
-  header.html
-
-  interTOMEnotify.email
-  isbnview.html
-
-  mainsearch.html
-  management.html
-
-  newadmin.html
-
-  patronview.html
-
-  report.html
-
-  stats.html
-
-  tomebookinfo.html
-  tomekeepers.html
-
-  updatebook.html
-
  }
 
  tests=tests {
