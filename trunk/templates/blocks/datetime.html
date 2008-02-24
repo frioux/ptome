@@ -1,4 +1,2 @@
-[%# Takes a DateTime object as an argument named datetime and
-	prints it using the most common formatting %]
-
-[% datetime.strftime('%B %d, %Y at %r') | html %]
+[%# Takes a DateTime object as an argument named datetime and prints it using the most common formatting -%]
+[%- datetime.strftime('%B %d, %Y at %r') | html -%]

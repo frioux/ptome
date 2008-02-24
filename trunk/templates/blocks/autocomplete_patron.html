@@ -1,5 +1,4 @@
 [%# Takes name (for the textbox) as an argument as well as default_person, which will have the value initially filled in %]
-
-<input autocomplete="off" id="[% name | html %]" name="[% name | html %]" type="text" value="[% default_patron %]">
+<input id="[% name | html %]" name="[% name | html %]" type="text" value="[% default_patron %]" />
 <div class="auto_complete" id="patron_auto_complete"></div>
-[% prototype.auto_complete_field('patron', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_patron'" }) %]
+[%- prototype.auto_complete_field('patron', { url="${config.cgibase}/admin.pl", with="value+'&rm=autocomplete_patron'" }) -%]
