@@ -1,17 +1,17 @@
 [%# Takes reservation as an argument %]
-[%- reservation = tome.reservation_info(reservation) -%]
-[%- tomebooks_available = tome.tomebooks_available_for_checkout(reservation.isbn, reservation.library_to, reservation.semester) -%]
-<div name="reservation[% reservation.id | html %]" id="reservation[% reservation.id | html %]">
+[%- r = tome.reservation_info(reservation) -%]
+[%- tomebooks_available = tome.tomebooks_available_for_checkout(r.isbn, r.library_to, r.semester) -%]
+<div name="reservation[% r.id | html %]" id="reservation[% r.id | html %]">
 [%- prototype.form_remote_tag({
   url    => url,
-  update => 'reservation' _ reservation.id,
-  loading=> prototype.update_element_function("reservation${reservation.id}", { content=>'Loading...', action=>'update'}),
-  loaded => prototype.visual_effect('highlight', "reservation${reservation.id}", { duration=>'0.5' }),
+  update => 'reservation' _ r.id,
+  loading=> prototype.update_element_function("reservation${r.id}", { content=>'Loading...', action=>'update'}),
+  loaded => prototype.visual_effect('highlight', "reservation${r.id}", { duration=>'0.5' }),
 }) -%]
-<input type="hidden" id="reservation_id" name="reservation_id" value="[% reservation.id | html %]" />
+<input type="hidden" id="reservation_id" name="reservation_id" value="[% r.id | html %]" />
 <input type="hidden" id="rm" name="rm" value="ajax_fill_reservation" />
 <table>
-<tr><td><strong>Library:</strong></td><td>[% tome.library_info(reservation.library_to).name %]</td></tr>
+<tr><td><strong>Library:</strong></td><td>[% tome.library_info(r.library_to).name %]</td></tr>
 <tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>
 <tr><td>Cancel!</td>
 <td><input type="submit" name="submit" value="Fill Reservation"></td>
