@@ -4,6 +4,8 @@ abbr TD <td></td><Esc>4hi
 abbr TR <tr></tr><Esc>4hi
 abbr TABLE <table><Enter></table><Esc>7hi
 abbr FORM <form><Enter></form><Esc>6hi
+abbr SSD _semesterselecteddefault()
+abbr LSD _librariesselecteddefault()
 
 " this is a macro that is invoked with s.  What it is supposed to do is to take
 " an "argument" as one word on a line and then use that is a function name. It
