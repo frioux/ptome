@@ -1,6 +1,6 @@
-[%# Receives reservations as an argument %]
-[% META title = 'View Patron' %]
-[% patroninfo = tome.patron_info(patron) %]
+[%# Receives reservations as an argument -%]
+[%- META title = 'View Patron' -%]
+[%- patroninfo = tome.patron_info(patron) -%]
 <form action="[% url %]" name="patronupdate" method="post">
 <input type="hidden" name="rm" value="patronupdate" />
 <input type="hidden" name="id" value="[% patron | html %]" />
@@ -9,21 +9,20 @@ Email: <input type="text" name="email" value="[% patroninfo.email | html %]" siz
 Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]<br />
 <input type="submit" value="Update"/>
 </form>
-
 <h2>Books Reserved</h2>
 <table>
-[% reservations = tome.patron_reservations(patron) %]
-[% FOREACH reservation = reservations %]
-[% reservation_info = tome.reservation_info(reservation) %]
-<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' reservation=reservation %]</td></tr>
-[% END %]
+[%- reservations = tome.patron_reservations(patron) -%]
+[%- FOREACH reservation = reservations -%]
+[%- reservation_info = tome.reservation_info(reservation) -%]
+<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' %]</td></tr>
+[%- END -%]
 </table>
 <h2>Books Checked Out</h2>
 <table>
-[% checkouts = tome.patron_checkouts(patron) %]
-[% FOREACH checkout = checkouts %]
-<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' reservation=reservation %]</td></tr>
-[% END %]
+[%- checkouts = tome.patron_checkouts(patron) -%]
+[%- FOREACH checkout_id IN checkouts -%]
+<tr><td><a href="[% url(rm = 'tomebookinfo', id = checkout_id) %]">Tomebook [% checkout_id %]</a></td><td>[% PROCESS 'blocks/book.html' isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
+[%- END -%]
 </table>
 <form name='books_donated'>
 <h2 name="books_donated_label" id="books_donated_label">[% prototype.link_to_remote( "+", {
