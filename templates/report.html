@@ -4,20 +4,23 @@
   local_expiring
   reserved_from_local_to_remote
   reserved_from_remote_to_local
+  dueback_from_local_to_remote
+  dueback_from_remote_to_local
   libraries_selected
   semester_selected
-%]
-[% META title = 'Semester Report' %]
+-%]
+[%- META title = 'Semester Report' -%]
 <form name="report" action="[% url %]" method="post">
 <input type="hidden" name="rm" value="report">
-<table border="1" cellpadding="5">
-[% PROCESS blocks/librariesbox.html name='library' libraries=tome.libraries %]
+<table>
+[%- PROCESS blocks/librariesbox.html name='library' libraries=tome.libraries -%]
 <tr><td>Semester</td><td>[% PROCESS blocks/semestersbox.html %]</td></tr>
-<tr><td colspan="2" align="center"><input type="submit" value="Generate Report"></td></tr>
+<tr><td class="submit" colspan="2"><input type="submit" value="Generate Report"></td></tr>
 </table>
 </form>
 <h3>TOME Reservations not yet filled</h3>
-<table border="1" class="sortable">
+[% #{{{ -%]
+<table class="full">
   <thead>
     <tr>
 	<th>Book</th>
@@ -28,15 +31,15 @@
       </tr>
     </thead>
     <tbody>
-[% FOREACH reservation_id IN local_reservations %]
-[% reservation_info = tome.reservation_info(reservation_id) %]
-[% patron = tome.patron_info(reservation_info.patron) %]
-[% semester = semestershash.${reservation_info.semester}.name %]
-[% IF reservation_info.semester < semester_selected %]
+[%- FOREACH reservation_id IN local_reservations -%]
+[%- reservation_info = tome.reservation_info(reservation_id) -%]
+[%- patron = tome.patron_info(reservation_info.patron) -%]
+[%- semester = semestershash.${reservation_info.semester}.name -%]
+[%- IF reservation_info.semester < semester_selected -%]
 <tr bgcolor="pink">
-[% ELSE %]
+[%- ELSE -%]
 <tr>
-[% END %]
+[%- END -%]
         <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
 	<td>
 		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
@@ -51,11 +54,13 @@
                 [% INCLUDE blocks/reservation.html reservation=reservation_id %]
         </td>
 </tr>
-[% END %]
+[%- END -%]
 </tbody>
 </table>
+[% #}}} -%]
 <h3>TOME Books due back</h3>
-<table border="1">
+[% #{{{ -%]
+<table class="full">
   <thead>
     <tr>
       <th>TOME ID</th>
@@ -66,21 +71,21 @@
     </tr>
   </thead>
   <tbody>
-[% FOREACH checkout_id IN local_dueback %]
-[% checkout_info = tome.checkout_info(checkout_id) %]
-[% semester = semestershash.${checkout_info.semester}.name %]
-[% patron = tome.patron_info(checkout_info.borrower) %]
-[% IF checkout_info.semester == semester_selected - 1%]
+[%- FOREACH checkout_id IN local_dueback -%]
+[%- checkout_info = tome.checkout_info(checkout_id) -%]
+[%- semester = semestershash.${checkout_info.semester}.name -%]
+[%- patron = tome.patron_info(checkout_info.borrower) -%]
+[%- IF checkout_info.semester == semester_selected - 1 -%]
 <tr bgcolor="pink">
-[% ELSIF checkout_info.semester < semester_selected - 1 %]
+[%- ELSIF checkout_info.semester < semester_selected - 1 -%]
 <tr bgcolor="red">
-[% ELSE %]
+[%- ELSE -%]
 <tr>
-[% END %]
+[%- END -%]
 	<td>
 		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
 	</td>
-        <td>[% INCLUDE blocks/book.html isbn=checkout_info.isbn %]</td>
+        <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
 	<td>
 		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
@@ -88,14 +93,16 @@
 		[% checkout_info.comments %]
 	</td>
 	<td>
-		[% semester.name %]
+		[% semester %]
 	</td>
 </tr>
-[% END %]
+[%- END -%]
 </tbody>
 </table>
+[% #}}} -%]
 <h3>TOME Books expiring</h3>
-<table border="1">
+[% #{{{ -%]
+<table class="full">
   <thead>
     <tr>
       <th>TOME ID</th>
@@ -106,19 +113,19 @@
     </tr>
   </thead>
   <tbody>
-[% FOREACH book = expiring %]
-[% IF book.expire == semester_selected + 1 %]
+[%- FOREACH book = expiring -%]
+[%- IF book.expire == semester_selected + 1 -%]
 <tr bgcolor="pink">
-[% ELSIF book.expire > semester_selected + 1 %]
+[%- ELSIF book.expire > semester_selected + 1 -%]
 <tr bgcolor="red">
-[% ELSE %]
+[%- ELSE -%]
 <tr>
-[% END %]
+[%- END -%]
 	<td>
 		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
 	</td>
 	<td>
-		<b>Title:</b> [% book.tomebookinfo.title %]<br />
+		<b>Title:</b> [% tome.tomebook_info(book).title %]<br />
 		<b>Author:</b> [% book.tomebookinfo.author %]<br />
 		<b>Edition:</b> [% book.tomebookinfo.edition %]
 	</td>
@@ -132,12 +139,132 @@
 		[% book.tomebookinfo.comments %]
 	</td>
 </tr>
-[% END %]
+[%- END -%]
 </tbody>
 </table>
+[% #}}} -%]
 <h3>InterTOME Reservations not yet filled</h3>
 <h4>Books reserved from this library to others</h4>
+[%# {{{ -%]
+<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+[%- FOREACH reservation_id IN reserved_from_local_to_remote -%]
+[%- reservation_info = tome.reservation_info(reservation_id) -%]
+[%- patron = tome.patron_info(reservation_info.patron) -%]
+[%- semester = semestershash.${reservation_info.semester}.name -%]
+[%- IF reservation_info.semester < semester_selected -%]
+<tr bgcolor="pink">
+[%- ELSE -%]
+<tr>
+[%- END -%]
+        <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+	<td>
+		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
+	</td>
+	<td>
+		[% reservation_info.comments %]
+	</td>
+	<td>
+		[% semester %]
+	</td>
+        <td>
+                [% INCLUDE blocks/reservation.html reservation=reservation_id %]
+        </td>
+</tr>
+[%- END -%]
+</tbody>
+  </table>
+[%# }}}  -%]
 <h4>Books reserved from other libraries to this one</h4>
-<h3>InterTOME Books due back</h3>
+[% #{{{ -%]
+<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+[%- FOREACH reservation_id IN reserved_from_remote_to_local -%]
+[%- reservation_info = tome.reservation_info(reservation_id) -%]
+[%- patron = tome.patron_info(reservation_info.patron) -%]
+[%- semester = semestershash.${reservation_info.semester}.name -%]
+[%- IF reservation_info.semester < semester_selected -%]
+<tr bgcolor="pink">
+[%- ELSE -%]
+<tr>
+  [%- END -%]
+        <td>[% tome.library_info(reservation_info.library_from).name %]</td>
+        <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+	<td>
+		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
+	</td>
+	<td>
+		[% semester %]
+	</td>
+        <td>
+                [% INCLUDE blocks/reservation.html reservation=reservation_id %]
+        </td>
+</tr>
+[%- END -%]
+</tbody>
+  </table>
+  [% #}}} -%]
+  <h3>InterTOME Books due back</h3>
 <h4>Books due from this library to others</h4>
-<h4>Books due from other libraries to here</h4>
+[% #{{{ -%]
+<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+[%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
+[%- checkout_info = tome.checkout_info(checkout_id) -%]
+[%- semester = semestershash.${checkout_info.semester}.name -%]
+[%- patron = tome.patron_info(checkout_info.borrower) -%]
+[%- IF checkout_info.semester == semester_selected - 1 -%]
+<tr bgcolor="pink">
+[%- ELSIF checkout_info.semester < semester_selected - 1 -%]
+<tr bgcolor="red">
+[%- ELSE -%]
+<tr>
+[%- END -%]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
+	</td>
+        <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
+	</td>
+	<td>
+		[% checkout_info.comments %]
+	</td>
+	<td>
+		[% semester %]
+	</td>
+</tr>
+[%- END -%]
+</tbody>
+
+  </table>
+  [% #}}} -%]
+  <h4>Books due from other libraries to here</h4>
+  [% #{{{ -%]
+  <table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+[%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
+[%- checkout_info = tome.checkout_info(checkout_id) -%]
+[%- semester = semestershash.${checkout_info.semester}.name -%]
+[%- patron = tome.patron_info(checkout_info.borrower) -%]
+[%- IF checkout_info.semester == semester_selected - 1 -%]
+<tr bgcolor="pink">
+[%- ELSIF checkout_info.semester < semester_selected - 1 -%]
+<tr bgcolor="red">
+[%- ELSE -%]
+<tr>
+[%- END -%]
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
+	</td>
+        <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
+	<td>
+		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
+	</td>
+	<td>
+		[% checkout_info.comments %]
+	</td>
+	<td>
+		[% semester %]
+	</td>
+</tr>
+[%- END -%]
+</tbody>
+    </table>
+    [% #}}} -%]
