@@ -100,6 +100,7 @@ cgi=cgi{
    datetime.html
    libraries_selection.html
    librariesbox.html
+   librariesnotbox.html
    reservation.html
    semestersbox.html
   }

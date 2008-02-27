@@ -1,5 +1,5 @@
 " various useful abbreviations
-abbr TMP [% %]<Esc>2hi
+abbr TMP [%- -%]<Esc>3hi
 abbr TD <td></td><Esc>4hi
 abbr TR <tr></tr><Esc>4hi
 abbr TABLE <table><Enter></table><Esc>7hi
