@@ -1,0 +1,30 @@
+#summary Links to documentation of the technologies that we use.
+
+= Technologies Index =
+
+This page lists technologies that we use and where you can get documentation for said technologies.
+
+= Details =
+
+Modules:
+  * Template: [http://template-toolkit.org/docs/manual/index.html manual]
+  * Template::Plugin::Comma [http://search.cpan.org/src/MIYAGAWA/Template-Plugin-Comma-0.04/README README]
+  * Template::Plugin::CGI: [http://template-toolkit.org/docs/modules/Template/Plugin/CGI.html manual]
+  * Template::Plugin::URL: [http://search.cpan.org/~abw/Template-Toolkit-2.19/lib/Template/Plugin/URL.pm manual]
+  * CGI::Application: [http://search.cpan.org/~markstos/CGI-Application-4.06/lib/CGI/Application.pm manual]
+  * CGI::Application::Plugin::Session: [http://search.cpan.org/~ceeshek/CGI-Application-Plugin-Session-1.02/lib/CGI/Application/Plugin/Session.pm manual]
+  * CGI::Application::Plugin::DBH: [http://search.cpan.org/~markstos/CGI-Application-Plugin-DBH-4.00/lib/CGI/Application/Plugin/DBH.pm manual]
+  * CGI::Application::Plugin::HTMLPrototype: [http://search.cpan.org/~ceeshek/CGI-Application-Plugin-HTMLPrototype-0.20/lib/CGI/Application/Plugin/HTMLPrototype.pm manual] [http://search.cpan.org/~esskar/HTML-Prototype-1.48/lib/HTML/Prototype.pm manual for underlying module]
+  * CGI::Application::Plugin::ValidateRM: [http://search.cpan.org/~markstos/CGI-Application-Plugin-ValidateRM-2.1/lib/CGI/Application/Plugin/ValidateRM.pm manual]
+  * CGI::Application::Plugin::Forward [http://search.cpan.org/~mgraham/CGI-Application-Plugin-Forward-1.06/lib/CGI/Application/Plugin/Forward.pm manual]
+  * DateTime [http://search.cpan.org/~drolsky/DateTime-0.41/lib/DateTime.pm manual]
+  * DateTime::Format::Pg [http://search.cpan.org/~dmaki/DateTime-Format-Pg-0.16001/lib/DateTime/Format/Pg.pm manual]
+  * SQL::Interpolate [http://search.cpan.org/~dmanura/SQL-Interpolate-0.33/lib/SQL/Interpolate.pm manual]
+  * MIME::Lite [http://search.cpan.org/~rjbs/MIME-Lite-3.021/lib/MIME/Lite.pm manual]
+  * Crypt::PasswdMD5 [http://search.cpan.org/~luismunoz/Crypt-PasswdMD5-1.3/PasswdMD5.pm manual]
+  * DBD::Pg [http://search.cpan.org/~turnstep/DBD-Pg-2.1.3/Pg.pm manual]
+
+
+Other:
+  * prototype [http://www.prototypejs.org/api API]
+  * script.aculo.us [http://wiki.script.aculo.us/ wiki]
