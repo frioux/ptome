@@ -13,7 +13,8 @@
 <form name="report" action="[% url %]" method="post">
 <input type="hidden" name="rm" value="report">
 <table>
-[%- PROCESS blocks/librariesbox.html name='library' libraries=tome.libraries -%]
+[%- PROCESS blocks/librariesbox.html name='libraries' libraries=tome.libraries -%]
+[%- PROCESS blocks/librariesnotbox.html name='not_libraries' libraries=tome.libraries -%]
 <tr><td>Semester</td><td>[% PROCESS blocks/semestersbox.html %]</td></tr>
 <tr><td class="submit" colspan="2"><input type="submit" value="Generate Report"></td></tr>
 </table>
@@ -83,11 +84,11 @@
 <tr>
 [%- END -%]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
+		<a href="[%- url(rm='tomebookinfo', id=checkout_info.tomebook) -%]">Tomebook [% checkout_info.tomebook %]</a>
 	</td>
         <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
+		<a href="[%- url(rm='patronview', id=checkout_info.borrower) -%]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
 	<td>
 		[% checkout_info.comments %]
@@ -122,7 +123,7 @@
 <tr>
 [%- END -%]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.tomebook %]">[% book.tomebook %]</a>
+		<a href="[%- url(rm='tomebookinfo', id=book.tomebook) -%]">Tomebook [% book.tomebook %]</a>
 	</td>
 	<td>
 		<b>Title:</b> [% tome.tomebook_info(book).title %]<br />
@@ -130,7 +131,7 @@
 		<b>Edition:</b> [% book.tomebookinfo.edition %]
 	</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.tomebookinfo.originator | html | uri %]">[% book.tomebookinfo.originator_name | html %]</a> ([% book.tomebookinfo.originator_email | html %])
+		<a href="[%- url(rm='patronview', id=book.tomebookinfo.originator) -%]">[% book.tomebookinfo.originator_name | html %]</a> ([% book.tomebookinfo.originator_email | html %])
 	</td>
 	<td>
 		[% semestershash.${book.tomebookinfo.expire}.name %]
@@ -155,13 +156,10 @@
 <tr bgcolor="pink">
 [%- ELSE -%]
 <tr>
-[%- END -%]
+  [%- END -%]<td>[% tome.library_info(reservation_info.library_to).name %]</td>
         <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
 	<td>
 		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
-	</td>
-	<td>
-		[% reservation_info.comments %]
 	</td>
 	<td>
 		[% semester %]
@@ -186,7 +184,7 @@
 [%- ELSE -%]
 <tr>
   [%- END -%]
-        <td>[% tome.library_info(reservation_info.library_from).name %]</td>
+        <td>[% tome.library_info(reservation_info.library_from).name %]  </td>
         <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
 	<td>
 		<a href="[% url(rm='patronview', patron=reservation_info.patron) %]">[% patron.name | html %]</a> ([% patron.email | html %])
@@ -205,7 +203,7 @@
   <h3>InterTOME Books due back</h3>
 <h4>Books due from this library to others</h4>
 [% #{{{ -%]
-<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+<table class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
 [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
 [%- checkout_info = tome.checkout_info(checkout_id) -%]
 [%- semester = semestershash.${checkout_info.semester}.name -%]
@@ -218,14 +216,14 @@
 <tr>
 [%- END -%]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
+          [%- tome.library_info(tome.tomebook_info(checkout_info.tomebook).library).name -%]
+        </td>
+        <td>
+<a href="[%- url(rm='tomebookinfo', id=checkout_info.tomebook) -%]">Tomebook [% checkout_info.tomebook %]</a>
 	</td>
         <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
-	</td>
-	<td>
-		[% checkout_info.comments %]
+		<a href="[%- url(rm='patronview', id=checkout_info.borrower) -%]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
 	<td>
 		[% semester %]
@@ -237,8 +235,8 @@
   </table>
   [% #}}} -%]
   <h4>Books due from other libraries to here</h4>
-  [% #{{{ -%]
-  <table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+[% #{{{ -%]
+  <table class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
 [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
 [%- checkout_info = tome.checkout_info(checkout_id) -%]
 [%- semester = semestershash.${checkout_info.semester}.name -%]
@@ -251,14 +249,12 @@
 <tr>
 [%- END -%]
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% checkout_info.tomebook %]">[% checkout_info.tomebook %]</a>
-	</td>
+		[%- tome.library_info(checkout_info.library).name -%]
+              </td>
+              <td><a href="[%- url(rm='tomebookinfo', id=checkout_info.tomebook) -%]">Tomebook [% checkout_info.tomebook %]</a></td>
         <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.id).isbn %]</td>
 	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% checkout_info.borrower | html | uri %]">[% patron.name | html %]</a> ([% patron.email | html %])
-	</td>
-	<td>
-		[% checkout_info.comments %]
+		<a href="[%- url(rm='patronview', id=checkout_info.borrower) -%]">[% patron.name | html %]</a> ([% patron.email | html %])
 	</td>
 	<td>
 		[% semester %]
