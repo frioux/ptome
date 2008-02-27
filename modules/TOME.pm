@@ -370,6 +370,7 @@ sub tomebook_availability_search {
 	return \@results;
 }
 #}}}
+
 #{{{tomebook_availability_search_amount
 
 =head2 tomebook_availability_search_amount
