@@ -1,11 +1,11 @@
 [% META title = 'Error' %]
-<h2 align="center">TOME has experienced the following error:</h2>
-<p align="center"><font size="+1">[% message | html %]</font>
-
+<h2 style="text-align: center;">TOME has experienced the following error:</h2>
+<p style="text-align: center; font-size: 1.2em;">[% message | html %]</p>
 [% IF config.devmode %]
-<hr>
+<div class="line"></div>
 <p>Extended Devmode Information:
 <pre>
 [% extended %]
 </pre>
+</p>
 [% END %]

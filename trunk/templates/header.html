@@ -1,6 +1,6 @@
-[% USE CGI %]
-[% USE url("${config.cgibase}/admin.pl") %]
-[% USE Comma %]
+[%- USE CGI -%]
+[%- USE url("${config.cgibase}/admin.pl") -%]
+[%- USE Comma -%]
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -41,8 +41,8 @@
           <li><a href="[% config.cgibase %]/admin.pl?rm=classes">Class List</a></li>
           <li><form action="[% config.cgibase %]/admin.pl">
           <input type="hidden" name="rm" value="tomebookinfo" />
-          Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search" /></li>
-        </form>
+          Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search" /></form></li>
+        </ul>
       </div><!-- end navigation -->
     </div><!-- end header -->
     <div id="body">

@@ -2,7 +2,7 @@
 <form name="report" action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="stats">
 <table border="1" cellpadding="5">
-[% PROCESS librariesbox.html %]
+[% PROCESS blocks/librariesbox.html libraries=tome.libraries name='library' %]
 <tr><td colspan="2" align="center"><input type="submit" value="Update Stats"></td></tr>
 </table>
 </form>
