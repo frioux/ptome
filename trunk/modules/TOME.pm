@@ -354,7 +354,7 @@ sub tomebook_availability_search {
 	} elsif($params{status} eq 'in_collection') {
 		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
 	} elsif($params{status} eq 'can_checkout') {
-		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL AND id NOT IN (SELECT tomebook FROM checkouts WHERE', {semester => $params{semester}}, 'AND checkin IS NOT NULL)');
+		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL AND id NOT IN (SELECT tomebook FROM checkouts WHERE', {semester => $params{semester}}, 'AND checkout IS NOT NULL)');
 	} else {
 		die 'Unknown status requested.';
 	}
@@ -607,10 +607,17 @@ sub reservation_fulfill {
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
+        $self->session->param('id');
+        foreach ($self->library_access({user => $self->session->param('id')})) {
+          warn $_;
+        }
+        warn $self->reservation_info({ id =>$params{reservation_id}})->{library_to};
+        warn $self->reservation_info({ id =>$params{reservation_id}})->{library_from};
+
 	$self->dbh->begin_work;
-        $self->dbh->do('LOCK TABLE reservations, checkouts');
+        #$self->dbh->do('LOCK TABLE reservations, checkouts');
         my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
-        $self->dbh->do($sql, undef, @bind);
+        #$self->dbh->do($sql, undef, @bind);
 
         # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
         # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
@@ -642,12 +649,12 @@ sub reservation_fulfill {
           }
         );
 
-        $self->dbh->do($sql, undef, @bind);
+        #$self->dbh->do($sql, undef, @bind);
 
-	$self->dbh->commit;
+	#$self->dbh->commit;
 
-	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
-	return $id;
+	#my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
+	#return $id;
 }
 
 
@@ -1722,7 +1729,7 @@ sub checkout_search {
         # Note that the unary + must be here to make sure Perl interprets the {} as a block
         @conditions = map {+"AND", $_} @conditions;
 
-	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.id', @conditions);
+	my ($sql, @bind) = sql_interp('SELECT checkouts.id FROM checkouts, tomebooks WHERE tomebooks.id = checkouts.tomebook', @conditions);
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
@@ -1838,7 +1845,7 @@ sub checkout_history {
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, reservation, checkin, comments, uid, username, library FROM checkouts, users, patrons WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
+	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, checkin, comments, uid, username, library FROM checkouts, users, patrons WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
 	$sth->execute($params{id});
 	my @results;
 	while(my $result = $sth->fetchrow_hashref) {
@@ -2897,7 +2904,7 @@ my @results;
 while(my @result = $sth->fetchrow_array) {
   push @results, $result[0];
 }
-
+warn join(', ', @results);
 return @results;
 
 }
