@@ -29,3 +29,4 @@ Modules:
 Other:
   * prototype [http://www.prototypejs.org/api API]
   * script.aculo.us [http://wiki.script.aculo.us/ wiki]
+  * table sorter [http://www.tetlaw.id.au/view/blog/table-sorting-with-prototype/ manual]
