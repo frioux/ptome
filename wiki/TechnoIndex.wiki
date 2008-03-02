@@ -10,6 +10,7 @@ Modules:
   * Template: [http://template-toolkit.org/docs/manual/index.html manual]
   * Template::Plugin::Comma [http://search.cpan.org/src/MIYAGAWA/Template-Plugin-Comma-0.04/README README]
   * Template::Plugin::CGI: [http://template-toolkit.org/docs/modules/Template/Plugin/CGI.html manual]
+  * Template::Plugin::Iterator: [http://search.cpan.org/~abw/Template-Toolkit-2.19/lib/Template/Plugin/Iterator.pm manual]
   * Template::Plugin::URL: [http://search.cpan.org/~abw/Template-Toolkit-2.19/lib/Template/Plugin/URL.pm manual]
   * CGI::Application: [http://search.cpan.org/~markstos/CGI-Application-4.06/lib/CGI/Application.pm manual]
   * CGI::Application::Plugin::Session: [http://search.cpan.org/~ceeshek/CGI-Application-Plugin-Session-1.02/lib/CGI/Application/Plugin/Session.pm manual]
