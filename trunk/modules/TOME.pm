@@ -607,17 +607,12 @@ sub reservation_fulfill {
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-        $self->session->param('id');
-        foreach ($self->library_access({user => $self->session->param('id')})) {
-          warn $_;
-        }
-        warn $self->reservation_info({ id =>$params{reservation_id}})->{library_to};
-        warn $self->reservation_info({ id =>$params{reservation_id}})->{library_from};
+        if (grep {$self->reservation_info({ id =>$params{reservation_id}})->{library_from} == $_} ($self->library_access({user => $self->session->param('id')}))) {
 
 	$self->dbh->begin_work;
-        #$self->dbh->do('LOCK TABLE reservations, checkouts');
+        $self->dbh->do('LOCK TABLE reservations, checkouts');
         my ($sql, @bind) = sql_interp('UPDATE reservations SET fulfilled = now() WHERE', { id => $params{reservation_id} });
-        #$self->dbh->do($sql, undef, @bind);
+        $self->dbh->do($sql, undef, @bind);
 
         # This sorta scary looking bit of SQL just transfers the information from the reservations table into the checkout table
         # SQL is used because it's faster/easier than making calls to the methods to retrieve info about the reservation and
@@ -649,12 +644,16 @@ sub reservation_fulfill {
           }
         );
 
-        #$self->dbh->do($sql, undef, @bind);
+        $self->dbh->do($sql, undef, @bind);
 
-	#$self->dbh->commit;
+	$self->dbh->commit;
 
-	#my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
-	#return $id;
+	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.checkouts_id_seq')");
+	return $id;
+
+      }
+
+      return -1;
 }
 
 
@@ -790,6 +789,36 @@ sub reservation_search {
 	}
 
 	return \@results;
+}
+#}}}
+
+#{{{reservation_cancel
+sub reservation_cancel {
+
+=head2 reservation_cancel
+
+takes a hash:
+id => reservation_id
+
+  and deletes the reservation from the table entirely
+=cut
+
+  my $self = shift;
+
+  my %params = validate(@_, {
+      id	=> { type => SCALAR, regex => qr/^\d+$/ },
+    });
+
+  if ((grep {$self->reservation_info({ id =>$params{id}})->{library_from} == $_} ($self->library_access({user => $self->session->param('id')}))) ||
+    (grep {$self->reservation_info({ id =>$params{id}})->{library_to} == $_} ($self->library_access({user => $self->session->param('id')})))
+  )
+  {
+    my ($sql, @bind) = sql_interp('DELETE FROM reservations WHERE ',{id => $params{'id'}} );
+    my $sth = $self->dbh->prepare($sql);
+    $sth->execute(@bind);
+    return 1;
+  }
+  return 0;
 }
 #}}}
 
