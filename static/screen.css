@@ -4,7 +4,6 @@ body {
   background-color: #E5ECF3;
   margin: 0;
   padding: 8px;
-  /*border: 1px solid rgb(235,235,235);*/
   text-align: center;
   font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
   font-size: 80%;
@@ -28,6 +27,7 @@ body {
   background-repeat: no-repeat;
   background-position: left;
   padding: 10px 5px 10px 5px;
+  margin: 3px;
 }
 #header #banner #status {
   float: right;
@@ -40,14 +40,10 @@ body {
   font-weight: normal;
 }
 #header #navigation {
-  /*-moz-border-radius-bottomleft: 8px;
-  -moz-border-radius-bottomright: 8px;
-  -webkit-border-bottom-left-radius: 8px;
-  -webkit-border-bottom-right-radius: 8px;*/
   padding: 4px 0 4px 0;
   text-align: center;
   clear: both;
-  background-color: #1B5790;
+  background-color: rgb(40,100,160);
   color: #5481AC;
   font-size: 1.1em;
   font-weight: bold;
@@ -76,7 +72,7 @@ body {
 div#body {
   padding: 10px 0 0 0;
   width: 800px;
-  text-align: center;
+  text-align: left;
   margin: 0 auto;
 }
 #footer {
@@ -117,7 +113,56 @@ a:hover,
 .hidden {
   display: none;
 }
+/*
+#body h1,
+#body h2,
+#body h3,
+#body h4,
+#body h5 {
+    margin: 12px 0 10px 0;
+  }
 
+  #body tr th h1,
+  #body tr th h2,
+  #body tr th h3,
+  #body tr th h4,
+  #body tr th h5,
+  #body tr th h6 {
+      margin: 0;
+    }
+
+    #body h1 {
+        font-size: 2em;
+      }
+
+      #body h2 {
+          font-size: 1.7em;
+            color: #FF9900;
+              border-bottom: 1px solid rgb(235, 235, 235);
+            }
+*/
+            #body h3 {
+               font-size: 1.3em;
+                  color: #336699;
+                    border-bottom: 1px solid rgb(235, 235, 235);
+                  }
+
+                  #body h4 {
+                     font-size: 1.15em;
+                        color: rgb(22,110,0);
+                         /* margin: 12px 0 2px 0;*/
+                        }
+/*
+                        #body h5 {
+                            font-size: 1.1em;
+                              color: #169D00;
+                            }
+
+                            #body h6 {
+                                font-size: 1.05em;
+                                  font-weight: bold;
+                                }
+*/
 /* --- Print Controls ------------------------------------ */
 
 .print-only {
@@ -129,7 +174,8 @@ a:hover,
 form {
   margin-bottom: 0px;
 }
-form input[type=text] {
+form input[type=text],
+textarea{
   border: 1px solid #D7D7D7;
 }
 
@@ -208,6 +254,9 @@ li.auto_complete_item div.secondary {
 table {
   border-collapse: collapse;
 }
+table.full {
+  width: 100%;
+}
 table#main {
   width: 95%;
   text-align: center;
@@ -233,6 +282,40 @@ tr.rowodd {
 }
 tr.roweven {
   background-color:#F2F2F2;
+}
+/*
+dl.table-display {
+  margin: 2em 0;
+  padding: 0;
+}
+.table-display dt {
+  float: left;
+  margin: 0 0 0 0;
+  padding: .5em;
+  border-top: 1px solid #999;
+  font-weight: bold;
+}
+.table-display dd {
+  float: left;
+  margin: 0 0 0 0;
+  padding: .5em;
+  border-top: 1px solid #999;
+}
+*/
+dl.table-display {
+  display: block;
+}
+dl.table-display dt {
+  clear:   left;
+  display:  block;
+  font-weight: bold;
+  float:   left;
+  margin-right: 4px;
+}
+dl.table-display dd {
+  clear:   right;
+  display:  block;
+  white-space: nowrap;
 }
 
 /* --- Table sorting ----------------------------- */
