@@ -24,22 +24,22 @@
           <dd>[% currsemester.name %]</dd>
           [% IF session.currsemester %]
           <dt>Current semester overridden</dt>
-          <dd>[% session.currsemester.name %] <a href="[% config.cgibase %]/admin.pl?rm=sessionsemester&semester=[% currsemester.id %]">[reset]</a></dd>
+          <dd>[% session.currsemester.name %] <a href="[%- url(rm='sessionsemester', semester=currsemester.id) -%]">[reset]</a></dd>
           [% END %]
         </dl><!-- end status -->
       </div><!-- end banner -->
       <div id="navigation">
         <ul>
-          <li><a href="[% config.cgibase %]/admin.pl">Home</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=addtomebook">Add TOME Book</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=addclass">Add Class</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=report">Semester Report</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=findorphans">Orphans</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=finduseless">Useless</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=stats">Stats</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=tomekeepers">Tomekeepers</a></li>
-          <li><a href="[% config.cgibase %]/admin.pl?rm=classes">Class List</a></li>
-          <li><form action="[% config.cgibase %]/admin.pl">
+          <li><a href="[%- url -%]">Home</a></li>
+          <li><a href="[%- url(rm='addtomebook') -%]">Add TOME Book</a></li>
+          <li><a href="[%- url(rm='addclass') -%]">Add Class</a></li>
+          <li><a href="[%- url(rm='report') -%]">Semester Report</a></li>
+          <li><a href="[%- url(rm='findorphans') -%]">Orphans</a></li>
+          <li><a href="[%- url(rm='finduseless') -%]">Useless</a></li>
+          <li><a href="[%- url(rm='stats') -%]">Stats</a></li>
+          <li><a href="[%- url(rm='tomekeepers') -%]">Tomekeepers</a></li>
+          <li><a href="[%- url(rm='classes') -%]">Class List</a></li>
+          <li><form action="[%- url -%]">
           <input type="hidden" name="rm" value="tomebookinfo" />
           Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search" /></form></li>
         </ul>
