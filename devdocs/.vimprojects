@@ -97,12 +97,14 @@ cgi=cgi{
    autocomplete_patron.html
    book.html
    books_donated.html
+   checkin.html
    datetime.html
    libraries_selection.html
    librariesbox.html
    librariesnotbox.html
    reservation.html
    semestersbox.html
+   patronlink.html
   }
  }
 
