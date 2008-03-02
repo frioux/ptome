@@ -2933,7 +2933,6 @@ my @results;
 while(my @result = $sth->fetchrow_array) {
   push @results, $result[0];
 }
-warn join(', ', @results);
 return @results;
 
 }

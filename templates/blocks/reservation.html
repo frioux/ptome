@@ -10,10 +10,11 @@
   }) -%]
 <input type="hidden" id="reservation_id" name="reservation_id" value="[% r.id | html %]" />
 <input type="hidden" id="rm" name="rm" value="ajax_fill_reservation" />
+<input type="hidden" id="commit" name="commit" value="fill" />
 <table>
 <tr><td><strong>Library:</strong></td><td>[% tome.library_info(r.library_to).name %]</td></tr>
 <tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>
-<tr><td><input type="submit" name="cancel" value="Cancel" /></td>
+<tr><td><input type="submit" name="submit" value="Cancel" onClick="$('commit').value='cancel'; $$('reservation[% r.id | html %] form')[0].submit();" /></td>
 <td><input type="submit" name="submit" value="Fill Reservation" /></td>
 </tr>
 </table>
