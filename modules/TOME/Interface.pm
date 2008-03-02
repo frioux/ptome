@@ -1090,20 +1090,20 @@ sub tomebookinfo {
 	my $id = $q->param('id');
 	my $info;
 
-	eval { $info = $self->tomebook_info_deprecated({ id => $id }); };
+	$info = $self->tomebook_info({ tomebook => $id });
 
 	if($@ || !$info->{isbn}) {
 		return $self->error({ message => 'Unable to find TOME book with ID "' . $id . '"' });
 	}
 
-	my $libraries = $self->_libraryaccess($self->param('user_info')->{id});
+	my @libraries = keys(%{$self->_libraryaccesshash($self->param('user_info')->{id})});
 
 	return $self->template({ file => 'tomebookinfo.html', vars => {
 		tomebook	=> $info,
 		checkouts	=> $self->checkout_history({ id => $id }),
-		libraries	=> $libraries,
+		libraries	=> \@libraries,
 		classes		=> $self->book_classes({ isbn => $info->{isbn} }),
-		librarieshash	=> { map { $_->{id} => $_ } @{$libraries} },
+		librarieshash	=> $self->_libraryaccesshash($self->param('user_info')->{id}),
 		errs		=> $errs,
 	}});
 }
@@ -1437,13 +1437,14 @@ sub ajax_libraries_selection_list {
 sub ajax_books_donated_list {
     my $self = shift;
 
-    my $patronid = $self->query->param('patronid');
+    #my $patronid = $self->query->param('patronid');
 
-    return $self->template({file => 'blocks/books_donated.html',
-        vars => {
-            ids => $self->tomebook_availability_search({'patron'=>$patronid}),
-        }, plain => 1,
-    });
+    #return $self->template({file => 'blocks/books_donated.html',
+        #vars => {
+            #ids => $self->tomebook_availability_search({'patron'=>$patronid}),
+        #}, plain => 1,
+    #});
+    return "AWESOME!";
 
 }
 
@@ -1454,7 +1455,6 @@ sub ajax_fill_reservation {
   my $self = shift;
 
   my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
-
   return "Checkout #$checkout";
 }
 #}}}
