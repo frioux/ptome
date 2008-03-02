@@ -1,0 +1,16 @@
+[%# Takes checkout as an argument %]
+[%- c = tome.checkout_info(checkout) -%]
+<div name="checkout[% c.id | html %]" id="checkout[% c.id | html %]">
+[%- prototype.form_remote_tag({
+  url    => url,
+  update => 'checkout' _ c.id,
+  loading=> prototype.update_element_function("checkout${c.id}", { content=>'Loading...', action=>'update'}),
+  loaded => prototype.visual_effect('highlight', "checkout${c.id}", { duration=>'0.5' }),
+  }) -%]
+<input type="hidden" id="checkout_id" name="rescheckout_id" value="[% c.id | html %]" />
+<input type="hidden" id="rm" name="rm" value="ajax_fill_checkout" />
+<table>
+  <tr><td><strong>Checkin:</strong></td><td><input type="submit" name="submit" value="Check in" /></td></tr>
+</table>
+</form>
+</div>
