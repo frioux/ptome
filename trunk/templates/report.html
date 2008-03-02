@@ -23,7 +23,7 @@ semester_selected
 [%- IF local_reservations.size > 0 -%]
 <h3>TOME Reservations not yet filled</h3>
 [% #{{{ -%]
-<table class="full">
+<table class="sortable">
   <thead>
     <tr>
       <th>Book</th>
@@ -56,7 +56,7 @@ semester_selected
 [%- IF local_dueback.size > 0 -%]
 <h3>TOME Books due back</h3>
 [% #{{{ -%]
-<table class="full">
+<table class="sortable">
   <thead>
     <tr>
       <th>TOME ID</th>
@@ -95,7 +95,7 @@ semester_selected
 [%- IF expiring.size > 0 -%]
 <h3>TOME Books expiring</h3>
 [% #{{{ -%]
-<table class="full">
+<table class="sortable">
   <thead>
     <tr>
       <th>TOME ID</th>
@@ -135,7 +135,7 @@ semester_selected
 [%- IF reserved_from_local_to_remote.size > 0 -%]
 <h4>Books reserved from this library to others</h4>
 [%# {{{ -%]
-<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_local_to_remote -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- semester = semestershash.${reservation_info.semester}.name -%]
@@ -158,7 +158,7 @@ semester_selected
 [%- IF reserved_from_remote_to_local.size > 0 -%]
 <h4>Books reserved from other libraries to this one</h4>
 [% #{{{ -%]
-<table class="full"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_remote_to_local -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- semester = semestershash.${reservation_info.semester}.name -%]
@@ -184,7 +184,7 @@ semester_selected
 [%- IF dueback_from_local_to_remote.size > 0 -%]
 <h4>Books due from this library to others</h4>
 [% #{{{ -%]
-<table class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- semester = semestershash.${checkout_info.semester}.name -%]
@@ -210,7 +210,7 @@ semester_selected
 [%- IF dueback_from_remote_to_local.size > 0 -%]
 <h4>Books due from other libraries to here</h4>
 [% #{{{ -%]
-<table class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- semester = semestershash.${checkout_info.semester}.name -%]
