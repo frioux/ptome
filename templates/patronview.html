@@ -10,27 +10,39 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <input type="submit" value="Update"/>
 </form>
 <h2>Books Reserved</h2>
-<table>
+<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Fill Reservation</th></thead><tbody>
 [%- reservations = tome.patron_reservations(patron) -%]
 [%- FOREACH reservation = reservations -%]
 [%- reservation_info = tome.reservation_info(reservation) -%]
-<tr><td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td><td>[% PROCESS 'blocks/reservation.html' %]</td></tr>
+<tr>
+  <td>[% tome.library_info(reservation_info.library_to).name %]</td>
+  <td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td>
+  <td>[%- semestershash.${reservation_info.semester}.name -%]</td>
+  <td>[% PROCESS 'blocks/reservation.html' %]</td>
+</tr>
 [%- END -%]
 </table>
 <h2>Books Checked Out</h2>
-<table>
+<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Semester</th><th>Check In</th></tr></thead>
+  <tbody>
 [%- checkouts = tome.patron_checkouts(patron) -%]
 [%- FOREACH checkout_id IN checkouts -%]
-<tr><td><a href="[% url(rm = 'tomebookinfo', id = checkout_id) %]">Tomebook [% checkout_id %]</a></td><td>[% PROCESS 'blocks/book.html' isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
+<tr>
+  <td>[% tome.library_info(tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).library).name %]</td>
+  <td><a href="[% url(rm = 'tomebookinfo', id = checkout_id) %]">Tomebook [% checkout_id %]</a></td>
+  <td>[% PROCESS 'blocks/book.html' isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
+  <td>[%- semestershash.${tome.checkout_info(checkout_id).semester}.name -%]</td>
+  <td>[%- PROCESS 'blocks/checkin.html' checkout=checkout_id -%]
+</tr>
 [%- END -%]
 </table>
 <form name='books_donated'>
+<div  id="books_donated_table" />
 <h2 name="books_donated_label" id="books_donated_label">[% prototype.link_to_remote( "+", {
-
   update=>'books_donated_table',
   url => url(rm='ajax_books_donated_list'),
-
+  loading=> prototype.update_element_function("books_donated_table", { content=>'Loading...', action=>'update'}),
+  loaded => prototype.visual_effect('highlight', "books_donated_table", { duration=>'0.5' }),
 }) %] Books Donated</h2>
-<div  id="books_donated_table"/>
 </form>
 
