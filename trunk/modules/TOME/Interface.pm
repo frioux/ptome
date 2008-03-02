@@ -1453,7 +1453,6 @@ sub ajax_books_donated_list {
 #{{{ ajax_fill_reservation
 sub ajax_fill_reservation {
   my $self = shift;
-  warn $self->query->param('commit');
   if ($self->query->param('commit') eq 'fill') {
     my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
     if ($checkout != -1) {
@@ -1461,7 +1460,7 @@ sub ajax_fill_reservation {
     } else {
       return "You can't make that checkout!!!";
     }
-  } else {
+  } elsif ($self->query->param('commit') eq 'cancel') {
     my $cancel = $self->reservation_cancel({id => $self->query->param('reservation_id')});
     if ($cancel) {
       return "Cancelled!";
