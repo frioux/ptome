@@ -7,14 +7,15 @@ SELECT check_and_update_dbversion(2,3);
 CREATE OR REPLACE FUNCTION set_primary_libraries() RETURNS integer AS $$
 DECLARE
 user_rec RECORD;
-lib_id INTEGER;
+library_access_rec RECORD;
 BEGIN
 --for each tomekeeper
 FOR user_rec IN SELECT * FROM users LOOP
   --get a library that he has access to (from library access table)
-  SELECT library INTO lib_id FROM library_access WHERE uid=user_rec.id;
+  SELECT INTO library_access_rec * FROM library_access WHERE uid=user_rec.id;
+  RAISE NOTICE 'primary library = %', library_access_rec.library;
   --set that library in the users table (primary_library)
-  UPDATE users SET primary_library=lib_id WHERE id=user_rec.id;
+  UPDATE users SET primary_library=library_access_rec.library WHERE id=user_rec.id;
 END LOOP;
 RETURN 0;
 END;
