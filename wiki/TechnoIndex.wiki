@@ -22,6 +22,7 @@ Modules:
   * DateTime::Format::Pg [http://search.cpan.org/perldoc?DateTime::Format::Pg manual]
   * SQL::Interpolate [http://search.cpan.org/perldoc?SQL::Interpolate manual]
   * MIME::Lite [http://search.cpan.org/perldoc?MIME::Lite manual]
+  * Params::Validate [http://search.cpan.org/perldoc?Params::Validate manual]
   * Crypt::PasswdMD5 [http://search.cpan.org/perldoc?Crypt::PasswdMD5 manual]
   * DBD::Pg [http://search.cpan.org/perldoc?DBD::Pg manual]
 
