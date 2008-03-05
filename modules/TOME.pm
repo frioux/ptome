@@ -354,12 +354,14 @@ sub tomebook_availability_search {
 	} elsif($params{status} eq 'in_collection') {
 		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL');
 	} elsif($params{status} eq 'can_checkout') {
-		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL AND id NOT IN (SELECT tomebook FROM checkouts WHERE', {semester => $params{semester}}, 'AND checkout IS NOT NULL)');
+		($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {isbn => $params{isbn}, library => $params{libraries}}, 'AND timeremoved IS NULL AND id NOT IN (SELECT tomebook FROM checkouts WHERE', {semester => $params{semester}}, 'AND (checkout IS NOT NULL AND checkin IS NULL))');
 	} else {
-		die 'Unknown status requested.';
+		die 'unknown status requested.';
 	}
 
 	my $sth = $dbh->prepare($sql);
+        warn $sql;
+        warn join(', ', @bind);
 	$sth->execute(@bind);
 
 	my @results;
