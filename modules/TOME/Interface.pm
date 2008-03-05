@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -1437,14 +1437,13 @@ sub ajax_libraries_selection_list {
 sub ajax_books_donated_list {
     my $self = shift;
 
-    #my $patronid = $self->query->param('patronid');
+    my $patronid = $self->query->param('patronid');
 
-    #return $self->template({file => 'blocks/books_donated.html',
-        #vars => {
-            #ids => $self->tomebook_availability_search({'patron'=>$patronid}),
-        #}, plain => 1,
-    #});
-    return "AWESOME!";
+    return $self->template({file => 'blocks/books_donated.html',
+        vars => {
+            ids => $self->donated_search({patron_id => $patronid}),
+        }, plain => 1,
+    });
 
 }
 
@@ -1456,16 +1455,37 @@ sub ajax_fill_reservation {
   if ($self->query->param('commit') eq 'fill') {
     my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
     if ($checkout != -1) {
-      return "Checkout $checkout";
+      return "Checked out!";
     } else {
-      return "You can't make that checkout!!!";
+      return "You can't make that checkout because it is not your book.";
     }
   } elsif ($self->query->param('commit') eq 'cancel') {
     my $cancel = $self->reservation_cancel({id => $self->query->param('reservation_id')});
     if ($cancel) {
+      return "Reservation Cancelled!";
+    } else {
+      return "Could not cancel reservation because it is not your reservation or your floor.";
+    }
+  }
+}
+#}}}
+
+#{{{ajax_checkin
+sub ajax_checkin {
+  my $self = shift;
+  if ($self->query->param('commit') eq 'checkin') {
+    my $checkin = $self->tomebook_checkin({id => $self->query->param('checkout_id')});
+    if ($checkin) {
+      return "Checked in";
+    } else {
+      return "Could not check in";
+    }
+  } elsif ($self->query->param('commit') eq 'cancel') {
+    my $cancel = $self->tomebook_cancel_checkout({id => $self->query->param('checkout_id')});
+    if ($cancel) {
       return "Cancelled!";
     } else {
-      return "Could not cancel...";
+      return "Could not cancel because it is not your book to check in.";
     }
   }
 }
