@@ -1,38 +1,31 @@
 [% META title = 'Orphan Books' %]
 <h3>These books have no class associated with them:</h3>
-<form name="report" action="[% config.cgibase %]/admin.pl" method="post">
+<form name="report" action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="findorphans">
-<table border="1" cellpadding="5">
-[% PROCESS 'blocks/librariesbox.html' name='library' libraries=tome.libraries %]
-<tr><td colspan="2" align="center"><input type="submit" value="Find Orphans"></td></tr>
+<table>
+[% PROCESS 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
+<tr><td colspan="2"><input type="submit" value="Find Orphans" /></td></tr>
 </table>
 </form>
 [% IF books.size %]
-<p>[% books.size %] orphans found.
-<table border="1">
+<p>[% books.size %] orphans found.</p>
+<table><thead>
 <tr>
-	<td align="center"><b>Title</b></td>
-	<td align="center"><b>Author</b></td>
-	<td align="center"><b>Edition</b></td>
-	<td align="center"><b>ISBN</b></td>
+  <th>Title</td>
+  <th>Author</td>
+  <th>Edition</td>
+  <th>ISBN</td>
 </tr>
+</thead><tbody>
 [% FOREACH book = books %]
 <tr>
-	<td>
-		[% book.title %]
-	</td>
-	<td>
-		[% book.author %]
-	</td>
-	<td>
-		[% book.edition %]
-	</td>
-	<td>
-		<a href="[% config.cgibase %]/admin.pl?rm=mainsearch&isbn=[% book.isbn | uri | html %]&status=all">[% book.isbn %]</a>
-	</td>
+  <td>[% book.title %]</td>
+  <td>[% book.author %]</td>
+  <td>[% book.edition %]</td>
+  <td><a href="[%- url(rm='isbnview', isbn=book.isbn) -%]">[% book.isbn %]</a></td>
 </tr>
 [% END %]
+</tbody></table>
 [% ELSE %]
 None, you rock!
 [% END %]
-</table>
