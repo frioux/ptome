@@ -1,4 +1,13 @@
 BEGIN WORK;
+--create reservations table, populate it
+--checkouts - remove reservation stuff from it
+--checkouts - check that each tomebook is only checked out once without being checked back in
+--reservations - check that fulfilled date is null or later than reservation date
+--function: tomebooks_available_to_reserve()
+--function: tomebooks_reserved()
+--trigger: reservation_update() - make sure we don't change the isbn, library_to, or semeseter of a reservation
+--trigger: reservation_insert() -
+
 LOCK TABLE checkouts,tomebooks;
 alter TABLE checkouts alter column tomebook type int;
 alter TABLE checkouts alter column semester type int;
