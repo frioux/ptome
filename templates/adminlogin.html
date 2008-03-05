@@ -6,7 +6,7 @@
 <body onLoad="document.login.username.focus();">
 <center>
 <img src="[% config.staticbase %]/tome.png">
-<form action="[% config.cgibase %]/admin.pl" method="post" name="login">
+<form action="[%- url -%]" method="post" name="login">
 [% IF error %]
 <p>Error: <font color="red">[% error %]</font>
 [% END %]
