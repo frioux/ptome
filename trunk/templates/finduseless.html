@@ -3,42 +3,36 @@
 <form name="report" action="[% config.cgibase %]/admin.pl" method="post">
 <input type="hidden" name="rm" value="finduseless">
 <table border="1" cellpadding="5">
-[% PROCESS 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries %]
-<tr><td colspan="2" align="center"><input type="submit" value="Find Useless"></td></tr>
+[% PROCESS 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
+<tr><td colspan="2"><input type="submit" value="Find Useless" /></td></tr>
 </table>
 </form>
 [% IF tomebooks.size %]
-<p>[% tomebooks.size %] useless books found.
-<p><table border="1">
+<p>[% tomebooks.size %] useless books found.</p>
+<p><table><thead>
 <tr>
-	<td align="center"><b>ID</b></td>
-	<td align="center"><b>Title</b></td>
-	<td align="center"><b>Author</b></td>
-	<td align="center"><b>Edition</b></td>
-	<td align="center"><b>Originator</b></td>
-	<td align="center"><b>Classes</b></td>
-</tr>
+	<th>ID</th>
+	<th>Title</th>
+	<th>Author</th>
+	<th>Edition</th>
+	<th>Originator</th>
+	<th>Classes</th>
+      </tr></thead><tbody>
 [% FOREACH book = tomebooks %]
 <tr>
-	<td><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% book.id | html | uri %]">[% book.id %]</a></td>
-	<td>
-		[% book.title %]
-	</td>
-	<td>
-		[% book.author %]
-	</td>
-	<td>
-		[% book.edition %]
-	</td>
-	<td><a href="[% config.cgibase %]/admin.pl?rm=patronview&id=[% book.originator | html | uri %]">[% book.originator_name | html %]</a> ([% book.originator_email | html %])</td>
+	<td><a href="[%- url(rm='tomebookinfo', id=bookid) -%]">[% book.id %]</a></td>
+	<td>[% book.title %]</td>
+	<td>[% book.author %]</td>
+	<td>[% book.edition %]</td>
+	<td><a href="[%- url(rm='patronview', id=book.originator) -%]">[% book.originator_name | html %]</a> ([% book.originator_email | html %])</td>
 	<td>
 		[% FOREACH class = book.classes %]
-		<a href="[% config.cgibase %]/admin.pl?rm=classsearch&class=[% class.id | uri | html %]">[% class.id %]</a> - [% class.name %]<br />
+		<a href="[%- url(rm='classsearch', class=class.id) -%]">[% class.id %]</a> - [% class.name | html %]<br />
 		[% END %]
 	</td>
 </tr>
 [% END %]
+</tbody></table>
 [% ELSE %]
 Hooray!  There are no useless books in libraries selected.
 [% END %]
-</table>
