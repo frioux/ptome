@@ -371,6 +371,40 @@ sub tomebook_availability_search {
 }
 #}}}
 
+#{{{donated_search
+sub donated_search {
+
+=head2 donated_search
+
+Takes a hash like this:
+
+patron_id => id
+
+and returns an array of book ids
+
+=cut
+
+  my $self = shift;
+
+  my %params = validate(@_, {
+      patron_id => {  type => SCALAR, regex => qr/^\d+$/ }
+    });
+
+  my $dbh = $self->dbh;
+
+  my $sth = $dbh->prepare('SELECT id FROM tomebooks WHERE  originator = ?');
+  $sth->execute($params{patron_id});
+
+  my @results;
+  while(my @result = $sth->fetchrow_array) {
+    push @results, $result[0];
+  }
+  return @results;
+
+
+}
+#}}}
+
 #{{{tomebook_availability_search_amount
 
 =head2 tomebook_availability_search_amount
@@ -603,7 +637,7 @@ sub reservation_fulfill {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		reservation_id	=> { type => SCALAR, regex => qr/^\d+$/ },
+		reservation_id	=> { type => SCALAR, regex => qr/^\d+$/, untaint => 1 },
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
@@ -1371,6 +1405,10 @@ when the book was donated
 
 originator of tomebook
 
+=item library
+
+library of tomebook
+
 =back
 
 =cut
@@ -2041,20 +2079,27 @@ sub tomebook_can_reserve {
 
 =head2 tomebook_cancel_checkout
 
-foo
+takes hash as input:
+
+ id=> checkout_id
 
 =cut
 
 sub tomebook_cancel_checkout {
-	my $self = shift;
+  my $self = shift;
 
-	my %params = validate(@_, {
-		id	=> { type => SCALAR, regex => qr/^\d+$/ },
-	});
+  my %params = validate(@_, {
+      id	=> { type => SCALAR, regex => qr/^\d+$/ },
+    });
 
-	my $dbh = $self->dbh;
+  if (grep {$self->tomebook_info({ tomebook => $self->checkout_info({id => $params{id}})->{tomebook}})->{library} == $_} ($self->library_access({user => $self->session->param('id')}))) {
 
-	$dbh->do('DELETE FROM checkouts WHERE id = ?', undef, @params{qw(id)});
+  my $dbh = $self->dbh;
+
+  #$dbh->do('DELETE FROM checkouts WHERE id = ?', undef, @params{qw(id)});
+  return 1;
+  }
+  return 0;
 }
 #}}}
 
@@ -2081,9 +2126,13 @@ sub tomebook_checkin {
 		id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
+      if (grep {$self->tomebook_info({ tomebook => $self->checkout_info({id => $params{id}})->{tomebook}})->{library} == $_} ($self->library_access({user => $self->session->param('id')}))) {
 	my $dbh = $self->dbh;
 
 	$dbh->do('UPDATE checkouts SET checkin = now() WHERE id = ?', undef, @params{qw(id)});
+        return 1;
+      }
+      return 0;
 }
 #}}}
 

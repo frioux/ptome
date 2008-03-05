@@ -1,7 +1,7 @@
 [%# Receives a list of book id's as ids %]
-<table>
-[%- FOREACH id = ids -%]
-  [%- book_info = tome.book_info(id) -%]
-  <tr><td>[% PROCESS 'book.html' id=id isbn=book_info.isbn %]</td></tr>
+<table><thead><tr><th>Book</th><th>When Donated</th><th>Expiration</th></tr></thead><tbody>
+    [%- FOREACH id = ids -%]
+    [%- info=tome.tomebook_info(id) -%]
+    <tr><td>[% PROCESS 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- info.timedonated | html -%]</td><td>[%- info.expire | html -%]</td></tr>
 [%- END -%]
 </table>
