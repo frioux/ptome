@@ -1,6 +1,6 @@
 </div><!-- end body -->
 <div id="footer">
-  Logged in as: <strong>[% user_info.username %]</strong> |
+  Logged in as: <strong>[% user_info.username | html %]</strong> |
   <a href="[%- url(rm='management') -%]">[% IF session.admin %]User and System Management[% ELSE %]User Preferences[% END %]</a> |
   <a href="[%- url(rm='logout') -%]">Logout</a>
 </div>
