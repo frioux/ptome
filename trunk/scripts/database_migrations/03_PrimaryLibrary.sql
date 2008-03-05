@@ -1,4 +1,5 @@
 BEGIN WORK;
+--**this transaction will fail if there are tomekeepers with no library permissions in library_access
 
 --check & update database to version 3
 SELECT check_and_update_dbversion(2,3);
