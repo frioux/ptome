@@ -1,0 +1,10 @@
+#summary Layout of the Database
+
+= Introduction =
+
+New developers can look here for information about what tables there are, what goes in each table, ...
+
+
+= Details =
+
+* sessions
