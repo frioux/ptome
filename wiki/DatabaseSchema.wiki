@@ -8,3 +8,5 @@ New developers can look here for information about what tables there are, what g
 = Details =
 
 * sessions
+  -id (character-32; not null)
+  -a_session (text; not null)
