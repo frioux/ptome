@@ -2,43 +2,4 @@
 [%- INCLUDE 'blocks/book.html' isbn=isbn -%]
 <h3>Reserve Book</h3>
 [%# Book Reservation Table  %]
-<form action="[% url %]" name="isbnreserve" id="isbnreserve" method="post">
-<input type="hidden" name="rm" value="isbnreserve" />
-<input type="hidden" name="isbn" value="[% isbn | html %]" />
-<table>
-<tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
-[%# Since most people only ever have access to one library, we make this a variable thinger. %]
-[%- IF libraries_from.size > 1 -%]
-    <tr><td><strong>Create Reservation from:</strong></td><td><select name="library_from" id="library_from">
-        [%- FOREACH library = libraries_from -%]
-            <option value="[% library | html %]" [% IF loop.first%]selected="selected"[% END %]>[% tome.library_info(library).name | html %]</option>
-        [%- END -%]
-  </select>[% errs.libraries_from %]</td></tr>
-[%- ELSE -%]
-<input type="hidden" name="library_from" value="[% libraries_from.first %]" />
-[%- END -%]
-[%# TODO: Need a default value here. -%]
-<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
-[%#should be if it is in our library -%]
-<tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
-<tr id="libraries_selection">
-[%- INCLUDE 'blocks/libraries_selection.html' libraries=libraries_to -%]
-</tr>
-[%- prototype.observe_field('semester', {
-    url => url,
-    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+document.isbnreserve.library_from.value",
-    update=> 'libraries_selection',
-    loading=>'document.isbnreserve.submit.disabled = true',
-    loaded=>prototype.visual_effect('highlight', 'libraries_selection', { duration=>'0.5' }),
-})
--%]
-[%- prototype.observe_field('library_from', {
-    url => url,
-    with => "'semester='+document.isbnreserve.semester.value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
-    update=> 'libraries_selection',
-    loading=>'document.isbnreserve.submit.disabled = true',
-    loaded=>prototype.visual_effect('highlight', 'libraries_selection', { duration=>'0.5' }),
-})
--%]
-</table>
-</form>
+[%- PROCESS blocks/createreservation.html isbn=isbn -%]

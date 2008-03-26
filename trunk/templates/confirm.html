@@ -2,7 +2,7 @@
 <center>
 <h2>Are you sure you want to:</h1>
 <p><font size="+1">[% CGI.param('action') %]</font>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 [% FOREACH param = CGI.param %]
 [% IF param == 'rm' %]
 <input type="hidden" name="rm" value="[% CGI.param('finalrm') | html %]">

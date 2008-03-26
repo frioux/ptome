@@ -1,6 +1,6 @@
 [% META title = 'Useless Books' %]
 <h3>These books have a class associated with them, but are marked as not being usable:</h3>
-<form name="report" action="[% config.cgibase %]/admin.pl" method="post">
+<form name="report" action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="finduseless">
 <table border="1" cellpadding="5">
 [% PROCESS 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]

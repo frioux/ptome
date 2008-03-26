@@ -31,7 +31,7 @@
 <td>
 
 [%# Class jump box %]
-<form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<form action="[%- url -%]" method="post" name="isbnview">
 <input type="hidden" name="rm" value="classsearch" />
 <table>
   <thead><tr><th colspan="2">Jump to Class</th></tr></thead>
@@ -41,7 +41,7 @@
 </form>
 
 [%# ISBN jump box %]
-<form action="[% config.cgibase | html %]/admin.pl" method="post" name="isbnview">
+<form action="[%- url -%]" method="post" name="isbnview">
 <input type="hidden" name="rm" value="isbnview" />
 <table>
   <thead> <tr><th colspan="2">Jump to ISBN</th></tr></thead>
@@ -54,7 +54,7 @@
 
 <td valign="top">
 [%# Edit Patron box %]
-<form action="[% config.cgibase | html %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <table>
   <thead><tr><th colspan="2" class="submit">Edit Patron</th></tr></thead>
 <tr><td>
