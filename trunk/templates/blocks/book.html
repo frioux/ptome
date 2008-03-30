@@ -1,13 +1,17 @@
-[%# Takes isbn as an argument also, if id is defined id will be shown %]
+[%# Takes isbn as an argument also, if id is defined id will be shown, also takes maxlength of title and author %]
+[%- USE String -%]
 [%- bookinfo = tome.book_info(isbn) -%]
 <dl class="table-display">
   [%- IF (id) -%]
   <dt>Book ID:</dt>
-  <dd><a href="[% config.cgibase %]/admin.pl?rm=tomebookinfo&id=[% id %]">[% id | html %]</a></dd>
+  <dd><a href="[%- url(rm='tomebookinfo', id=id) -%]">[% id | html %]</a></dd>
   [%- END -%]
   <dt>ISBN:</dt>
-  <dd><a href="[% config.cgibase %]/admin.pl?rm=isbnview&isbn=[% bookinfo.isbn %]">[% bookinfo.isbn | html %]</a></dd>
-  <dt>Title:</dt><dd>[% bookinfo.title | html %]</dd>
-  <dt>Author:</dt><dd>[% bookinfo.author | html %]</dd>
+  <dd><a href="[%- url(rm='isbnview', isbn=bookinfo.isbn) -%]">[% bookinfo.isbn | html %]</a></dd>
+  [%- title = String.new(bookinfo.title) -%]
+  [% author = String.new(bookinfo.author) %]
+  [%- maxlen = 30 -%]
+  <dt>Title:</dt><dd>[% title.truncate(maxlen, '...') | html %]</dd>
+  <dt>Author:</dt><dd>[% author.truncate(maxlen, '...') | html %]</dd>
   <dt>Edition:</dt><dd>[% bookinfo.edition | html %]</dd>
 </dl>
