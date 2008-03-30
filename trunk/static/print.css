@@ -1,6 +1,6 @@
 body {
   width: 100%;
-  font: 12pt "Times New Roman", "TimesNR", Times, serif !important;
+  font: 10pt "Times New Roman", "TimesNR", Times, serif !important;
   background: #FFFFFF !important;
   margin: 0;
   padding: 0;
@@ -35,4 +35,7 @@ table td {
   margin: 8px 0 8px 0;
   padding: 0;
   clear: both;
+}
+form input {
+  font-size: 0.8em;
 }
