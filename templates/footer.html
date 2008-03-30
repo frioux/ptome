@@ -1,8 +1,10 @@
 </div><!-- end body -->
 <div id="footer">
-  Logged in as: <strong>[% user_info.username | html %]</strong> |
-  <a href="[%- url(rm='management') -%]">[% IF session.admin %]User and System Management[% ELSE %]User Preferences[% END %]</a> |
-  <a href="[%- url(rm='logout') -%]">Logout</a>
+  <a href="[%- url(rm='addclass') -%]">Add Class</a> |
+  <a href="[%- url(rm='findorphans') -%]">Orphans</a> |
+  <a href="[%- url(rm='finduseless') -%]">Useless</a> |
+  <a href="[%- url(rm='stats') -%]">Stats</a> |
+  <a href="[%- url(rm='management') -%]">[% IF session.admin %]User and System Management[% ELSE %]User Preferences[% END %]</a>
 </div>
 </div><!-- end container -->
 </body>
