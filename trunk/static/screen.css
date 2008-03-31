@@ -186,6 +186,7 @@ form {
   margin-bottom: 0px;
 }
 form input[type=text],
+form input[type=password],
 textarea{
   border: 1px solid #D7D7D7;
 }
@@ -268,6 +269,9 @@ table {
 table.full {
   width: 100%;
 }
+table.noborder > tbody > tr >  td {
+  border: 0;
+}
 table#main {
   width: 95%;
   text-align: center;
@@ -294,25 +298,7 @@ tr.rowodd {
 tr.roweven {
   background-color:#F2F2F2;
 }
-/*
-dl.table-display {
-  margin: 2em 0;
-  padding: 0;
-}
-.table-display dt {
-  float: left;
-  margin: 0 0 0 0;
-  padding: .5em;
-  border-top: 1px solid #999;
-  font-weight: bold;
-}
-.table-display dd {
-  float: left;
-  margin: 0 0 0 0;
-  padding: .5em;
-  border-top: 1px solid #999;
-}
-*/
+
 dl.table-display {
   display: block;
 }
@@ -326,7 +312,12 @@ dl.table-display dt {
 dl.table-display dd {
   clear:   right;
   display:  block;
-  white-space: nowrap;
+  /*white-space: nowrap;*/
+}
+dl.table-display dd input,
+dl.table-display dd select {
+  margin-top: -2px;
+  margin-bottom: 4px;
 }
 
 /* --- Table sorting ----------------------------- */
