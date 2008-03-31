@@ -1,16 +1,8 @@
-[%# Receives a list of libraries as follows:
-
-list = {
-        ours = T if the library is the current tomekeepers
-        available = (number of books of the current isbn available
-        id = library id
-        }
-
-that have books as `libraries'
--%]
+[%# Receives semester, library_from, and isbn -%]
+[%- libraries = tome.isbnview_to_libraries(semester, library_from, isbn) -%]
 [%# This little hack doesn't even give you an option if there are no books -%]
-[%- UNLESS libraries.first.available -%]
-    <td colspan="2">There are no books available for the options you have selected.  Sorry.</td>
+[%- IF (!libraries.first.available) -%]
+<td colspan="2">There are no books available for the options you have selected or you haven't yet selected any options.  Sorry.</td>
 [%- ELSE -%]
     <td>
     <input type="submit" value="Create Reservation to Library:" id="submit"/></td><td><select name="library_to" id="library_to">
