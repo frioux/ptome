@@ -1914,16 +1914,11 @@ sub checkout_history {
 
 	my $dbh = $self->dbh;
 
-	my $sth = $dbh->prepare("SELECT checkouts.id AS id, semester, borrower, patrons.name as borrower_name, patrons.email as borrower_email, checkout, checkin, comments, uid, username, library FROM checkouts, users, patrons WHERE uid = users.id AND patrons.id = borrower AND tomebook = ? ORDER BY semester DESC");
+	my $sth = $dbh->prepare("SELECT id FROM checkouts WHERE tomebook = ? ORDER BY semester DESC");
 	$sth->execute($params{id});
 	my @results;
-	while(my $result = $sth->fetchrow_hashref) {
-		foreach(qw(checkin checkout)) {
-			if(defined($result->{$_})) {
-				$result->{$_} = DateTime::Format::Pg->parse_timestamptz($result->{$_});
-			}
-		}
-		push @results, $result;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
 	}
 
 	return \@results;
