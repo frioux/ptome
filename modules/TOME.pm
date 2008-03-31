@@ -2627,7 +2627,7 @@ sub user_info {
 		username	=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, admin, disabled, password FROM users';
+	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, primary_library, admin, disabled, password FROM users';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ? ORDER BY disabled, username');
@@ -2823,6 +2823,57 @@ sub semester_add {
 
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.semesters_id_seq')");
 	return $id;
+}
+#}}}
+
+#{{{isbnview_to_libraries
+# this method takes semester, from_library, isbn and returns a list containing library id and the amount of books that library has of the specified isbn.
+
+sub isbnview_to_libraries {
+    my $self = shift;
+    my $semester = shift;
+    my $from_library = shift;
+    my $isbn = shift;
+
+    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
+
+    # to_libraries refers to libraries that the
+
+    my @to_libraries;
+
+    if($self->library_info({id => $from_library})->{intertome}) {
+        foreach (@{$self->library_info()}) {
+            my $library = $self->library_info({id => $_->{'id'}});
+            if ($library->{intertome}) {
+                my $availability = {
+                    id => $library->{id},
+                    available => $self->tomebook_availability_search_amount({
+                        isbn => $isbn,
+                        status => 'can_reserve',
+                        semester => $semester,
+                        libraries => [$library->{id}],
+                    }),
+                    ours => $from_library == $library->{id} ? 1 : 0,
+                };
+                if($availability->{available} > 0) {
+                    push @to_libraries, $availability;
+                }
+            }
+        }
+     } else {
+        push @to_libraries, {
+            id => $from_library,
+            available => $self->tomebook_availability_search_amount({
+                isbn => $isbn,
+                status => 'can_reserve',
+                semester => $semester,
+                libraries => [$from_library],
+            }),
+            ours => 1,
+        };
+    }
+
+    return \@to_libraries;
 }
 #}}}
 
