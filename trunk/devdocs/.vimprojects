@@ -98,13 +98,14 @@ cgi=cgi{
    book.html
    books_donated.html
    checkin.html
+   createreservation.html
    datetime.html
    libraries_selection.html
    librariesbox.html
    librariesnotbox.html
+   patronlink.html
    reservation.html
    semestersbox.html
-   patronlink.html
   }
  }
 
