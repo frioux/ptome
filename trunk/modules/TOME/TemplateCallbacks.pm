@@ -37,11 +37,25 @@ sub checkout_info {
 	return $self->{tome}->checkout_info({ id => $checkout });
 }
 
+sub isbnview_to_libraries {
+  my $self = shift;
+  my $semester = shift;
+  my $from_library = shift;
+  my $isbn = shift;
+
+  return $self->{tome}->isbnview_to_libraries($semester, $from_library, $isbn);
+}
+
 sub tomebook_info {
 	my $self = shift;
 	my $tomebook = shift;
 
 	return $self->{tome}->tomebook_info({ tomebook => $tomebook });
+}
+
+sub semester {
+  my $self = shift;
+  return 2;
 }
 
 sub book_info {
