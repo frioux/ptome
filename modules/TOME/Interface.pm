@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -268,15 +268,7 @@ sub mainsearch {
 #{{{tomekeepers
 sub tomekeepers {
 
-=head2 tomekeepers
-
-
-
-=cut
-
-# Code Goes Here
-
-    my $self = shift;
+  my $self = shift;
   my $users = $self->user_info;
 
   foreach my $userinfo (@$users) {
@@ -427,12 +419,27 @@ sub classsearch {
 			available	=> $self->tomebook_availability_search_amount({ isbn => $book->{isbn}, status => 'can_reserve', semester => ($self->session->param('currsemester') ? $self->session->param('currsemester')->{id} : $self->param('currsemester')->{id}), libraries => \@otherlibraryids }),
 		};
 	}
+my $semester;
+    if ($q->param('semester')) {
+        $semester = $q->param('semester');
+    } elsif ($self->session->param('currsemester')) {
+        $semester = $self->session->param('currsemester')->{id};
+    } else {
+        $semester = $self->param('currsemester')->{id};
+    }
+
+    # from_libraries refers to libraries that the
+    # reservation is coming from, not the book.
+    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
+    my @from_libraries = keys %{$library_access};
 
 	return $self->template({ file => 'classsearch.html', vars => {
 		id		=> $q->param('class'),
 		name		=> $classinfo->{name},
 		comments	=> $classinfo->{comments},
 		books		=> $classinfo->{books},
+                semester        => $semester,
+                libraries_from  => \@from_libraries,
 	}});
 }
 #}}}
@@ -1293,12 +1300,13 @@ sub isbnview {
     # reservation is coming from, not the book.
     my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
     my @from_libraries = keys %{$library_access};
+    my $isbn = $q->param('isbn');
 
     return $self->template({file => 'isbnview.html',
         vars => {
-            isbn => $q->param('isbn'),
+            isbn => $isbn,
             libraries_from => \@from_libraries,
-            libraries_to => $from_libraries[0] ? $self->isbnview_to_libraries($semester, $from_libraries[0]) : [],
+            libraries_to => $self->isbnview_to_libraries($semester, $from_libraries[0], $isbn),
             semester => $semester,
             errs        => $errs,
         }
@@ -1307,60 +1315,10 @@ sub isbnview {
 }
 #}}}
 
-#{{{isbnview_to_libraries
-sub isbnview_to_libraries {
-    my $self = shift;
-    my $semester = shift;
-    my $from_library = shift;
+#{{{ajax_isbnreserve
+sub ajax_isbnreserve {
 
-    my $q = $self->query;
-
-    my $library_access = $self->_libraryaccesshash($self->param('user_info')->{id});
-
-    # to_libraries refers to libraries that the
-    # reservation is going to, not the book.
-    my @to_libraries;
-
-    if($self->library_info({id => $from_library})->{intertome}) {
-        foreach (@{$self->library_info()}) {
-            my $library = $self->library_info({id => $_->{'id'}});
-            if ($library->{intertome}) {
-                my $availability = {
-                    id => $library->{id},
-                    available => $self->tomebook_availability_search_amount({
-                        isbn => $q->param('isbn'),
-                        status => 'can_reserve',
-                        semester => $semester,
-                        libraries => [$library->{id}],
-                    }),
-                    ours => $from_library == $library->{id} ? 1 : 0,
-                };
-                if($availability->{available} > 0) {
-                    push @to_libraries, $availability;
-                }
-            }
-        }
-     } else {
-        push @to_libraries, {
-            id => $from_library,
-            available => $self->tomebook_availability_search_amount({
-                isbn => $q->param('isbn'),
-                status => 'can_reserve',
-                semester => $semester,
-                libraries => [$from_library],
-            }),
-            ours => 1,
-        };
-    }
-
-    return \@to_libraries;
-}
-#}}}
-
-#{{{isbnreserve
-sub isbnreserve {
-
-=head2 isbnreserve
+=head2 ajax_isbnreserve
 
 foo
 
@@ -1383,7 +1341,7 @@ foo
                     comment
             )],
             filters			=> 'trim',
-    }, { target => 'isbnreserve' }) || return $self->check_rm_error_page;
+    }, { target => 'ajax_isbnreserve' }) || return $self->check_rm_error_page;
 
     my $patron_info = $self->patron_info({ email => $results->valid('patron') });
     unless($patron_info) {
@@ -1401,7 +1359,7 @@ foo
         semester => $q->param('semester'),
     });
 
-    return $self->forward('patronview');
+    return "Book has been reserved!";
 }
 #}}}
 
@@ -1419,13 +1377,11 @@ sub _libraryaccesshash {
 sub ajax_libraries_selection_list {
     my $self = shift;
 
-    my $semester = $self->query->param('semester');
-    my $library_from = $self->query->param('library_from');
-
     return $self->template({file => 'blocks/libraries_selection.html',
         vars => {
-            semester => $semester,
-            libraries => $self->isbnview_to_libraries($semester, $library_from),
+            semester => $self->query->param('semester'),
+            library_from => $self->query->param('library_from'),
+            isbn => $self->query->param('isbn'),
         }, plain => 1,
     });
 }
