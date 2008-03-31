@@ -2,7 +2,7 @@
 <table cellpadding="5"><tr><td valign="top" style="text-align: right;">
 
 [%# Main search box %]
-<form action="[% config.cgibase | html %]/admin.pl" style="text-align: right" method="post" name="mainsearch">
+<form action="[%- url -%]" style="text-align: right" method="post" name="mainsearch">
 <input type="hidden" name="rm" value="mainsearch" />
 <table>
   <thead>
@@ -70,15 +70,3 @@ Email
 </table>
 </td>
 </tr></table>
-
-[%# Search results area %]
-
-[% IF books.size > 0 %]<p>[% books.size %] result(s)
-<table>
-[% FOREACH book = books %]
-<tr><td>
-[% INCLUDE 'blocks/book.html' isbn = book %]
-</td></tr>
-[% END %]
-</table>
-[% END %]
