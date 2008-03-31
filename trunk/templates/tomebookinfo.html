@@ -15,7 +15,7 @@
     </tr></thead><tbody>
     <tr>
       <td>
-        [%- PROCESS blocks/book.html isbn=tomebook.isbn -%]
+        [%- PROCESS blocks/book.html isbn=tomebook.isbn maxlength=1000 -%]
         <div align="right"><font size="-3"><a href="[%- url(rm='updatebook', isbn=tomebookinfo.isbn) -%]">Edit</a></font></div>
       </td>
       <td>
