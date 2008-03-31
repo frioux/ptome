@@ -10,8 +10,8 @@
   <dd><a href="[%- url(rm='isbnview', isbn=bookinfo.isbn) -%]">[% bookinfo.isbn | html %]</a></dd>
   [%- title = String.new(bookinfo.title) -%]
   [% author = String.new(bookinfo.author) %]
-  [%- maxlen = 30 -%]
-  <dt>Title:</dt><dd>[% title.truncate(maxlen, '...') | html %]</dd>
-  <dt>Author:</dt><dd>[% author.truncate(maxlen, '...') | html %]</dd>
+  [%- SET maxlength = 30 IF !maxlength -%]
+  <dt>Title:</dt><dd>[% title.truncate(maxlength, '~').replace('~', '&hellip;')  %]</dd>
+  <dt>Author:</dt><dd>[% author.truncate(maxlength, '~').replace('~', '&hellip;')  %]</dd>
   <dt>Edition:</dt><dd>[% bookinfo.edition | html %]</dd>
 </dl>
