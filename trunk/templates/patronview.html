@@ -34,7 +34,7 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [%- FOREACH checkout_id IN checkouts -%]
 <tr>
   <td>[% tome.library_info(tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).library).name %]</td>
-  <td><a href="[% url(rm = 'tomebookinfo', id = checkout_id) %]">Tomebook [% checkout_id %]</a></td>
+  <td><a href="[% url(rm = 'tomebookinfo', id = tome.checkout_info(checkout_id).tomebook) %]">Tomebook [% tome.checkout_info(checkout_id).tomebook | html %]</a></td>
   <td>[% PROCESS 'blocks/book.html' isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
   <td>[%- semestershash.${tome.checkout_info(checkout_id).semester}.name -%]</td>
   <td>[%- PROCESS 'blocks/checkin.html' checkout=checkout_id -%]
