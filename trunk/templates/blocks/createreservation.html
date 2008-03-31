@@ -1,36 +1,41 @@
-<form action="[% url %]" name="reserve[%- isbn | html -%]" id="reserve[%- isbn | html -%]" method="post">
-<input type="hidden" name="rm" value="isbnreserve" />
+<div name="reserve[%- isbn | html -%]" id="reserve[%- isbn | html  -%]">
+[%- prototype.form_remote_tag({
+  url => url,
+  update => 'reserve' _ isbn,
+  loading => prototype.update_element_function("reserve${isbn}", { content => 'Loading...', action => 'update'}),
+  loaded => prototype.visual_effect('highlight', "reserve${isbn}", { duration => '0.5'}),
+  }) -%]
+<input type="hidden" name="rm" value="ajax_isbnreserve" />
 <input type="hidden" name="isbn" value="[% isbn | html %]" />
 <table>
 <tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
 [%# Since most people only ever have access to one library, we make this a variable thinger. %]
 [%- IF libraries_from.size > 1 -%]
-    <tr><td><strong>Create Reservation from:</strong></td><td><select name="library_from" id="library_from">
+<tr><td><strong>Create Reservation from:</strong></td><td><select name="library_from" id="library_from[%- isbn | html -%]">
         [%- FOREACH library IN libraries_from -%]
-            <option value="[% library | html %]" [% IF loop.first%]selected="selected"[% END %]>[% tome.library_info(library).name | html %]</option>
+            <option value="[% library | html %]"[% IF (user_info.primary_library == library) %] selected="true"[% END %]>[% tome.library_info(library).name | html %]</option>
         [%- END -%]
   </select>[% errs.libraries_from %]</td></tr>
 [%- ELSE -%]
 <input type="hidden" name="library_from" value="[% libraries_from.first %]" />
 [%- END -%]
-[%# TODO: Need a default value here. -%]
-<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' %][% errs.semester %]</td></tr>
+<tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' id='semester' _ isbn %][% errs.semester %]</td></tr>
 [%#should be if it is in our library -%]
 <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
 <tr id="libraries_selection[%- isbn | html -%]">
-[%- INCLUDE 'blocks/libraries_selection.html' semester=tome.semester library_from=libraries_from.0 isbn=isbn -%]
+[%- INCLUDE 'blocks/libraries_selection.html' semester=(session.currsemester.id || currsemester.id) library_from=user_info.primary_library isbn=isbn -%]
 </tr>
-[%- prototype.observe_field('semester', {
+[%- prototype.observe_field("semester${isbn}", {
     url => url,
-    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+document.reserve${isbn}.library_from.value",
+    with => "'semester='+value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+\$('library_from${isbn}').value",
     update=> "libraries_selection${isbn}",
     loading=>"document.reserve${isbn}.submit.disabled = true",
     loaded=>prototype.visual_effect('highlight', "libraries_selection${isbn}", { duration=>'0.5' }),
 })
 -%]
-[%- prototype.observe_field('library_from', {
+[%- prototype.observe_field("library_from${isbn}", {
     url => url,
-    with => "'semester='+document.reserve${isbn}.semester.value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
+    with => "'semester='+\$('semester${isbn}').value+'&rm=ajax_libraries_selection_list&isbn=$isbn&library_from='+value",
     update=> "libraries_selection${isbn}",
     loading=>"document.reserve${isbn}.submit.disabled = true",
     loaded=>prototype.visual_effect('highlight', "libraries_selection${isbn}", { duration=>'0.5' }),
@@ -38,3 +43,4 @@
 -%]
 </table>
 </form>
+</div>
