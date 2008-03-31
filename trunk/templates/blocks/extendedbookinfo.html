@@ -1,0 +1,12 @@
+<strong>Library:</strong> [% tome.library_info(tomebookinfo.library).name %]<br />
+<strong>Originator:</strong> <a href="[%- url(rm='patronview',id=tomebookinfo.originator) -%]">[% tome.patron_info(tomebookinfo.originator).name | html %]</a> ([% tome.patron_info(tomebookinfo.originator).email | html %])<br />
+<strong>Time donated:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timedonated %]<br />
+[% IF tomebookinfo.timeremoved %]<strong>Time removed:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timeremoved %]<br />[% END %]
+<strong>Comments:</strong>
+<blockquote>[% tomebookinfo.comments | html %]</blockquote>
+<strong>Expiration Semester:</strong>
+[% IF tomebookinfo.expire %]
+[% semestershash.${tomebookinfo.expire}.name | html %]
+[% ELSE %]
+<font color="green">This book will not expire</font>
+[% END %]<br />
