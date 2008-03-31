@@ -1,17 +1,6 @@
 [%# Takes name as an input %]
-<select name="[% name | html %]" id="[% name | html %]" >
+<select name="[% name | html %]" id="[% id | html %]">
 [%- FOREACH semester = semesters -%]
-<option value="[% semester.id | html %]"
-[%- IF CGI.param(name) -%]
-    [%- IF CGI.param(name) == semester.id -%]
-        selected="selected"
-    [%- END -%]
-[%- ELSE -%]
-    [%- IF (session.currsemester || currsemester.id) == semester.id -%]
-        selected="selected"
-    [%- END -%]
-[%- END -%]
-> [%# This bracket is supposed to be here!  It matches with the option tag above -%]
-[%- semester.name | html %]</option>
+<option value="[% semester.id | html %]" [%- IF (session.currsemester.id || currsemester.id) == semester.id -%]selected="selected"[%- END -%]>[%- semester.name | html %]</option>
 [%- END -%]
 </select>
