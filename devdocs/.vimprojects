@@ -106,6 +106,8 @@ cgi=cgi{
    patronlink.html
    reservation.html
    semestersbox.html
+   bookclassbox.html
+   extendedbookinfo.html
   }
  }
 
