@@ -2,38 +2,9 @@
 [%- USE date -%]
 [%- tomebookinfo = tome.tomebook_info(tomebook.id) -%]
 [%- bookinfo = tome.book_info(tomebookinfo.isbn) -%]
-[%- #{{{ Book info -%]
 <h3>Book <a href="[%- url(rm='tomebookinfo', id=tomebook.id) -%]">#[% tomebook.id | html %]</a></h3>
-[%- IF tomebookinfo.timeremoved -%]
-<p><font color="red">Book has been removed from TOME</font></p>
-[%- END -%]
-<p><table bgcolor="lightyellow"><thead>
-    <tr>
-      <th>Book Information</th>
-      <th>Used in these classes</th>
-      <th>Associate Class</th>
-    </tr></thead><tbody>
-    <tr>
-      <td>
-        [%- PROCESS blocks/book.html isbn=tomebook.isbn maxlength=1000 -%]
-        <div align="right"><font size="-3"><a href="[%- url(rm='updatebook', isbn=tomebookinfo.isbn) -%]">Edit</a></font></div>
-      </td>
-      <td>
-        [%- FOREACH class IN classes %]<a href="[%- url(rm='classsearch',class=class.id) -%]">[% class.id | html %]</a> - [% class.name | html %]<br />[% END -%]
-      </td>
-      <td>
-        <form action="[%- url -%]" method="post">
-          <input type="hidden" name="rm" value="addclassbook">
-          <input type="hidden" name="isbn" value="[% tomebook.isbn | html %]">
-          Class ID: [%- PROCESS blocks/autocomplete_class.html name='class' -%]<br />
-          Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
-          When verified: [%- PROCESS blocks/semestersbox.html name='verified' -%]<br />
-          Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
-          <input type="submit" value="Associate Class" />
-        </form>
-      </td>
-</tr></tbody></table>
-[%- #}}} -%]
+[%- IF tomebookinfo.timeremoved -%]<p><font color="red">Book has been removed from TOME</font></p>[%- END -%]
+[%- PROCESS blocks/bookclassbox.html -%]
 [%- #{{{ Edit book -%]
 [%- IF CGI.param('edit') AND librarieshash.${tomebookinfo.library} -%]
 <a name="updatetomebook"></a>
@@ -75,22 +46,7 @@
 </form>
 [%- #}}} -%]
 [%- ELSE -%]
-[%- #{{{ Tomebook Info -%]
-<p><strong>Library:</strong> [% tome.library_info(tomebookinfo.library).name %]</p>
-<p><strong>Originator:</strong> <a href="[%- url(rm='patronview',id=tomebookinfo.originator) -%]">[% tome.patron_info(tomebookinfo.originator).name | html %]</a> ([% tome.patron_info(tomebookinfo.originator).email | html %])</p>
-<p><strong>Time donated:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timedonated %]
-[% IF tomebookinfo.timeremoved %]</p>
-<p><strong>Time removed:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timeremoved %]
-[% END %]</p>
-<p><strong>Comments:</strong><br />
-<blockquote>[% tomebookinfo.comments | html %]</blockquote>
-<p><strong>Expiration Semester:</strong>
-[% IF tomebookinfo.expire %]
-[% semestershash.${tomebookinfo.expire}.name | html %]
-[% ELSE %]
-<font color="green">This book will not expire</font>
-[% END %]
-[%- #}}} -%]
+[%- PROCESS blocks/extendedbookinfo.html -%]
 [%- #{{{ Tomebook Info -%]
 [%- IF !CGI.param('edit') AND librarieshash.${tomebook.library} -%]
 <p><a href="[%- url(rm='tomebookinfo', id=tomebook.id, edit=1) -%]">Edit this TOME book</a>
@@ -98,20 +54,4 @@
 [%- END -%]
 <a name="checkout"></a><h4>Checkout:</h4>
 <strong>Books can only be checked out through a reservation.  Use <a href="[%- url(rm='isbnview', isbn=bookinfo.isbn) -%]">ISBN page</a> if you want to check out a book.</strong><br />
-<h4>Checkout History</h4>
-[%- IF checkouts.size > 0 -%]
-<table>
-  <thead><tr><th>Semester</th><th>Borrower</th><th>Library</th><th>Checked Out</th><th>Checkin</th></tr></thead>
-  <tbody>
-    [%- FOREACH checkout = checkouts -%]
-    <td>[% semestershash.${checkout.semester}.name | html %]</td>
-    <td>[%- PROCESS blocks/patronlink.html patron=checkout.borrower -%]</td>
-    <td>[% tome.library_info(checkout.library).name | html %]</td>
-    <td>[%- PROCESS blocks/datetime.html datetime=checkout.checkout -%]</td>
-    <td>[% PROCESS blocks/checkin.html checkout=checkout.id %]</td>
-  </tr>
-  [%- END -%]
-  [%- ELSE -%]
-  No history
-  [%- END -%]
-</table>
+[%- PROCESS blocks/checkouthistory.html -%]
