@@ -401,7 +401,7 @@ and returns an array of book ids
   while(my @result = $sth->fetchrow_array) {
     push @results, $result[0];
   }
-  return @results;
+  return \@results;
 
 
 }
@@ -510,13 +510,13 @@ sub expire_search {
 		libraries       => { type => ARRAYREF },
 	});
 
-	my ($sql, @bind) = sql_interp('SELECT id AS tomebook FROM tomebooks WHERE expire <=', $params{semester}, 'AND timeremoved IS NULL AND library IN', $params{libraries}, 'ORDER BY expire');
+	my ($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE expire <=', $params{semester}, 'AND timeremoved IS NULL AND library IN', $params{libraries}, 'ORDER BY expire');
 	my $sth = $dbh->prepare($sql);
 
 	$sth->execute(@bind);
 	my @results;
-	while(my $result = $sth->fetchrow_hashref) {
-		push @results, $result;
+	while(my @result = $sth->fetchrow_array) {
+		push @results, $result[0];
 	}
 	return \@results;
 }
@@ -643,7 +643,8 @@ sub reservation_fulfill {
 		tomebook_id	=> { type => SCALAR, regex => qr/^\d+$/ },
 	});
 
-        if (grep {$self->reservation_info({ id =>$params{reservation_id}})->{library_from} == $_} ($self->library_access({user => $self->session->param('id')}))) {
+        # this deserves an explaination.  Basically we ensure that the current user has access to the library that the book comes from, or that the reservation is to (same thing).
+        if (grep {$self->reservation_info({ id =>$params{reservation_id}})->{library_to} == $_} ($self->library_access({user => $self->session->param('id')}))) {
 
 	$self->dbh->begin_work;
         $self->dbh->do('LOCK TABLE reservations, checkouts');
@@ -1428,8 +1429,15 @@ sub tomebook_info {
 
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
+        my $results = $sth->fetchrow_hashref();
+        foreach(qw(timedonated timeremoved)) {
+          if(defined($results->{$_})) {
+            $results->{$_} = DateTime::Format::Pg->parse_timestamptz($results->{$_});
+          }
+        }
 
-	return $sth->fetchrow_hashref();
+
+        return $results;
 }
 #}}}
 
