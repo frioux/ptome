@@ -360,8 +360,6 @@ sub tomebook_availability_search {
 	}
 
 	my $sth = $dbh->prepare($sql);
-        warn $sql;
-        warn join(', ', @bind);
 	$sth->execute(@bind);
 
 	my @results;
@@ -807,10 +805,13 @@ sub reservation_search {
 	});
 
         my %conditions;
-        foreach(qw(semester library_to library_from patron)) {
+        foreach(qw(library_to library_from patron)) {
 		if(defined($params{$_})) {
                   $conditions{$_} = $params{$_};
                 }
+        }
+        if(defined($params{semester})) {
+          $conditions{'semester <'} =$params{semester};
         }
 
 	# If we aren't given anything to do, don't do anything
@@ -1768,11 +1769,12 @@ sub checkout_search {
 	});
 
 	my @conditions;
-	foreach (qw(semester tomebook)) {
-		if($params{$_}) {
-			push @conditions, { 'checkouts.' . $_ => $params{$_} };
-		}
-	}
+        if($params{tomebook}) {
+          push @conditions, { 'checkouts.tomebook'  => $params{tomebook} };
+        }
+        if($params{semester}) {
+          push @conditions, { 'checkouts.semester >' => $params{semester}};
+        }
 
 	if($params{patron}) {
 		push @conditions, { 'checkouts.borrower' => $params{patron} };
