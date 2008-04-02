@@ -28,7 +28,6 @@ semester_selected
     <tr>
       <th>Book</th>
       <th>Borrower</th>
-      <th>Comments</th>
       <th>Semester</th>
       <th>Fill Reservation</th>
     </tr>
@@ -44,7 +43,6 @@ semester_selected
         [%- END -%]
       <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
       <td>[%- PROCESS blocks/patronlink.html patron=reservation_info.patron -%]</td>
-      <td>[% reservation_info.comments %]</td>
       <td>[% semester %]</td>
       <td>[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
     </tr>
@@ -61,7 +59,6 @@ semester_selected
     <tr>
       <th>Book</th>
       <th>Borrower</th>
-      <th>Comments</th>
       <th>Semester</th>
       <th>Check In</th>
     </tr>
@@ -79,7 +76,6 @@ semester_selected
       [%- END -%]
       <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
       <td>[%- PROCESS blocks/patronlink.html patron=checkout_info.borrower -%]</td>
-      <td>[% checkout_info.comments %]</td>
       <td>[% semester %]</td>
       <td>
         [%- PROCESS 'blocks/checkin.html' checkout=checkout_id -%]
@@ -90,13 +86,12 @@ semester_selected
 </table>
 [%- END -%]
 [% #}}} -%]
-[%- IF expiring.size > 0 -%]
+[%- IF local_expiring.size > 0 -%]
 <h3>TOME Books expiring</h3>
 [% #{{{ -%]
 <table class="sortable">
   <thead>
     <tr>
-      <th>TOME ID</th>
       <th>Book</th>
       <th>Originator</th>
       <th>Expire</th>
@@ -104,23 +99,19 @@ semester_selected
     </tr>
   </thead>
   <tbody>
-    [%- FOREACH book = expiring -%]
-    [%- IF book.expire == semester_selected + 1 -%]
+    [%- FOREACH book IN local_expiring -%]
+    [%- tomebookinfo = tome.tomebook_info(book) -%]
+    [%- IF tomebookinfo.expire == semester_selected + 1 -%]
     <tr bgcolor="pink">
-      [%- ELSIF book.expire > semester_selected + 1 -%]
+      [%- ELSIF tomebookinfo.expire > semester_selected + 1 -%]
     <tr bgcolor="red">
       [%- ELSE -%]
     <tr>
       [%- END -%]
-      <td><a href="[%- url(rm='tomebookinfo', id=book.tomebook) -%]">Tomebook [% book.tomebook %]</a></td>
-      <td>
-        <b>Title:</b> [% tome.tomebook_info(book).title %]<br />
-        <b>Author:</b> [% book.tomebookinfo.author %]<br />
-        <b>Edition:</b> [% book.tomebookinfo.edition %]
-      </td>
-      <td>[%- PROCESS blocks/patronlink.html patron=book.tomebookinfo.originator -%]</td>
-      <td>[% semestershash.${book.tomebookinfo.expire}.name %]</td>
-      <td>[% book.tomebookinfo.comments %]</td>
+      <td>[%- PROCESS blocks/book.html isbn=tomebookinfo.isbn id=book -%]</td>
+      <td>[%- PROCESS blocks/patronlink.html patron=tomebookinfo.originator -%]</td>
+      <td>[% semestershash.${tomebookinfo.expire}.name %]</td>
+      <td>[% tomebookinfo.comments %]</td>
     </tr>
     [%- END -%]
   </tbody>
@@ -146,7 +137,7 @@ semester_selected
     <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
     <td>[%- PROCESS blocks/patronlink.html patron=reservation_info.patron -%]</td>
     <td>[% semester %]</td>
-    <td>[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
+    <td>[% INCLUDE blocks/reservation.html reservation=reservation_id disabled='true' %]</td>
   </tr>
   [%- END -%]
 </tbody>
@@ -182,7 +173,7 @@ semester_selected
 [%- IF dueback_from_local_to_remote.size > 0 -%]
 <h4>Books I need to return to other floors</h4>
 [% #{{{ -%]
-<table class="sortable"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th>Check In</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- semester = semestershash.${checkout_info.semester}.name -%]
@@ -197,7 +188,6 @@ semester_selected
       <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
       <td>[%- PROCESS blocks/patronlink.html patron=checkout_info.borrower -%]</td>
       <td>[% semester %]</td>
-      <td>[%- PROCESS blocks/checkin.html checkout=checkout_id -%]</td>
     </tr>
     [%- END -%]
   </tbody>
