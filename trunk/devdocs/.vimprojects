@@ -96,6 +96,7 @@ cgi=cgi{
    autocomplete_isbn.html
    autocomplete_patron.html
    book.html
+   bookclassbox.html
    books_donated.html
    checkin.html
    createreservation.html
@@ -106,7 +107,9 @@ cgi=cgi{
    patronlink.html
    reservation.html
    semestersbox.html
-   bookclassbox.html
+  }
+  tomebookinfo_blocks=tomebookinfo_blocks{
+   checkouthistory.html
    extendedbookinfo.html
   }
  }
