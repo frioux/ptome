@@ -631,10 +631,10 @@ sub report {
                 library_from        => $self->_librariesselecteddefault(),
                 status              => 'checked_out',
             }) ],
-        local_expiring      =>      [ $self->expire_search({
+        local_expiring      =>       $self->expire_search({
             semester                =>$self->_semesterselecteddefault(),
             libraries               => $self->_librariesselecteddefault(),
-          }) ],
+          }) ,
         reserved_from_remote_to_local =>  $self->reservation_search({
             semester => $self->_semesterselecteddefault(),
             library_from  => $self->_librariesnotselecteddefault(),
