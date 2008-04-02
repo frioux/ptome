@@ -46,7 +46,7 @@
 </form>
 [%- #}}} -%]
 [%- ELSE -%]
-[%- PROCESS blocks/extendedbookinfo.html -%]
+[%- PROCESS tomebookinfo_blocks/extendedbookinfo.html tomebook=tomebook.id -%]
 [%- #{{{ Tomebook Info -%]
 [%- IF !CGI.param('edit') AND librarieshash.${tomebook.library} -%]
 <p><a href="[%- url(rm='tomebookinfo', id=tomebook.id, edit=1) -%]">Edit this TOME book</a>
@@ -54,4 +54,4 @@
 [%- END -%]
 <a name="checkout"></a><h4>Checkout:</h4>
 <strong>Books can only be checked out through a reservation.  Use <a href="[%- url(rm='isbnview', isbn=bookinfo.isbn) -%]">ISBN page</a> if you want to check out a book.</strong><br />
-[%- PROCESS blocks/checkouthistory.html -%]
+[%- PROCESS tomebookinfo_blocks/checkouthistory.html -%]
