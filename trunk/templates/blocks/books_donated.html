@@ -1,7 +1,8 @@
 [%# Receives a list of book id's as ids %]
-<table><thead><tr><th>Book</th><th>When Donated</th><th>Expiration</th></tr></thead><tbody>
+<table class="sortable"><thead><tr><th>Book</th><th>When Donated</th><th>Expiration</th></tr></thead><tbody>
     [%- FOREACH id = ids -%]
     [%- info=tome.tomebook_info(id) -%]
-    <tr><td>[% PROCESS 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- info.timedonated | html -%]</td><td>[%- info.expire | html -%]</td></tr>
-[%- END -%]
+    <tr><td>[% PROCESS 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- PROCESS blocks/datetime.html datetime=info.timedonated -%]</td><td>[%- semestershash.${info.expire}.name -%]</td></tr>
+    [%- END -%]
+  </tbody>
 </table>
