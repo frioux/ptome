@@ -1,4 +1,4 @@
-[%# Takes reservation as an argument %]
+[%# Takes reservation and disabled as an argument %]
 [%- r = tome.reservation_info(reservation) -%]
 [%- tomebooks_available = tome.tomebooks_available_for_checkout(r.isbn, r.library_to, r.semester) -%]
 <div name="reservation[% r.id | html %]" id="reservation[% r.id | html %]">
@@ -14,7 +14,7 @@
 <table>
 [%- IF tome.library_access.grep(r.library_from) -%]<tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>[%- END -%]
 <tr><td><input type="submit" name="submit" value="Cancel" onClick="$('rcommit[%- r.id -%]').value='cancel'; $$('reservation[% r.id | html %] form')[0].submit();"  /></td>
-<td><input type="submit" name="submit" value="Fill Reservation" [%- IF !tome.library_access.grep(r.library_from)  -%]disabled="disabled"[%- END -%] /></td>
+<td><input type="submit" name="submit" [%- IF disbabled -%]disabled="true"[%- END -%] value="Fill Reservation" [%- IF !tome.library_access.grep(r.library_from)  -%]disabled="disabled"[%- END -%] /></td>
 </tr>
 </table>
 </form>
