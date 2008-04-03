@@ -92,6 +92,7 @@ cgi=cgi{
   tomekeepers.html
   updatebook.html
   blocks=blocks{
+   includes
    autocomplete_class.html
    autocomplete_isbn.html
    autocomplete_patron.html
