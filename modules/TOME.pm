@@ -1773,7 +1773,7 @@ sub checkout_search {
           push @conditions, { 'checkouts.tomebook'  => $params{tomebook} };
         }
         if($params{semester}) {
-          push @conditions, { 'checkouts.semester >' => $params{semester}};
+          push @conditions, { 'checkouts.semester <' => $params{semester}};
         }
 
 	if($params{patron}) {
@@ -3143,7 +3143,7 @@ sub template {
 		$params{vars}{user_info} = $self->param('user_info');
 	}
 
-	my $tt = Template->new({INCLUDE_PATH => $CONFIG{templatepath}, ($params{plain} ? () : (PRE_PROCESS => 'header.html', POST_PROCESS => 'footer.html'))}) or die $Template::ERROR;
+	my $tt = Template->new({INCLUDE_PATH => $CONFIG{templatepath}, ($params{plain} ? (PRE_PROCESS => 'blocks/includes') : (PRE_PROCESS => 'header.html', POST_PROCESS => 'footer.html'))}) or die $Template::ERROR;
 	my $output;
 
 	$tt->process($params{file}, $params{vars}, \$output) or die $tt->error;
