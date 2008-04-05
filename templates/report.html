@@ -14,15 +14,10 @@ semester_selected
 <form name="report" action="[% url %]" method="post">
   <input type="hidden" name="rm" value="report">
   <table>
-    [%- # INCLUDE blocks/librariesbox.html name='libraries' libraries=tome.libraries selected=libraries_selected -%]
-    [%- # INCLUDE blocks/librariesnotbox.html name='not_libraries' libraries=tome.libraries selected=libraries_not_selected -%]
-    <tr><td>Semester</td><td>[% INCLUDE blocks/semestersbox.html name=semester %]</td></tr>
+    <tr><td>Semester</td><td>[% INCLUDE blocks/semestersbox.html name="semester" %]</td></tr>
     <tr><td class="submit" colspan="2"><input type="submit" value="Generate Report"></td></tr>
   </table>
 </form>
-<h3>S [%- INCLUDE blocks/semester.html semester=semester.id -%]</h3>
-<h3>S [%- currsemester.id -%] [%- INCLUDE blocks/semester.html semester=currsemester.id -%]</h3>
-<h3>S [%- session.currsemester.id -%][%- INCLUDE blocks/semester.html semester=session.currsemester.id -%]</h3>
 [%- IF local_reservations.size > 0 -%]
 <h3>TOME Reservations not yet filled ([%- local_reservations.size -%])</h3>
 [% #{{{ -%]
@@ -173,7 +168,7 @@ semester_selected
 <h3>InterTOME Books due back</h3>
 [%- END -%]
 [%- IF dueback_from_local_to_remote.size > 0 -%]
-<h4>Books I need to return to other floors ([% dueback_from_local_to_remote.size %] )</h4>
+<h4>Books I need to return to other floors ([% dueback_from_local_to_remote.size %])</h4>
 [% #{{{ -%]
 <table class="sortable"><thead><tr><th>Library</th><th>Book</th><th>Borrower</th><th>Semester</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
