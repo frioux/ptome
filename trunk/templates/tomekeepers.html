@@ -4,11 +4,15 @@
 <table class="sortable"><thead><tr><th>User</th><th>Name</th><th>Email</th><th>2nd Contact</th><th>Library</th></tr></thead>
   <tbody>
     [% FOREACH user IN users %]
+    [%- IF !user.disabled -%]
     <tr><td>[% user.username | html %]</td><td>[% user.first_name | html %] [% user.last_name | html %]</td><td>[% user.email | html %]</td><td>[% user.second_contact | html %]</td><td>
         [% libs = [] %]
 [% FOREACH library IN user.libraries %]
 [% IF library.access %][% libs.push(library.name) %][% END %]
 [% END %][% libs.join(", ") %]
           </td></tr>
-[% END %]
-</tbody></table>
+          [% END %]
+          [%- END -%]
+      </tbody></table><br />
+      <strong>Email List:</strong><blockquote>[%- FOREACH user IN users -%][%- IF !user.disabled -%][%- user.email -%], [%- END -%][%- END -%]</blockquote>
+      <strong>Email List (Outlook remix):</strong><blockquote>[%- FOREACH user IN users -%][%- IF !user.disabled -%][%- user.email -%]; [%- END -%][%- END -%]</blockquote>
