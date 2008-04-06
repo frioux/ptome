@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(first_login management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron_ajax addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -44,6 +44,11 @@ sub cgiapp_prerun {
 
 	if($self->param('user_info')->{disabled}) {
 		$self->prerun_mode('login');
+		return;
+	}
+
+	unless($self->param('user_info')->{has_logged_in}) {
+		$self->prerun_mode('first_login');
 		return;
 	}
 }
@@ -84,6 +89,31 @@ sub login {
 	}
 
 	return $self->template({ file => 'adminlogin.html', vars => { error => $error }, plain => 1 });
+}
+#}}}
+
+#{{{first_login
+sub first_login {
+	my $self = shift;
+	my $error = '';
+        my $q = $self->query;
+
+        if($q->param('first_name') && $q->param('last_name') && $q->param('email')) {
+          $self->user_update({
+              id => $self->session->param('id'),
+              email => $q->param('email'),
+              first_name => $q->param('first_name'),
+              last_name => $q->param('last_name'),
+              has_logged_in => 'true',
+              second_contact => $q->param('contact'),
+            });
+
+          $self->header_type('redirect');
+          $self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl");
+          return ;
+        }
+
+	return $self->template({ file => 'firstlogin.html', vars => { error => $error, id => $self->session->param('id') }});
 }
 #}}}
 
@@ -798,19 +828,19 @@ sub patronupdate {
 }
 #}}}
 
-#{{{addpatron
-sub addpatron {
+#{{{addpatron_ajax
+sub addpatron_ajax {
 	my $self = shift;
 	my $errs = shift;
 
-	return $self->template({ file => 'addpatron.html' , vars => { errs => $errs }});
+	return $self->template({ file => 'blocks/addpatron.html' , vars => { errs => $errs }, plain => 1});
 }
 #}}}
 
 #{{{addpatron_process
 sub addpatron_process {
 	my $self = shift;
-	my $results = $self->check_rm('addpatron', {
+	my $results = $self->check_rm('addpatron_ajax', {
 		required		=> [qw(
 			ap_email1
 			ap_email2
@@ -829,7 +859,7 @@ sub addpatron_process {
 				'emails_match'	=> 'Emails do not match',
 			},
 		},
-	}, { target => 'addpatron' }) || return $self->check_rm_error_page;
+	}, { target => 'addpatron_ajax' }) || return $self->check_rm_error_page;
 
 	$self->patron_add({ email => $results->valid('ap_email1'), name => $results->valid('ap_name') });
 
@@ -881,7 +911,7 @@ sub addtomebook_process {
 	}, { target => 'addtomebook' }) || return $self->check_rm_error_page;
 
 	unless($self->patron_info({ email => $addtomebook_results->valid('patron') })) {
-		return $self->forward('addpatron');
+		return $self->forward('addpatron_ajax');
 	}
 
 	unless($self->book_exists({ isbn => $addtomebook_results->valid('isbn') })) {
@@ -973,7 +1003,7 @@ sub checkout {
 	return $error if $error;
 
 	my $patron_info = $self->patron_info({ email => $results->valid('patron') });
-	unless($patron_info) { return $self->forward('addpatron'); }
+	unless($patron_info) { return $self->forward('addpatron_ajax'); }
 
 	my $checkoutid;
 	if($self->_libraryauthorized($self->param('user_info')->{id}, $results->valid('library'))) {
@@ -1317,13 +1347,6 @@ sub isbnview {
 
 #{{{ajax_isbnreserve
 sub ajax_isbnreserve {
-
-=head2 ajax_isbnreserve
-
-foo
-
-=cut
-
     my $self = shift;
 
     my $q = $self->query();
@@ -1345,7 +1368,7 @@ foo
 
     my $patron_info = $self->patron_info({ email => $results->valid('patron') });
     unless($patron_info) {
-            return $self->forward('addpatron');
+            return $self->forward('addpatron_ajax');
     }
 
     my $id = $self->reservation_create({

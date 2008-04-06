@@ -2632,7 +2632,7 @@ sub user_info {
 		username	=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, primary_library, admin, disabled, password FROM users';
+	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, primary_library, admin, disabled, password, has_logged_in FROM users';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ? ORDER BY disabled, username');
@@ -2719,6 +2719,13 @@ The new admin flag.  Either 'true' or 'false'.
 
 The new password
 
+=item first_name
+
+=item last_name
+
+=item second_contact
+
+
 =back
 
 This method returns nothing.
@@ -2730,19 +2737,20 @@ sub user_update {
 
 	my %params = validate(@_, {
 		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-                first_name      => { type => SCALAR, optional => 0 },
-                last_name       => { type => SCALAR, optional => 0 },
+                first_name      => { type => SCALAR, optional => 1 },
+                last_name       => { type => SCALAR, optional => 1 },
 		username	=> { type => SCALAR, optional => 1 },
 		email		=> { type => SCALAR, optional => 1 },
 		second_contact	=> { type => SCALAR, optional => 1 },
 		notifications	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		disabled	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		admin		=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
+		has_logged_in	=> { type => SCALAR, regex => qr/^true|false$/, optional => 1 },
 		password	=> { type => SCALAR, optional => 1 },
 	});
 
 	my %user;
-	foreach(qw(username email first_name last_name second_contact notifications admin disabled password)) {
+	foreach(qw(username email first_name last_name second_contact notifications admin disabled password has_logged_in)) {
 		if(defined($params{$_})) { $user{$_} = $params{$_}; }
 	}
 
