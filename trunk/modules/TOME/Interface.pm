@@ -98,7 +98,7 @@ sub first_login {
 	my $error = '';
         my $q = $self->query;
 
-        if($q->param('first_name') && $q->param('last_name') && $q->param('email')) {
+        if($q->param('first_name') && $q->param('last_name') && $q->param('email') && $q->param('password1') && ($q->param('password1') eq $q->param('password2'))) {
           $self->user_update({
               id => $self->session->param('id'),
               email => $q->param('email'),
@@ -106,6 +106,7 @@ sub first_login {
               last_name => $q->param('last_name'),
               has_logged_in => 'true',
               second_contact => $q->param('contact'),
+              password => unix_md5_crypt($q->param('password1')),
             });
 
           $self->header_type('redirect');
