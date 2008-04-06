@@ -1,0 +1,11 @@
+Clearly you haven't set your user information yet.  Let's do that now!
+[%- user_info.keys.join(', ') -%]
+<form name="first_login" action="[%- url -%]" method="post">
+<table>
+  <tr><td>First Name:</td><td><input name="first_name" value="[%- user_info.first_name -%]" /></tr>
+  <tr><td>Last Name:</td><td><input name="last_name" value="[%- user_info.last_name -%]" /></tr>
+  <tr><td>Second Contact:</td><td><input name="contact" value="[%- user_info.second_contact -%]" /></tr>
+  <tr><td>LeTourneau Email:</td><td><input name="email" value="[%- user_info.email -%]" /></tr>
+    <tr><td colspan="2"><input type="submit" value="Save" /></td></tr>
+  </table>
+</form>
