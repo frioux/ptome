@@ -17,9 +17,9 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [%- reservation_info = tome.reservation_info(reservation) -%]
 <tr>
   <td>[% tome.library_info(reservation_info.library_to).name %]</td>
-  <td>[% PROCESS 'blocks/book.html' isbn=reservation_info.isbn %]</td>
-  <td>[%- semestershash.${reservation_info.semester}.name -%]</td>
-  <td>[% PROCESS 'blocks/reservation.html' %]</td>
+  <td>[% INCLUDE 'blocks/book.html' isbn=reservation_info.isbn %]</td>
+  <td>[%- INCLUDE blocks/semester.html semester=reservation_info.semester -%]</td>
+  <td>[% INCLUDE 'blocks/reservation.html' %]</td>
 </tr>
 [%- END -%]
 </table>
@@ -35,7 +35,7 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 <tr>
   <td>[% tome.library_info(tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).library).name %]</td>
   <td>[% INCLUDE 'blocks/book.html' id = tome.checkout_info(checkout_id).tomebook isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
-  <td>[%- semestershash.${tome.checkout_info(checkout_id).semester}.name -%]</td>
+  <td>[%- INCLUDE blocks/semester.html semester=tome.checkout_info(checkout_id).semester -%]</td>
   <td>[%- INCLUDE 'blocks/checkin.html' checkout=checkout_id -%]
 </tr>
 [%- END -%]

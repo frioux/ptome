@@ -11,7 +11,7 @@
 
 <dl class="table-display">
   <dt>Patron:</dt>
-  <dd>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</dd>
+  <dd>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</dd>
   [%# Since most people only ever have access to one library, we make this a variable thinger. %]
   [%- IF libraries_from.size > 1 -%]
   <dt>Create reservation to:</dt>
@@ -26,7 +26,7 @@
   <input type="hidden" name="library_from" value="[% libraries_from.first %]" id="library_from[%- isbn | html -%]" />
   [%- END -%]
   <dt>Semester:</dt>
-  <dd>[% PROCESS 'blocks/semestersbox.html' name='semester' id='semester' _ isbn %][% errs.semester %]</dd>
+  <dd>[% INCLUDE 'blocks/semestersbox.html' name='semester' id='semester' _ isbn %][% errs.semester %]</dd>
   [%#should be if it is in our library -%]
   <dt>Comments:</dt>
   <dd><input type="text" name="comment" /></dd>

@@ -4,7 +4,7 @@
 <b>ISBN:</b> [% CGI.param('isbn') | html %]<br />
 <b>Class:</b> [% classinfo.name | html %]<br />
 <b>Usable:</b> [% CGI.param('usable') ? 'yes' : 'no' %]<br />
-<b>Verified:</b> [% semestershash.${CGI.param('verified')}.name | html %]<br />
+<b>Verified:</b> [% INCLUDE blocks/semester.html semester=CGI.param('verified') %]<br />
 <b>Comments:</b> [% CGI.param('comments') | html %]<br />
 </blockquote>
 <p><font color="red">The ISBN you entered is not known by the system.<br />

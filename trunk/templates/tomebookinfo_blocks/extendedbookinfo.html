@@ -1,9 +1,9 @@
 [%- # takes tomebook as tomebook id -%]
 [%- tomebookinfo = tome.tomebook_info(tomebook) -%]
 <strong>Library:</strong> [% tome.library_info(tomebookinfo.library).name %]<br />
-<strong>Originator:</strong> [%- PROCESS blocks/patronlink.html patron=tomebookinfo.originator -%]<br />
-<strong>Time donated:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timedonated %]<br />
-[% IF tomebookinfo.timeremoved %]<strong>Time removed:</strong> [% PROCESS blocks/datetime.html datetime=tomebookinfo.timeremoved %]<br />[% END %]
+<strong>Originator:</strong> [%- INCLUDE blocks/patronlink.html patron=tomebookinfo.originator -%]<br />
+<strong>Time donated:</strong> [% INCLUDE blocks/datetime.html datetime=tomebookinfo.timedonated %]<br />
+[% IF tomebookinfo.timeremoved %]<strong>Time removed:</strong> [% INCLUDE blocks/datetime.html datetime=tomebookinfo.timeremoved %]<br />[% END %]
 <strong>Comments:</strong>
 <blockquote>[% tomebookinfo.comments | html %]</blockquote>
 <strong>Expiration Semester:</strong>

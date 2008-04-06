@@ -15,7 +15,7 @@
 <input type="hidden" name="class" value="[% id | html %]">
 <input type="hidden" name="isbn" value="[% book.isbn | html %]">
 <td>
-  [%- PROCESS blocks/book.html isbn=book.isbn id="" -%]
+  [%- INCLUDE blocks/book.html isbn=book.isbn id="" -%]
   <b>Buy it online:</b> <a href="http://isbn.nu/[% book.isbn | html | uri %]">http://isbn.nu/[% book.isbn | html | uri %]</a>
 </td>
 <td[% IF book.verified >= (session.currsemester.id || currsemester.id) %] bgcolor="lightgreen"[%- END -%]>
@@ -42,7 +42,7 @@
 		<input type="submit" value="Delete" />
           </form></td></tr>
       </table></td>
-      <td>[%- PROCESS blocks/createreservation.html isbn=book.isbn libraries_from=libraries_from libraries_to=libraries_to -%]</td>
+      <td>[%- INCLUDE blocks/createreservation.html isbn=book.isbn libraries_from=libraries_from libraries_to=libraries_to -%]</td>
 </tr>
 [% END %]
 </table>
@@ -58,7 +58,7 @@ General Class Comments:<br />
 <form action="[%- url -%]">
 <input type="hidden" name="rm" value="addclassbook">
 <input type="hidden" name="class" value="[% id | html %]">
-ISBN: [% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]<br />
+ISBN: [% INCLUDE 'blocks/autocomplete_isbn.html' name='isbn' %]<br />
 Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
 When verified: <select name="verified">
 [% FOREACH semester = semesters %]
