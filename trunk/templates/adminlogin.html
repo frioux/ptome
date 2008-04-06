@@ -7,10 +7,8 @@
 <center>
 <img src="[% config.staticbase %]/tome.png">
 <form action="[%- url -%]" method="post" name="login">
-[% IF error %]
-<p>Error: <font color="red">[% error %]</font>
-[% END %]
-<p>
+[% IF error %]<p>Error: <font color="red">[% error %]</font></p>[% END %]
+<br />
 <table>
 	<tr><td>Username</td><td>[% CGI.textfield({ Name => "username" }) %]</td></tr>
 	<tr><td>Password</td><td><input type="password" name="password"></td></tr>
