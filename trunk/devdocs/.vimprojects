@@ -71,6 +71,7 @@ cgi=cgi{
   addtomebook.html
   addtomebook_isbn.html
   adminlogin.html
+  firstlogin.html
   classes.html
   classsearch.html
   classunknown.html
