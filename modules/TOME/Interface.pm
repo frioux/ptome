@@ -768,9 +768,9 @@ sub patronview {
 	if($q->param('patron')) {
 		$patron = $self->patron_info({ email => $self->query->param('patron') });
 		return $self->error({ message => 'Unable to locate patron with email ' . $self->query->param('patron') }) unless $patron;
-	} elsif($q->param('patronid')) {
-		$patron = $self->patron_info({ id => $self->query->param('patronid') });
-		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('patronid') }) unless $patron;
+	} elsif($q->param('id')) {
+		$patron = $self->patron_info({ id => $self->query->param('id') });
+		return $self->error({ message => 'Unable to locate patron with ID ' . $self->query->param('id') }) unless $patron;
 	}
 
 	return $self->template({ file => 'patronview.html', vars => { patron => $patron->{id}, errs => $errs }});
