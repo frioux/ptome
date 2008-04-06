@@ -2,7 +2,7 @@
 <table class="sortable"><thead><tr><th>Book</th><th>When Donated</th><th>Expiration</th></tr></thead><tbody>
     [%- FOREACH id = ids -%]
     [%- info=tome.tomebook_info(id) -%]
-    <tr><td>[% PROCESS 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- PROCESS blocks/datetime.html datetime=info.timedonated -%]</td><td>[%- PROCESS blocks/semester.html semester=info.expire -%]</td></tr>
+    <tr><td>[% INCLUDE 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- INCLUDE blocks/datetime.html datetime=info.timedonated -%]</td><td>[%- INCLUDE blocks/semester.html semester=info.expire -%]</td></tr>
     [%- END -%]
   </tbody>
 </table>
