@@ -3,7 +3,7 @@
 <form name="report" action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="findorphans">
 <table>
-[% PROCESS 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
+[% INCLUDE 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
 <tr><td colspan="2"><input type="submit" value="Find Orphans" /></td></tr>
 </table>
 </form>

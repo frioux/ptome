@@ -5,11 +5,11 @@
   <tbody>
     [%- FOREACH checkout = checkouts -%]
     [%- c = tome.checkout_info(checkout) -%]
-    <td>[% semestershash.${c.semester}.name | html %]</td>
-    <td>[%- PROCESS blocks/patronlink.html patron=c.borrower -%]</td>
+    <td>[% INCLUDE blocks/semester.html semester=c.semester %]</td>
+    <td>[%- INCLUDE blocks/patronlink.html patron=c.borrower -%]</td>
     <td>[% tome.library_info(c.library).name | html %]</td>
-    <td>[%- PROCESS blocks/datetime.html datetime=c.checkout -%]</td>
-    <td>[%- IF c.checkin -%][%- PROCESS blocks/datetime.html datetime=c.checkin -%][%- ELSE -%][% PROCESS blocks/checkin.html checkout=c.id %][%- END -%]</td>
+    <td>[%- INCLUDE blocks/datetime.html datetime=c.checkout -%]</td>
+    <td>[%- IF c.checkin -%][%- INCLUDE blocks/datetime.html datetime=c.checkin -%][%- ELSE -%][% INCLUDE blocks/checkin.html checkout=c.id %][%- END -%]</td>
   </tr>
   [%- END -%]
 </table>

@@ -2,4 +2,4 @@
 [%- INCLUDE 'blocks/book.html' isbn=isbn maxlength=1000 -%]
 <h3>Reserve Book</h3>
 [%# Book Reservation Table  %]
-[%- PROCESS blocks/createreservation.html isbn=isbn -%]
+[%- INCLUDE blocks/createreservation.html isbn=isbn -%]

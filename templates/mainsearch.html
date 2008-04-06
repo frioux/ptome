@@ -35,7 +35,7 @@
 <input type="hidden" name="rm" value="classsearch" />
 <table class="full">
   <thead><tr><th colspan="3">View Class</th></tr></thead>
-<tr><td>Class</td><td>[% PROCESS 'blocks/autocomplete_class.html' name='class' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
+<tr><td>Class</td><td>[% INCLUDE 'blocks/autocomplete_class.html' name='class' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
 </table>
 </form
 <br />
@@ -44,7 +44,7 @@
 <input type="hidden" name="rm" value="isbnview" />
 <table class="full">
   <thead> <tr><th colspan="3">View Book</th></tr></thead>
-<tr><td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
+<tr><td>ISBN</td><td>[% INCLUDE 'blocks/autocomplete_isbn.html' name='isbn' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
 </table>
 </form>
 
@@ -56,7 +56,7 @@
 <table>
   <thead><tr><th colspan="3" class="submit">Edit Patron</th></tr></thead>
 <tr><td><input type="hidden" name="rm" value="patronview" />Email</td>
-<td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %]</td>
+<td>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron' %]</td>
 <td class="submit">
   <input type="submit" value="Go" />
 </form>

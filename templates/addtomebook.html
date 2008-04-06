@@ -9,10 +9,10 @@
     </tr>
   </thead>
 <tr>
-<td>ISBN</td><td>[% PROCESS 'blocks/autocomplete_isbn.html' name='isbn' %] [% errs.isbn %]</td>
+<td>ISBN</td><td>[% INCLUDE 'blocks/autocomplete_isbn.html' name='isbn' %] [% errs.isbn %]</td>
 </tr>
 <tr>
-<td>Originator<br />(email address)</td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td>
+<td>Originator<br />(email address)</td><td>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td>
 </tr>
 <tr>
 <td>Expire Semester</td><td><select name="expire">

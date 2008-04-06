@@ -6,7 +6,7 @@
     </tr></thead><tbody>
     <tr>
       <td>
-        [%- PROCESS blocks/book.html isbn=tomebook.isbn maxlength=1000 -%]
+        [%- INCLUDE blocks/book.html isbn=tomebook.isbn maxlength=1000 -%]
         <div align="right"><font size="-3"><a href="[%- url(rm='updatebook', isbn=tomebookinfo.isbn) -%]">Edit</a></font></div>
       </td>
       <td>
@@ -16,9 +16,9 @@
         <form action="[%- url -%]" method="post">
           <input type="hidden" name="rm" value="addclassbook">
           <input type="hidden" name="isbn" value="[% tomebook.isbn | html %]">
-          Class ID: [%- PROCESS blocks/autocomplete_class.html name='class' -%]<br />
+          Class ID: [%- INCLUDE blocks/autocomplete_class.html name='class' -%]<br />
           Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
-          When verified: [%- PROCESS blocks/semestersbox.html name='verified' -%]<br />
+          When verified: [%- INCLUDE blocks/semestersbox.html name='verified' -%]<br />
           Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
           <input type="submit" value="Associate Class" />
         </form>

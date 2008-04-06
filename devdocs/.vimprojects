@@ -41,6 +41,9 @@ cgi=cgi{
    00_05_InterTOMEBarriers.sql
    00_06_ClassesTypeCorrection.sql
    01_DBVersioning.sql
+   02_UsersFields.sql
+   03_PrimaryLibrary.sql
+   04_SessionsTimestamp.sql
   }
  }
 
@@ -67,11 +70,9 @@ cgi=cgi{
  templates=templates {
   addclass.html
   addclassbook-isbn.html
-  addpatron.html
   addtomebook.html
   addtomebook_isbn.html
   adminlogin.html
-  firstlogin.html
   classes.html
   classsearch.html
   classunknown.html
@@ -79,6 +80,7 @@ cgi=cgi{
   error.html
   findorphans.html
   finduseless.html
+  firstlogin.html
   footer.html
   header.html
   interTOMEnotify.email
@@ -93,7 +95,7 @@ cgi=cgi{
   tomekeepers.html
   updatebook.html
   blocks=blocks{
-   includes
+   addpatron.html
    autocomplete_class.html
    autocomplete_isbn.html
    autocomplete_patron.html
@@ -103,11 +105,13 @@ cgi=cgi{
    checkin.html
    createreservation.html
    datetime.html
+   includes
    libraries_selection.html
    librariesbox.html
    librariesnotbox.html
    patronlink.html
    reservation.html
+   semester.html
    semestersbox.html
   }
   tomebookinfo_blocks=tomebookinfo_blocks{
@@ -120,10 +124,13 @@ cgi=cgi{
 
   db=db{
    bookremoval.t
+   checkoutconsistency.t
    currsemester.t
    intertome.t
    isbnupper.t
    patronemail.t
+   reservationconsistency.t
+   reservationtime.t
    username.t
   }
 
