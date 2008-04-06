@@ -29,15 +29,14 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [%- #{{{ -%]
 [%- IF checkouts.size > 0 -%]
 <h3>Books Checked Out</h3>
-<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book ID</th><th>Book</th><th>Semester</th><th>Check In</th></tr></thead>
+<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Check In</th></tr></thead>
   <tbody>
 [%- FOREACH checkout_id IN checkouts -%]
 <tr>
   <td>[% tome.library_info(tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).library).name %]</td>
-  <td><a href="[% url(rm = 'tomebookinfo', id = tome.checkout_info(checkout_id).tomebook) %]">Tomebook [% tome.checkout_info(checkout_id).tomebook | html %]</a></td>
-  <td>[% PROCESS 'blocks/book.html' isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
+  <td>[% INCLUDE 'blocks/book.html' id = tome.checkout_info(checkout_id).tomebook isbn=tome.tomebook_info(tome.checkout_info(checkout_id).tomebook).isbn %]</td>
   <td>[%- semestershash.${tome.checkout_info(checkout_id).semester}.name -%]</td>
-  <td>[%- PROCESS 'blocks/checkin.html' checkout=checkout_id -%]
+  <td>[%- INCLUDE 'blocks/checkin.html' checkout=checkout_id -%]
 </tr>
 [%- END -%]
 </table>
