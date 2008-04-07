@@ -1,5 +1,5 @@
 [% META title = 'Update Book' %]
-<form action="[% config.cgibase %]/admin.pl">
+<form action="[%- url -%]">
 <input type="hidden" name="rm" value="updatebook">
 <input type="hidden" name="update" value="1">
 <input type="hidden" name="isbn" value="[% isbn | html %]">

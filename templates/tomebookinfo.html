@@ -17,9 +17,9 @@
     [%- FOREACH library IN libraries -%][%- l_info = tome.library_info(library) -%][%- l_info.keys.join(', ') -%]
     [%- IF tome.library_access.grep(library) %]<option value="[% library | html %]" [% IF library == tomebookinfo.library %]selected="selected"[% END %]>[% l_info.name | html %]</option>[% END -%]
     [%- END -%]
-  </select> [% errs.library -%]
+  </select> [% errs.library -%]</p>
   <p><strong>Originator:</strong> [% INCLUDE 'blocks/autocomplete_patron.html' default_patron="${tome.patron_info(tomebookinfo.originator).email}" name='patron' %] [% errs.updatetomebook_errs and errs.patron %]</p>
-  <p><strong>Time donated:</strong> [% tomebookinfo.timedonated %] [%- INCLUDE blocks/datetime.html datetime=tomebookinfo.timedonated -%]</p>
+  <p><strong>Time donated:</strong> [%- INCLUDE blocks/datetime.html datetime=tomebookinfo.timedonated -%]</p>
   [%- IF tomebookinfo.timeremoved %]<p><strong>Time removed:</strong> [% INCLUDE blocks/datetime.html datetime=tomebookinfo.timeremoved %]</p>[%- END -%]
   <p>Comments:<br /><textarea name="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br />
   Expiration Semester: <select name="expire">
