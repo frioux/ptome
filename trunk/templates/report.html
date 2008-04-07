@@ -21,7 +21,7 @@ semester_selected
 [%- IF local_reservations.size > 0 -%]
 <h3>TOME Reservations not yet filled ([%- local_reservations.size -%])</h3>
 [% #{{{ -%]
-<table class="sortable">
+<table class="sortable full">
   <thead>
     <tr>
       <th>Book</th>
@@ -34,7 +34,7 @@ semester_selected
     [%- FOREACH reservation_id IN local_reservations -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- IF reservation_info.semester < semester_selected -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSE -%]
     <tr>
         [%- END -%]
@@ -51,7 +51,7 @@ semester_selected
 [%- IF local_dueback.size > 0 -%]
 <h3>TOME Books due back ([%- local_dueback.size -%])</h3>
 [% #{{{ -%]
-<table class="sortable">
+<table class="sortable full">
   <thead>
     <tr>
       <th>Book</th>
@@ -64,9 +64,9 @@ semester_selected
     [%- FOREACH checkout_id IN local_dueback -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
-    <tr bgcolor="red">
+    <tr class="bad">
         [%- ELSE -%]
     <tr>
       [%- END -%]
@@ -85,7 +85,7 @@ semester_selected
 [%- IF local_expiring.size > 0 -%]
 <h3>TOME Books expiring ([%- local_expiring.size -%])</h3>
 [% #{{{ -%]
-<table class="sortable">
+<table class="sortable full">
   <thead>
     <tr>
       <th>Book</th>
@@ -98,9 +98,9 @@ semester_selected
     [%- FOREACH book IN local_expiring -%]
     [%- tomebookinfo = tome.tomebook_info(book) -%]
     [%- IF tomebookinfo.expire == semester_selected + 1 -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSIF tomebookinfo.expire > semester_selected + 1 -%]
-    <tr bgcolor="red">
+      <tr class="bad">
       [%- ELSE -%]
     <tr>
       [%- END -%]
@@ -120,11 +120,11 @@ semester_selected
 [%- IF reserved_from_local_to_remote.size > 0 -%]
 <h4>Reservations that need to be filled for me ([%- reserved_from_local_to_remote.size -%])</h4>
 [%# {{{ -%]
-<table class="sortable"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_local_to_remote -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- IF reservation_info.semester < semester_selected -%]
-  <tr bgcolor="pink">
+    <tr class="bad">
     [%- ELSE -%]
   <tr>
     [%- END -%]
@@ -142,11 +142,11 @@ semester_selected
 [%- IF reserved_from_remote_to_local.size > 0 -%]
 <h4>Reservations I need to fill for other floors ([%- reserved_from_remote_to_local.size -%])</h4>
 [% #{{{ -%]
-<table class="sortable"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_remote_to_local -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- IF reservation_info.semester < semester_selected -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSE -%]
     <tr>
       [%- END -%]
@@ -167,13 +167,13 @@ semester_selected
 [%- IF dueback_from_local_to_remote.size > 0 -%]
 <h4>Books I need to return to other floors ([% dueback_from_local_to_remote.size %])</h4>
 [% #{{{ -%]
-<table class="sortable"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
-    <tr bgcolor="red">
+      <tr class="bad">
       [%- ELSE -%]
     <tr>
       [%- END -%]
@@ -194,9 +194,9 @@ semester_selected
     [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
-    <tr bgcolor="pink">
+    <tr class="bad">
       [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
-    <tr bgcolor="red">
+      <tr class="bad">
         [%- ELSE -%]
     <tr>
       [%- END -%]

@@ -17,7 +17,7 @@
 </tbody></table>
 
 <h3>Semester Preference</h3>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="sessionsemester">
 <select name="semester" multiple="multiple" size="10">
 [% FOREACH semester = semesters %]
@@ -30,7 +30,7 @@ This setting will temporarily change the current semester of the system for your
 <hr>
 [% IF admin %]
 <h3>Semester Setting</h3>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="semesterset">
 <select name="semester" multiple="multiple" size="10">
 [% FOREACH semester = semesters %]
@@ -42,7 +42,7 @@ This setting will temporarily change the current semester of the system for your
 This setting will permanently change the global semester setting.
 <hr>
 <h3>Add semester</h3>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="semesteradd">
 <input type="hidden" name="action" value="Add semester.  This action cannot be undone.">
@@ -53,7 +53,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 <h3>User Preferences</h3>
 [% FOREACH user = users %]
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="management">
 <input type="hidden" name="update" value="1">
 <input type="hidden" name="id" value="[% user.id | html %]">
@@ -93,7 +93,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% IF admin %]
 <hr>
 <h3>Add user</h3>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="useradd">
 <table border="1" cellpadding="5">
 <tr><td>Username</td><td><input type="text" name="username"></td></tr>
@@ -104,7 +104,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 </form>
 <hr>
 <h3>Add library</h3>
-<form action="[% config.cgibase %]/admin.pl" method="post">
+<form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="libraryadd">
 <input type="hidden" name="action" value="Add library.  This action cannot be undone.">

@@ -4,15 +4,18 @@
 <form action="[% url %]" name="patronupdate" method="post">
 <input type="hidden" name="rm" value="patronupdate" />
 <input type="hidden" name="id" value="[% patron | html %]" />
-Email: <input type="text" name="email" value="[% patroninfo.email | html %]" size="40"> [% errs.email %]<br />
-Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]<br />
+<dl class="table-display">
+  <dt>Email:</dt>
+  <dd><input type="text" name="email" value="[% patroninfo.email | html %]" size="40"> [% errs.email %]</dd>
+  <dt>Display Name:</dt><dd><input type="text" name="name" value="[% patroninfo.name | html %]"> [% errs.name %]</dd>
+</dl>
 <input type="submit" value="Update"/>
 </form>
 [%- reservations = tome.patron_reservations(patron) -%]
 [%- #{{{ -%]
 [%- IF reservations.size > 0 -%]
 <h3>Books Reserved</h3>
-<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Fill Reservation</th></thead><tbody>
+<table class="sortable full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Fill Reservation</th></thead><tbody>
 [%- FOREACH reservation = reservations -%]
 [%- reservation_info = tome.reservation_info(reservation) -%]
 <tr>
@@ -29,7 +32,7 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [%- #{{{ -%]
 [%- IF checkouts.size > 0 -%]
 <h3>Books Checked Out</h3>
-<table class="sortable" class="full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Check In</th></tr></thead>
+<table class="sortable full"><thead><tr><th>Library</th><th>Book</th><th>Semester</th><th>Check In</th></tr></thead>
   <tbody>
 [%- FOREACH checkout_id IN checkouts -%]
 <tr>
@@ -45,12 +48,14 @@ Display Name: <input type="text" name="name" value="[% patroninfo.name | html %]
 [%- #{{{ -%]
 <h3 name="books_donated_label" id="books_donated_label">Books Donated</h3>
 <div id="books_donated_table" name="books_donated_table">
-[% prototype.form_remote_tag({
+[% prototype.form_remote_tag(
   update=>'books_donated_table',
   url => url,
   loading=> prototype.update_element_function("books_donated_table", { content=>'Loading...', action=>'update'}),
-  loaded => prototype.visual_effect('highlight', "books_donated_table", { duration=>'0.5' }),
-  }) %]
+  loaded => SortableTable.load
+  ) %]
+
+ [% # prototype.visual_effect('highlight', "books_donated_table", { duration=>'0.5' }), }) %]
 <input type="submit" name="submit" value="Shows donated books" />
 <input type="hidden" name="rm" value="ajax_books_donated_list" />
 <input type="hidden" name="patronid" value="[%- patron | html -%]" />
