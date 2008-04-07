@@ -1,7 +1,12 @@
-[% META title = 'Add Patron' %]
+<div id="addpatron" name="addpatron">
 <font color="red" size="+1"><b>[% CGI.param('patron') | html %]</b> is not in the TOME system.<br />
 If you are certain that the email address is correct, you may add them by completing this form:</font>
-<form action="[%- url -%]" method="post" name="addpatron">
+[%- prototype.form_remote_tag({
+  url    => url,
+  update => 'addpatron',
+  loading=> prototype.update_element_function("addpatron", { content=>'Loading...', action=>'update'}),
+  loaded => prototype.visual_effect('highlight', "addpatron", { duration=>'0.5' }),
+  }) -%]
 <input type="hidden" name="rm" value="addpatron_process">
 <p><table cellpadding="5" border="1"><tr>
 <td>Email</td><td><input type="text" name="ap_email1" value="[% CGI.param('patron') | html %]"> [% errs.ap_email1 %]</td></tr>
@@ -19,3 +24,4 @@ If you are certain that the email address is correct, you may add them by comple
 [% END %]
 [% END %]
 </form>
+</div>
