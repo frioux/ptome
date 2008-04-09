@@ -616,6 +616,8 @@ sub addclassbook {
 	my $isbn = uc $q->param('isbn'); # All ISBNs are uppercase, might as well convert it here
 	$isbn =~ s/[- ]//g; # We don't want hyphens or spaces, they're useless
 
+        my %libraries_hash = map { $_->{id} => $_ } @{$self->library_info};
+
 	unless($self->book_exists({ isbn => $isbn })) {
 		if($q->param('addbook')) {
 			my %addbook = (
@@ -631,7 +633,7 @@ sub addclassbook {
 			$self->add_book({%addbook});
 		} else {
 			return $self->template({ file => 'addclassbook-isbn.html', vars => {
-				librarieshash	=> $self->_librarieshash(),
+				librarieshash	=> %libraries_hash,
 				classinfo	=> $self->class_info_deprecated({ id => $q->param('class') }),
 			}});
 		}
@@ -892,8 +894,10 @@ sub addtomebook_isbn {
 	my $self = shift;
 	my $errs = shift;
 
+        my %libraries_hash = map { $_->{id} => $_ } @{$self->library_info};
+
 	return $self->template({ file => 'addtomebook_isbn.html', vars => {
-		librarieshash	=> $self->_librarieshash(),
+		librarieshash	=> %libraries_hash,
 		errs		=> $errs,
 	}});
 }
