@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(first_login management_old mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron_ajax addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(first_login mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron_ajax addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -97,11 +97,21 @@ sub first_login {
 	my $self = shift;
 	my $error = '';
         my $q = $self->query;
+        my $email = '';
 
-        if($q->param('first_name') && $q->param('last_name') && $q->param('email') && $q->param('password1') && ($q->param('password1') eq $q->param('password2'))) {
+        if($q->param('email') =~ m/^([A-z0-9_\-]+)\@letu\.edu$/) {
+            $email = $1;
+        } elsif ($q->param('email') =~ m/^([A-z0-9_\-]+)\@.*$/) {
+            $email = '';
+        } else {
+          $email = $q->param('email');
+        }
+
+
+        if($q->param('first_name') && $q->param('last_name') && $email && $q->param('password1') && ($q->param('password1') eq $q->param('password2'))) {
           $self->user_update({
               id => $self->session->param('id'),
-              email => $q->param('email'),
+              email => "$email\@letu.edu",
               first_name => $q->param('first_name'),
               last_name => $q->param('last_name'),
               has_logged_in => 'true',
@@ -1147,62 +1157,14 @@ sub tomebookinfo {
 }
 #}}}
 
-#{{{management_old
-sub management_old {
-	my $self = shift;
+#{{{inventory
+sub inventory {
+  my $self = shift;
 
-	my $update = 0;
-	if($self->query->param('update')) {
-		unless(($self->query->param('id') == $self->session->param('id')) or $self->param('user_info')->{admin}) {
-			return $self->error({ message => 'You do not have permissions to update that user',
-                            extended => $self->session->param('id') . ' tried to update ' . $self->query->param('id') });
-		}
 
-		my %update = (
-			id		=> $self->query->param('id'),
-			username	=> $self->query->param('username'),
-			email		=> $self->query->param('email'),
-			notifications	=> $self->query->param('notifications') ? 'true' : 'false',
-		);
-
-		if($self->param('user_info')->{admin}) {
-			$update{admin} = $self->query->param('admin') ? 'true' : 'false',
-			$update{disabled} = $self->query->param('disabled') ? 'true' : 'false',
-			my @libraries = $self->query->param('libraries');
-			$self->library_access({ user => $self->query->param('id'), libraries => \@libraries });
-		}
-
-		if($self->query->param('password1')) {
-			if($self->query->param('password1') ne $self->query->param('password2')) {
-				return $self->error({ message => 'The two passwords do not match' });
-			} else {
-				$update{password} = unix_md5_crypt($self->query->param('password1'));
-			}
-		}
-
-		$self->user_update({ %update });
-		$self->param('user_info', $self->user_info({ id => $self->session->param('id') }));
-		$update = 1;
-	}
-
-	my $users;
-	if($self->param('user_info')->{admin}) {
-		$users = $self->user_info;
-	} else {
-		$users = [ $self->param('user_info') ];
-	}
-
-	foreach my $userinfo (@$users) {
-		$userinfo->{libraries} = $self->library_info();
-		my $library_access = $self->_libraryaccesshash($userinfo->{id});
-		foreach(@{$userinfo->{libraries}}) {
-			$_->{access} = $library_access->{$_->{id}} ? 1 : 0;
-		}
-	}
-
-	return $self->template({
-            file => 'management_old.html',
-            vars => { admin => $self->param('user_info')->{admin}, users => $users, update => $update }});
+  return $self->template({
+      file => 'inventory.html',
+      });
 }
 #}}}
 
