@@ -1,35 +1,6 @@
 [% META title = 'Search' %]
 <table cellpadding="5" class="noborder"><tr><td valign="top" style="text-align: right;">
 
-[%# Main search box %]
-<form action="[%- url -%]" style="text-align: right" method="post" name="mainsearch">
-<input type="hidden" name="rm" value="mainsearch" />
-<table>
-  <thead>
-    <tr>
-      <th colspan="2">Book Search</th>
-    </tr>
-  </thead>
-  <tr>
-    <td>Title</td>
-    <td>[% CGI.textfield({ Name => 'title' }) %]</td>
-  </tr>
-  <tr>
-    <td>Author</td>
-    <td>[% CGI.textfield({ Name => 'author' }) %]</td>
-  </tr>
-  <tr>
-    <td>Edition</td>
-    <td>[% CGI.textfield({ Name => 'edition' }) %]</td>
-  </tr>
-  <tr>
-    <td colspan="2" class="submit"><input type="submit" value="Search" /></td>
-  </tr>
-</table>
-</form>
-</td>
-<td style="vertical-align:top;">
-
 [%# Class jump box %]
 <form action="[%- url -%]" method="get" name="isbnview">
 <input type="hidden" name="rm" value="classsearch" />
