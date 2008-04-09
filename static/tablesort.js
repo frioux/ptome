@@ -1,8 +1,8 @@
 /*
 *
-* Copyright (c) 2006 Andrew Tetlaw 
+* Copyright (c) 2006 Andrew Tetlaw
 * http://tetlaw.id.au/view/blog/table-sorting-with-prototype/
-* 
+*
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -10,10 +10,10 @@
 * modify, merge, publish, distribute, sublicense, and/or sell copies
 * of the Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
+*
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -22,7 +22,7 @@
 * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
-* * 
+* *
 */
 
 var SortableTable = {
@@ -61,15 +61,15 @@ var SortableTable = {
 		var table = $(elm);
 		if(table.tagName != "TABLE") return;
 		table.addClassName(SortableTable.options.tableScrollClass);
-		
+
 		var w = table.getDimensions().width;
-		
+
 		table.setStyle({
 			'border-spacing': '0',
 			'table-layout': 'fixed',
 			width: w + 'px'
 		});
-		
+
 		var cells = SortableTable.getHeaderCells(table);
 		cells.each(function(c,i){
 			c = $(c);
@@ -78,12 +78,12 @@ var SortableTable = {
 			$A(table.tBodies[0].rows).each(function(r){
 				$(r.cells[i]).setStyle({width: cw + 'px'});
 			})
-		})	
-		
+		})
+
 		// Fixed Head
 		var head = (table.tHead && table.tHead.rows.length > 0) ? table.tHead : table.rows[0];
 		var hclone = head.cloneNode(true);
-		
+
 		var hdiv = $(document.createElement('div'));
 		hdiv.id = table.id + '-head';
 		table.parentNode.insertBefore(hdiv, table);
@@ -98,16 +98,16 @@ var SortableTable = {
 		});
 		hdiv.appendChild(htbl);
 		hdiv.addClassName('scroll-table-head');
-		
+
 		table.removeChild(head);
 		htbl.appendChild(hclone);
-		
+
 		cells = SortableTable.getHeaderCells(htbl);
 		cells.each(function(c){
 			c = $(c);
 			Event.observe(c, 'click', SortableTable._sortScroll.bindAsEventListener(c));
 			c.addClassName(SortableTable.options.columnClass);
-		});	
+		});
 
 		// Table Body
 		var cdiv = $(document.createElement('div'));
@@ -118,7 +118,7 @@ var SortableTable = {
 		});
 		cdiv.appendChild(table);
 		cdiv.addClassName('scroll-table-body');
-		
+
 		hdiv.scrollLeft = 0;
 		cdiv.scrollLeft = 0;
 
@@ -133,7 +133,7 @@ var SortableTable = {
 	_sort : function(e) {
 		SortableTable.sort(null, this);
 	},
-	_sortScroll : function(e) {	
+	_sortScroll : function(e) {
 		var hdiv = $(this).up('div.scroll-table-head');
 		var id = hdiv.id.match(/^(.*)-head$/);
 		SortableTable.sort($(id[1]), this);
@@ -152,8 +152,8 @@ var SortableTable = {
 			index = SortableTable.getCellIndex(cell)
 		}
 		var op = SortableTable.options;
-		
-		if(cell.hasClassName(op.nosortClass)) return;	
+
+		if(cell.hasClassName(op.nosortClass)) return;
 		order = order ? order : (cell.hasClassName(op.descendingClass) ? 1 : -1);
 
 		var hcells = SortableTable.getHeaderCells(null, cell);
@@ -208,7 +208,7 @@ var SortableTable = {
 					case  'k':
 						return b * 1024;
 						break;
-					case  'm':				
+					case  'm':
 						return b * 1024 * 1024;
 						break;
 					case  'g':
@@ -268,10 +268,10 @@ var SortableTable = {
 			// http://delete.me.uk/2005/03/iso8601.html ROCK!
 			var calc = function(v) {
 			    var d = v.match(/([\d]{4})(-([\d]{2})(-([\d]{2})(T([\d]{2}):([\d]{2})(:([\d]{2})(\.([\d]+))?)?(Z|(([-+])([\d]{2}):([\d]{2})))?)?)?)?/);
-			
+
 			    var offset = 0;
 			    var date = new Date(d[1], 0, 1);
-			
+
 			    if (d[3]) { date.setMonth(d[3] - 1) ;}
 			    if (d[5]) { date.setDate(d[5]); }
 			    if (d[7]) { date.setHours(d[7]); }
@@ -316,7 +316,7 @@ var SortableTable = {
 	},
 	detectors : $A([
 		{re: /[\d]{4}-[\d]{2}-[\d]{2}(?:T[\d]{2}\:[\d]{2}(?:\:[\d]{2}(?:\.[\d]+)?)?(Z|([-+][\d]{2}:[\d]{2})?)?)?/, type : "date-iso"}, // 2005-03-26T19:51:34Z
-		{re: /^sun|mon|tue|wed|thu|fri|sat\,\s\d{1,2}\sjan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec\s\d{4}(?:\s\d{2}\:\d{2}(?:\:\d{2})?(?:\sGMT(?:[+-]\d{4})?)?)?/i, type : "date"}, //Mon, 18 Dec 1995 17:28:35 GMT 
+		{re: /^sun|mon|tue|wed|thu|fri|sat\,\s\d{1,2}\sjan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec\s\d{4}(?:\s\d{2}\:\d{2}(?:\:\d{2})?(?:\sGMT(?:[+-]\d{4})?)?)?/i, type : "date"}, //Mon, 18 Dec 1995 17:28:35 GMT
 		{re: /^\d{2}-\d{2}-\d{4}/i, type : "date-eu"},
 		{re: /^\d{2}\/\d{2}\/\d{4}\s?(?:\d{1,2}\:\d{2}(?:\:\d{2})?\s?[a|p]?m?)?/i, type : "date-au"},
 		{re: /^\d{1,2}\:\d{2}(?:\:\d{2})?(?:\s[a|p]m)?$/i, type : "time"},
@@ -334,7 +334,7 @@ var SortableTable = {
 	},
 	getBodyRows : function(table) {
 		table = $(table);
-		return (table.hasClassName(SortableTable.options.tableScrollClass) || table.tHead && table.tHead.rows.length > 0) ? 
+		return (table.hasClassName(SortableTable.options.tableScrollClass) || table.tHead && table.tHead.rows.length > 0) ?
 					$A(table.tBodies[0].rows) : $A(table.rows).without(table.rows[0]);
 	},
 	addRowClass : function(r,i) {
@@ -409,3 +409,4 @@ if(FastInit) {
 } else {
 	Event.observe(window, 'load', SortableTable.load);
 }
+
