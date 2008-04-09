@@ -11,10 +11,18 @@
 <input type="hidden" id="reservation_id" name="reservation_id" value="[% r.id | html %]" />
 <input type="hidden" id="rm" name="rm" value="ajax_fill_reservation" />
 <input type="hidden" id="rcommit[%- r.id -%]" name="commit" value="fill" />
+[%- tmp = [] -%]
+[%- has_lib = 1 -%]
+[%- FOREACH  var IN tome.library_access -%]
+[%  tmp.push(" ${var} ") %]
+[%- END -%]
+[%- UNLESS tmp.grep("^ ${r.library_to} $").size > 0 -%]
+[%- has_lib = 0 -%]
+[%- END -%]
 <table>
-[%- IF tome.library_access.grep(r.library_from) -%]<tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>[%- END -%]
+  [%- IF has_lib == 1%]<tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>[%- END -%]
 <tr><td><input type="submit" name="submit" value="Cancel" onClick="$('rcommit[%- r.id -%]').value='cancel'; $$('reservation[% r.id | html %] form')[0].submit();"  /></td>
-<td><input type="submit" name="submit" [%- IF disbabled -%]disabled="true"[%- END -%] value="Fill Reservation" [%- IF !tome.library_access.grep(r.library_from)  -%]disabled="disabled"[%- END -%] /></td>
+<td><input type="submit" name="submit" [%- UNLESS has_lib == 1 -%]disabled="true"[%- END -%] value="Fill Reservation"  /></td>
 </tr>
 </table>
 </form>
