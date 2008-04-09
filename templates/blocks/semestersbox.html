@@ -1,6 +1,7 @@
 [%# Takes name as an input %]
+[%- DEFAULT semester_selected =  (session.currsemester.id || currsemester.id)-%]
 <select name="[% name | html %]" id="[% id | html %]">
 [%- FOREACH semester = semesters -%]
-<option value="[% semester.id | html %]" [%- # IF (session.currsemester.id || currsemester.id) == semester.id -%][%- IF semester_selected==semester.id -%]selected="selected"[%- END -%]>[%- semester.name | html %]</option>
+<option value="[% semester.id | html %]" [%- IF semester_selected==semester.id -%]selected="selected"[%- END -%]>[%- semester.name | html %]</option>
 [%- END -%]
 </select>
