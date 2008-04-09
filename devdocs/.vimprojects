@@ -87,7 +87,6 @@ cgi=cgi{
   isbnview.html
   mainsearch.html
   management.html
-  management_old.html
   patronview.html
   report.html
   stats.html
