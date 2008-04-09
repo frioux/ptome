@@ -300,6 +300,33 @@ sub isbn_search {
 }
 #}}}
 
+#{{{inventory_search
+sub inventory_search {
+  my $self = shift;
+
+  my $dbh = $self->dbh;
+
+  my %params = validate(@_, {
+      libraries	=> { type => ARRAYREF },
+    });
+
+  unless(@{$params{libraries}}) { return (); }
+
+  my ($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE', {library => $params{libraries}}, 'AND timeremoved IS NULL');
+
+  my $sth = $dbh->prepare($sql);
+  $sth->execute(@bind);
+
+  my @results;
+  while(my @result = $sth->fetchrow_array) {
+    push @results, $result[0];
+  }
+
+  return \@results;
+
+}
+#}}}
+
 #{{{tomebook_availability_search
 
 =head2 tomebook_availability_search
@@ -1231,7 +1258,9 @@ sub books_search {
 		push @values, $params{isbn};
 	}
 
-	my $statement = 'SELECT isbn FROM books WHERE ' . join(' AND ', @conditions) . " ORDER BY isbn ASC";
+	my $statement = 'SELECT isbn FROM books WHERE ' . join(' OR ', @conditions) . " ORDER BY isbn ASC";
+
+        warn $statement;
 
 	my $sth = $dbh->prepare($statement);
 
