@@ -98,6 +98,7 @@ sub first_login {
 	my $error = '';
         my $q = $self->query;
         my $email = '';
+        my $firstname;
 
         if($q->param('email') =~ m/^([A-z0-9_\-]+)\@letu\.edu$/) {
             $email = $1;
@@ -107,12 +108,19 @@ sub first_login {
           $email = $q->param('email');
         }
 
+        if(($q->param('first_name') eq 'firstname') || $q->param('last_name') eq 'lastname') {
+          $firstname = '';
+        } else {
+          $firstname = $q->param('first_name');
+        }
 
-        if($q->param('first_name') && $q->param('last_name') && $email && $q->param('password1') && ($q->param('password1') eq $q->param('password2'))) {
+
+
+        if($firstname && $q->param('last_name') && $email && $q->param('password1') && ($q->param('password1') eq $q->param('password2'))) {
           $self->user_update({
               id => $self->session->param('id'),
               email => "$email\@letu.edu",
-              first_name => $q->param('first_name'),
+              first_name => $firstname,
               last_name => $q->param('last_name'),
               has_logged_in => 'true',
               second_contact => $q->param('contact'),
@@ -133,7 +141,7 @@ sub autocomplete_isbn {
 	my $self = shift;
 
 	my @books;
-	foreach($self->books_search({ isbn => uc $self->query->param('isbn') })) { # We make the ISBN upper case for the user
+	foreach($self->books_search({ isbn => uc $self->query->param('isbn'), title => $self->query->param('isbn'), author => $self->query->param('isbn'), })) { # We make the ISBN upper case for the user
 		my $book_info = $self->book_info({ isbn => $_ });
 		my $title = $book_info->{title};
 		if(length($title) > 33) {
