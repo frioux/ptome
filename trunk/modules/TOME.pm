@@ -1952,7 +1952,7 @@ sub find_orphans {
 
 	my $dbh = $self->dbh;
 
-	my ($sql, @bind) = sql_interp('SELECT DISTINCT isbn FROM tomebooks WHERE library IN', $params{libraries}, ' AND tomebooks.timeremoved IS NULL AND isbn NOT IN (SELECT books.isbn FROM books, classbooks WHERE classbooks.isbn = books.isbn) ORDER BY isbn');
+	my ($sql, @bind) = sql_interp('SELECT id FROM tomebooks WHERE library IN', $params{libraries}, ' AND tomebooks.timeremoved IS NULL AND isbn NOT IN (SELECT books.isbn FROM books, classbooks WHERE classbooks.isbn = books.isbn)');
 	my $sth = $dbh->prepare($sql);
 	$sth->execute(@bind);
 	my @results;

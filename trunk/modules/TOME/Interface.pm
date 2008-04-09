@@ -357,10 +357,7 @@ sub findorphans {
 
 	my $libraries_selected = $self->_librariesselecteddefault;
 
-	my @books;
-	foreach($self->find_orphans({ libraries => $libraries_selected })) {
-		push @books, $self->book_info({ isbn => $_ });
-	}
+	my @books = $self->find_orphans({ libraries => $libraries_selected });
 
 	return $self->template({ file => 'findorphans.html', vars => {
 		books => \@books,

@@ -1,12 +1,5 @@
 [% META title = 'Orphan Books' %]
 <h3>These books have no class associated with them:</h3>
-<form name="report" action="[%- url -%]" method="post">
-<input type="hidden" name="rm" value="findorphans">
-<table>
-[% INCLUDE 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
-<tr><td colspan="2"><input type="submit" value="Find Orphans" /></td></tr>
-</table>
-</form>
 [% IF books.size %]
 <p>[% books.size %] orphans found.</p>
 <table><thead>
@@ -15,14 +8,18 @@
   <th>Author</td>
   <th>Edition</td>
   <th>ISBN</td>
+  <th>ID</td>
 </tr>
 </thead><tbody>
 [% FOREACH book = books %]
+[%- tb = tome.tomebook_info(book) -%]
+[%- b = tome.book_info(tb.isbn) -%]
 <tr>
-  <td>[% book.title %]</td>
-  <td>[% book.author %]</td>
-  <td>[% book.edition %]</td>
-  <td><a href="[%- url(rm='isbnview', isbn=book.isbn) -%]">[% book.isbn %]</a></td>
+  <td>[% b.title | html %]</td>
+  <td>[% b.author | html %]</td>
+  <td>[% b.edition | html %]</td>
+  <td><a href="[%- url(rm='isbnview', isbn=b.isbn) -%]">[% b.isbn | html %]</a></td>
+  <td><a href="[%- url(rm='tomebookinfo', id=book) -%]">[% book | html %]</a></td>
 </tr>
 [% END %]
 </tbody></table>
