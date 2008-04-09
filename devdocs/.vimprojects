@@ -84,6 +84,7 @@ cgi=cgi{
   footer.html
   header.html
   interTOMEnotify.email
+  inventory.html
   isbnview.html
   mainsearch.html
   management.html
