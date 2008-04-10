@@ -118,6 +118,9 @@ cgi=cgi{
    checkouthistory.html
    extendedbookinfo.html
   }
+  classsearch_blocks=classsearch_blocks {
+   usableinfo.html
+  }
  }
 
  tests=tests {
