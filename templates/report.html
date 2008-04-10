@@ -190,7 +190,7 @@ semester_selected
 [%- IF dueback_from_remote_to_local.size > 0 -%]
 <h4>Books that other floors need to return to me ([%- dueback_from_remote_to_local.size -%])</h4>
 [% #{{{ -%]
-<table class="sortable"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Check In</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Check In</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
