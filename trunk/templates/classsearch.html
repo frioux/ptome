@@ -10,38 +10,11 @@
   </thead>
 [% FOREACH book = books %]
 <tr[%- IF !book.usable -%] bgcolor="lightgrey"[%- END -%]>
-<form action="[%- url -%]" method="post">
-<input type="hidden" name="rm" value="updateclassinfo">
-<input type="hidden" name="class" value="[% id | html %]">
-<input type="hidden" name="isbn" value="[% book.isbn | html %]">
 <td>
   [%- INCLUDE blocks/book.html isbn=book.isbn id="" -%]
   <b>Buy it online:</b> <a href="http://isbn.nu/[% book.isbn | html | uri %]">http://isbn.nu/[% book.isbn | html | uri %]</a>
 </td>
-<td[% IF book.verified >= (session.currsemester.id || currsemester.id) %] bgcolor="lightgreen"[%- END -%]>
-  <table><tr><td><strong>Usable:</strong></td><td>
-  <select name="usable">
-    <option value="1" [% IF book.usable %]selected[% END %]>Yes</option>
-    <option value="0"[% IF !book.usable %]selected[% END %]>No</option>
-</select></td></tr>
-<tr><td><strong>Semester</strong></td>
-  <td><select name="verified">
-		[% FOREACH semester = semesters %]
-		<option value="[% semester.id | html %]" [% IF book.verified == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>
-		[% END %]
-          </select></td></tr>
-          <tr><td><strong>Comments:</strong></td><td><textarea name="comments" rows="4" cols="15">[% book.comments | html %]</textarea></td></tr>
-
-          <tr><td><input type="submit" value="Update" /></td>
-          </form>
-          <td>
-		<form action="[%- url -%]" method="post">
-		<input type="hidden" name="rm" value="deleteclassbook" />
-		<input type="hidden" name="class" value="[% id | html %]" />
-		<input type="hidden" name="isbn" value="[% book.isbn | html %]" />
-		<input type="submit" value="Delete" />
-          </form></td></tr>
-      </table></td>
+[%- INCLUDE classsearch_blocks/usableinfo.html book=book.isbn class=id -%]
       <td>[%- INCLUDE blocks/createreservation.html isbn=book.isbn libraries_from=libraries_from libraries_to=libraries_to -%]</td>
 </tr>
 [% END %]
