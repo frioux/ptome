@@ -1260,8 +1260,6 @@ sub books_search {
 
 	my $statement = 'SELECT isbn FROM books WHERE ' . join(' OR ', @conditions) . " ORDER BY isbn ASC";
 
-        warn $statement;
-
 	my $sth = $dbh->prepare($statement);
 
 	$sth->execute(@values);
@@ -1517,13 +1515,13 @@ sub tome_stats {
 		libraries	=> { type => ARRAYREF },
 	});
 
-
 	my $dbh = $self->dbh;
 
 	my (%stats, $sql, @bind);
 	($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE library IN', $params{libraries});
 	my $sth = $dbh->prepare($sql); $sth->execute(@bind);
 	($stats{totalcollection}) = $sth->fetchrow_array;
+
 
 	($sql, @bind) = sql_interp('SELECT count(id) FROM tomebooks WHERE timeremoved IS NULL AND library IN', $params{libraries});
 	$sth = $dbh->prepare($sql); $sth->execute(@bind);
@@ -1542,7 +1540,6 @@ sub tome_stats {
 	while(my $result = $sth->fetchrow_hashref) {
 		push @{$stats{top10donators}}, $result;
 	}
-
 
 	return \%stats;
 }
@@ -2472,6 +2469,25 @@ sub class_books {
 	return \@books;
 }
 #}}}
+
+
+#{{{class_book_info
+sub class_book_info {
+	my $self = shift;
+
+	my %params = validate(@_, {
+		class_id	=> { type => SCALAR },
+		isbn	        => { type => SCALAR },
+	});
+
+	my $sth = $self->dbh->prepare("SELECT isbn, usable, verified, comments, uid FROM classbooks WHERE class = ? AND isbn = ?");
+	$sth->execute($params{class_id}, $params{isbn});
+	my $result = $sth->fetchrow_hashref;
+
+	return $result;
+}
+#}}}
+
 
 #{{{class_update_verified
 

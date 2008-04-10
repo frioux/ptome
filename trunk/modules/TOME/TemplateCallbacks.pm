@@ -65,6 +65,21 @@ sub book_info {
 	return $self->{tome}->book_info({ isbn => $isbn });
 }
 
+sub class_book_info {
+  my $self = shift;
+  my $class = shift;
+  my $isbn = shift;
+
+  return $self->{tome}->class_book_info({ isbn => $isbn, class_id => $class });
+}
+
+sub book_classes {
+        my $self = shift;
+        my $isbn = shift;
+
+        return $self->{tome}->book_classes({ isbn => $isbn });
+}
+
 sub library_info {
 	my $self = shift;
 	my $library = shift;
