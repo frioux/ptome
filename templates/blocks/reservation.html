@@ -1,7 +1,7 @@
 [%# Takes reservation and disabled as an argument %]
 [%- r = tome.reservation_info(reservation) -%]
 [%- tomebooks_available = tome.tomebooks_available_for_checkout(r.isbn, r.library_to, r.semester) -%]
-<div name="reservation[% r.id | html %]" id="reservation[% r.id | html %]">
+<div class="print-no" name="reservation[% r.id | html %]" id="reservation[% r.id | html %]">
 [%- prototype.form_remote_tag({
   url    => url,
   update => 'reservation' _ r.id,
@@ -19,7 +19,7 @@
 [%- UNLESS tmp.grep("^ ${r.library_to} $").size > 0 -%]
 [%- has_lib = 0 -%]
 [%- END -%]
-<table>
+<table class="noborder close">
   [%- IF has_lib == 1%]<tr><td><strong>Checkout:</strong></td><td><select name="tomebook_id"><option id="0">Please select a Book ID</option>[% FOREACH book = tomebooks_available %]<option id="[% book | html %]">[% book | html %]</option>[% END %]</select></td></tr>[%- END -%]
 <tr><td><input type="submit" name="submit" value="Cancel" onClick="$('rcommit[%- r.id -%]').value='cancel'; $$('reservation[% r.id | html %] form')[0].submit();"  /></td>
 <td><input type="submit" name="submit" [%- UNLESS has_lib == 1 -%]disabled="true"[%- END -%] value="Fill Reservation"  /></td>
