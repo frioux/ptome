@@ -4,16 +4,15 @@
 [%- bookinfo = tome.book_info(tomebookinfo.isbn) -%]
 <h3>Book <a href="[%- url(rm='tomebookinfo', id=tomebook.id) -%]">#[% tomebook.id | html %]</a></h3>
 [%- IF tomebookinfo.timeremoved -%]<p><font color="red">Book has been removed from TOME</font></p>[%- END -%]
-[%- INCLUDE blocks/bookclassbox.html -%]
+[%- INCLUDE blocks/bookclassbox.html isbn= tomebookinfo.isbn -%]
 [%- #{{{ Edit book -%]
 [%- IF CGI.param('edit') AND librarieshash.${tomebookinfo.library} -%]
-<a name="updatetomebook"></a>
-<form action="[%- url -%]" method="post" name="updatetomebook">
+<form action="[%- url -%]" method="post" name="updatetomebook" id="updatetomebook">
   <input type="hidden" name="rm" value="updatetomebook" />
   <input type="hidden" name="anchor" value="updatetomebook" />
   <input type="hidden" name="edit" value="1" />
   <input type="hidden" name="id" value="[% tomebook.id | html %]" />
-  <p><strong>Library:</strong> <select name="library">
+  <p><strong>Library:</strong> <select id="library" name="library">
     [%- FOREACH library IN libraries -%][%- l_info = tome.library_info(library) -%][%- l_info.keys.join(', ') -%]
     [%- IF tome.library_access.grep(library) %]<option value="[% library | html %]" [% IF library == tomebookinfo.library %]selected="selected"[% END %]>[% l_info.name | html %]</option>[% END -%]
     [%- END -%]
@@ -21,8 +20,8 @@
   <p><strong>Originator:</strong> [% INCLUDE 'blocks/autocomplete_patron.html' default_patron="${tome.patron_info(tomebookinfo.originator).email}" name='patron' %] [% errs.updatetomebook_errs and errs.patron %]</p>
   <p><strong>Time donated:</strong> [%- INCLUDE blocks/datetime.html datetime=tomebookinfo.timedonated -%]</p>
   [%- IF tomebookinfo.timeremoved %]<p><strong>Time removed:</strong> [% INCLUDE blocks/datetime.html datetime=tomebookinfo.timeremoved %]</p>[%- END -%]
-  <p>Comments:<br /><textarea name="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br />
-  Expiration Semester: <select name="expire">
+  <p>Comments:<br /><textarea name="comments" id="comments" rows="4" cols="30">[% tomebook.comments | html %]</textarea><br />
+  Expiration Semester: <select name="expire" id="expire">
     <option value="" [% IF !tomebook.expire %]selected="selected"[% END %]>Never</option>
     [%- FOREACH semester = semesters -%]
     [%- IF semester.id >= currsemester.id OR semester.id == tomebook.expire %]<option value="[% semester.id | html %]" [% IF tomebook.expire == semester.id %]selected="selected"[% END %]>[% semester.name | html %]</option>[% END -%]
@@ -31,17 +30,21 @@
   <input type="submit" value="Update">
 </form>
 <p>
-<form action="[%- url -%]" method="post">
+<form action="[%- url -%]" method="post" name="removetomebook" id="removetomebook">
   <input type="hidden" name="rm" value="confirm" />
   <input type="hidden" name="finalrm" value="removetomebook" />
   <input type="hidden" name="id" value="[% tomebook.id | html %]" />
+  [%- fields = ['patron', 'library', 'comments', 'expire'] -%]
+  [%- FOREACH field IN fields -%]
+  <input type="hidden" name="[%- field -%]" id="c[%- field -%]" />
+  [%- END -%]
   [%- IF tomebook.timeremoved -%]
   <input type="hidden" name="undo" value="true" />
   <input type="hidden" name="action" value="Mark TOME Book #[% tomebook.id | html %] as back in the collection.  This is not a normal thing to do..." />
-  <input type="submit" value="Put book back in TOME" />
+  <input onClick="[%- FOREACH field IN fields -%]$('c[%- field -%]').value=$('[%- field -%]').value;[%- END -%]" type="submit" value="Put book back in TOME" />
   [%- ELSE -%]
   <input type="hidden" name="action" value="Remove TOME Book #[% tomebook.id | html %] from the collection.  Make sure that the book has been checked in and any outstanding reservations have been cleared.  Also check the comments and expiration date to see if there are any specific actions that need to be taken when removing the book" />
-  <input type="submit" value="Remove book from TOME" />
+  <input onClick="[%- FOREACH field IN fields -%]$('c[%- field -%]').value=$('[%- field -%]').value;[%- END -%]" type="submit" value="Remove book from TOME" />
   [%- END -%]
 </form>
 [%- #}}} -%]

@@ -13,7 +13,7 @@ use warnings;
 sub setup {
 	my $self = shift;
 
-	$self->run_modes([ qw(first_login inventory mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron_ajax addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
+	$self->run_modes([ qw(first_login inventory mainsearch updatebook addtomebook addtomebook_isbn addtomebook_process updatetomebook addclass addclass_process tomebookinfo checkout checkin updatecheckoutcomments report fillreservation cancelcheckout classsearch updateclasscomments updateclassinfo deleteclassbook addclassbook findorphans confirm deleteclass finduseless stats login logout management useradd libraryadd sessionsemester semesterset semesteradd removetomebook patronview addpatron_ajax addpatron_process patronupdate autocomplete_isbn autocomplete_class autocomplete_patron patronaddclass isbnview libraryupdate ajax_updateclassinfo ajax_isbnreserve ajax_libraries_selection_list ajax_fill_reservation ajax_checkin ajax_books_donated_list tomekeepers classes) ]);
 	$self->run_modes({ AUTOLOAD => 'autoload_rm' }); # Don't actually want to name the sub AUTOLOAD
 	$self->start_mode('mainsearch');
 }
@@ -349,9 +349,27 @@ sub removetomebook {
 		}
 	}
 
+        my $q = $self->query;
+
+        my $patron_info = $self->patron_info({ email => $q->param('patron') });
+	unless($patron_info) {
+		return $self->forward('addpatron');
+	}
+
+	my %tomebook = (
+		id		=> $q->param('id'),
+		originator	=> $patron_info->{id},
+		comments	=> $q->param('comments') || '',
+		expire		=> $q->param('expire') || 0,
+		library		=> $q->param('library'),
+	);
+
 	if($self->_libraryauthorized($self->param('user_info')->{id}, $self->tomebook_info_deprecated({ id => $params{id} })->{library})) {
+		$self->tomebook_update({ %tomebook });
 		$self->tomebook_remove(\%params);
 	}
+
+
 
 	$self->header_type('redirect');
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$params{id}");
@@ -400,11 +418,13 @@ sub stats {
 	my $self = shift;
 
 	my $libraries_selected = $self->_librariesselecteddefault;
+        my $stats =$self->tome_stats({ libraries => $libraries_selected }) ;
+        warn join(', ', keys(%{$stats}));
 
 	return $self->template({ file => 'stats.html', vars => {
-		libraries		=> keys(%{$self->_libraryaccesshash($self->param('user_info')->{id})}),
+                test                    => 'frew',
 		libraries_selected	=> $libraries_selected,
-		stats			=> $self->tome_stats({ libraries => $libraries_selected })
+		stats			=> $stats
 	}});
 }
 #}}}
@@ -531,7 +551,7 @@ sub updatetomebook {
 	my $id = $results->valid('id');
 
 	$self->header_type('redirect');
-	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id&edit=1");
+	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=tomebookinfo&id=$id");
 	return;
 }
 #}}}
@@ -576,9 +596,36 @@ sub updateclassinfo {
 
 	$self->classbook_update({ class => $class, usable => ($q->param('usable') ? 'true' : 'false'), verified => $q->param('verified'), comments => $q->param('comments'), isbn => $q->param('isbn'), uid => $self->param('user_info')->{id} });
 
-	$self->header_type('redirect');
-	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=classsearch&class=$class");
-	return;
+	return $self->template({ file => 'classsearch_blocks/usableinfo.html',
+            vars => {
+              b => $q->param('isbn')
+            }, plain => 1,
+          });
+}
+#}}}
+
+#{{{ajax_updateclassinfo
+sub ajax_updateclassinfo {
+  my $self = shift;
+  my $q = $self->query;
+  my $commit = $q->param('ucommit');
+  if($commit eq 'update') {
+
+    $self->classbook_update({ class => $q->param('class'), usable => ($q->param('usable') ? 'true' : 'false'), verified => $q->param('verified'), comments => $q->param('comments'), isbn => $q->param('isbn'), uid => $self->param('user_info')->{id} });
+
+  return $self->template({ file => 'classsearch_blocks/usableinfo.html',
+            vars => {
+              book => $q->param('isbn'),
+              class => $q->param('class'),
+            }, plain => 1,
+          });
+  } elsif ($commit eq 'delete') {
+	$self->class_delete_book({ class => $q->param('class'), isbn => $q->param('isbn') });
+        return "Book association removed";
+  }
+
+
+
 }
 #}}}
 
@@ -1206,6 +1253,8 @@ sub useradd {
 		$self->user_add({
 			username	=> $self->query->param('username'),
 			email		=> $self->query->param('email'),
+                        first_name      => $self->query->param('first_name'),
+                        last_name       => $self->query->param('last_name'),
 		});
 	}
 
