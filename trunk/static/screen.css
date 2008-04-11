@@ -36,8 +36,8 @@ body {
 #header #banner {
   background: url(tome.png);
   background-repeat: no-repeat;
-  background-position: left;
-  padding: 10px 5px 10px 5px;
+  background-position: 3px 50%;
+  padding: 15px 5px 15px 5px;
   margin: 3px;
 }
 #header #banner #status {
@@ -93,6 +93,9 @@ div#body {
   padding: 8px 0 6px 0;
   width: auto;
 }
+#footer a {
+  text-decoration: none;
+}
 
 /* --- General Styles ------------------------------------ */
 
@@ -128,8 +131,11 @@ a:hover,
 .bad {
   background-color: rgb(255,200,200) !important;
 }
-tr.bad td {
-  border: 1px solid #c99;
+.good {
+  background-color: rgb(200,255,200) !important;
+}
+.useless {
+  background-color: rgb(200,200,200) !important;
 }
 
 #body h3 {
@@ -240,6 +246,9 @@ table.full {
 table.noborder > tbody > tr >  td {
   border: 0;
 }
+table.close > tbody > tr > td {
+  padding: 2px;
+}
 table#main {
   width: 95%;
   text-align: center;
@@ -280,7 +289,6 @@ dl.table-display dt {
 dl.table-display dd {
   clear:   right;
   display:  block;
-  /*white-space: nowrap;*/
 }
 dl.table-display dd input,
 dl.table-display dd select {

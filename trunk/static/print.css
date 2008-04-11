@@ -23,10 +23,31 @@ body {
 table {
   border-collapse: collapse;
 }
+table.full {
+  width: 100%;
+}
 table td {
   border: 1px solid rgb(220,220,220);
 }
-
+dl.table-display {
+  display: block;
+}
+dl.table-display dt {
+  clear: left;
+  display: block;
+  font-weight: bold;
+  float: left;
+  margin-right: 4px;
+}
+dl.table-display dd {
+  clear: right;
+  display: block;
+}
+dl.table-display dd input,
+dl.table-display dd select {
+  margin-top: -2px;
+  margin-bottom: 4px;
+}
 /* --- General styles --------------------------*/
 
 #body div.line {
@@ -38,4 +59,7 @@ table td {
 }
 form input {
   font-size: 0.8em;
+}
+.print-no {
+  display: none;
 }
