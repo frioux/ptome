@@ -1255,6 +1255,7 @@ sub useradd {
 			email		=> $self->query->param('email'),
                         first_name      => $self->query->param('first_name'),
                         last_name       => $self->query->param('last_name'),
+                        primary_library => $self->query->param('primary_library'),
 		});
 	}
 
@@ -1456,6 +1457,9 @@ sub ajax_books_donated_list {
 sub ajax_fill_reservation {
   my $self = shift;
   if ($self->query->param('commit') eq 'fill') {
+    if($self->checkout_search({ tomebook=> $self->query->param('tomebook_id'), status=> 'checked_out'})) {
+      return "This book has not yet been checked back into tome.";
+    }
     my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
     if ($checkout != -1) {
       return "Checked out!";
