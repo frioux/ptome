@@ -27,7 +27,7 @@ semester_selected
       <th>Book</th>
       <th>Borrower</th>
       <th>Semester</th>
-      <th class="nosort">Fill Reservation</th>
+      <th class="nosort print-no">Fill Reservation</th>
     </tr>
   </thead>
   <tbody>
@@ -41,7 +41,7 @@ semester_selected
       <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
       <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
       <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
-      <td>[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
+      <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
     </tr>
     [%- END -%]
   </tbody>
@@ -57,7 +57,7 @@ semester_selected
       <th>Book</th>
       <th>Borrower</th>
       <th>Semester</th>
-      <th class="nosort">Check In</th>
+      <th class="nosort print-no">Check In</th>
     </tr>
   </thead>
   <tbody>
@@ -73,7 +73,7 @@ semester_selected
       <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
       <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
       <td>[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
-      <td>
+      <td class="print-no">
         [%- INCLUDE 'blocks/checkin.html' checkout=checkout_id -%]
       </td>
     </tr>
@@ -120,7 +120,7 @@ semester_selected
 [%- IF reserved_from_local_to_remote.size > 0 -%]
 <h4>Reservations that need to be filled for me ([%- reserved_from_local_to_remote.size -%])</h4>
 [%# {{{ -%]
-<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort print-no">Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_local_to_remote -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- IF reservation_info.semester < semester_selected -%]
@@ -132,7 +132,7 @@ semester_selected
     <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
     <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
     <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
-    <td>[% INCLUDE blocks/reservation.html reservation=reservation_id disabled='true' %]</td>
+    <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id disabled='true' %]</td>
   </tr>
   [%- END -%]
 </tbody>
@@ -142,7 +142,7 @@ semester_selected
 [%- IF reserved_from_remote_to_local.size > 0 -%]
 <h4>Reservations I need to fill for other floors ([%- reserved_from_remote_to_local.size -%])</h4>
 [% #{{{ -%]
-<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Fill Reservation</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort print-no">Fill Reservation</th></tr></thead><tbody>
     [%- FOREACH reservation_id IN reserved_from_remote_to_local -%]
     [%- reservation_info = tome.reservation_info(reservation_id) -%]
     [%- IF reservation_info.semester < semester_selected -%]
@@ -154,7 +154,7 @@ semester_selected
       <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
       <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
       <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
-      <td>[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
+      <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
     </tr>
     [%- END -%]
   </tbody>
