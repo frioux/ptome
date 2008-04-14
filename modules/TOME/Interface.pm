@@ -1249,15 +1249,19 @@ sub libraryupdate {
 sub useradd {
 	my $self = shift;
 
+        if($self->query->param('password1') ne $self->query->param('password2')) {
+          return $self->error({ message => 'Passwords do not match', extended => 'Try again'});
+        }
 	if($self->user_info({ id => $self->session->param('id') })->{admin}) {
 		$self->user_add({
 			username	=> $self->query->param('username'),
 			email		=> $self->query->param('email'),
                         first_name      => $self->query->param('first_name'),
                         last_name       => $self->query->param('last_name'),
+                        password        => unix_md5_crypt($self->query->param('password1')),
                         primary_library => $self->query->param('primary_library'),
 		});
-	}
+            }
 
 	$self->header_type('redirect');
 	$self->header_props(-url => "$TOME::CONFIG{cgibase}/admin.pl?rm=management");
@@ -1457,9 +1461,6 @@ sub ajax_books_donated_list {
 sub ajax_fill_reservation {
   my $self = shift;
   if ($self->query->param('commit') eq 'fill') {
-    if($self->checkout_search({ tomebook=> $self->query->param('tomebook_id'), status=> 'checked_out'})) {
-      return "This book has not yet been checked back into tome.";
-    }
     my $checkout = $self->reservation_fulfill({reservation_id => $self->query->param('reservation_id'), tomebook_id => $self->query->param('tomebook_id')});
     if ($checkout != -1) {
       return "Checked out!";

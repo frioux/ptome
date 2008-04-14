@@ -2700,13 +2700,6 @@ sub user_info {
 #}}}
 
 #{{{user_add
-
-=head2 user_add
-
-foo
-
-=cut
-
 sub user_add {
 	my $self = shift;
 
@@ -2714,10 +2707,19 @@ sub user_add {
 		username	=> { type => SCALAR },
 		email		=> { type => SCALAR },
 		password	=> { type => SCALAR, default => '' },
+                first_name      => { type => SCALAR },
+                last_name       => { type => SCALAR },
+                primary_library => { type => SCALAR },
 	});
 
 	my ($sql, @bind) = sql_interp('INSERT INTO users', \%params);
 	$self->dbh->do($sql, undef, @bind);
+        warn $params{username};
+        #$self->library_access({
+        #user => $params{username},
+        #      libraries => \[$params{primary_library}],
+        #  });
+
 
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.users_id_seq')");
 	return $id;

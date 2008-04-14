@@ -41,7 +41,7 @@ This setting will temporarily change the current semester of the system for your
 </form>
 This setting will permanently change the global semester setting.
 <hr>
-<h3>Add semester</h3>
+<h3>Add Semester</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="semesteradd">
@@ -75,11 +75,16 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 [% END %]
 </td></tr>
-<tr><td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
-<tr><td>First Name</td><td><input type="text" name="first_name" value="[% user.first_name | html %]"></td></tr>
-<tr><td>Last Name</td><td><input type="text" name="last_name" value="[% user.last_name | html %]"></td></tr>
-<tr><td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
-<tr><td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
+<tr>
+  <td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
+<tr>
+  <td>First Name</td><td><input type="text" name="first_name" value="[% user.first_name | html %]"></td></tr>
+<tr>
+  <td>Last Name</td><td><input type="text" name="last_name" value="[% user.last_name | html %]"></td></tr>
+<tr>
+  <td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
+<tr>
+  <td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
 [% IF admin %]
 <tr><td>Admin</td><td><input name="admin" type="checkbox" value="1" [% IF user.admin %]checked="checked"[% END %]></td></tr>
 <tr><td>Disabled</td><td><input name="disabled" type="checkbox" value="1" [% IF user.disabled %]checked="checked"[% END %]></td></tr>
@@ -92,18 +97,29 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 [% IF admin %]
 <hr>
-<h3>Add user</h3>
+<h3>Add User</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="useradd">
 <table border="1" cellpadding="5">
-<tr><td>Username</td><td><input type="text" name="username"></td></tr>
+  <tr><td>Username</td><td><input type="text" name="username"></td></tr>
 <tr><td>Email</td><td><input type="text" name="email"></td></tr>
+<tr><td>First Name</td><td><input type="text" name="first_name"></td></tr>
+<tr><td>Last Name</td><td><input type="text" name="last_name"></td></tr>
+<tr><td>Password</td><td><input type="text" name="password1"></td></tr>
+<tr><td>Confirm</td><td><input type="text" name="password2"></td></tr>
+<tr><td>Primary Library</td><td>
+<select name="primary_library">
+[%- libraryList = tome.libraries() -%]
+[% FOREACH library IN  libraryList %]
+<option value="[% library.id | html %]">[% library.name | html %]</option>
+[% END %]
+</select></td></tr>
 <tr><td colspan="2" align="center"><input type="Submit" value="Add User"><br />
 (Note: Password and other options must be set after adding)</td></tr>
 </table>
 </form>
 <hr>
-<h3>Add library</h3>
+<h3>Add Library</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="libraryadd">
