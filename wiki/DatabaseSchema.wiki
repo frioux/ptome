@@ -8,8 +8,21 @@ New developers can look here for information about what tables there are, what g
 
 
 = Details =
-  * books
-  * checkouts
+  * books - the general information about a textbook
+    * isbn
+    * title
+    * author
+    * edition
+  * checkouts - a list of all checkouts (filled or not filled)
+    * tomebook
+    * semester
+    * checkout
+    * checkin
+    * comments
+    * library
+    * uid
+    * id
+    * borrower
   * classbooks
   * classes
   * db_version
