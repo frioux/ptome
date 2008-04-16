@@ -98,6 +98,7 @@ cgi=cgi{
    addpatron.html
    autocomplete_class.html
    autocomplete_isbn.html
+   autocomplete_library.html
    autocomplete_patron.html
    book.html
    bookclassbox.html
