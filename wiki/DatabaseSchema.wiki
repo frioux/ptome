@@ -27,7 +27,7 @@ New developers can look here for information about what tables there are, what g
   * classes - lists all the classes
   * db_version - table to keep track of the database version for upgrading
   * libraries - lists all the libraries (floors) in the system
-  * library_access - associates a user with a library
+  * library_access - associates a user with a library (this is really for users who are responsible for multiple libraries)
   * patrons - lists all the people that check out or donate books to Tome
   * reservations - tracks all reservations
   * semesters - list of the semesters
@@ -36,4 +36,4 @@ New developers can look here for information about what tables there are, what g
     * a_session (text; not null)
   * tomebooks - 
   * users - list of the tomekeepers
-  * patron_classes - this table isn't uses
+  * patron_classes - this table isn't used at this time
