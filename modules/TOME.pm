@@ -2581,8 +2581,8 @@ sub class_update_comments {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		id		=> { type => SCALAR, regex => qr/^\d+$/ },
-		comments	=> { type => SCALAR, regex => qr/^\d+$/ },
+		id		=> { type => SCALAR },
+		comments	=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
