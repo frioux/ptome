@@ -10,9 +10,6 @@
 <input type="hidden" id="checkout_id" name="checkout_id" value="[% c.id | html %]" />
 <input type="hidden" id="rm" name="rm" value="ajax_checkin" />
 <input type="hidden" id="ccommit[%- c.id -%]" name="commit" value="checkin" />
-<table class="noborder close">
-  <tr><td><strong>Comments:</strong></td><td><input type="text" name="comments" value="[%- c.comments -%]" /></td></tr>
-  <tr><td><input type="submit" name="submit" value="Cancel" onClick="$('ccommit[%- c.id -%]').value='cancel'; $$('checkout[%- c.id | html -%] form')[0].submit();" /></td><td><input type="submit" value="Check In" /></td></tr>
-</table>
+  <input type="submit" name="submit" value="Cancel" onClick="$('ccommit[%- c.id -%]').value='cancel'; $$('checkout[%- c.id | html -%] form')[0].submit();" /> <input type="submit" value="Check In" />
 </form>
 </div>
