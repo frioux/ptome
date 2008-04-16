@@ -23,17 +23,17 @@ New developers can look here for information about what tables there are, what g
     * uid
     * id
     * borrower
-  * classbooks
-  * classes
-  * db_version
-  * libraries
+  * classbooks - associates textbooks with a certain class
+  * classes - lists all the classes
+  * db_version - table to keep track of the database version for upgrading
+  * libraries - lists all the libraries (floors) in the system
   * library_access
-  * patrons
-  * reservations
-  * semesters
-  * sessions
+  * patrons - lists all the people that check out or donate books to Tome
+  * reservations - tracks all reservations
+  * semesters - list of the semesters
+  * sessions - information for each session whenever anyone logs in
     * id (character-32; not null)
     * a_session (text; not null)
-  * tomebooks
-  * users
-  * patron_classes
+  * tomebooks - 
+  * users - list of the tomekeepers
+  * patron_classes - this table isn't uses
