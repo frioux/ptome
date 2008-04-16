@@ -6,7 +6,19 @@ New developers can look here for information about what tables there are, what g
 
 
 = Details =
-
+  * books
+  * checkouts
+  * classbooks
+  * classes
+  * db_version
+  * libraries
+  * library_access
+  * patrons
+  * reservations
+  * semesters
   * sessions
     * id (character-32; not null)
     * a_session (text; not null)
+  * tomebooks
+  * users
+  * patron_classes
