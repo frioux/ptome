@@ -19,14 +19,14 @@
 </tr>
 [% END %]
 </table>
-<hr>
+<div class="line"></div>
 General Class Comments:<br />
 <form action="[%- url -%]">
 <input type="hidden" name="rm" value="updateclasscomments" />
 <input type="hidden" name="class" value="[% id | html %]" />
 <textarea name="comments" rows="6" cols="80">[% comments %]</textarea><input type="submit" value="Update">
 </form>
-<hr>
+<div class="line"></div>
 <p>Add new book for class:
 <form action="[%- url -%]">
 <input type="hidden" name="rm" value="addclassbook">
@@ -41,7 +41,7 @@ When verified: <select name="verified">
 Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
 <input type="submit" value="Add">
 </form>
-<hr>
+<div class="line"></div>
 <p>Delete class and all book associations:
 <form action="[%- url -%]">
 <input type="hidden" name="rm" value="confirm">

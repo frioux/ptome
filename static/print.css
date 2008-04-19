@@ -5,13 +5,18 @@ body {
   margin: 0;
   padding: 0;
 }
-#header,
+#statusbar,
+#header #banner #status,
+#header #navigation,
 #footer {
   display: none;
 }
+#header h1 {
+  text-align: center;j
+}
 #body {
   width: auto;
-  margin: 0;
+  margin: 0.1em;
   padding: 0;
   border: 0;
   color: black;
@@ -31,6 +36,8 @@ table td {
 }
 dl.table-display {
   display: block;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 dl.table-display dt {
   clear: left;
@@ -62,4 +69,10 @@ form input {
 }
 .print-no {
   display: none;
+}
+.print-page-break-before {
+  page-break-before: always;
+}
+.print-page-break-after {
+  page-break-after: always;
 }

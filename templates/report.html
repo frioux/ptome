@@ -11,6 +11,7 @@ libraries_not_selected
 semester_selected
 -%]
 [%- META title = 'Semester Report' -%]
+<div class="print-no">
 <form name="report" action="[% url %]" method="post">
   <input type="hidden" name="rm" value="report">
   <table>
@@ -18,6 +19,7 @@ semester_selected
     <tr><td class="submit" colspan="2"><input type="submit" value="Generate Report"></td></tr>
   </table>
 </form>
+</div>
 [%- IF local_reservations.size > 0 -%]
 <h3>TOME Reservations not yet filled ([%- local_reservations.size -%])</h3>
 [% #{{{ -%]
@@ -49,7 +51,7 @@ semester_selected
 [%- END -%]
 [% #}}} -%]
 [%- IF local_dueback.size > 0 -%]
-<h3>TOME Books due back ([%- local_dueback.size -%])</h3>
+<h3 class="print-page-break-before">TOME Books due back ([%- local_dueback.size -%])</h3>
 [% #{{{ -%]
 <table class="sortable full">
   <thead>
@@ -83,7 +85,7 @@ semester_selected
 [%- END -%]
 [% #}}} -%]
 [%- IF local_expiring.size > 0 -%]
-<h3>TOME Books expiring ([%- local_expiring.size -%])</h3>
+<h3 class="print-page-break-before">TOME Books expiring ([%- local_expiring.size -%])</h3>
 [% #{{{ -%]
 <table class="sortable full">
   <thead>
@@ -115,7 +117,7 @@ semester_selected
 [%- END -%]
 [% #}}} -%]
 [%- IF reserved_from_local_to_remote.size > 0 OR reserve_from_remote_to_local.size > 0 -%]
-<h3>InterTOME Reservations not yet filled</h3>
+<h3 class="print-page-break-before">InterTOME Reservations not yet filled</h3>
 [%- END -%]
 [%- IF reserved_from_local_to_remote.size > 0 -%]
 <h4>Reservations that need to be filled for me ([%- reserved_from_local_to_remote.size -%])</h4>
@@ -162,12 +164,12 @@ semester_selected
 [%- END -%]
 [% #}}} -%]
 [%- IF dueback_from_local_to_remote.size > 0 OR dueback_from_remote_to_local.size > 0 -%]
-<h3>InterTOME Books due back</h3>
+<h3 class="print-page-break-before">InterTOME Books due back</h3>
 [%- END -%]
 [%- IF dueback_from_local_to_remote.size > 0 -%]
 <h4>Books I need to return to other floors ([% dueback_from_local_to_remote.size %])</h4>
 [% #{{{ -%]
-<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th class="print-no">Semester</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
@@ -180,7 +182,7 @@ semester_selected
       <td>[%- tome.library_info(tome.tomebook_info(checkout_info.tomebook).library).name -%]</td>
       <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
       <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
-      <td>[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
+      <td class="print-no">[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
     </tr>
     [%- END -%]
   </tbody>
@@ -190,7 +192,7 @@ semester_selected
 [%- IF dueback_from_remote_to_local.size > 0 -%]
 <h4>Books that other floors need to return to me ([%- dueback_from_remote_to_local.size -%])</h4>
 [% #{{{ -%]
-<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort">Check In</th></tr></thead><tbody>
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="print-no nosort">Check In</th></tr></thead><tbody>
     [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
     [%- checkout_info = tome.checkout_info(checkout_id) -%]
     [%- IF checkout_info.semester == semester_selected - 1 -%]
@@ -204,7 +206,7 @@ semester_selected
       <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
       <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
       <td>[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
-      <td>[%- INCLUDE blocks/checkin.html checkout=checkout_id -%]</td>
+      <td class="print-no">[%- INCLUDE blocks/checkin.html checkout=checkout_id -%]</td>
     </tr>
     [%- END -%]
   </tbody>

@@ -3,7 +3,7 @@
 <input type="hidden" name="rm" value="stats" />
 <table>
 [% INCLUDE blocks/librariesbox.html libraries=tome.libraries name='libraries' selected=libraries_selected %]
-<tr><td colspan="2" align="center"><input type="submit" value="Update Stats"></td></tr>
+<tr><td colspan="2" class="submit"><input type="submit" value="Update Stats"></td></tr>
 </table>
 </form>
 <b>Total books in the database</b>: [% stats.totalcollection | comma %]<br />
