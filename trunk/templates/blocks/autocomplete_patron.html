@@ -1,4 +1,4 @@
 [%# Takes name (for the textbox) as an argument as well as default_patron, which will have the value initially filled in %]
 <input id="[% name | html %]" name="patron" type="text" value="[% default_patron %]" />
 <div class="auto_complete" id="[%- name | html -%]_auto_complete"></div>
-[%- prototype.auto_complete_field(name, { url=url, with="value+'&rm=autocomplete_patron'" }) -%]
+[%- prototype.auto_complete_field(name, { url=url, with="value+'&rm=autocomplete_patron'", min_chars=3 }) -%]
