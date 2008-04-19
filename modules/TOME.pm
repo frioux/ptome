@@ -2677,7 +2677,7 @@ sub user_info {
 		username	=> { type => SCALAR, optional => 1 },
 	});
 
-	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, primary_library, admin, disabled, password, has_logged_in FROM users';
+	my $statement = 'SELECT id, first_name, last_name, username, email, second_contact, notifications, admin, disabled, password, has_logged_in FROM users';
 	my $sth;
 	if($params{id}) {
 		$sth = $self->dbh->prepare($statement . ' WHERE id = ? ORDER BY disabled, username');
@@ -2709,18 +2709,10 @@ sub user_add {
 		password	=> { type => SCALAR, default => '' },
                 first_name      => { type => SCALAR },
                 last_name       => { type => SCALAR },
-                primary_library => { type => SCALAR },
 	});
 
 	my ($sql, @bind) = sql_interp('INSERT INTO users', \%params);
 	$self->dbh->do($sql, undef, @bind);
-        warn $params{username};
-        #$self->library_access({
-        #user => $params{username},
-        #      libraries => \[$params{primary_library}],
-        #  });
-
-
 	my ($id) = $self->dbh->selectrow_array("SELECT currval('public.users_id_seq')");
 	return $id;
 }
