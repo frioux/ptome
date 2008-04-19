@@ -1259,7 +1259,6 @@ sub useradd {
                         first_name      => $self->query->param('first_name'),
                         last_name       => $self->query->param('last_name'),
                         password        => unix_md5_crypt($self->query->param('password1')),
-                        primary_library => $self->query->param('primary_library'),
 		});
             }
 
