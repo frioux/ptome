@@ -2,9 +2,9 @@
 <h3>These books have a class associated with them, but are marked as not being usable:</h3>
 <form name="report" action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="finduseless">
-<table border="1" cellpadding="5">
+<table>
 [% INCLUDE 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
-<tr><td colspan="2"><input type="submit" value="Find Useless" /></td></tr>
+<tr><td colspan="2" class="submit"><input type="submit" value="Find Useless" /></td></tr>
 </table>
 </form>
 [% IF tomebooks.size %]
