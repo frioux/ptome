@@ -2,12 +2,7 @@
 <form action="[%- url -%]" method="post" name="addtomebook">
 <input type="hidden" name="rm" value="addtomebook_process" />
 <input type="hidden" name="addtomebook" value="1" />
-<table>
-  <thead>
-    <tr>
-      <th colspan="2">Add TOME Book</th>
-    </tr>
-  </thead>
+<table class="noborder">
 <tr>
 <td>ISBN</td><td>[% INCLUDE 'blocks/autocomplete_isbn.html' name='isbn' %] [% errs.isbn %]</td>
 </tr>
