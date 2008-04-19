@@ -2,12 +2,7 @@
 <form action="[%- url -%]" name="addclass">
 <input type="hidden" name="rm" value="addclass_process" />
 <input type="hidden" name="add" value="1" />
-<table>
-  <thead>
-    <tr>
-      <th colspan="2">Add TOME Class</th>
-    </tr>
-  </thead>
+<table class="noborder">
   <tr><td>ID</td><td>[% CGI.textfield({ Name => 'id' }) %] [% errs.id %] (Example: KINE1512)</td></tr>
   <tr><td>Name</td><td>[% CGI.textfield({ Name => 'name' }) %] [% errs.name %] (Example: Concepts of Lifetime Fitness)</td></tr>
   <tr><td colspan="2" class="submit"><input type="submit" value="Add Class" /></td></tr>
