@@ -1,36 +1,35 @@
-[% META title = 'Search' %]
-<table cellpadding="5" class="noborder"><tr><td valign="top" style="text-align: right;">
-
+[% META title = 'Home' %]
+<div style="display:inline;float:left;margin:0 6px 6px 0;">
 [%# Class jump box %]
 <form action="[%- url -%]" method="get" name="isbnview">
 <input type="hidden" name="rm" value="classsearch" />
-<table class="full">
+<table>
   <thead><tr><th colspan="3">View Class</th></tr></thead>
 <tr><td>Class</td><td>[% INCLUDE 'blocks/autocomplete_class.html' name='class' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
 </table>
 </form>
-<br />
+</div>
+
+<div style="display:inline;float:left;margin:0 6px 6px 0;">
 <form action="[%- url -%]" method="get" name="isbnview">
 <input type="hidden" name="rm" value="isbnview" />
-<table class="full">
+<table>
   <thead> <tr><th colspan="3">View Book</th></tr></thead>
 <tr><td>Book</td><td>[% INCLUDE 'blocks/autocomplete_isbn.html' name='isbn' %]</td> <td class="submit"><input type="submit" value="Go" /></td></tr>
 </table>
 </form>
+</div>
 
-</td>
-
-<td valign="top">
+<div style="display:inline;float:left;margin:0 0 6px 0;">
 [%# Edit Patron box %]
 <form action="[%- url -%]" method="get">
 <table>
   <thead><tr><th colspan="3" class="submit">Edit Patron</th></tr></thead>
 <tr><td><input type="hidden" name="rm" value="patronview" />Email</td>
 <td>[% INCLUDE 'blocks/autocomplete_patron.html' name='patron' %]</td>
-<td class="submit">
-  <input type="submit" value="Go" />
-</form>
-</td></tr>
+<td class="submit"><input type="submit" value="Go" /></td>
+</tr>
 </table>
-</td>
-</tr></table>
+</form>
+</div>
+<div style="clear:both"></div>

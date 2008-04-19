@@ -13,6 +13,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body [% IF errs and CGI.param('anchor') %]onLoad="window.location.href='#[% CGI.param('anchor') | html %]';"[% END %]>
+  <div id="atmosphere">
   <div id="statusbar">Logged in as: [% user_info.username | html %] | <a href="[%- url(rm='logout') -%]">Logout</a></div>
   <div id="container">
     <div id="header">

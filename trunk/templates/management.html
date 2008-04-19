@@ -3,18 +3,6 @@
 <p><font color="red">Update successful</font>
 <p>
 [% END %]
-<h3>User List</h3>
-<table class="sortable"><thead><tr><th>User</th><th>Name</th><th>Library</tr></thead>
-  <tbody>
-[%- FOREACH user IN users -%]
-[%- FOREACH library IN user.libraries -%]
-[%- IF library.access -%]
-<tr><td>[% user.username | html %]</td><td>[% user.last_name | html %], [% user.first_name | html %]</td><td> [% library.name | html %]</td>
-[%- END -%]
-[%- END -%]
-[%- END -%]
-          </td></tr>
-</tbody></table>
 
 <h3>Semester Preference</h3>
 <form action="[%- url -%]" method="post">
@@ -60,7 +48,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 <p><table border="1" cellpadding="5">
 <tr><td colspan="2"><b>User</b></td><td><b>Libraries</b></td></tr>
 <tr><td>Username</td><td><input type="text" name="username" value="[% user.username | html %]"></td>
-<td rowspan="[% IF admin %]7[% ELSE %]5[% END %]">
+<td rowspan="[% IF admin %]10[[% ELSE %]8[% END %]">
 <p>My Libraries:
 <p>
 [% IF admin %]
@@ -91,7 +79,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 <tr><td>New Password</td><td><input type="password" name="password1"></td></tr>
 <tr><td>Confirm</td><td><input type="password" name="password2"></td></tr>
-<tr><td colspan="3" align="center"><input type="submit" value="Update"></td></tr>
+<tr><td colspan="3" class="submit"><input type="submit" value="Update"></td></tr>
 </table>
 </form>
 [% END %]
@@ -105,15 +93,8 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 <tr><td>Email</td><td><input type="text" name="email"></td></tr>
 <tr><td>First Name</td><td><input type="text" name="first_name"></td></tr>
 <tr><td>Last Name</td><td><input type="text" name="last_name"></td></tr>
-<tr><td>Password</td><td><input type="text" name="password1"></td></tr>
-<tr><td>Confirm</td><td><input type="text" name="password2"></td></tr>
-<tr><td>Primary Library</td><td>
-<select name="primary_library">
-[%- libraryList = tome.libraries() -%]
-[% FOREACH library IN  libraryList %]
-<option value="[% library.id | html %]">[% library.name | html %]</option>
-[% END %]
-</select></td></tr>
+<tr><td>Password</td><td><input type="password" name="password1"></td></tr>
+<tr><td>Confirm</td><td><input type="password" name="password2"></td></tr>
 <tr><td colspan="2" align="center"><input type="Submit" value="Add User"><br />
 (Note: Password and other options must be set after adding)</td></tr>
 </table>
