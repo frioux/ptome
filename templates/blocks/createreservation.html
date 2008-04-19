@@ -8,12 +8,12 @@
   <input type="hidden" name="rm" value="ajax_isbnreserve" />
   <input type="hidden" name="isbn" value="[% isbn | html %]" />
   <table class="noborder close">
-    <tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name='patron' %] [% errs.patron %]</td></tr>
+    <tr><td><strong>Patron:</strong></td><td>[% PROCESS 'blocks/autocomplete_patron.html' name="patron${isbn}" %] [% errs.patron %]</td></tr>
     [%# Since most people only ever have access to one library, we make this a variable thinger. %]
     [%- IF libraries_from.size > 1 -%]
     <tr><td><strong>Reserve for:</strong></td><td><select name="library_from" id="library_from[%- isbn | html -%]">
           [%- FOREACH library IN libraries_from -%]
-          <option value="[% library | html %]"[% IF (user_info.primary_library == library) %] selected="true"[% END %]>[% tome.library_info(library).name | html %]</option>
+          <option value="[% library | html %]">[% tome.library_info(library).name | html %]</option>
           [%- END -%]
     </select>[% errs.libraries_from %]</td></tr>
     [%- ELSE -%]
@@ -23,7 +23,7 @@
     [%#should be if it is in our library -%]
     <tr><td><strong>Comments</strong></td><td><input type="text" name="comment" /></td></tr>
     <tr id="libraries_selection[%- isbn | html -%]">
-      [%- INCLUDE 'blocks/libraries_selection.html' semester=(session.currsemester.id || currsemester.id) library_from=user_info.primary_library isbn=isbn -%]
+      [%- INCLUDE 'blocks/libraries_selection.html' semester=(session.currsemester.id || currsemester.id) library_from=libraries_from.first isbn=isbn -%]
     </tr>
     [%- prototype.observe_field("semester${isbn}", {
     url => url,
