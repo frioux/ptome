@@ -48,7 +48,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 <p><table border="1" cellpadding="5">
 <tr><td colspan="2"><b>User</b></td><td><b>Libraries</b></td></tr>
 <tr><td>Username</td><td><input type="text" name="username" value="[% user.username | html %]"></td>
-<td rowspan="[% IF admin %]10[[% ELSE %]8[% END %]">
+<td rowspan="[% IF admin %]10[% ELSE %]8[% END %]">
 <p>My Libraries:
 <p>
 [% IF admin %]
@@ -63,16 +63,11 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 [% END %]
 [% END %]
 </td></tr>
-<tr>
-  <td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
-<tr>
-  <td>First Name</td><td><input type="text" name="first_name" value="[% user.first_name | html %]"></td></tr>
-<tr>
-  <td>Last Name</td><td><input type="text" name="last_name" value="[% user.last_name | html %]"></td></tr>
-<tr>
-  <td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
-<tr>
-  <td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
+<tr><td>Email</td><td><input type="text" name="email" value="[% user.email | html %]"></td></tr>
+<tr><td>First Name</td><td><input type="text" name="first_name" value="[% user.first_name | html %]"></td></tr>
+<tr><td>Last Name</td><td><input type="text" name="last_name" value="[% user.last_name | html %]"></td></tr>
+<tr><td>Second Contact</td><td><input type="text" name="second_contact" value="[% user.second_contact | html %]"></td></tr>
+<tr><td>Notifications</td><td><input name="notifications" type="checkbox" value="1" [% IF user.notifications %]checked="checked"[% END %]></td></tr>
 [% IF admin %]
 <tr><td>Admin</td><td><input name="admin" type="checkbox" value="1" [% IF user.admin %]checked="checked"[% END %]></td></tr>
 <tr><td>Disabled</td><td><input name="disabled" type="checkbox" value="1" [% IF user.disabled %]checked="checked"[% END %]></td></tr>
