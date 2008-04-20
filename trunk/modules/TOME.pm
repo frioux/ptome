@@ -2710,6 +2710,7 @@ sub user_add {
                 first_name      => { type => SCALAR },
                 last_name       => { type => SCALAR },
 	});
+         $params{'primary_library'} = 1;
 
 	my ($sql, @bind) = sql_interp('INSERT INTO users', \%params);
 	$self->dbh->do($sql, undef, @bind);
