@@ -1,0 +1,6 @@
+[%# Takes name and libraries and selected as an argument -%]
+<tr><td>Libraries</td><td><select id="[%- name | html -%]" name="[% name | html %]" size="5" multiple="multiple">
+[%- FOREACH library = libraries %]<option [% IF selected.grep("^${library.id}\$").size == 1 %]selected="selected"[%- ELSE -%][% END %] value="[% library.id | html %]">[% library.name | html %]</option>[% END -%]
+</select><br />
+<a href="#" onClick="$$('#[%- name | html -%] option').each( function(n) { n.selected=true;})">Select All</a> | <a href="#" onClick="$$('#[%- name | html -%] option').each( function(n) { n.selected=true;}); [[% tome.library_access.join(', ') | html %]].each( function (n) { $('[%- name | html -%]').options[n].selected=false;})">Select Others</a>
+</td></tr>

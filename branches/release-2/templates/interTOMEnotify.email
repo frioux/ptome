@@ -1,0 +1,20 @@
+Hello [% notifieduser.username %],
+
+This is a notification of an InterTOME loan for the [% tomebooklibrary.name %] library, of which you are a TOMEkeeper.
+
+Responsible TOMEkeeper: [% user_info.username %]
+Responsible Library: [% library.name %]
+Borrower: [% borrower %]
+Semester: [% semestershash.${semester}.name %]
+
+Book
+----
+ID: [% tomebook.id %]
+ISBN: [% tomebook.isbn %]
+Title: [% tomebook.title %]
+Author: [% tomebook.author %]
+Edition: [% tomebook.edition %]
+
+Because this is an InterTOME loan, this is only a reservation.  The borrower should be by shortly to pick up the book, at which point you will need to click "Fill Reservation"
+
+Thank you for making the InterTOME system work!

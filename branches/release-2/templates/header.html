@@ -1,0 +1,47 @@
+[%- PROCESS blocks/includes -%]
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>TOME - [% template.title %]</title>
+  <script src="[% config.staticbase %]/prototype.js" type="text/javascript"></script>
+  <script src="[% config.staticbase %]/fastinit.js" type="text/javascript"></script>
+  <script src="[% config.staticbase %]/scriptaculous.js" type="text/javascript"></script>
+  <script src="[% config.staticbase %]/tablesort.js" type="text/javascript"></script>
+  <link href="[% config.staticbase %]/screen.css" media="screen,projection" rel="stylesheet" type="text/css" />
+  <link href="[% config.staticbase %]/print.css" media="print" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="[% config.staticbase %]/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="[% config.staticbase %]/favicon.ico" type="image/x-icon" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body [% IF errs and CGI.param('anchor') %]onLoad="window.location.href='#[% CGI.param('anchor') | html %]';"[% END %]>
+  <div id="atmosphere">
+  <div id="statusbar">Logged in as: [% user_info.username | html %] | <a href="[%- url(rm='logout') -%]">Logout</a></div>
+  <div id="container">
+    <div id="header">
+      <div id="banner">
+        <h1>[% IF config.devmode %]<span style="color: red;">Development</span>[% END %]&nbsp;</h1>
+        <dl id="status">
+          <dt>Current semester</dt>
+          <dd>[% currsemester.name %]</dd>
+          [% IF session.currsemester %]
+          <dt>Current semester overridden</dt>
+          <dd>[% session.currsemester.name %] <a href="[%- url(rm='sessionsemester', semester=currsemester.id) -%]">[reset]</a></dd>
+          [% END %]
+        </dl><!-- end status -->
+      </div><!-- end banner -->
+      <div id="navigation">
+        <ul>
+          <li><a href="[%- url -%]">Home</a></li>
+          <li><a href="[%- url(rm='addtomebook') -%]">Add TOME Book</a></li>
+          <li><a href="[%- url(rm='report') -%]">Semester Report</a></li>
+          <li><a href="[%- url(rm='tomekeepers') -%]">Tomekeepers</a></li>
+          <li><a href="[%- url(rm='classes') -%]">Class List</a></li>
+          <li><form action="[%- url -%]">
+          <input type="hidden" name="rm" value="tomebookinfo" />
+          Book ID: <input type="text" size="4" name="id"/> <input type="submit" value="Search" /></form></li>
+        </ul>
+      </div><!-- end navigation -->
+    </div><!-- end header -->
+    <div id="body">
+      <h1>[% template.title %]</h1>

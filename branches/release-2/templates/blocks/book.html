@@ -1,0 +1,17 @@
+[%# Takes isbn as an argument also, if id is defined id will be shown, also takes maxlength of title and author %]
+[%- USE String -%]
+[%- bookinfo = tome.book_info(isbn) -%]
+<dl class="table-display">
+  [%- IF (id) -%]
+  <dt>Book ID:</dt>
+  <dd><a href="[%- url(rm='tomebookinfo', id=id) -%]">[% id | html %]</a></dd>
+  [%- END -%]
+  <dt>ISBN:</dt>
+  <dd><a href="[%- url(rm='isbnview', isbn=bookinfo.isbn) -%]">[% bookinfo.isbn | html %]</a></dd>
+  [%- title = String.new(bookinfo.title) -%]
+  [% author = String.new(bookinfo.author) %]
+  [%- DEFAULT maxlength = 30 -%]
+  <dt>Title:</dt><dd>[% title.truncate(maxlength, '~').replace('~', '&hellip;')  %]</dd>
+  <dt>Author:</dt><dd>[% author.truncate(maxlength, '~').replace('~', '&hellip;')  %]</dd>
+  <dt>Edition:</dt><dd>[% bookinfo.edition | html %]</dd>
+</dl>

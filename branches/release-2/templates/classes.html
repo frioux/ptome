@@ -1,0 +1,8 @@
+[% META title = 'Class List' %]
+[%# Expects array classes %]
+<table class="sortable"><thead><tr><th>Course Number</th><th>Course Name</th></tr></thead><tbody>
+[% FOREACH class IN classes %]
+<tr class="link" onClick="window.location.href='admin.pl?rm=classsearch&class=[% class.id %]'"><td>[% class.id %]</td><td>[% class.name %]</td></tr>
+[% END %]
+</tbody></table>
+

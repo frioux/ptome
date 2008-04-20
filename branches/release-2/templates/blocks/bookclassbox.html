@@ -1,0 +1,27 @@
+[%- classes = tome.book_classes(isbn) -%]
+<table bgcolor="lightyellow" class="full"><thead>
+    <tr>
+      <th>Book Information</th>
+      <th>Used in these classes</th>
+      <th>Associate Class</th>
+    </tr></thead><tbody>
+    <tr>
+      <td>
+        [%- INCLUDE blocks/book.html isbn=isbn maxlength=1000 -%]
+        <div align="right"><font size="-3"><a href="[%- url(rm='updatebook', isbn=isbn) -%]">Edit</a></font></div>
+      </td>
+      <td>
+        [%- FOREACH class IN classes %]<a href="[%- url(rm='classsearch', class=class.id) -%]">[% class.id | html %]</a> - [% class.name | html %]<br />[% END -%]
+      </td>
+      <td>
+        <form action="[%- url -%]" method="post">
+          <input type="hidden" name="rm" value="addclassbook">
+          <input type="hidden" name="isbn" value="[% isbn | html %]">
+          Class ID: [%- INCLUDE blocks/autocomplete_class.html name='class' -%]<br />
+          Usable: <input type="radio" name="usable" value="1" CHECKED>Yes <input type="radio" name="usable" value="0">No<br />
+          When verified: [%- INCLUDE blocks/semestersbox.html name='verified' -%]<br />
+          Verification comments:<br /><textarea name="comments" rows="4" cols="30"></textarea><br />
+          <input type="submit" value="Associate Class" />
+        </form>
+      </td>
+</tr></tbody></table>

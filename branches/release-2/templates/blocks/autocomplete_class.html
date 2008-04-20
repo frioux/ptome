@@ -1,0 +1,4 @@
+[%# Takes name as an argument %]
+<input id="[% name | html %]" name="[% name | html %]" type="text" />
+<div class="auto_complete" id="class_auto_complete"></div>
+[%- prototype.auto_complete_field( name , { url=url, with="value+'&rm=autocomplete_class'", min_chars=3} )  -%]

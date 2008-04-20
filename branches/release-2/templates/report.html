@@ -1,0 +1,215 @@
+[%# This template expects the following:
+local_reservations
+local_dueback
+local_expiring
+reserved_from_local_to_remote
+reserved_from_remote_to_local
+dueback_from_local_to_remote
+dueback_from_remote_to_local
+libraries_selected
+libraries_not_selected
+semester_selected
+-%]
+[%- META title = 'Semester Report' -%]
+<div class="print-no">
+<form name="report" action="[% url %]" method="post">
+  <input type="hidden" name="rm" value="report">
+  <table>
+    <tr><td>Semester</td><td>[% INCLUDE blocks/semestersbox.html name="semester" %]</td></tr>
+    <tr><td class="submit" colspan="2"><input type="submit" value="Generate Report"></td></tr>
+  </table>
+</form>
+</div>
+[%- IF local_reservations.size > 0 -%]
+<h3>TOME Reservations not yet filled ([%- local_reservations.size -%])</h3>
+[% #{{{ -%]
+<table class="sortable full">
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Borrower</th>
+      <th>Semester</th>
+      <th class="nosort print-no">Fill Reservation</th>
+    </tr>
+  </thead>
+  <tbody>
+    [%- FOREACH reservation_id IN local_reservations -%]
+    [%- reservation_info = tome.reservation_info(reservation_id) -%]
+    [%- IF reservation_info.semester < semester_selected -%]
+    <tr class="bad">
+      [%- ELSE -%]
+    <tr>
+        [%- END -%]
+      <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
+      <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
+      <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]
+[%- IF local_dueback.size > 0 -%]
+<h3 class="print-page-break-before">TOME Books due back ([%- local_dueback.size -%])</h3>
+[% #{{{ -%]
+<table class="sortable full">
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Borrower</th>
+      <th>Semester</th>
+      <th class="nosort print-no">Check In</th>
+    </tr>
+  </thead>
+  <tbody>
+    [%- FOREACH checkout_id IN local_dueback -%]
+    [%- checkout_info = tome.checkout_info(checkout_id) -%]
+    [%- IF checkout_info.semester == semester_selected - 1 -%]
+    <tr class="bad">
+      [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
+    <tr class="bad">
+        [%- ELSE -%]
+    <tr>
+      [%- END -%]
+      <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
+      <td>[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
+      <td class="print-no">
+        [%- INCLUDE 'blocks/checkin.html' checkout=checkout_id -%]
+      </td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]
+[%- IF local_expiring.size > 0 -%]
+<h3 class="print-page-break-before">TOME Books expiring ([%- local_expiring.size -%])</h3>
+[% #{{{ -%]
+<table class="sortable full">
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Originator</th>
+      <th>Expire</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    [%- FOREACH book IN local_expiring -%]
+    [%- tomebookinfo = tome.tomebook_info(book) -%]
+    [%- IF tomebookinfo.expire == semester_selected + 1 -%]
+    <tr class="bad">
+      [%- ELSIF tomebookinfo.expire > semester_selected + 1 -%]
+      <tr class="bad">
+      [%- ELSE -%]
+    <tr>
+      [%- END -%]
+      <td>[%- INCLUDE blocks/book.html isbn=tomebookinfo.isbn id=book -%]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=tomebookinfo.originator -%]</td>
+      <td>[% INCLUDE blocks/semester.html semester=tomebookinfo.expire %]</td>
+      <td>[% tomebookinfo.comments %]</td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]
+[%- IF reserved_from_local_to_remote.size > 0 OR reserve_from_remote_to_local.size > 0 -%]
+<h3 class="print-page-break-before">InterTOME Reservations not yet filled</h3>
+[%- END -%]
+[%- IF reserved_from_local_to_remote.size > 0 -%]
+<h4>Reservations that need to be filled for me ([%- reserved_from_local_to_remote.size -%])</h4>
+[%# {{{ -%]
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort print-no">Fill Reservation</th></tr></thead><tbody>
+    [%- FOREACH reservation_id IN reserved_from_local_to_remote -%]
+    [%- reservation_info = tome.reservation_info(reservation_id) -%]
+    [%- IF reservation_info.semester < semester_selected -%]
+    <tr class="bad">
+    [%- ELSE -%]
+  <tr>
+    [%- END -%]
+    <td>[% tome.library_info(reservation_info.library_to).name %]</td>
+    <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+    <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
+    <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
+    <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id disabled='true' %]</td>
+  </tr>
+  [%- END -%]
+</tbody>
+</table>
+[%- END -%]
+[%# }}}  -%]
+[%- IF reserved_from_remote_to_local.size > 0 -%]
+<h4>Reservations I need to fill for other floors ([%- reserved_from_remote_to_local.size -%])</h4>
+[% #{{{ -%]
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="nosort print-no">Fill Reservation</th></tr></thead><tbody>
+    [%- FOREACH reservation_id IN reserved_from_remote_to_local -%]
+    [%- reservation_info = tome.reservation_info(reservation_id) -%]
+    [%- IF reservation_info.semester < semester_selected -%]
+    <tr class="bad">
+      [%- ELSE -%]
+    <tr>
+      [%- END -%]
+      <td>[% tome.library_info(reservation_info.library_from).name %]  </td>
+      <td>[% INCLUDE blocks/book.html isbn=reservation_info.isbn %]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=reservation_info.patron -%]</td>
+      <td>[% INCLUDE blocks/semester.html semester=reservation_info.semester %]</td>
+      <td class="print-no">[% INCLUDE blocks/reservation.html reservation=reservation_id %]</td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]
+[%- IF dueback_from_local_to_remote.size > 0 OR dueback_from_remote_to_local.size > 0 -%]
+<h3 class="print-page-break-before">InterTOME Books due back</h3>
+[%- END -%]
+[%- IF dueback_from_local_to_remote.size > 0 -%]
+<h4>Books I need to return to other floors ([% dueback_from_local_to_remote.size %])</h4>
+[% #{{{ -%]
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th class="print-no">Semester</th></tr></thead><tbody>
+    [%- FOREACH checkout_id IN dueback_from_local_to_remote -%]
+    [%- checkout_info = tome.checkout_info(checkout_id) -%]
+    [%- IF checkout_info.semester == semester_selected - 1 -%]
+    <tr class="bad">
+      [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
+      <tr class="bad">
+      [%- ELSE -%]
+    <tr>
+      [%- END -%]
+      <td>[%- tome.library_info(tome.tomebook_info(checkout_info.tomebook).library).name -%]</td>
+      <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
+      <td class="print-no">[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]
+[%- IF dueback_from_remote_to_local.size > 0 -%]
+<h4>Books that other floors need to return to me ([%- dueback_from_remote_to_local.size -%])</h4>
+[% #{{{ -%]
+<table class="sortable full"><thead><tr><th class="sortfirstasc text">Library</th><th>Book</th><th>Borrower</th><th>Semester</th><th class="print-no nosort">Check In</th></tr></thead><tbody>
+    [%- FOREACH checkout_id IN dueback_from_remote_to_local -%]
+    [%- checkout_info = tome.checkout_info(checkout_id) -%]
+    [%- IF checkout_info.semester == semester_selected - 1 -%]
+    <tr class="bad">
+      [%- ELSIF checkout_info.semester < semester_selected - 1 -%]
+      <tr class="bad">
+        [%- ELSE -%]
+    <tr>
+      [%- END -%]
+      <td>[%- tome.library_info(checkout_info.library).name -%]</td>
+      <td>[% INCLUDE blocks/book.html isbn=tome.tomebook_info(checkout_info.tomebook).isbn id=checkout_info.tomebook %]</td>
+      <td>[%- INCLUDE blocks/patronlink.html patron=checkout_info.borrower -%]</td>
+      <td>[% INCLUDE blocks/semester.html semester=checkout_info.semester %]</td>
+      <td class="print-no">[%- INCLUDE blocks/checkin.html checkout=checkout_id -%]</td>
+    </tr>
+    [%- END -%]
+  </tbody>
+</table>
+[%- END -%]
+[% #}}} -%]

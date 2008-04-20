@@ -1,0 +1,16 @@
+[% META title = 'Stats' %]
+<form name="report" action="[%- url -%]" method="post">
+<input type="hidden" name="rm" value="stats" />
+<table>
+[% INCLUDE blocks/librariesbox.html libraries=tome.libraries name='libraries' selected=libraries_selected %]
+<tr><td colspan="2" class="submit"><input type="submit" value="Update Stats"></td></tr>
+</table>
+</form>
+<b>Total books in the database</b>: [% stats.totalcollection | comma %]<br />
+<b>Books in the current collection</b>: [% stats.currentcollection | comma %]<br />
+<b>Total Checkouts</b>: [% stats.totalcheckouts | comma %]<br />
+<b>Checkouts for this semester</b>: [% stats.semestercheckouts | comma %]<br />
+<h3>Top 10 Donators</h3>
+[% FOREACH stat = stats.top10donators %]
+#[% loop.count() %]. [%- INCLUDE blocks/patronlink.html patron=stat.originator -%] - [% stat.books | comma %]<br />
+[% END %]

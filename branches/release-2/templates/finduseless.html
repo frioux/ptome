@@ -1,0 +1,38 @@
+[% META title = 'Useless Books' %]
+<h3>These books have a class associated with them, but are marked as not being usable:</h3>
+<form name="report" action="[%- url -%]" method="post">
+<input type="hidden" name="rm" value="finduseless">
+<table>
+[% INCLUDE 'blocks/librariesbox.html' name='libraries' libraries=tome.libraries selected=libraries_selected %]
+<tr><td colspan="2" class="submit"><input type="submit" value="Find Useless" /></td></tr>
+</table>
+</form>
+[% IF tomebooks.size %]
+<p>[% tomebooks.size %] useless books found.</p>
+<p><table class="sortable"><thead>
+<tr>
+	<th>ID</th>
+	<th>Title</th>
+	<th>Author</th>
+	<th>Edition</th>
+	<th>Originator</th>
+	<th>Classes</th>
+      </tr></thead><tbody>
+[% FOREACH book = tomebooks %]
+<tr>
+	<td><a href="[%- url(rm='tomebookinfo', id=book.id) -%]">[% book.id %]</a></td>
+	<td>[% book.title %]</td>
+	<td>[% book.author %]</td>
+	<td>[% book.edition %]</td>
+	<td>[%- INCLUDE blocks/patronlink.html patron=book.originator -%]</td>
+	<td>
+		[% FOREACH class = book.classes %]
+		<a href="[%- url(rm='classsearch', class=class.id) -%]">[% class.id %]</a> - [% class.name | html %]<br />
+		[% END %]
+	</td>
+</tr>
+[% END %]
+</tbody></table>
+[% ELSE %]
+Hooray!  There are no useless books in libraries selected.
+[% END %]
