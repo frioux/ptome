@@ -1196,7 +1196,7 @@ sub tomebookinfo {
 
 	$info = $self->tomebook_info({ tomebook => $id });
 
-	if($@ || !$info->{isbn}) {
+	if(!$info->{isbn}) {
 		return $self->error({ message => 'Unable to find TOME book with ID "' . $id . '"' });
 	}
 
