@@ -6,13 +6,11 @@ body {
   padding: 0;
 }
 #statusbar,
+#header,
 #header #banner #status,
 #header #navigation,
 #footer {
   display: none;
-}
-#header h1 {
-  text-align: center;
 }
 #body {
   width: auto;
