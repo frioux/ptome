@@ -1,21 +1,20 @@
 [% META title = 'Admin' %]
 [% IF update %]
-<p><font color="red">Update successful</font>
-<p>
+<div class="alert good">Update successful</div>
 [% END %]
 
 <h3>Semester Preference</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="sessionsemester">
-<select name="semester" multiple="multiple" size="10">
+<select name="semester">
 [% FOREACH semester = semesters %]
 <option value="[% semester.id | html %]" [% IF (session.currsemester && (session.currsemester.id == semester.id)) || (!session.currsemester && (semester.id == currsemester.id)) %]selected="selected"[% END %]>[% semester.name %]</option>
 [% END %]
-</select><br />
+</select>
 <input type="submit" value="Change">
 </form>
 This setting will temporarily change the current semester of the system for your session.
-<hr>
+<div class="line"></div>
 [% IF admin %]
 <h3>Semester Setting</h3>
 <form action="[%- url -%]" method="post">
@@ -28,16 +27,16 @@ This setting will temporarily change the current semester of the system for your
 <input type="submit" value="Change">
 </form>
 This setting will permanently change the global semester setting.
-<hr>
+<div class="line"></div>
 <h3>Add Semester</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
 <input type="hidden" name="finalrm" value="semesteradd">
 <input type="hidden" name="action" value="Add semester.  This action cannot be undone.">
 Semester name: <input type="text" name="name"> <input type="submit" value="Add Semester"><br />
-<b>WARNING: Semesters MUST be added IN ORDER</b>
+<strong>WARNING: Semesters MUST be added IN ORDER</strong>
 </form>
-<hr>
+<div class="line"></div>
 [% END %]
 <h3>User Preferences</h3>
 [% FOREACH user = users %]
@@ -79,11 +78,11 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 </form>
 [% END %]
 [% IF admin %]
-<hr>
+<div class="line"></div>
 <h3>Add User</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="useradd">
-<table border="1" cellpadding="5">
+<table>
   <tr><td>Username</td><td><input type="text" name="username"></td></tr>
 <tr><td>Email</td><td><input type="text" name="email"></td></tr>
 <tr><td>First Name</td><td><input type="text" name="first_name"></td></tr>
@@ -94,7 +93,7 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 (Note: Password and other options must be set after adding)</td></tr>
 </table>
 </form>
-<hr>
+<div class="line"></div>
 <h3>Add Library</h3>
 <form action="[%- url -%]" method="post">
 <input type="hidden" name="rm" value="confirm">
@@ -102,12 +101,12 @@ Semester name: <input type="text" name="name"> <input type="submit" value="Add S
 <input type="hidden" name="action" value="Add library.  This action cannot be undone.">
 Library name: <input type="text" name="name"> <input type="submit" value="Add Library">
 </form>
-<hr>
+<div class="line"></div>
 <h3>Library Management</h3>
 [% FOREACH library = tome.libraries %]
 <form action="[% url %]" method="post">
 <input type="hidden" name="rm" value="libraryupdate">
-<p><table cellpadding="5" border="1">
+<p><table>
 	<input type="hidden" name="id" value="[% library.id | html %]">
 	<tr><td>ID</td><td>[% library.id | html %]</td></tr>
 	<tr><td>Name</td><td><input type="text" name="name" value="[% library.name | html %]"></td></tr>

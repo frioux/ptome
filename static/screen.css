@@ -1,7 +1,7 @@
 /* --- Page Body ----------------------------------------- */
 
 body {
-  background-color: #E5ECF3;
+  background-color: rgb(230,235,240);
   margin: 0;
   padding: 8px;
   text-align: center;
@@ -59,7 +59,7 @@ body {
   padding: 4px 0 4px 0;
   text-align: center;
   clear: both;
-  background-color: rgb(40,100,160);
+  background-color: rgb(37,102,162);
   color: #5481AC;
   font-size: 1.1em;
   font-weight: bold;
@@ -86,7 +86,7 @@ body {
   display: inline;
 }
 div#body {
-  padding: 10px 0 0 0;
+  padding: 5px 0 0 0;
   width: 850px;
   text-align: left;
   margin: 0 auto;
@@ -134,6 +134,25 @@ a:hover,
   display: none;
 }
 
+.alert {
+  font-size: 1em;
+  margin: 4px 0 4px 0;
+  width: auto;
+  padding: 5px 5px 5px 30px;
+}
+.alert.good {
+  background: #E2F9E3 url(alertgood.png) no-repeat 6px center;
+  border-bottom: 1px solid #9c9;
+  border-top: 1px solid #9c9;
+  color: #169D00;
+}
+.alert.bad {
+  background: #F9E2E2 url(alertbad.png) no-repeat 6px center;
+  border-bottom: 1px solid #c99;
+  border-top: 1px solid #c99;
+  color: #9D0000;
+}
+
 .bad {
   background-color: rgb(255,200,200) !important;
 }
@@ -144,6 +163,10 @@ a:hover,
   background-color: rgb(200,200,200) !important;
 }
 
+#body h1 {
+  border-bottom: 1px solid rgb(235,235,235);
+  font-family: Georgia, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+}
 #body h3 {
   font-size: 1.3em;
   color: #336699;
@@ -236,9 +259,6 @@ li.auto_complete_item div.secondary {
   padding:5px;
   border:1px solid #888;
   cursor:move;
-}
-#content {
-  padding:3em;
 }
 
 /* --- Tables -------------------------------------------- */
