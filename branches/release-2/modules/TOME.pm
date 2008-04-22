@@ -766,7 +766,7 @@ sub reservation_create {
 	my $self = shift;
 
 	my %params = validate(@_, {
-		isbn		=> { type => SCALAR, regex => qr/^\d+$/ },
+		isbn		=> { type => SCALAR, regex => qr/^\w+$/ },
 		uid		=> { type => SCALAR, regex => qr/^\d+$/ },
 		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
 		comment		=> { type => SCALAR, optional => 1 },
@@ -1729,7 +1729,7 @@ sub patron_delete_class {
 	my %params = validate(@_, {
 		patron		=> { type => SCALAR, regex => qr/^\d+$/ },
 		semester	=> { type => SCALAR, regex => qr/^\d+$/ },
-		class		=> { type => SCALAR, regex => qr/^\d+$/ },
+		class		=> { type => SCALAR },
 	});
 
 	my $dbh = $self->dbh;
