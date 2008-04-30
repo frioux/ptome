@@ -17,7 +17,7 @@
           [%- END -%]
     </select>[% errs.libraries_from %]</td></tr>
     [%- ELSE -%]
-    <input type="hidden" name="library_from" value="[% libraries_from.first %]" />
+    <input type="hidden" name="library_from" id="library_from[%- isbn | html -%]" value="[% libraries_from.first %]" />
     [%- END -%]
     <tr><td><strong>Semester:</strong></td><td>[% PROCESS 'blocks/semestersbox.html' name='semester' id='semester' _ isbn %][% errs.semester %]</td></tr>
     [%#should be if it is in our library -%]
