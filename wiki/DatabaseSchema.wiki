@@ -9,6 +9,10 @@ New developers can look here for information about what tables there are, what g
 
 = Details (3.0+)=
   * access
+    * ID
+    * pageName
+    * minLevel
+    * message
   * books
   * bookTypes
   * borrowers
