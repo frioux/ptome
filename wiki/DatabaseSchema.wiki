@@ -8,6 +8,10 @@ Pre 3.0 uses PostgreSQL 8.1.10.
 New developers can look here for information about what tables there are, what goes in each table, ...
 
 = Details =
+  * access
+  * books
+  * bookTypes
+*borrowers
 
 = Details (pre 3.0)=
   * books - the general information about a textbook
