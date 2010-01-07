@@ -11,7 +11,14 @@ New developers can look here for information about what tables there are, what g
   * access
   * books
   * bookTypes
-*borrowers
+  * borrowers
+  * checkouts
+  * classbooks
+  * classes
+  * errorLog
+  * libraries
+  * users
+
 
 = Details (pre 3.0)=
   * books - the general information about a textbook
