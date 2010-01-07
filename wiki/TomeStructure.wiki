@@ -1,6 +1,8 @@
 #summary The general structure of the TOME codebase.
 #labels Featured
 
+= This page is valid only for versions pre 3.0 =
+
 =Shiny Ideals=
 
 == General ==
