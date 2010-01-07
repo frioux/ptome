@@ -26,7 +26,7 @@
 		define("DB_NAME", "TOME");
 	} else { //dev
 		define("DB_USER", "root");
-		define("DB_PASS", "jUNe30");
+		define("DB_PASS", "jimbo111");
 		define("DB_ROOT", "localhost");
 		define("DB_NAME", "TOME");
 	}
