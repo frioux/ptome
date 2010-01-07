@@ -1,0 +1,174 @@
+/*
+ *	Copyright 2007 John Oren
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+
+
+//FORMAT SPECIFICATIONS
+//
+//NOTE that as of Version 0.9.6 the lines in the changelog cannot be longer than 95 characters
+//Version Release.Major.Minor
+//Minor is for bug/security fixes, major is for new features, release (after 1.0) is for
+//backwards incompatible changes.
+//---------------------------
+//NOTICE
+//	Any very important information should go here, such as fixes to major security bugs or file
+//	or directory name\path changes. This information should also be documented in the
+//	appropriate sections below.
+//General
+//	Bug Fixes		(FIXED)
+//	Additions		(ADDED)
+//  Deprecations	(DEPRECATED)
+//	Deletions		(REMOVED)
+//	Changes		(CHANGED)
+//	Features		(IMPLEMENTED)
+//FileName
+//	Bug Fixes		(FIXED)
+//	Additions		(ADDED)
+//  Deprecations	(DEPRECATED)
+//	Deletions		(REMOVED)
+//	Changes		(CHANGED)
+//	Features		(IMPLEMENTED)
+
+Version 0.9.10
+--------------
+General
+    ADDED support for multiple forms on a page
+    ADDED hooks for ajax support for Fields
+    CHANGED the database engine from mysql to mysqli
+    IMPLEMENTED setting a CSS ID on Fields
+Ajax.php
+    ADDED
+Ajax_Autocomplete.php
+    ADDED
+DatabaseManager.php
+    ADDED method multiCheckError() to process multiple querie at once
+            NOTE: Does NOT support select queries or queries that return result sets
+Field.php
+    ADDED method addAjax to set the Ajax object on a field.
+    ADDED method setCSSID to set the name of the field's CSS ID
+    ADDED protected method getCSSID
+Form.php
+    ADDED method processable() to indicate wether or not a form is ready to be processed
+    ADDED method setSubmitText() to set custom text for the submit button
+    CHANGED process() to process data only if it is ready to be processed
+
+Version 0.9.9
+--------------
+General
+    IMPLEMENTED the ability for a fieldset to manage data from multiple database rows from multiple database tables.
+    FIXED massive interdependencies between classes. Cleaned up the datastructure so that the class diagram is much prettier.
+ErrorLogManager.php
+    ADDED statement to include required file SecurityManager.php
+Field.php
+    ADDED value field to store the value of this field internally
+    REMOVED references to class data member $dbRow
+    REMOVED method getDBRow()
+    REMOVED method setDBRow()
+    CHANGED getValue() to use the internal value reference
+    CHANGED process() to use the internal value reference
+    CHANGED setValue() to use the internal value reference
+Fieldset.php
+    FIXED method process to always return a boolean
+    ADDED initialization of data members dbRows, fields, and values to the constructor
+    ADDED method init() to initialize the internal values and fields arrays
+    ADDED method getDBValues() to fetch an array of field values from all of the Fieldset's Row Managers.
+    CHANGED internal variable RowManager $dbRow to be an array of RowManager objects, $dbRows
+    CHANGED $fields to be an associative array of fieldname->value
+    CHANGED method setRowManager() to addRowManager()
+    CHANGED getTableName to return the name of the first table in the dbRows list
+    CHANGED method getValue() to use the internal values array reference
+    CHANGED method process() to merge return array values from fields so fields can return values for multiple database columns
+    IMPLEMENTED support for storing data in multiple rows of multiple database tables
+    IMPLEMENTED support for the commit() method to commit to all RowManager objects
+Fieldset_Horizontal.php
+    CHANGED to be compatible with this version of OpenSiteAdmin
+ForeignKey.php
+    REMOVED method postProcess (duplicate of parent method)
+Form.php
+    ADDED call to fieldset init() method before displaying each fieldset
+Image.php
+    FIXED bugs a bug with form update calls and keeping the existing image for add forms.
+ListManager.php
+    FIXED mysql query to use DatabaseManager::checkError()
+manageAccess.php
+    CHANGED to be compatible with this version of OpenSiteAdmin
+manageUser.php
+    CHANGED to be compatible with this version of OpenSiteAdmin
+multiTableTemplate.tpl
+    CHANGED to be compatible with this version of OpenSiteAdmin
+pageTemplate.tpl
+    CHANGED to be compatible with this version of OpenSiteAdmin
+Password.php
+    CHANGED postProcess to return an associative array of values, one for password and one for password_salt, which Fieldset will merge into its values array
+RowManager.php
+    ADDED internal reference to primary key name - primaryKeyName
+    ADDED method setValues($values) to set the internal values array for an array of values
+    ADDED method getPrimaryKeyValue()
+    ADDED method getValues() to fetch the current values according to the RowManager (and by extensions, hopefully, the database)
+    REMOVED internal reference to primary key field - primaryKeyField
+    REMOVED internal reference to primary key value - primaryKey
+    REMOVED method setPrimaryKeyField()
+    CHANGED the constructor to accept a STRING primaryKeyName as the second parameter instead of OBJECT primaryKeyField
+    CHANGED the initialize() method to assign keys to the values array even if there are no database values yet
+    IMPLEMENTED displaying the database table name in the __toString() method.
+
+Version 0.9.8
+--------------
+ListManager.php
+    CHANGED setOrderBy to accept a second, optional, boolean parameter to set the sort order.
+    IMPLEMENTED ascending/descending sorting.
+RowManager.php
+    ADDED some missing imports.
+    CHANGED setOrderBy to accept a second, optional, boolean parameter to set the sort order.
+    IMPLEMENTED ascending/descending sorting.
+TextArea.php
+    CHANGED the way <br> tags were translated into newlines to preserve the original html
+
+Version 0.9.7
+--------------
+General
+	CHANGED class files, reordered methods and data members. The new system is:
+				constants, static variables, constructor, methods, magic methods
+			sublisted in case-insensitive alphabetical order, unless some other ordering makes
+			abundantly more sense (ex. ErrorLogManager constants).
+	CHANGED several core files to use the refactored DatabaseManager (see DatabaseManager.php
+			below).
+	CHANGED several core files to work with the new formPrep and SQLPrep function location
+			(see RowManager.php below).
+	CHANGED several core files to use the revised and relocated checkError method (see
+			DatabaseManager.php below).
+DatabaseManager.php
+	ADDED a static function getLink() to instantiate DatabaseManager as a singleton if it
+			does not already exist and return getLinkResource().
+	ADDED a static function checkError($query) to automatically handle error checking and
+			logging for custom database queries. This was previously in RowManager.php
+	CHANGED all datamembers from private to protected access.
+	CHANGED constructor to have protected access
+Filter.php
+	ADDED function getFilterClause($filters) (moved from RowManager.php).
+	CHANGED the implementation from an interface to an abstract class.
+ManageUser.php
+	ADDED a function generateAccessTable(DatabaseManager) to dynamically generate a user
+			access reference table.
+	REMOVED all function arguments expecting a DatabaseManager object.
+RowManager.php
+	FIXED a bug with setting the updated flag in RowManager's setValue method.
+	REMOVED formPrep and SQLPrep. These function were moved into SecurityManager to keep all
+			the security related functions in one place.
+	REMOVED getFilterClause function. This has been moved to Filter.php.
+	CHANGED all internal calls to checkError to use DatabaseManager::checkError
+	CHANGED isUpdated and hasValues variables to mean what you think they mean.
+SecurityManager.php
+	ADDED an import of DatabaseManager.php, so as long as you import the Security Manager,
+			everything should work.
+	ADDED formPrep and SQLPrep functions (previously in RowManager.php).
