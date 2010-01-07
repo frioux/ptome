@@ -2,7 +2,8 @@
 
 = Introduction =
 
-Tome uses PostgreSQL 8.1.10.
+TOME 3.0+ uses MYSql 5.1.37
+TOME 1.0 - 2.0 uses PostgreSQL 8.1.10.
 
 New developers can look here for information about what tables there are, what goes in each table, ...
 
