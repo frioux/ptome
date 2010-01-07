@@ -1,5 +1,5 @@
 #summary Modules required for TOME
-#labels Featured
+#labels Deprecated
 
 TOME uses a large collection of Perl modules.  These are all available from CPAN.  Install them using either distro packages, tarballs from http://search.cpan.org/, or using perl -MCPAN -eshell.
 
