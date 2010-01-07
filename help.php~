@@ -1,0 +1,7 @@
+<?php
+    $path = "./";
+    $pageTitle = "Orphans";
+    require_once($path."header.php");
+?>
+<h1>Help</h1>
+<?php require_once($path."footer.php"); ?>

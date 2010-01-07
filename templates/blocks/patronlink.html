@@ -1,3 +1,0 @@
-[%- # takes patron as argument -%]
-[%- patrondata = tome.patron_info(patron) -%]
-<a href="[%- url(rm='patronview', id=patron) -%]">[%- patrondata.name | html -%]</a>

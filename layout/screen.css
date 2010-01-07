@@ -1,0 +1,360 @@
+/* --- Page Body ----------------------------------------- */
+
+body {
+  background-color: rgb(230,235,240);
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 80%;
+}
+
+/* --- Layout -------------------------------------------- */
+
+#atmosphere {
+  width: 890px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#statusbar {
+  color: #555;
+  font-size: .9em;
+  text-align: right;
+  margin: 3px;
+}
+#statusbar a {
+  border: 0;
+  text-decoration: none;
+}
+#container {
+  text-align: center;
+  padding: 4px 0 4px 0;
+  margin: 3px;
+  background-color: #ffffff;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+}
+#header #banner {
+  background: url(../images/tome.png);
+  background-repeat: no-repeat;
+  background-position: 3px 50%;
+  padding: 15px 5px 15px 5px;
+  margin: 3px;
+}
+#header #banner #status {
+  float: right;
+  width: 30%;
+  margin-top: -70px;
+  font-weight: bold;
+  text-align: right;
+}
+#header #banner #status dt {
+  font-weight: normal;
+}
+#header #navigation {
+  padding: 4px 0 4px 0;
+  text-align: center;
+  clear: both;
+  background-color: rgb(37,102,162);
+  color: #5481AC;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+#header #navigation ul {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+#header #navigation ul li {
+  display: inline;
+}
+#header #navigation a {
+  color: #D2DCF3;
+  text-decoration: none;
+  border-right: 1px solid #5481AC;
+  padding-right: 5px;
+}
+#header #navigation a:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+#header #navigation form {
+  display: inline;
+}
+div#body {
+  padding: 5px 0 0 0;
+  width: 850px;
+  text-align: left;
+  margin: 0 auto;
+}
+#footer {
+  text-align: center;
+  margin-top: 8px;
+  border-top: 2px solid #E5ECF3;
+  padding: 8px 0 6px 0;
+  width: auto;
+  color: #5481AC;
+}
+#footer a {
+  text-decoration: none;
+}
+
+/* --- General Styles ------------------------------------ */
+
+div.line {
+  border-top: 2px solid rgb(235,235,235);
+  width: auto;
+  margin: 8px 0 8px 0;
+  padding: 0;
+  clear: both;
+}
+div.center{
+   text-align: center;
+}
+pre {
+  text-align: left;
+}
+a,
+.link {
+  color: #00439D;
+  text-decoration: underline;
+}
+a:hover,
+.link:hover {
+  color: black;
+}
+.link {
+  cursor: pointer;
+}
+.draggable {
+  cursor: move;
+}
+.hidden {
+  display: none;
+}
+
+.alert {
+  font-size: 1em;
+  margin: 4px 0 4px 0;
+  width: auto;
+  padding: 5px 5px 5px 30px;
+}
+.alert.good {
+  background: #E2F9E3 url(../images/alertgood.png) no-repeat 6px center;
+  border-bottom: 1px solid #9c9;
+  border-top: 1px solid #9c9;
+  color: #169D00;
+}
+.alert.bad {
+  background: #F9E2E2 url(../images/alertbad.png) no-repeat 6px center;
+  border-bottom: 1px solid #c99;
+  border-top: 1px solid #c99;
+  color: #9D0000;
+}
+
+.bad {
+  background-color: rgb(255,200,200) !important;
+}
+.good {
+  background-color: rgb(200,255,200) !important;
+}
+.useless {
+  background-color: rgb(200,200,200) !important;
+}
+
+#body h1 {
+  border-bottom: 1px solid rgb(235,235,235);
+  font-family: Georgia, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+}
+#body h3 {
+  font-size: 1.3em;
+  color: #336699;
+  border-bottom: 1px solid rgb(235, 235, 235);
+}
+#body h4 {
+  font-size: 1.15em;
+  color: rgb(22,110,0);
+}
+
+/* --- Print Controls ------------------------------------ */
+
+.print-only {
+  display: none;
+}
+
+/* --- Forms --------------------------------------------- */
+
+form {
+  margin-bottom: 0px;
+}
+form input[type=text],
+form input[type=password],
+textarea{
+  border: 1px solid #D7D7D7;
+}
+
+input[type=button],
+input[type=submit],
+input[type=reset] {
+  background: #eee;
+  color: #222;
+  border: 1px outset #ccc;
+  padding: .1em .5em
+}
+input[type=button]:hover,
+input[type=submit]:hover,
+input[type=reset]:hover {
+  background: #ccb;
+ }
+ input[type=button][disabled],
+ input[type=submit][disabled],
+ input[type=reset][disabled] {
+   background: #f6f6f6;
+   border-style: solid;
+}
+
+div.auto_complete {
+  position:absolute;
+  width:250px;
+  background-color:white;
+  border:0px solid #888;
+  margin:0px;
+  padding:0px;
+}
+ul.auto_complete_list  {
+  list-style-type: none;
+  margin:0px;
+  padding:0px;
+}
+ul.auto_complete_list li.selected {
+  background-color:#ffb;
+}
+li.auto_complete_item {
+  list-style-type: none;
+  display:block;
+  margin:0;
+  padding:2px;
+  min-height:42px;
+  max-height:50px;
+}
+li.auto_complete_item div.primary {
+  font-weight:bold;
+  font-size:12px;
+  line-height:1.2em;
+}
+li.auto_complete_item div.secondary {
+  font-size:10px;
+  color:#888;
+}
+#list {
+  margin:0;
+  margin-top:10px;
+  padding:0;
+  list-style-type: none;
+  width:250px;
+}
+#list li {
+  margin:0;
+  margin-bottom:4px;
+  padding:5px;
+  border:1px solid #888;
+  cursor:move;
+}
+
+/* --- Tables -------------------------------------------- */
+
+table {
+  border-collapse: collapse;
+}
+table.full {
+  width: 100%;
+}
+table.noborder > tbody > tr >  td {
+  border: 0;
+}
+table.close > tbody > tr > td {
+  padding: 2px;
+}
+table#main {
+  width: 95%;
+  text-align: center;
+}
+td, th {
+  padding: 0.5em;
+  border: 1px solid #CCC;
+}
+thead, tfoot {
+  background-color: #DDD;
+}
+th {
+  text-align: center;
+  font-size: 1.1em;
+}
+td {
+  text-align: left;
+}
+form td.submit {
+  text-align: center;
+}
+tr.rowodd {
+}
+tr.roweven {
+  background-color:#F2F2F2;
+}
+
+dl.table-display {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+dl.table-display dt {
+  clear:   left;
+  display:  block;
+  font-weight: bold;
+  float:   left;
+  margin-right: 4px;
+}
+dl.table-display dd {
+  clear:   right;
+  display:  block;
+}
+dl.table-display dd input,
+dl.table-display dd select {
+  margin-top: -2px;
+  margin-bottom: 4px;
+}
+
+/* --- Table sorting ----------------------------- */
+
+.sortcol {
+  cursor: pointer;
+  padding-right: 20px;
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+.sortasc {
+  background-color: #DDFFAC;
+  background-image: url(../images/up.gif);
+}
+.sortdesc {
+  background-color: #B9DDFF;
+  background-image: url(../images/down.gif);
+}
+.nosort {
+  cursor:default;
+}
+.scroll-table-head {
+  width:800px;
+}
+.scroll-table-body {
+  width: 800px;
+  height: 400px;
+}
+.scroll-table-body td {
+  padding-right: 20px;
+  overflow: hidden;
+}

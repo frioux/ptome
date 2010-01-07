@@ -1,0 +1,21 @@
+NOW
+--------------------------
+add tome book page doesn't work
+add tome book form on the viewClass.php page doesn't work
+New checkouts need to include the time they are reserved
+The semester report page doesn't show current checkouts from our tomekeepers
+The semester report page doesn't show current checkouts from other tomekeepers
+first time login page
+sending notifications (I still don't even know what this supposedly does)
+
+
+LATER
+--------------------------
+-Implement hard start times for intertome (spring, summer, and fall)
+-Let books be marked unusable on a global level the first time, and then let individual tomekeepers mark their books usable again at their discretion
+-provide more breakdown on the inventory page
+-Allow intertome libraries to be sorted in the dropdown by preference? (I want to reserve from T3, then 2A, then flooders, then G2, ...)?
+-include links to the efollet page for every class?
+-automatically send all patrons an email with a list of the books they got
+-Specific book checkout as well as general book checkout (checkout of title vs ID number)?
+-Auto Semester change? So TOME automatically changes the current semester after a predetermined date...would need to be sometime after class registration

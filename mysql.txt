@@ -1,0 +1,256 @@
+-- phpMyAdmin SQL Dump
+-- version 3.2.0.1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Sep 28, 2009 at 03:14 PM
+-- Server version: 5.1.39
+-- PHP Version: 5.3.0
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `TOME`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `access`
+--
+
+CREATE TABLE IF NOT EXISTS `access` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `pageName` varchar(50) NOT NULL,
+  `minLevel` int(11) NOT NULL DEFAULT '0',
+  `message` varchar(255) NOT NULL DEFAULT 'You are not authorized to view this page.' COMMENT 'error message for users without permission to access a given page',
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `page_name` (`pageName`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+
+--
+-- Dumping data for table `access`
+--
+
+INSERT INTO `access` (`ID`, `pageName`, `minLevel`, `message`) VALUES
+(1, 'admin', 3, ''),
+(2, 'index', 3, 'You are not authorized to view this page.'),
+(3, 'addAccess', 1, 'You are not authorized to add access policies.'),
+(4, 'editAccess', 1, 'You are not authorized to edit access policies.'),
+(5, 'deleteAccess', 1, 'You are not authorized to delete access policies.'),
+(6, 'addUser', 2, 'You are not authorized to add users.'),
+(7, 'editUser', 2, 'You are not authorized to edit users other than yourself.'),
+(8, 'deleteUser', 2, 'You are not authorized to delete users.'),
+(9, 'addBooks', 2, 'You are not authorized to manage books'),
+(10, 'editBooks', 2, 'You are not authorized to manage books'),
+(11, 'deleteBooks', 2, 'You are not authorized to manage books'),
+(12, 'addBookTypes', 2, 'You are not authorized to manage book types'),
+(13, 'editBookTypes', 2, 'You are not authorized to manage book types'),
+(14, 'deleteBookTypes', 2, 'You are not authorized to manage book types'),
+(15, 'addBorrowers', 2, 'You are not authorized to manage borrowers'),
+(16, 'editBorrowers', 2, 'You are not authorized to manage borrowers'),
+(17, 'deleteBorrowers', 2, 'You are not authorized to manage borrowers'),
+(18, 'addCheckouts', 2, 'You are not authorized to manage checkouts'),
+(19, 'editCheckouts', 2, 'You are not authorized to manage checkouts'),
+(20, 'deleteCheckouts', 2, 'You are not authorized to manage checkouts'),
+(21, 'addClasses', 2, 'You are not authorized to manage classes'),
+(22, 'editClasses', 2, 'You are not authorized to manage classes'),
+(23, 'deleteClasses', 2, 'You are not authorized to manage classes'),
+(24, 'addLibraries', 2, 'You are not authorized to manage libraries'),
+(25, 'editLibraries', 2, 'You are not authorized to manage libraries'),
+(26, 'deleteLibraries', 2, 'You are not authorized to manage libraries'),
+(27, 'addTomekeepers', 2, 'You are not authorized to manage TOME Keepers'),
+(28, 'editTomekeepers', 2, 'You are not authorized to manage TOME Keepers'),
+(29, 'deleteTomekeepers', 2, 'You are not authorized to manage TOME Keepers');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `books`
+--
+
+CREATE TABLE IF NOT EXISTS `books` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `libraryID` int(11) NOT NULL,
+  `bookID` int(11) NOT NULL,
+  `donatorID` int(11) NOT NULL,
+  `expires` date NOT NULL DEFAULT '0000-00-00',
+  `expired` tinyint(1) NOT NULL,
+  `comments` text NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `bookID` (`bookID`,`donatorID`),
+  KEY `libraryID` (`libraryID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `books`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bookTypes`
+--
+
+CREATE TABLE IF NOT EXISTS `bookTypes` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `libraryID` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `ISBN10` int(10) NOT NULL,
+  `ISBN13` int(13) NOT NULL,
+  `author` varchar(50) NOT NULL,
+  `edition` varchar(20) NOT NULL,
+  `comments` text NOT NULL,
+  `usable` tinyint(1) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `libraryID` (`libraryID`,`title`,`ISBN10`,`ISBN13`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `bookTypes`
+--
+
+INSERT INTO `bookTypes` (`ID`, `libraryID`, `title`, `ISBN10`, `ISBN13`, `author`, `edition`, `comments`, `usable`) VALUES
+(1, 1, 'Test Book', 1241241515, 2147483647, 'Nobody', '', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `borrowers`
+--
+
+CREATE TABLE IF NOT EXISTS `borrowers` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `valid` tinyint(1) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `email` (`email`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `borrowers`
+--
+
+INSERT INTO `borrowers` (`ID`, `email`, `name`, `valid`) VALUES
+(1, 'synk@dorm41.org', 'Synk', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `checkouts`
+--
+
+CREATE TABLE IF NOT EXISTS `checkouts` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `bookID` int(11) NOT NULL,
+  `tomekeeperID` int(11) NOT NULL,
+  `borrowerID` int(11) NOT NULL,
+  `out` datetime NOT NULL,
+  `in` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `bookID` (`bookID`,`tomekeeperID`,`out`,`in`),
+  KEY `borrowerID` (`borrowerID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `checkouts`
+--
+
+INSERT INTO `checkouts` (`ID`, `bookID`, `tomekeeperID`, `borrowerID`, `out`, `in`) VALUES
+(1, 1, 1, 1, '2009-09-27 23:36:37', '2009-09-27 23:36:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `classes`
+--
+
+CREATE TABLE IF NOT EXISTS `classes` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `class` varchar(8) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `comments` text NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `class` (`class`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `classes`
+--
+
+INSERT INTO `classes` (`ID`, `class`, `name`, `comments`) VALUES
+(1, 'MATH3303', 'Numerical Analysis', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `errorLog`
+--
+
+CREATE TABLE IF NOT EXISTS `errorLog` (
+  `errorID` int(11) NOT NULL AUTO_INCREMENT,
+  `time` datetime NOT NULL,
+  `message` text NOT NULL,
+  `type` tinyint(2) NOT NULL,
+  PRIMARY KEY (`errorID`),
+  KEY `time` (`time`,`type`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `errorLog`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `libraries`
+--
+
+CREATE TABLE IF NOT EXISTS `libraries` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL COMMENT 'Because a floor won''t be happy if this field can''t hold their name',
+  `interTOME` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `libraries`
+--
+
+INSERT INTO `libraries` (`ID`, `name`, `interTOME`) VALUES
+(1, '41', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `password_salt` varchar(64) NOT NULL,
+  `permissions` tinyint(1) NOT NULL DEFAULT '0',
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `lastUpdate` date NOT NULL DEFAULT '0000-00-00',
+  `name` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `libraryID` int(11) NOT NULL,
+  `secondContact` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `user_name` (`username`),
+  KEY `name` (`name`,`email`,`libraryID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`ID`, `username`, `password`, `password_salt`, `permissions`, `active`, `lastUpdate`, `name`, `email`, `libraryID`, `secondContact`) VALUES
+(1, 'admin', 'ffd157fb1dd54ab87dac0e50e239a201228441eb77989f15883f09a22cd69a445b199bcf5623be3fc7497db978c6f36d3d158e8f8d31602cad1f2adead8fd059', '8cf07a91e527af86f8f0b1251996a99c', 1, 1, '0000-00-00', '', '', 0, ''),
+(2, 'bion', '18b289578a107760cc1d616a35d04a3a48cf8d8f6864d1bb009f13574a13f28a287455ca20afcc7633f87801c006f2f96867db6a5d914b5f317409f4bf1a43b2', '43b8489419e3fdb0f1afc89a2978719f', 1, 1, '0000-00-00', 'Wharf', 'bionoren@letu.edu', 1, 'kick');

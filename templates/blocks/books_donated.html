@@ -1,8 +1,0 @@
-[%# Receives a list of book id's as ids %]
-<table class="sortable full"><thead><tr><th>Book</th><th>When Donated</th><th>Expiration</th></tr></thead><tbody>
-    [%- FOREACH id = ids -%]
-    [%- info=tome.tomebook_info(id) -%]
-    <tr><td>[% INCLUDE 'blocks/book.html' id=id isbn=info.isbn %]</td><td>[%- INCLUDE blocks/datetime.html datetime=info.timedonated -%]</td><td>[%- INCLUDE blocks/semester.html semester=info.expire -%]</td></tr>
-    [%- END -%]
-  </tbody>
-</table>
