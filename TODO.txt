@@ -1,7 +1,5 @@
 NOW
 --------------------------
-Checkouts from the reports page are broken
-checkins from bookinfo.php are broken
 first time login page
 sending notifications (I still don't even know what this supposedly does)
 
