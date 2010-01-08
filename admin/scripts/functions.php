@@ -74,11 +74,19 @@
         return (empty($isbn13)) ? $isbn10 : $isbn13;
     }
 
-    function showBookInfo(array $book, $editable=true) {
+    function showBookInfo(array $book, $editable=true, $showID=false) {
         $isbn = getISBN($book["isbn13"], $book["isbn10"]);
         ?>
         <td>
             <dl class="table-display">
+                <?php if($showID) { ?>
+                    <dt>
+                        Book ID
+                    </dt>
+                    <dd>
+                        <a href="<?php print $path."bookinfo.php?id=".$book["ID"]; ?>"><?php print $book["ID"]; ?></a>
+                    </dd>
+                <?php } ?>
                 <dt>
                     ISBN:
                 </dt>
