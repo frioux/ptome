@@ -174,47 +174,56 @@
         </thead>
         <tbody>
             <?php
-                foreach($myCheckouts as $book) {
-                    $books = getAvailableBooksForISBN($book["bookID"]);
+                foreach($myCheckouts as $checkout) {
+                    $books = getAvailableBooksForISBN($checkout["bookID"]);
                 ?>
                 <tr class="rowodd">
-                    <?php print showBookInfo($book, false); ?>
+                    <?php print showBookInfo($checkout, false); ?>
                     <td>
-                        <a href="<?php print $path."viewPatron.php?id=".$book["patronID"]; ?>"><?php print $book["name"]; ?></a>
+                        <a href="<?php print $path."viewPatron.php?id=".$checkout["patronID"]; ?>"><?php print $checkout["name"]; ?></a>
                     </td>
                     <td>
-                        <?php print getSemesterName($book["semester"]); ?>
+                        <?php print getSemesterName($checkout["semester"]); ?>
                     </td>
                     <td class="print-no">
-                        <table class="noborder close">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            Checkout:
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        <select name="tomebook_id">
-                                            <option id="-1">Please select a Book ID</option>
-                                            <?php
-                                                foreach($books as $b) {
-                                                    print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
-                                                }
-                                            ?>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="submit" onclick="$('rcommit1813').value='cancel'; $$('reservation1813 form')[0].submit();" value="Cancel" name="submit"/>
-                                    </td>
-                                    <td>
-                                        <input type="submit" value="Fill Reservation" name="submit"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
+                            <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
+                                                    parameters: Form.serialize(this)+'&id=<?php print $checkout["ID"]; ?>',
+                                                    onCreate: function(request){$('checkout<?php print $checkout["ID"]; ?>').innerHTML = 'Loading...'},
+                                                    onSuccess: function(request){new Effect.Highlight( 'checkout<?php print $checkout["ID"]; ?>', { duration:0.5 } )}
+                                                    }); return false">
+                                <input type="hidden" value="fill" name="type" id="checkouthidden<?php print $checkout["ID"]; ?>">
+                                <table class="noborder close">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    Checkout:
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                <select name="bookID">
+                                                    <option id="-1">Please select a Book ID</option>
+                                                    <?php
+                                                        foreach($books as $b) {
+                                                            print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
+                                                        }
+                                                    ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="submit" name="submit" value="Cancel" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='cancel';">
+                                            </td>
+                                            <td>
+                                                <input type="submit" name="submit" value="Fill Reservation" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='submit';">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             <?php } ?>
@@ -255,7 +264,7 @@
                         print '<tr>';
                     }
                 ?>
-                    <?php print showBookInfo($book, false); ?>
+                    <?php print showBookInfo($book, false, true); ?>
                     <td>
                         <a href="<?php print $path."viewPatron.php?id=".$book["patronID"]; ?>"><?php print $book["name"]; ?></a>
                     </td>
@@ -315,7 +324,7 @@
                 foreach($booksExpiring as $book) {
                 ?>
                 <tr>
-                    <?php print showBookInfo($book, false); ?>
+                    <?php print showBookInfo($book, false, true); ?>
                     <td>
                         <a href="<?php print $path."viewPatron.php?id=".$book["patronID"]; ?>"><?php print $book["name"]; ?></a>
                     </td>
@@ -529,7 +538,7 @@
                         <td>
                             <?php print $book["libraryName"]; ?>
                         </td>
-                        <?php print showBookInfo($book, false); ?>
+                        <?php print showBookInfo($book, false, true); ?>
                         <td>
                             <a href="<?php print $path."viewPatron.php?id=".$book["patronID"]; ?>"><?php print $book["name"]; ?></a>
                         </td>
@@ -589,7 +598,7 @@
                         <td>
                             <?php print $book["libraryName"]; ?>
                         </td>
-                        <?php print showBookInfo($book, false); ?>
+                        <?php print showBookInfo($book, false, true); ?>
                         <td>
                             <a href="<?php print $path."viewPatron.php?id=".$book["patronID"]; ?>"><?php print $book["name"]; ?></a>
                         </td>
