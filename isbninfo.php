@@ -14,12 +14,10 @@
     }
     //get the book info
     $id = $_GET["id"];
-    $sql = "SELECT `libraries`.`name` AS `library` ,
-            `bookTypes`.`ID` AS `bookID`,`bookTypes`.`author`,`bookTypes`.`title`,`bookTypes`.`edition`,`bookTypes`.`isbn10`,`bookTypes`.`isbn13`,`bookTypes`.`comments`
+    $sql = "SELECT `bookTypes`.`ID` AS `bookID`,`bookTypes`.`author`,`bookTypes`.`title`,`bookTypes`.`edition`,`bookTypes`.`isbn10`,`bookTypes`.`isbn13`,`bookTypes`.`comments`
             FROM `bookTypes`
-            JOIN `books` ON `books`.`bookID` = `bookTypes`.`ID`
-            JOIN `libraries` ON `books`.`libraryID` = `libraries`.`ID`
             WHERE `bookTypes`.`ID` = '$id'";
+   
     $result = DatabaseManager::checkError($sql);
     if(mysqli_num_rows($result) == 0) {
         print "Unknown bookType ID ".$id;
