@@ -15,14 +15,77 @@ New developers can look here for information about what tables there are, what g
     * minLevel
     * message
   * books
+    * ID
+    * libraryID
+    * bookID
+    * borrowerID
+    * expires
+    * expired
+    * usable
+    * comments
   * bookTypes
+    * ID
+    * title
+    * isbn10
+    * isbn13
+    * author
+    * edition
+    * comments
   * borrowers
+    * ID
+    * email
+    * name
+    * valid
   * checkouts
+    * ID
+    * bookID
+    * bookTypeID
+    * tomekeeperID
+    * libraryToID
+    * libraryFromID
+    * borrowerID
+    * reserved
+    * out
+    * in
+    * semester
+    * comments
   * classbooks
+    * ID
+    * classID
+    * bookID
+    * verified
+    * verifiedSemester
+    * usable
+    * comments
   * classes
+    * ID
+    * class
+    * name
+    * comments
   * errorLog
+    * errorID
+    * time
+    * message
+    * type
   * libraries
+    * ID
+    * name
+    * interTOME
   * users
+    * ID
+    * username
+    * password
+    * password_salt
+    * permissions
+    * active
+    * lastUpdate
+    * name
+    * email
+    * notifications
+    * libraryID
+    * secondContact
+    * semester
+    * firstLogin
 
 
 = Details (pre 3.0)=
