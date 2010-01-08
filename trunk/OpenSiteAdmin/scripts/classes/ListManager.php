@@ -114,7 +114,7 @@
 
             $ret .= '<tbody>';
 			//add list data
-			while($entry = mysqli_fetch_assoc($result)) {
+			while($entry = DatabaseManager::fetchAssoc($result)) {
 				$ret .= "<tr>";
 				foreach($fields as $field) {
 					if(!$field->isInList()) {

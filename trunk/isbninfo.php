@@ -17,14 +17,14 @@
     $sql = "SELECT `bookTypes`.`ID` AS `bookID`,`bookTypes`.`author`,`bookTypes`.`title`,`bookTypes`.`edition`,`bookTypes`.`isbn10`,`bookTypes`.`isbn13`,`bookTypes`.`comments`
             FROM `bookTypes`
             WHERE `bookTypes`.`ID` = '$id'";
-   
+
     $result = DatabaseManager::checkError($sql);
-    if(mysqli_num_rows($result) == 0) {
+    if(DatabaseManager::getNumResults($result) == 0) {
         print "Unknown bookType ID ".$id;
         require_once($path."footer.php");
         die();
     }
-    $book = mysqli_fetch_assoc($result);
+    $book = DatabaseManager::fetchAssoc($result);
 
     $fieldset = getProcessBookAssociation($book);
     $fieldset2 = getProcessISBNCheckoutFieldset($id, $numBooks);
@@ -32,11 +32,7 @@
     $sql = "Select `classes`.`ID`, `classes`.`class`, `classes`.`name` from `classes`
             join `classbooks` on `classes`.`ID` = `classbooks`.`classID`
             where `classbooks`.`bookID` = '".$book["bookID"]."'";
-    $result = DatabaseManager::checkError($sql);
-    $classes = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $classes[] = $row;
-    }
+    $classes = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>View Book</h1>
 <h3>Reserve Book</h3>

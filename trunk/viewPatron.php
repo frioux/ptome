@@ -25,20 +25,14 @@
     //find books currently checked out
     $sql = "select * from `checkouts` where `borrowerID` = $id and `in` = '0000-00-00 00:00:00'";
     $result = DatabaseManager::checkError($sql);
-    $checkedoutCount = mysqli_num_rows($result);
-    $checkouts = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $checkouts[] = $row;
-    }
+    $checkedoutCount = DatabaseManager::getNumResults($result);
+    $checkouts = DatabaseManager::fetchAssocArray($result);
 
     //find donations
     $sql = "select * from `books` where `donatorID` = $id";
     $result = DatabaseManager::checkError($sql);
-    $donatedCount = mysqli_num_rows($result);
-    $donations = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $donations[] = $row;
-    }
+    $donatedCount = DatabaseManager::getNumResults($result);
+    $donations = DatabaseManager::fetchAssocArray($result);
 ?>
 <h1>View Patron</h1>
 <?php $form->display(); ?>
@@ -68,7 +62,7 @@
                 join `bookTypes` on `bookTypes`.`ID`=`books`.`bookID`
                 where `books`.`ID` = ".$checkout["bookID"];
             $result = DatabaseManager::checkError($sql);
-            $book = mysqli_fetch_assoc($result);
+            $book = DatabaseManager::fetchAssoc($result);
             $book["ID"] = $checkout["ID"];
             $isbn = getISBN($book["isbn13"], $book["isbn10"]);
         ?>
@@ -148,7 +142,7 @@
                         join `bookTypes` on `bookTypes`.`ID`=`books`.`bookID`
                         where `books`.`ID` = ".$donation["ID"];
                     $result = DatabaseManager::checkError($sql);
-                    $book = mysqli_fetch_assoc($result);
+                    $book = DatabaseManager::fetchAssoc($result);
                     $book["ID"] = $donation["ID"];
                     $isbn = getISBN($book["isbn13"], $book["isbn10"]);
             ?>

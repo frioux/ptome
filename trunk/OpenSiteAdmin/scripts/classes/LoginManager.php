@@ -68,10 +68,10 @@
 		function login($user, $pass, $remember="no", $isCookie=false) {
 			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` = '$user'";
 			$result = DatabaseManager::checkError($sql);
-			if(mysqli_num_rows($result) === 0) {
+			if(DatabaseManager::getNumResults($result) === 0) {
 				return LoginManager::INVALID;
 			}
-			$row = mysqli_fetch_assoc($result);
+			$row = DatabaseManager::fetchAssoc($result);
 			if($row["active"] == "1") {
 				if($isCookie) {
 					$pass2 = SecurityManager::encrypt($row["password"], $row["salt"]);
@@ -114,13 +114,13 @@
 		 */
 		function suspend($user) {
 			$sql = "select * from `users` where `username` = '$user'";
-			$result = mysqli_query($sql, DatabaseManager::getLink());
-			if(mysqli_num_rows($result) === 0) {
+			$result = DatabaseManager::checkError($sql);
+			if(DatabaseManager::getNumResults($result) === 0) {
 				return;
 			}
-			$row = mysqli_fetch_assoc($result);
+			$row = DatabaseManager::fetchAssoc($result);
 			$sql = "update `users` set `active` = '0' where `ID` = '".$row['ID']."'";
-			mysqli_query($sql, DatabaseManager::getLink());
+			DatabaseManager::checkError($sql);
 		}
 	}
 ?>

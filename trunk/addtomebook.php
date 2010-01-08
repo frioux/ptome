@@ -19,8 +19,8 @@
 
         function process() {
             $result = DatabaseManager::checkError("select `ID` from `bookTypes` where `isbn10` LIKE '%".$this->field->getValue()."%' OR `isbn13` LIKE '%".$this->field->getValue()."%'");
-            if(mysqli_num_rows($result) == 0) {
-                $row = mysqli_fetch_assoc($result);
+            if(DatabaseManager::getNumResults($result) == 0) {
+                $row = DatabaseManager::fetchAssoc($result);
                 $_SESSION["post"]["ID"] = $this->keyField->getValue();
                 $_SESSION["post"]["redir"] = "bookinfo.php";
                 $_SESSION["post"]["isbn"] = $this->field->getValue();

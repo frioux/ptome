@@ -99,27 +99,6 @@
 		}
 
         /**
-		 * Checks for errors and runs the provided MySQL queries.
-		 * Currently does not support select statements
-		 *
-		 * @param STRING $query The MySQL queries to run.
-		 * @return BOOLEAN false if the row's error flag was set or if the query failed.
-		 */
-        static function multiCheckError($query) {
-            $result = mysqli_multi_query(DatabaseManager::getLink(), $query);
-            $error = mysqli_error(DatabaseManager::getLink());
-            print $error;
-			if(!empty($error)) {
-				print "There was an error processing a database request.<br>";
-				ErrorLogManager::log("MYSQL ERROR -> $query<br>\n$error", ErrorLogManager::FATAL);
-				return false;
-			}
-            //clean up result set stuff
-            while(mysqli_next_result(DatabaseManager::getLink())) mysqli_store_result(DatabaseManager::getLink());
-            return true;
-        }
-
-        /**
 		 * Returns the name of the database this manager is currently connected to.
 		 *
 		 * @return STRING Currently used database name.
@@ -127,6 +106,64 @@
 		function getDatabase() {
 			return $this->database;
 		}
+
+        /**
+         * Wrapper for getting the last insert ID
+         *
+         * @param RESOURCE The connection resource to reference.
+         * @return MIXED false on failure, int on success.
+         */
+        static function getInsertID($result) {
+            return mysqli_insert_id($result);
+        }
+
+        /**
+         * Wrapper for getting the number of rows returned from a query.
+         *
+         * @param RESOURCE The connection resource to reference.
+         * @return INT the number of rows in this result set
+         */
+        static function getNumResults($result) {
+            return mysqli_num_rows($result);
+        }
+
+        /**
+         * Wrapper for getting an array of the next row's data.
+         *
+         * @param RESOURCE The connection resource to reference.
+         * @return INT the number of rows in this result set
+         */
+        static function fetchArray($result) {
+            return mysqli_fetch_row($result);
+        }
+
+        /**
+         * Wrapper for getting an associative array of the next row's data.
+         *
+         * @param RESOURCE The connection resource to reference.
+         * @return ARRAY The next row's data.
+         */
+        static function fetchAssoc($result) {
+            return mysqli_fetch_assoc($result);
+        }
+
+        /**
+         * Helper function for fetching all of the rows in the result set into an
+         * array of associative arrays.
+         *
+         * @param MIXED Query resource or a raw query string
+         * @return ARRAY Array of associative arrays or an empty array if no results.
+         */
+        static function fetchAssocArray($result) {
+            if(!is_resource($result)) {
+                $result = DatabaseManager::checkError($result);
+            }
+            $ret = array();
+            while($row = DatabaseManager::fetchAssoc($result)) {
+                $ret[] = $row;
+            }
+            return $ret;
+        }
 
         /**
          * Constructs an instance of the database manager if necessary and returns a
@@ -167,6 +204,27 @@
 		function getUser() {
 			return $this->username;
 		}
+
+        /**
+		 * Checks for errors and runs the provided MySQL queries.
+		 * Currently does not support select statements
+		 *
+		 * @param STRING $query The MySQL queries to run.
+		 * @return BOOLEAN false if the row's error flag was set or if the query failed.
+		 */
+        static function multiCheckError($query) {
+            $result = mysqli_multi_query(DatabaseManager::getLink(), $query);
+            $error = mysqli_error(DatabaseManager::getLink());
+            print $error;
+			if(!empty($error)) {
+				print "There was an error processing a database request.<br>";
+				ErrorLogManager::log("MYSQL ERROR -> $query<br>\n$error", ErrorLogManager::FATAL);
+				return false;
+			}
+            //clean up result set stuff
+            while(mysqli_next_result(DatabaseManager::getLink())) mysqli_store_result(DatabaseManager::getLink());
+            return true;
+        }
 
 		/**
 		 * Sets the database this database manager is currently connected to.

@@ -12,7 +12,7 @@
 //    $customSelectOptions = DatabaseManager::checkError("custom database query here");
     $result = DatabaseManager::checkError("select * from `libraries`");
     $libraries = array();
-    while($row = mysqli_fetch_assoc($result)) {
+    while($row = DatabaseManager::fetchAssoc($result)) {
         $libraries[$row["ID"]] = $row["name"];
     }
 

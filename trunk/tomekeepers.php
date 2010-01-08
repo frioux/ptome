@@ -37,7 +37,7 @@
     <tbody>
 
     <?php
-       while($row = mysqli_fetch_row($resultSet))
+       while($row = DatabaseManager::fetchArray($resultSet))
        {
           print "<tr><td>$row[0]</td><td>$row[1]</td><td>$row[2]</td><td>$row[4]</td><td>$row[3]</td></tr>";
        }
@@ -58,7 +58,7 @@
       $resultSet = DatabaseManager::checkError($querry);
 
       $users = array();
-      while($row = mysqli_fetch_row($resultSet))
+      while($row = DatabaseManager::fetchArray($resultSet))
       {
          if($row[0] == '')
             continue;

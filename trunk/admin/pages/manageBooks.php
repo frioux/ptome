@@ -12,12 +12,12 @@
 //    $customSelectOptions = DatabaseManager::checkError("custom database query here");
     $result = DatabaseManager::checkError("select `ID`,`title` from `bookTypes`");
     $books = array();
-    while($row = mysqli_fetch_assoc($result)) {
+    while($row = DatabaseManager::fetchAssoc($result)) {
         $books[$row["ID"]] = $row["title"];
     }
     $result = DatabaseManager::checkError("select `ID`,`name` from `borrowers`");
     $donators = array();
-    while($row = mysqli_fetch_assoc($result)) {
+    while($row = DatabaseManager::fetchAssoc($result)) {
         $donators[$row["ID"]] = $row["name"];
     }
 

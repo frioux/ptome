@@ -15,7 +15,7 @@
         //print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
         $libBooks = array();
-        while($row = mysqli_fetch_assoc($result)) {
+        while($row = DatabaseManager::fetchAssoc($result)) {
             if(!$row["interTOME"]) continue;
             if(!isset($libBooks[$row["ID"]])) {
                 $libBooks[$row["ID"]] = $row;
@@ -25,7 +25,7 @@
         $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookID`='0' AND `out` = '0000-00-00 00:00:00'";
         //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
-        while($row = mysqli_fetch_assoc($result)) {
+        while($row = DatabaseManager::fetchAssoc($result)) {
             $libBooks[$row["libraryFromID"]]["count"] -= $row["count"];
         }
         foreach($libBooks as $key=>$row) {
@@ -42,7 +42,7 @@
         if(isset($_REQUEST["submit"]) && $_REQUEST["fieldset".$id]) {
             if($fieldset->process()) {
                 $result = DatabaseManager::checkError("select `ID` from `borrowers` where `email` = '".$linkField->getValue()."'");
-                if(mysqli_num_rows($result) == 0) {
+                if(DatabaseManager::getNumResults($result) == 0) {
                     //this patron doesn't exist, so we need to create them.
                     //But, we still want to move this reservations forward.
                     //So, what we'll do is order some Creme Soda for our tomekeeper, and then, while they're distracted,
@@ -53,13 +53,13 @@
                     $_SESSION["post"]["email"] = $linkField->getValue();
                     $linkField->setValue(0);
                 } else {
-                    $tmp = mysqli_fetch_assoc($result);
+                    $tmp = DatabaseManager::fetchAssoc($result);
                     $linkField->setValue($tmp["ID"]);
                 }
 
                 $fieldset->commit();
                 if($storeCreateUser) {
-                    $_SESSION["post"]["ID"] = mysqli_insert_id(DatabaseManager::getLink());
+                    $_SESSION["post"]["ID"] = DatabaseManager::getInsertID(DatabaseManager::getLink());
                     $_SESSION["post"]["redir"] = $_SERVER["REQUEST_URI"];
                     $_SESSION["post"]["reserveID"] = $id;
                     header("Location:".$path."addPatron.php");
@@ -150,12 +150,12 @@
                     return;
                 } else {
                     $result = DatabaseManager::checkError("select `ID` from `classbooks` where `classID` = '".$classID."' and bookID = '".$book["bookID"]."'");
-                    if(mysqli_num_rows($result) == 0) { //add
+                    if(DatabaseManager::getNumResults($result) == 0) { //add
                         $fieldset->setFormType(Form::ADD);
                         $row = new RowManager("classbooks", $keyField->getName());
                     } else { //edit
                         $fieldset->setFormType(Form::EDIT);
-                        $tmp = mysqli_fetch_assoc($result);
+                        $tmp = DatabaseManager::fetchAssoc($result);
                         $rowID = $tmp["ID"];
                         $row = new RowManager("classbooks", $keyField->getName(), $rowID);
                     }

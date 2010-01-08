@@ -14,7 +14,7 @@
 <table class="sortable"><thead><tr><th>Course Number</th><th>Course Name</th></tr></thead><tbody>
 
 <?php
-   while($row = mysqli_fetch_row($resultSet))
+   while($row = DatabaseManager::fetchArray($resultSet))
    {
       $classURL = "viewClass.php?id=$row[2]";
       print "<tr>

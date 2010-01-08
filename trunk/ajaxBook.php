@@ -9,8 +9,8 @@
         WHERE `title` LIKE '%".$text."%' OR `isbn10` LIKE '".$text."%' OR `isbn13` LIKE '".$text."%'";
     $result = DatabaseManager::checkError($sql);
     print '<ul class="auto_complete_list">';
-    if(mysqli_num_rows($result) > 0) {
-        while($row = mysqli_fetch_assoc($result)) {
+    if(DatabaseManager::getNumResults($result) > 0) {
+        while($row = DatabaseManager::fetchAssoc($result)) {
             //prefer ISBN 13, but use 10 if that's not available
             $isbn = getISBN($row["isbn13"], $row["isbn10"]);
             print '<li class="auto_complete_item">';

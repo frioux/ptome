@@ -158,7 +158,7 @@
 			$permissions = array();
 
 			$result = DatabaseManager::checkError("select * from access");
-			while($row = mysqli_fetch_assoc($result)) {
+			while($row = DatabaseManager::fetchAssoc($result)) {
 				$this->permissions[$row["pageName"]] = $row["minLevel"];
 				$this->errorMessages[$row["pageName"]] = $row["message"];
 			}

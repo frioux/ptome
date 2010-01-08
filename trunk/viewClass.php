@@ -22,11 +22,7 @@
             JOIN `classbooks` ON `classbooks`.`bookID` = `bookTypes`.`ID`
             WHERE `classbooks`.`classID` = '".$id."'
             ORDER BY `classbooks`.`usable` DESC,`classbooks`.`verifiedSemester` DESC";
-    $result = DatabaseManager::checkError($sql);
-    $books = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $books[] = $row;
-    }
+    $books = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>Class Information</h1>
 <h3>Books for <?php print $book->getValue("class").' - '.$book->getValue("name"); ?></h3>

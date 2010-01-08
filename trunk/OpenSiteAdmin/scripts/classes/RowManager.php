@@ -150,7 +150,7 @@
          * @return INTEGER Last insert ID number (usually the primary key)
          */
 		protected function getLastInsertID() {
-			return mysqli_insert_id(DatabaseManager::getLink());
+			return DatabaseManager::getInsertID(DatabaseManager::getLink());
         }
 
         /**
@@ -220,7 +220,7 @@
 			$sql = "select * from `".$this->getTableName()."` $where order by `".$this->orderBy."` ".$this->sortDir;
 			$result = DatabaseManager::checkError($sql);
 
-			while($entry = mysqli_fetch_assoc($result)) {
+			while($entry = DatabaseManager::fetchAssoc($result)) {
 				$i++;
 				$ret[] = new RowManager($this->tableName, $this->getPrimaryKeyName(), $entry[$this->getPrimaryKeyName()]);
 			}
@@ -280,12 +280,12 @@
                 $sql = "select * from `".$this->getTableName()."` $where order by `".$this->orderBy."` ".$this->sortDir;
 
                 $result = DatabaseManager::checkError($sql);
-                $this->values = mysqli_fetch_assoc($result);
+                $this->values = DatabaseManager::fetchAssoc($result);
             }
             if(empty($this->values)) {
                 $result = DatabaseManager::checkError("SHOW COLUMNS FROM `".$this->getTableName()."`");
                 $this->values = array();
-                while($col = mysqli_fetch_assoc($result)) {
+                while($col = DatabaseManager::fetchAssoc($result)) {
                     $this->values[$col["Field"]] = null;
                 }
                 $this->hasValues = false;
