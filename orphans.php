@@ -16,7 +16,7 @@
               AND books.expired = 0;";
 
    $resultSet = DatabaseManager::checkError($query);
-   $count = mysqli_num_rows($resultSet);
+   $count = DatabaseManager::getNumResults($resultSet);
 ?>
 <h1>Orphan Books</h1>
 <h3>These books have no class associated with them:</h3>
@@ -57,7 +57,7 @@
     </thead>
     <tbody>
     <?php
-      while($row = mysqli_fetch_row($resultSet))
+      while($row = DatabaseManager::fetchArray($resultSet))
       {
          $bookURL = "bookinfo.php?id=$row[5]";
          $isbnURL = "isbninfo.php?id=$row[6]";

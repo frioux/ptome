@@ -13,11 +13,7 @@
             JOIN `borrowers` on `checkouts`.`borrowerID` = `borrowers`.`ID`
             JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
             WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
-    $result = DatabaseManager::checkError($sql);
-    $myCheckouts = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $myCheckouts[] = $row;
-    }
+    $myCheckouts = DatabaseManager::fetchAssocArray($sql);
 
     //fetch TOME books due back
     $sql = "SELECT `checkouts`.`ID` as `checkoutID`, `checkouts`.`out` , `checkouts`.`semester` ,
@@ -31,11 +27,7 @@
             /*      Check if the book is still out                      Check if we care              Check if we checked this book out                         Check if this book is from our library*/
             WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
             ORDER BY `checkouts`.`semester`";
-    $result = DatabaseManager::checkError($sql);
-    $booksDue = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $booksDue[] = $row;
-    }
+    $booksDue = DatabaseManager::fetchAssocArray($sql);
 
     //fetch expiring books
     $sql = "SELECT `bookTypes`.`ID` AS `bookTypeID` , `bookTypes`.`author` , `bookTypes`.`title` , `bookTypes`.`edition` , `bookTypes`.`isbn10` , `bookTypes`.`isbn13` ,
@@ -46,11 +38,7 @@
             JOIN `borrowers` ON `books`.`donatorID` = `borrowers`.`ID`
             WHERE `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`expired` = '0' AND `books`.`expires` != '0000-00-00' AND DATEDIFF(`books`.`expires`, CURRENT_DATE()) < 100
             ORDER BY `books`.`expires`";
-    $result = DatabaseManager::checkError($sql);
-    $booksExpiring = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $booksExpiring[] = $row;
-    }
+    $booksExpiring = DatabaseManager::fetchAssocArray($sql);
 
     if($_SESSION["interTOME"]) {
         //fetch my TOME reservations from other floors
@@ -63,11 +51,7 @@
                 JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
                 JOIN `libraries` on `checkouts`.`libraryFromID` = `libraries`.`ID`
                 WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
-        $result = DatabaseManager::checkError($sql);
-        $myInterTOMECheckouts = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $myInterTOMECheckouts[] = $row;
-        }
+        $myInterTOMECheckouts = DatabaseManager::fetchAssocArray($sql);
 
         //fetch other floor's TOME reservations from me
         $sql = "SELECT `checkouts`.`ID`, `checkouts`.`semester`,
@@ -79,11 +63,7 @@
                 JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
                 JOIN `libraries` on `checkouts`.`libraryToID` = `libraries`.`ID`
                 WHERE `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
-        $result = DatabaseManager::checkError($sql);
-        $interTOMECheckouts = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $interTOMECheckouts[] = $row;
-        }
+        $interTOMECheckouts = DatabaseManager::fetchAssocArray($sql);
 
         //fetch books I need to return to other floors
         $sql = "SELECT `checkouts`.`out` , `checkouts`.`semester` ,
@@ -99,11 +79,7 @@
                 /*      Check if the book is still out                      Check if we care              Check if we checked this book out                         Check if this book is not from our library*/
                 WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."'
                 ORDER BY `checkouts`.`semester`";
-        $result = DatabaseManager::checkError($sql);
-        $returnToOthers = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $returnToOthers[] = $row;
-        }
+        $returnToOthers = DatabaseManager::fetchAssocArray($sql);
 
         //fetch books that other floors need to return to me
         $sql = "SELECT `checkouts`.`out` , `checkouts`.`semester` ,
@@ -119,11 +95,16 @@
                 /*      Check if the book is still out                      Check if we care              Check if we didn't checked this book out                    Check if this book is from our library*/
                 WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
                 ORDER BY `checkouts`.`semester`";
-        $result = DatabaseManager::checkError($sql);
-        $returnToMe = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $returnToMe[] = $row;
-        }
+        $returnToMe = DatabaseManager::fetchAssocArray($sql);
+    }
+
+    function getAvailableBooksForISBN($id) {
+        $sql = "SELECT `books`.`ID` from `books`
+                WHERE `books`.`bookID` = '".$id."' AND `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`ID` NOT IN (
+                    SELECT `checkouts`.`bookID` from `checkouts`
+                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = '0000-00-00 00:00:00' AND `checkouts`.`out` != '0000-00-00 00:00:00'
+                )";
+        return DatabaseManager::fetchAssocArray($sql);
     }
 ?>
 <a name="top"></a>
@@ -194,6 +175,7 @@
         <tbody>
             <?php
                 foreach($myCheckouts as $book) {
+                    $books = getAvailableBooksForISBN($book["bookID"]);
                 ?>
                 <tr class="rowodd">
                     <?php print showBookInfo($book, false); ?>
@@ -204,39 +186,35 @@
                         <?php print getSemesterName($book["semester"]); ?>
                     </td>
                     <td class="print-no">
-                        <div id="reservation1813" name="reservation1813" class="print-no">
-                            <form onsubmit=" new Ajax.Updater( 'reservation1813',  '/cgi-bin/tome/admin.pl', { parameters: Form.serialize(this),asynchronous: 1,onLoading: function(request){$('reservation1813').innerHTML = 'Loading...'
-        },onLoaded: function(request){new Effect.Highlight( 'reservation1813', { duration:0.5 } )} } ) ; return false" method="post" action="/cgi-bin/tome/admin.pl">
-                                <input type="hidden" value="1813" name="reservation_id" id="reservation_id"/>
-                                <input type="hidden" value="ajax_fill_reservation" name="rm" id="rm"/>
-                                <input type="hidden" value="fill" name="commit" id="rcommit1813"/>
-                                <table class="noborder close">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>
-                                                    Checkout:
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                <select name="tomebook_id">
-                                                    <option id="0">Please select a Book ID</option>
-                                                    <option id="2452">2452</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="submit" onclick="$('rcommit1813').value='cancel'; $$('reservation1813 form')[0].submit();" value="Cancel" name="submit"/>
-                                            </td>
-                                            <td>
-                                                <input type="submit" value="Fill Reservation" name="submit"/>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
+                        <table class="noborder close">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            Checkout:
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <select name="tomebook_id">
+                                            <option id="-1">Please select a Book ID</option>
+                                            <?php
+                                                foreach($books as $b) {
+                                                    print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
+                                                }
+                                            ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="submit" onclick="$('rcommit1813').value='cancel'; $$('reservation1813 form')[0].submit();" value="Cancel" name="submit"/>
+                                    </td>
+                                    <td>
+                                        <input type="submit" value="Fill Reservation" name="submit"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </td>
                 </tr>
             <?php } ?>
@@ -458,6 +436,7 @@
             <tbody>
                 <?php
                     foreach($interTOMECheckouts as $book) {
+                        $books = getAvailableBooksForISBN($book["bookID"]);
                     ?>
                     <tr class="rowodd">
                         <td>
@@ -471,37 +450,33 @@
                             <?php print getSemesterName($book["semester"]); ?>
                         </td>
                         <td class="print-no">
-                            <div id="reservation1802" name="reservation1802" class="print-no">
-                                <form onsubmit=" new Ajax.Updater( 'reservation1802',  '/cgi-bin/tome/admin.pl', { parameters: Form.serialize(this),asynchronous: 1,onLoading: function(request){$('reservation1802').innerHTML = 'Loading...'
-        },onLoaded: function(request){new Effect.Highlight( 'reservation1802', { duration:0.5 } )} } ) ; return false" method="post" action="/cgi-bin/tome/admin.pl">
-                                    <input type="hidden" value="1802" name="reservation_id" id="reservation_id"/>
-                                    <input type="hidden" value="ajax_fill_reservation" name="rm" id="rm"/>
-                                    <input type="hidden" value="fill" name="commit" id="rcommit1802"/>
-                                    <table class="noborder close">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <strong>Checkout:</strong>
-                                                </td>
-                                                <td>
-                                                    <select name="tomebook_id">
-                                                        <option id="0">Please select a Book ID</option>
-                                                        <option id="1843">1843</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <input type="submit" onclick="$('rcommit1802').value='cancel'; $$('reservation1802 form')[0].submit();" value="Cancel" name="submit"/>
-                                                </td>
-                                                <td>
-                                                    <input type="submit" value="Fill Reservation" name="submit"/>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                            </div>
+                            <table class="noborder close">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>Checkout:</strong>
+                                        </td>
+                                        <td>
+                                            <select name="tomebook_id">
+                                                <option id="-1">Please select a Book ID</option>
+                                                <?php
+                                                    foreach($books as $b) {
+                                                        print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
+                                                    }
+                                                ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="submit" onclick="$('rcommit1802').value='cancel'; $$('reservation1802 form')[0].submit();" value="Cancel" name="submit"/>
+                                        </td>
+                                        <td>
+                                            <input type="submit" value="Fill Reservation" name="submit"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </td>
                     </tr>
                 <?php } ?>

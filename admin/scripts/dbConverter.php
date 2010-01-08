@@ -235,7 +235,7 @@
     $tomekeeperIDMap = array();
     $tomekeeperLibraryMap = array();
     $result = DatabaseManager::checkError("SELECT max( `ID` ) +1 FROM `users`");
-    $tmp = mysqli_fetch_row($result);
+    $tmp = DatabaseManager::fetchArray($result);
     $start = $tmp[0];
     foreach($lines as $line) {
         $line = addslashes($line);

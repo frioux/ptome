@@ -12,7 +12,7 @@
              WHERE (books.libraryID = $libraryID AND books.bookID = bookTypes.ID AND books.expired=0);";
 
    $resultSet = DatabaseManager::checkError($query);
-   $count = mysqli_num_rows($resultSet);
+   $count = DatabaseManager::getNumResults($resultSet);
 ?>
 
 <h1>Library Inventory</h1>
@@ -31,7 +31,7 @@
    <tbody>
 
    <?php
-      while($row = mysqli_fetch_row($resultSet))
+      while($row = DatabaseManager::fetchArray($resultSet))
       {
          $bookURL = "bookinfo.php?id=$row[0]";
          $isbnURL = "isbninfo.php?id=$row[6]";

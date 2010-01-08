@@ -67,6 +67,12 @@ Version 0.9.9
 General
     IMPLEMENTED the ability for a fieldset to manage data from multiple database rows from multiple database tables.
     FIXED massive interdependencies between classes. Cleaned up the datastructure so that the class diagram is much prettier.
+DatabaseManager
+    ADDED static wrapper function getInsertID($result).
+    ADDED static wrapper function getNumResults($result).
+    ADDED static wrapper function fetchArray($result).
+    ADDED static wrapper function fetchAssoc($result).
+    ADDED static function fetchAssocArray($result) which takes a resource or a sql query.
 ErrorLogManager.php
     ADDED statement to include required file SecurityManager.php
 Field.php

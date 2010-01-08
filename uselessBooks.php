@@ -37,16 +37,10 @@
             ".$where."
             AND `classbooks`.`usable` = '1'
             ORDER BY `books`.`ID`";
-    $result = DatabaseManager::checkError($sql);
-    while($row = mysqli_fetch_assoc($result)) {
-        $data[] = $row;
-    }
+    $data = DatabaseManager::fetchAssocArray($sql);
 
     $sql = "select * from `libraries`";
-    $result = DatabaseManager::checkError($sql);
-    while($row = mysqli_fetch_assoc($result)) {
-        $libraries[] = $row;
-    }
+    $libraries = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>Useless Books</h1>
 <h3>These books have a class associated with them, but are marked as not being usable:</h3>
@@ -87,14 +81,14 @@
     </table>
 </form>
 <p>
-   <?php 
+   <?php
       $count = countUniqueBooks($data);
       if($count == 1){
          $text = "book";
       } else {
          $text = "books";
       }
-      print "$count useless $text found"; 
+      print "$count useless $text found";
       ?>
    </p>
 <p></p>

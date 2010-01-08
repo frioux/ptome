@@ -8,11 +8,7 @@
 
 
     $sql = "select * from `libraries`";
-    $result = DatabaseManager::checkError($sql);
-    while($row = mysqli_fetch_assoc($result)) {
-        $libraries[] = $row;
-    }
-
+    $libraries = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>Statistics</h1>
 
@@ -53,7 +49,7 @@
     </table>
 </form>
 
-<?php 
+<?php
 
    $libID = $_SESSION['libraryID'];
    $allLibraries = $_POST['libraries'];
@@ -86,7 +82,7 @@
              WHERE ($where);";
 
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $totalBooks = $row[0];
 
    $query = "SELECT count(*)
@@ -94,24 +90,24 @@
              WHERE ($where) AND books.expired = 0;";
 
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $currentBooks = $row[0];
 
    $query = "SELECT count(*)
-             FROM checkouts 
+             FROM checkouts
              WHERE ($whereCheckouts);";
 
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $totalCheckouts = $row[0];
 
    $query = "SELECT count(*)
-             FROM checkouts 
+             FROM checkouts
              WHERE ($whereCheckouts)
              AND checkouts.semester = $currentSemester;";
 
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $semesterCheckouts = $row[0];
 ?>
 <b>Total books in the database</b>: <?php echo $totalBooks ?><br />
@@ -128,7 +124,7 @@
              ORDER BY COUNT(donatorID) DESC;";
 
    $resultSet = DatabaseManager::checkError($query);
-   $topCount = mysqli_num_rows($resultSet);
+   $topCount = DatabaseManager::getNumResults($resultSet);
 
    //Only displaying top 10 donors
    if($topCount > 10)
@@ -142,7 +138,7 @@
 <?php
    for($i = 1; $i <= 10; $i++)
    {
-      $row = mysqli_fetch_row($resultSet);
+      $row = DatabaseManager::fetchArray($resultSet);
       if($row == NULL)
       {
          break;

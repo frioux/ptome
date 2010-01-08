@@ -24,12 +24,12 @@
             JOIN `borrowers` ON `books`.`donatorID` = `borrowers`.`ID`
             WHERE `books`.`ID` = '$id'";
     $result = DatabaseManager::checkError($sql);
-    if(mysqli_num_rows($result) == 0) {
+    if(DatabaseManager::getNumResults($result) == 0) {
         print 'Unable to find TOME book with ID "'.$id.'"';
         require_once($path."footer.php");
         die();
     }
-    $book = mysqli_fetch_assoc($result);
+    $book = DatabaseManager::fetchAssoc($result);
 
     //get previous checkout info
     $sql = "select `checkouts`.* , `libraries`.`name`
@@ -37,22 +37,14 @@
             JOIN `users` ON `checkouts`.`tomekeeperID` = `users`.`ID`
             JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID`
             where `bookID` = '".$book["ID"]."' order by `out` DESC";
-    $result = DatabaseManager::checkError($sql);
-    $checkouts = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $checkouts[] = $row;
-    }
+    $checkouts = DatabaseManager::fetchAssocArray($sql);
 
     $fieldset = getProcessBookAssociation($book);
 
     $sql = "Select `classes`.`ID`, `classes`.`class`, `classes`.`name` from `classes`
             join `classbooks` on `classes`.`ID` = `classbooks`.`classID`
             where `classbooks`.`bookID` = '".$book["bookID"]."'";
-    $result = DatabaseManager::checkError($sql);
-    $classes = array();
-    while($row = mysqli_fetch_assoc($result)) {
-        $classes[] = $row;
-    }
+    $classes = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>TOME Book Info</h1>
 <h3>Book #<?php print $book["ID"]; ?></h3>
@@ -163,7 +155,7 @@
                         <?php
                             //get the borrower's name
                             $result = DatabaseManager::checkError("select `name` from `borrowers` where `ID` = ".$checkout["borrowerID"]);
-                            $name = mysqli_fetch_assoc($result);
+                            $name = DatabaseManager::fetchAssoc($result);
                             $name = $name["name"];
                         ?>
                         <a href="viewPatron.php?id=<?php print $checkout["borrowerID"]; ?>"><?php print $name; ?></a>

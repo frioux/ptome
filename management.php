@@ -81,7 +81,7 @@
     $levels = array_slice($levels, $_SESSION["permissions"]-1, count($levels), true);
     $result = DatabaseManager::checkError("select * from `libraries`");
     $libraries = array();
-    while($row = mysqli_fetch_assoc($result)) {
+    while($row = DatabaseManager::fetchAssoc($result)) {
         $libraries[$row["ID"]] = $row["name"];
     }
 
@@ -157,7 +157,7 @@
         $levels = array_slice($levels, $_SESSION["permissions"]-1, count($levels), true);
         $result = DatabaseManager::checkError("select * from `libraries`");
         $libraries = array();
-        while($row = mysqli_fetch_assoc($result)) {
+        while($row = DatabaseManager::fetchAssoc($result)) {
             $libraries[$row["ID"]] = $row["name"];
         }
 

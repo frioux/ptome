@@ -8,7 +8,7 @@
 <a name="top"></a>
 <h1>TOME Guide</h1>
 
-<div class="center">                                        
+<div class="center">
 <br>
 <br>
     Not everything with feathers is a rat.<br /><br />
@@ -40,7 +40,7 @@
     <table class="full">
         <tr>
             <td style="border:0px;">
-               Tips for Convincing Your Floor 
+               Tips for Convincing Your Floor
             </td>
             <td style="text-align:right; border:0px;">
                 <span style="font-size:10pt;">
@@ -101,7 +101,7 @@
    </li>
    <li>
       Be prepared to counter objections with gentleness and respect.
-      
+
       <p>
          <strong>“What's in it for me? I'm graduating!”</strong><br>
             <ul>
@@ -134,8 +134,8 @@
          </p>
       </li>
       <li>
-         <p>Use clever propaganda. Because of the not-so-public nature of TOME (page 11), try to use posters 
-         that will remind your floor about TOME but won't make much sense to those who don't know what it's 
+         <p>Use clever propaganda. Because of the not-so-public nature of TOME (page 11), try to use posters
+         that will remind your floor about TOME but won't make much sense to those who don't know what it's
          about (page 12).</p>
       </li>
       <li>
@@ -147,7 +147,7 @@
     <table class="full">
         <tr>
             <td style="border:0px;">
-              Getting Started 
+              Getting Started
             </td>
             <td style="text-align:right; border:0px;">
                 <span style="font-size:10pt;">
@@ -347,7 +347,7 @@ classes. These books should be sold on Half.com as soon as possible, while
 they still have value.</p>
 
 <strong>User Preferences</strong>
-<p>Click on the <a href="<?php print $path; ?>management.php">User and System Management</a> 
+<p>Click on the <a href="<?php print $path; ?>management.php">User and System Management</a>
 link at the bottom of any page to access the settings for your user account.
 From here you can change username (it is case
 sensitive), email address, password, and notification preferences.</p>
@@ -372,34 +372,34 @@ sensitive), email address, password, and notification preferences.</p>
 
    $query = "SELECT count(*)
              FROM books;";
-             
+
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $totalBooks = $row[0];
    $grandTotal = number_format(20 * $totalBooks);
 
    $query = "SELECT count(*)
              FROM books
              WHERE books.expired = 0;";
-             
+
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $currentBooks = number_format($row[0]);
 
    $query = "SELECT count(*)
              FROM checkouts;";
-             
+
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $totalCheckouts = $row[0];
    $totalSaved = number_format(20 * $totalCheckouts);
 
    $query = "SELECT count(*)
              FROM checkouts
              WHERE semester = $currentSemester;";
-             
+
    $resultSet = DatabaseManager::checkError($query);
-   $row = mysqli_fetch_row($resultSet);
+   $row = DatabaseManager::fetchArray($resultSet);
    $currentCheckouts = $row[0];
    $currentSaved = number_format(20 * $currentCheckouts);
 ?>
@@ -413,10 +413,10 @@ sensitive), email address, password, and notification preferences.</p>
       <ul>
          <li>
             <p>
-               <?php 
+               <?php
                   $totalBooks = number_format($totalBooks);
-                  print "$totalBooks"; 
-               ?> 
+                  print "$totalBooks";
+               ?>
                books in the database</p>
          </li>
          <li>
@@ -424,18 +424,18 @@ sensitive), email address, password, and notification preferences.</p>
          </li>
          <li>
             <p>
-               <?php 
+               <?php
                   $totalCheckouts = number_format($totalCheckouts);
-                  print "$totalCheckouts"; 
-               ?> 
+                  print "$totalCheckouts";
+               ?>
                checkouts since the beginning of the system</p>
          </li>
          <li>
             <p>
-               <?php 
+               <?php
                   $currentCheckouts = number_format($currentCheckouts);
-                  print "$currentCheckouts"; 
-               ?> 
+                  print "$currentCheckouts";
+               ?>
                checkouts for the current semester</p>
          </li>
       </ul>
@@ -520,7 +520,7 @@ stays on the floor.</p>
 <p>Please also note that the bookstore's contract with the university restricts
 competitors' printed advertising. To be safe, do not put anything explicit on
 signs, banners, door hangers, etc.  You can download an example below.  You can also download a
-copy of the TOME BORROWER AGREEMENT</p> 
+copy of the TOME BORROWER AGREEMENT</p>
 
 
 <ul>

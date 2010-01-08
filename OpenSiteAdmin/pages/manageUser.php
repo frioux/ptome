@@ -24,7 +24,7 @@
         $result = DatabaseManager::checkError("select `pageName`, `minLevel` from `access`");
         $data = array();
         $regex = "/([a-z]+)([A-Z].*)/";
-        while($entry = mysqli_fetch_row($result)) {
+        while($entry = DatabaseManager::fetchArray($result)) {
             if(preg_match($regex, $entry[0], $matches)) {
                 $name = $matches[2];
                 $type = $matches[1];

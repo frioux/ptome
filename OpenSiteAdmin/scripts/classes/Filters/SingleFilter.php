@@ -1,7 +1,7 @@
 <?php
 	/*
 	 *	Copyright 2007 John Oren
-	 *	
+	 *
 	 *	Licensed under the Apache License, Version 2.0 (the "License");
 	 *	you may not use this file except in compliance with the License.
 	 *	You may obtain a copy of the License at
@@ -12,12 +12,12 @@
 	 *	See the License for the specific language governing permissions and
 	 *	limitations under the License.
 	 */
-	
+
 	require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
-	
+
 	/**
 	 * Allows SQL statements to be filtered by a single value in a single field.
-	 * 
+	 *
 	 * @author John Oren
 	 * @version 1.0 December 30, 2007
 	 */
@@ -30,10 +30,10 @@
 		private $field;
 		/** @var The name of the database table used to populate form options. */
 		private $tableName;
-		
+
 		/**
 		 * Constructs a filter for a single MySQL Field
-		 * 
+		 *
 		 * @param STRING $field The field to filter by.
 		 * @param MIXED $defaultValue The value to search for in the given field. Set to null for no filter effect.
 		 * @param STRING $table The name of the database table this filter should pull data from for form display.
@@ -48,11 +48,11 @@
 			$this->tableName = $table;
 			$this->displayField = $displayField;
 		}
-		
+
 		/**
 		 * This type of filter does not have a form.
 		 * Note that filter forms must define multiple field values as an array of values.
-		 * 
+		 *
 		 * @param ARRAY $filters Array of Filter objects to use to filter a SQL query to get data for this form.
 		 * @param MIXED $data Optional data to use in this form.
 		 * @return STRING Error message.
@@ -63,12 +63,12 @@
 					return "This form has no data and no table to pull data from";
 				}
 				$whereClause = Filter::getFilterClause($filters);
-				$result = mysqli_query("select `".$this->field."`,`".$this->displayField."` from `".$this->tableName."`".$whereClause, DatabaseManager::getLink());
-				while($row = mysqli_fetch_row($result)) {
+				$result = DatabaseManager::checkError("select `".$this->field."`,`".$this->displayField."` from `".$this->tableName."`".$whereClause);
+				while($row = DatabaseManager::fetchArray($result)) {
 					$data[$row[0]] = $row[1];
 				}
 			}
-			
+
 			$form = 'Filter By Category:&nbsp;
 				<select name="'.$this->field.'">
 					<option value=""';
@@ -84,13 +84,13 @@
 						$form .= '>'.$val.'</option>';
 					}
 				$form .= '</select>';
-			
+
 			return $form;
 		}
-		
+
 		/**
 		 * Returns a formatted MySQL WHERE clause.
-		 * 
+		 *
 		 * @return STRING Formatted string for use in a MySQL query
 		 */
 		function getWhereClause() {
@@ -99,19 +99,19 @@
 			}
 			return "`".$this->field."` = '".$this->defaultValue."'";
 		}
-		
+
 		/**
 		 * Returns whether or not this filter has a value to use to alter a database query.
-		 * 
+		 *
 		 * @return STRING True if this field can create a meaningful where clause
 		 */
 		function isEmpty() {
 			return empty($this->defaultValue);
 		}
-		
+
 		/**
 		 * Sets the default value for this filter. Intended for use with this filter's form.
-		 * 
+		 *
 		 * @param MIXED $value The value to use for this filter's where clause. Set to null for no filter effect.
 		 * @return VOID
 		 */

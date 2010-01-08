@@ -38,8 +38,8 @@
         $time = strtotime($date);
         return date("F j, Y", $time)." at ".date("h:i:s A", $time);
     }
-   
-    
+
+
     $username = $_SESSION["username"];
 
     $query = "SELECT users.name
@@ -47,7 +47,7 @@
               WHERE users.username = \"$username\";";
 
     $resultSet = DatabaseManager::checkError($query);
-    $row = mysqli_fetch_row($resultSet);
+    $row = DatabaseManager::fetchArray($resultSet);
     $patronName = $row[0];
 
 ?>
