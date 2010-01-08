@@ -124,6 +124,63 @@
         <?php
     }
 
+    function showCheckoutForm(array $checkout) {
+        $books = getAvailableBooksForISBN($checkout["bookID"]);
+        ?>
+        <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
+            <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
+                                    parameters: Form.serialize(this)+'&id=<?php print $checkout["ID"]; ?>',
+                                    onCreate: function(request){$('checkout<?php print $checkout["ID"]; ?>').innerHTML = 'Loading...'},
+                                    onSuccess: function(request){new Effect.Highlight( 'checkout<?php print $checkout["ID"]; ?>', { duration:0.5 } )}
+                                    }); return false">
+                <input type="hidden" value="fill" name="type" id="checkouthidden<?php print $checkout["ID"]; ?>">
+                <table class="noborder close">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>
+                                    Checkout:
+                                </strong>
+                            </td>
+                            <td>
+                                <select name="bookID">
+                                    <option id="-1">Please select a Book ID</option>
+                                    <?php
+                                        foreach($books as $b) {
+                                            print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
+                                        }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="submit" name="submit" value="Cancel" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='cancel';">
+                            </td>
+                            <td>
+                                <input type="submit" name="submit" value="Fill Reservation" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='submit';">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <?php
+    }
+
+    function showCheckinForm(array $book) {
+        ?>
+        <div class="print-no" id="checkout<?php print $book["checkoutID"]; ?>">
+            <input type="submit" name="cancel" value="Cancel" onclick="new Ajax.Updater('checkout<?php print $book["checkoutID"]; ?>','checkin.php', {
+                parameters: 'option=cancel&id=<?php print $book["checkoutID"]; ?>'
+                })">
+            <input type="submit" name="submit" value="Check In" onclick="new Ajax.Updater('checkout<?php print $book["checkoutID"]; ?>','checkin.php', {
+                parameters: 'option=return&id=<?php print $book["checkoutID"]; ?>'
+                })">
+        </div>
+        <?php
+    }
+
     function getProcessISBNCheckoutFieldset($bookTypeID, &$numBooks) {
         $libBooks = getBookAvailability($bookTypeID);
         $numBooks = count($libBooks);
