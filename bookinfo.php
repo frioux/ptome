@@ -32,7 +32,8 @@
     $book = DatabaseManager::fetchAssoc($result);
 
     //get previous checkout info
-    $sql = "select `checkouts`.* , `libraries`.`name`
+    $sql = "select `checkouts`.`ID` as `checkoutID`, `checkouts`.`semester`, `checkouts`.`borrowerID`, `checkouts`.`out`, `checkouts`.`in`,
+            `libraries`.`name`
             FROM `checkouts`
             JOIN `users` ON `checkouts`.`tomekeeperID` = `users`.`ID`
             JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID`
@@ -170,17 +171,10 @@
                         <?php
                             if($checkout["in"] != "0000-00-00 00:00:00") {
                                 print dateFromMySQL($checkout["in"]);
-                            } else { ?>
-                            <div class="print-no" name="checkout3667" id="checkout3667">
-                                <form action="/cgi-bin/tome/admin.pl" method="post" onsubmit=" new Ajax.Updater( 'checkout3667',  '/cgi-bin/tome/admin.pl', { parameters: Form.serialize(this),asynchronous: 1,onLoading: function(request){$('checkout3667').innerHTML = 'Loading...'
-            },onLoaded: function(request){new Effect.Highlight( 'checkout3667', { duration:0.5 } )} } ) ; return false"><input id="checkout_id" name="checkout_id" value="3667" type="hidden">
-                                    <input id="rm" name="rm" value="ajax_checkin" type="hidden">
-                                    <input id="ccommit3667" name="commit" value="checkin" type="hidden">
-                                    <input name="submit" value="Cancel" onclick="$('ccommit3667').value='cancel'; $$('checkout3667 form')[0].submit();" type="submit">
-                                    <input value="Check In" type="submit">
-                                </form>
-                            </div>
-                        <?php } ?>
+                            } else {
+                                showCheckinForm($checkout);
+                            }
+                        ?>
                     </td>
                 </tr>
             <?php } ?>
