@@ -1,7 +1,7 @@
 <?php
     function getBookAvailability($id) {
         if(!$_SESSION["interTOME"]) {
-            $where = "`libraries`.`ID` = '".$_SESSION["libraryID"]."' AND";
+            $where = "`libraries`.`ID` = '".$_SESSION["libraryID"]."' AND ";
         }
         $sql = "SELECT `libraries`.`ID`, `libraries`.`name`, `libraries`.`interTOME`
                 FROM `libraries`
@@ -22,7 +22,7 @@
             }
             $libBooks[$row["ID"]]["count"]++;
         }
-        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookID`='0' AND `out` = '0000-00-00 00:00:00'";
+        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = '0000-00-00 00:00:00'";
         //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
         while($row = DatabaseManager::fetchAssoc($result)) {
@@ -35,11 +35,16 @@
             }
             $libBooks[$key] = $row["name"]." (".$row["count"]." Free)";
         }
+        ksort($libBooks);
         return $libBooks;
     }
 
-    function processReserve(Fieldset $fieldset, Field $linkField, $id=1) {
+    function processReserve(Fieldset $fieldset, RowManager $row, Field $linkField, $id, Field $libField=null) {
         if(isset($_REQUEST["submit"]) && $_REQUEST["fieldset".$id]) {
+            //Race condition - there aren't even any books left.
+            if($libField == null) {
+                die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$id));
+            }
             if($fieldset->process()) {
                 $result = DatabaseManager::checkError("select `ID` from `borrowers` where `email` = '".$linkField->getValue()."'");
                 if(DatabaseManager::getNumResults($result) == 0) {
@@ -57,7 +62,30 @@
                     $linkField->setValue($tmp["ID"]);
                 }
 
-                $fieldset->commit();
+                //ensure we don't checkout the same book twice.
+                //we don't use LOW_PRIORITY here because this is a read heavy app.
+                $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$row->getTableName()."` WRITE,
+                        `errorLog` WRITE, `books` READ, `bookTypes` READ";
+                DatabaseManager::checkError($sql);
+                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = '0000-00-00 00:00:00'";
+                DatabaseManager::checkError($sql);
+                $num1 = DatabaseManager::getNumResults();
+                $sql = "SELECT `books`.`ID` FROM `books`
+                        JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
+                        WHERE `books`.`libraryID` = '".$libField->getValue()."' AND `bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
+                            SELECT `bookID`
+                            FROM `checkouts` AS `checkout2`
+                            WHERE `bookTypeID` = '".$id."' AND `in` = '0000-00-00 00:00:00'
+                        )";
+                DatabaseManager::checkError($sql);
+                $num2 = DatabaseManager::getNumResults();
+                if($num2-$num1 > 0) {
+                    $fieldset->commit();
+                } else {
+                    die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$id));
+                }
+                //release the locks, and we're done.
+                DatabaseManager::checkError("UNLOCK TABLES");
                 if($storeCreateUser) {
                     $_SESSION["post"]["ID"] = DatabaseManager::getInsertID(DatabaseManager::getLink());
                     $_SESSION["post"]["redir"] = $_SERVER["REQUEST_URI"];
@@ -195,13 +223,14 @@
         $fieldset->addField(new Hidden("libraryToID", "", null, true, true), $_SESSION["libraryID"]);
         $fieldset->addField(new Hidden("reserved", "", null, true, true), date("Y-m-d H:i:s"));
         $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>1, "cols"=>30), false, false));
+        $libField = null;
         if(count($libBooks) > 0) {
-            $fieldset->addField(new Select("libraryFromID", "Library", $libBooks, true, true));
+            $libField = $fieldset->addField(new Select("libraryFromID", "Library", $libBooks, true, true), $_SESSION["libraryID"]);
         }
 
         $row = new RowManager("checkouts", $keyField->getName());
         $fieldset->addRowManager($row);
-        processReserve($fieldset, $linkField, $bookTypeID);
+        processReserve($fieldset, $row, $linkField, $bookTypeID, $libField);
         return $fieldset;
     }
 
