@@ -86,6 +86,8 @@
                         <?php
                             if(isset($_GET["reserved"]) && $_GET["reserved"] == $book["bookID"]) {
                                 print 'Book Reserved!';
+                            } elseif(isset($_GET["race"]) && $_GET["race"] == $book["bookID"]) {
+                                print "Sorry, someone reserved it just before you did...<br>";
                             } else {
                         ?>
                         <form action="" method="post">

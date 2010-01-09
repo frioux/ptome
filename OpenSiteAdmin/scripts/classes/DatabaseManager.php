@@ -120,11 +120,10 @@
         /**
          * Wrapper for getting the number of rows returned from a query.
          *
-         * @param RESOURCE The connection resource to reference.
          * @return INT the number of rows in this result set
          */
-        static function getNumResults($result) {
-            return mysqli_num_rows($result);
+        static function getNumResults() {
+            return mysqli_affected_rows(DatabaseManager::getLink());
         }
 
         /**

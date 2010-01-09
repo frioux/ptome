@@ -37,7 +37,7 @@
 <h1>View Book</h1>
 <h3>Reserve Book</h3>
 <div name="reserve" id="reserve">
-    <?php if(!isset($_GET["reserved"])) { ?>
+    <?php if(!isset($_GET["reserved"]) && !isset($_GET["race"])) { ?>
         <form action="" method="post">
             <input type="hidden" name="fieldset<?php print $id; ?>" value="1">
             <?php
@@ -49,7 +49,13 @@
                 }
             ?>
         </form>
-    <?php } else { print 'Book Reserved!'; } ?>
+    <?php
+        } elseif(!isset($_GET["race"])) {
+            print 'Book Reserved!';
+        } else {
+            print "Sorry, someone reserved it just before you did...<br>";
+        }
+    ?>
 </div>
 <br>
 <table class="full" bgcolor="lightyellow">

@@ -185,6 +185,15 @@
         }
 
         /**
+         * Returns the internal values array.
+         *
+         * @return ARRAY Array of field values.
+         */
+        function getValues() {
+            return $this->values;
+        }
+
+        /**
          * Fetches an array of key-value pairs of the form [fieldName]->value
          * from the database.
          * @return ARRAY Array of values in the database.
