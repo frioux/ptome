@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.4
+-- version 3.2.0.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 29, 2009 at 08:08 PM
--- Server version: 5.1.37
--- PHP Version: 5.2.10-2ubuntu6.3
+-- Generation Time: Jan 09, 2010 at 09:54 PM
+-- Server version: 5.1.39
+-- PHP Version: 5.3.0
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `bookTypes` (
   `edition` varchar(20) NOT NULL,
   `comments` text NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `isbn10` (`isbn10`,`isbn13`),
   KEY `libraryID` (`title`,`isbn10`,`isbn13`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -158,9 +159,9 @@ CREATE TABLE IF NOT EXISTS `checkouts` (
   `libraryToID` int(11) NOT NULL COMMENT 'The library of the TomeKeeper who initiated this checkout',
   `libraryFromID` int(11) NOT NULL COMMENT 'ID of the library this book is being reserved from',
   `borrowerID` int(11) NOT NULL,
-  `reserved` datetime NOT NULL,
-  `out` datetime NOT NULL,
-  `in` datetime NOT NULL,
+  `reserved` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `out` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `in` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `semester` float NOT NULL,
   `comments` text NOT NULL,
   PRIMARY KEY (`ID`),
@@ -188,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `classbooks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `classID` int(11) NOT NULL,
   `bookID` int(11) NOT NULL,
-  `verified` date NOT NULL,
+  `verified` date NOT NULL DEFAULT '0000-00-00',
   `verifiedSemester` float NOT NULL,
   `usable` tinyint(1) NOT NULL,
   `comments` text NOT NULL,
@@ -279,7 +280,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password_salt` varchar(64) NOT NULL,
   `permissions` tinyint(1) NOT NULL DEFAULT '0',
   `active` tinyint(1) NOT NULL DEFAULT '0',
-  `lastUpdate` date NOT NULL DEFAULT '0000-00-00',
   `name` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `notifications` tinyint(1) NOT NULL,
@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`ID`, `username`, `password`, `password_salt`, `permissions`, `active`, `lastUpdate`, `name`, `email`, `notifications`, `libraryID`, `secondContact`, `semester`, `firstLogin`) VALUES
-(1, 'admin', 'ffd157fb1dd54ab87dac0e50e239a201228441eb77989f15883f09a22cd69a445b199bcf5623be3fc7497db978c6f36d3d158e8f8d31602cad1f2adead8fd059', '8cf07a91e527af86f8f0b1251996a99c', 1, 1, '0000-00-00', '', '', 0, 0, '', 2009.75, 1),
-(2, 'bion', '6c65743129c5216550c001ba39564dc278867ad98925f7d375aaeb5cf4c7623b31b8bd42c17e7520d2ea35bb77d2764b4f107bc10d81d5915152f532422c72e6', 'a9107b59ccaae59ae364c7db6f4232be', 1, 1, '0000-00-00', 'Wharf', 'bionoren@letu.edu', 0, 1, 'kick', 2009.75, 1),
-(3, 'benaiah', '280f53b1e1d8bfe2f282d9c9aba3f660c5c2d8168c5efd93c0d6031e9b1c02891e39f5602d4f780db7091434bb5c1039f26b7fe40e2d2d07753050e8a841c8cc', '62502416dbae6e992613124d15e2d37c', 1, 1, '0000-00-00', 'Benaiah Henry', 'benaiahhenry@gmail.com', 0, 1, 'AIM: letubenaiah', 2010.25, 1);
+INSERT INTO `users` (`ID`, `username`, `password`, `password_salt`, `permissions`, `active`, `name`, `email`, `notifications`, `libraryID`, `secondContact`, `semester`, `firstLogin`) VALUES
+(1, 'admin', 'ffd157fb1dd54ab87dac0e50e239a201228441eb77989f15883f09a22cd69a445b199bcf5623be3fc7497db978c6f36d3d158e8f8d31602cad1f2adead8fd059', '8cf07a91e527af86f8f0b1251996a99c', 1, 1, '', '', 0, 0, '', 2009.75, 1),
+(2, 'bion', '6c65743129c5216550c001ba39564dc278867ad98925f7d375aaeb5cf4c7623b31b8bd42c17e7520d2ea35bb77d2764b4f107bc10d81d5915152f532422c72e6', 'a9107b59ccaae59ae364c7db6f4232be', 1, 1, 'Wharf', 'bionoren@letu.edu', 0, 1, 'kick', 2009.75, 1),
+(3, 'benaiah', '280f53b1e1d8bfe2f282d9c9aba3f660c5c2d8168c5efd93c0d6031e9b1c02891e39f5602d4f780db7091434bb5c1039f26b7fe40e2d2d07753050e8a841c8cc', '62502416dbae6e992613124d15e2d37c', 1, 1, 'Benaiah Henry', 'benaiahhenry@gmail.com', 0, 1, 'AIM: letubenaiah', 2010.25, 1);
