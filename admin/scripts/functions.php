@@ -10,7 +10,7 @@
                 WHERE ".$where."`bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
                     SELECT `checkouts`.`bookID`
                     FROM `checkouts`
-                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = '0000-00-00 00:00:00'
+                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`)
                 )";
         //print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
@@ -22,7 +22,7 @@
             }
             $libBooks[$row["ID"]]["count"]++;
         }
-        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = '0000-00-00 00:00:00'";
+        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`)";
         //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
         while($row = DatabaseManager::fetchAssoc($result)) {
@@ -67,7 +67,7 @@
                 $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$row->getTableName()."` WRITE,
                         `errorLog` WRITE, `books` READ, `bookTypes` READ";
                 DatabaseManager::checkError($sql);
-                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = '0000-00-00 00:00:00'";
+                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)";
                 DatabaseManager::checkError($sql);
                 $num1 = DatabaseManager::getNumResults();
                 $sql = "SELECT `books`.`ID` FROM `books`
@@ -75,7 +75,7 @@
                         WHERE `books`.`libraryID` = '".$libField->getValue()."' AND `bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
                             SELECT `bookID`
                             FROM `checkouts` AS `checkout2`
-                            WHERE `bookTypeID` = '".$id."' AND `in` = '0000-00-00 00:00:00'
+                            WHERE `bookTypeID` = '".$id."' AND `in` = DEFAULT(`in`)
                         )";
                 DatabaseManager::checkError($sql);
                 $num2 = DatabaseManager::getNumResults();

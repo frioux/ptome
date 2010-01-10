@@ -12,7 +12,7 @@
             FROM `checkouts`
             JOIN `borrowers` on `checkouts`.`borrowerID` = `borrowers`.`ID`
             JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
-            WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
+            WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = DEFAULT(`checkouts`.`out`)";
     $myCheckouts = DatabaseManager::fetchAssocArray($sql);
 
     //fetch TOME books due back
@@ -25,7 +25,7 @@
             JOIN `books` ON `checkouts`.`bookID` = `books`.`ID`
             JOIN `borrowers` ON `checkouts`.`borrowerID` = `borrowers`.`ID`
             /*      Check if the book is still out                      Check if we care              Check if we checked this book out                         Check if this book is from our library*/
-            WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
+            WHERE `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
             ORDER BY `checkouts`.`semester`";
     $booksDue = DatabaseManager::fetchAssocArray($sql);
 
@@ -36,7 +36,7 @@
             FROM `books`
             JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
             JOIN `borrowers` ON `books`.`donatorID` = `borrowers`.`ID`
-            WHERE `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`expired` = '0' AND `books`.`expires` != '0000-00-00' AND DATEDIFF(`books`.`expires`, CURRENT_DATE()) < 100
+            WHERE `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`expired` = '0' AND `books`.`expires` != DEFAULT(`books`.`expires`) AND DATEDIFF(`books`.`expires`, CURRENT_DATE()) < 100
             ORDER BY `books`.`expires`";
     $booksExpiring = DatabaseManager::fetchAssocArray($sql);
 
@@ -50,7 +50,7 @@
                 JOIN `borrowers` on `checkouts`.`borrowerID` = `borrowers`.`ID`
                 JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
                 JOIN `libraries` on `checkouts`.`libraryFromID` = `libraries`.`ID`
-                WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
+                WHERE `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = DEFAULT(`checkouts`.`out`)";
         $myInterTOMECheckouts = DatabaseManager::fetchAssocArray($sql);
 
         //fetch other floor's TOME reservations from me
@@ -62,7 +62,7 @@
                 JOIN `borrowers` on `checkouts`.`borrowerID` = `borrowers`.`ID`
                 JOIN `bookTypes` on `checkouts`.`bookTypeID` = `bookTypes`.`ID`
                 JOIN `libraries` on `checkouts`.`libraryToID` = `libraries`.`ID`
-                WHERE `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = '0000-00-00 00:00:00'";
+                WHERE `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`out` = DEFAULT(`checkouts`.`out`)";
         $interTOMECheckouts = DatabaseManager::fetchAssocArray($sql);
 
         //fetch books I need to return to other floors
@@ -77,7 +77,7 @@
                 JOIN `borrowers` ON `checkouts`.`borrowerID` = `borrowers`.`ID`
                 JOIN `libraries` ON `checkouts`.`libraryFromID` = `libraries`.`ID`
                 /*      Check if the book is still out                      Check if we care              Check if we checked this book out                         Check if this book is not from our library*/
-                WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."'
+                WHERE `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` = '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` != '".$_SESSION["libraryID"]."'
                 ORDER BY `checkouts`.`semester`";
         $returnToOthers = DatabaseManager::fetchAssocArray($sql);
 
@@ -93,7 +93,7 @@
                 JOIN `borrowers` ON `checkouts`.`borrowerID` = `borrowers`.`ID`
                 JOIN `libraries` ON `checkouts`.`libraryToID` = `libraries`.`ID`
                 /*      Check if the book is still out                      Check if we care              Check if we didn't checked this book out                    Check if this book is from our library*/
-                WHERE `checkouts`.`in` = '0000-00-00 00:00:00' AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
+                WHERE `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `books`.`expired` = '0' AND `checkouts`.`libraryToID` != '".$_SESSION["libraryID"]."' AND `checkouts`.`libraryFromID` = '".$_SESSION["libraryID"]."'
                 ORDER BY `checkouts`.`semester`";
         $returnToMe = DatabaseManager::fetchAssocArray($sql);
     }
@@ -102,7 +102,7 @@
         $sql = "SELECT `books`.`ID` from `books`
                 WHERE `books`.`bookID` = '".$id."' AND `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`ID` NOT IN (
                     SELECT `checkouts`.`bookID` from `checkouts`
-                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = '0000-00-00 00:00:00' AND `checkouts`.`out` != '0000-00-00 00:00:00'
+                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `checkouts`.`out` != DEFAULT(`checkouts`.`out`)
                 )";
         return DatabaseManager::fetchAssocArray($sql);
     }

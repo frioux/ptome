@@ -23,7 +23,7 @@
     $form->process();
 
     //find books currently checked out
-    $sql = "select * from `checkouts` where `borrowerID` = $id and `in` = '0000-00-00 00:00:00'";
+    $sql = "select * from `checkouts` where `borrowerID` = $id and `in` = DEFAULT(`in`)";
     $result = DatabaseManager::checkError($sql);
     $checkedoutCount = DatabaseManager::getNumResults($result);
     $checkouts = DatabaseManager::fetchAssocArray($result);
