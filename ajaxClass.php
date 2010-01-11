@@ -1,7 +1,9 @@
 <?php
     $path = "./";
-    $text = current($_POST);
+    require_once($path."OpenSiteAdmin/scripts/classes/SecurityManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+
+    $text = SecurityManager::SQLPrep(current($_POST));
     $sql = "SELECT *
         FROM `classes`
         WHERE `class` LIKE '%".$text."%' OR `name` LIKE '%".$text."%'";

@@ -13,7 +13,7 @@
         die("No book ID provided<br>");
     }
     //get the book info
-    $id = $_GET["id"];
+    $id = intval($_GET["id"]);
     $sql = "SELECT `bookTypes`.`ID` AS `bookID`,`bookTypes`.`author`,`bookTypes`.`title`,`bookTypes`.`edition`,`bookTypes`.`isbn10`,`bookTypes`.`isbn13`,`bookTypes`.`comments`
             FROM `bookTypes`
             WHERE `bookTypes`.`ID` = '$id'";

@@ -13,7 +13,7 @@
     require_once($path."admin/scripts/ISBNField.php");
     require_once($path."admin/scripts/functions.php");
 
-    $id = $_REQUEST["id"];
+    $id = intval($_REQUEST["id"]);
     $book = new RowManager("classes", "ID", $id);
 
     $sql = "SELECT `bookTypes`.`ID` as `bookID`, `bookTypes`.`isbn10`, `bookTypes`.`isbn13`, `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`,

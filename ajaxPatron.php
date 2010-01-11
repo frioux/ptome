@@ -1,7 +1,9 @@
 <?php
     $path = "./";
-    $text = current($_POST);
+    require_once($path."OpenSiteAdmin/scripts/classes/SecurityManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+
+    $text = SecurityManager::SQLPrep(current($_POST));
     $sql = "SELECT *
         FROM `borrowers`
         WHERE `email` LIKE '%".$text."%' OR `name` LIKE '%".$text."%' and `valid` = '1'";
