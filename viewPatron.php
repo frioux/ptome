@@ -105,7 +105,7 @@
                     </dl>
                 </td>
                 <td>
-                    <?php print getSemesterName($book["semester"]); ?>
+                    <?php print getSemesterName($checkout["semester"]); ?>
                 </td>
                 <td>
                     <div class="print-no" name="checkout3113" id="checkout3113">

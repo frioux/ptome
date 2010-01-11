@@ -153,7 +153,7 @@
          * @return ARRAY Array of associative arrays or an empty array if no results.
          */
         static function fetchAssocArray($result) {
-            if(!is_resource($result)) {
+            if(!is_object($result)) {
                 $result = DatabaseManager::checkError($result);
             }
             $ret = array();
