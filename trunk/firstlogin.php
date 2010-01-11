@@ -28,6 +28,7 @@ You haven't set your user information yet.  Let's do that now!
 
    $form = new Form(Form::EDIT);
    $form = new Form(Form::EDIT, $path."index.php", $path."firstlogin.php");
+   $form->setSubmitText("Save");
    $fieldset = new Fieldset_Vertical($form->getFormType());
    $keyField = $fieldset->addField(new Hidden("ID", "", null, true, true));
    $fieldset->addField(new Text("name", "Name (First Last)", null, true, true));
