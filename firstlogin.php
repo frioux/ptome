@@ -3,74 +3,53 @@
     $pageTitle = "First Login";
     require_once($path."header.php");
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/Form.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/Fieldset.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
+    require_once($path."admin/scripts/LETUEmailField.php");
 
 ?>
 <h1>First Login</h1>
+<p>
+You haven't set your user information yet.  Let's do that now!
+</p>
 
-You haven't set your user information yet.  You also need to change your password (it can be the same as before if you want though...)  Let's do that now!<br />
+<?php
+   
+   $username = $_SESSION["username"];
+   $query = "SELECT ID
+             FROM users
+             WHERE users.username = \"$username\";"; 
 
-<form name="first_login" action="/cgi-bin/tome/admin.pl" method="post">
-   <table>
-      <tr>
-         <td>
-            <font color="red">*</font>
-            First Name
-         </td>
-         <td>
-            <input name="first_name" value="TOME" />
-      </tr>
-      <tr>
-         <td>
-            <font color="red">*</font>
-            Last Name
-         </td>
-         <td>
-            <input name="last_name" value="Program" />
-      </tr>
-      <tr>
-         <td>
-            <font color="green">*</font>
-            Second Contact
-         </td>
-         <td>
-            <input name="contact" value="panic" />
-      </tr>
-      <tr>
-         <td>
-            <font color="red">*</font>
-            <font color="blue">*</font>
-            LeTourneau Email</td>
-            <td><input name="email" value="test@test.com" />
-      </tr>
-      <tr>
-         <td>
-            <font color="red">*</font>
-            Password
-         </td>
-         <td>
-            <input name="password1" type="password" />
-      </tr>
-      <tr>
-         <td>
-            <font color="red">*</font>
-            Confirm
-         </td>
-         <td>
-            <input name="password2" type="password" />
-      </tr>
-      <tr>
-         <td colspan="2">
-            <input type="submit" value="Save" />
-         </td>
-      </tr>
-  </table>
+   $resultSet = DatabaseManager::checkError($query);
+   $row = DatabaseManager::fetchArray($resultSet);
+   $id = $row[0];
 
-</form><br />
+   $form = new Form(Form::EDIT);
+   $form = new Form(Form::EDIT, $path."index.php", $path."firstlogin.php");
+   $fieldset = new Fieldset_Vertical($form->getFormType());
+   $keyField = $fieldset->addField(new Hidden("ID", "", null, true, true));
+   $fieldset->addField(new Text("name", "Name (First Last)", null, true, true));
+   $fieldset->addField(new Text("secondContact", "Second Contact", null, true, true));
+   $fieldset->addField(new LETUEmailField("email", "LeTourneau Email", null, true, true));
+   $fieldset->addField(new Password("password", "Password", null, true, true));
+   $fieldset->addField(new Hidden("firstLogin", "", null, true, true), 1);
 
+   $row = new RowManager("users", $keyField->getName(), $id);
+   $fieldset->addRowManager($row);
+   $form->addFieldset($fieldset);
+   $form->process();
+   $form->display();
+
+?>
+
+<p>
 Notes: 
 <br />
 <font color="red">*</font> fields are required.<br />
-<font color="blue">*</font>This must be a LeTourneau Email address.  Knowing this, you can just put the part before the @-sign if you prefer and it will automatically be added.<br />
-<font color="green">*</font>Example: "AIM: perlbeforeswine; Cell: (123) 234-4567"
+<font color="blue">*</font> This must be a LeTourneau Email address.  Knowing this, you can just put the part before the @-sign if you prefer and it will automatically be added.<br />
+<font color="green">*</font> Example: "AIM: letubenaiah; Cell: (123) 234-4567"
+</p>
 
 <?php require_once($path."footer.php"); ?>
