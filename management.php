@@ -6,6 +6,7 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/Hook.php");
     require_once($path."OpenSiteAdmin/scripts/classes/ListManager.php");
+    require_once($path."admin/scripts/LETUEmailField.php");
     $securityManager = new SecurityManager();
 
     function getSemesters() {
@@ -87,7 +88,7 @@
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
     $fields[] = new Password("password", "Password", null, false);
-    $fields[] = new Text("email", "Email", array("maxlength"=>50), true, true);
+    $fields[] = new LETUEmailField("email", "Email", array("maxlength"=>50), true, true);
     $fields[] = new Select("permissions", "Permissions", $levels, true, true);
     $fields[] = new Text("name", "Full Name", array("maxlength"=>50), true, true);
     $fields[] = new Text("secondContact", "Second Contact", array("maxlength"=>50), false, true);
