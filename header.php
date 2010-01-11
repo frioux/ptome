@@ -39,17 +39,7 @@
         return date("F j, Y", $time)." at ".date("h:i:s A", $time);
     }
 
-
     $username = $_SESSION["username"];
-
-    $query = "SELECT users.name
-              FROM users
-              WHERE users.username = \"$username\";";
-
-    $resultSet = DatabaseManager::checkError($query);
-    $row = DatabaseManager::fetchArray($resultSet);
-    $patronName = $row[0];
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -71,7 +61,7 @@
 </head>
 <body class="yui-skin-sam">
   <div id="atmosphere">
-  <div id="statusbar">Logged in as: <?php print $patronName; ?> | <a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php">Logout</a></div>
+  <div id="statusbar">Logged in as: <?php print $username; ?> | <a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php">Logout</a></div>
 
   <div id="container">
     <div id="header">
