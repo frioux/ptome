@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 09, 2010 at 09:54 PM
+-- Generation Time: Jan 10, 2010 at 10:57 PM
 -- Server version: 5.1.39
 -- PHP Version: 5.3.0
 
@@ -45,28 +45,25 @@ INSERT INTO `access` (`ID`, `pageName`, `minLevel`, `message`) VALUES
 (3, 'addAccess', 1, 'You are not authorized to add access policies.'),
 (4, 'editAccess', 1, 'You are not authorized to edit access policies.'),
 (5, 'deleteAccess', 1, 'You are not authorized to delete access policies.'),
-(6, 'addUser', 2, 'You are not authorized to add users.'),
+(6, 'addUser', 1, 'You are not authorized to add users.'),
 (7, 'editUser', 2, 'You are not authorized to edit users other than yourself.'),
 (8, 'deleteUser', 2, 'You are not authorized to delete users.'),
-(9, 'addBooks', 2, 'You are not authorized to manage books'),
+(9, 'addBooks', 1, 'You are not authorized to manage books'),
 (10, 'editBooks', 2, 'You are not authorized to manage books'),
 (11, 'deleteBooks', 2, 'You are not authorized to manage books'),
-(12, 'addBookTypes', 2, 'You are not authorized to manage book types'),
+(12, 'addBookTypes', 1, 'You are not authorized to manage book types'),
 (13, 'editBookTypes', 2, 'You are not authorized to manage book types'),
 (14, 'deleteBookTypes', 2, 'You are not authorized to manage book types'),
-(15, 'addBorrowers', 2, 'You are not authorized to manage borrowers'),
+(15, 'addBorrowers', 1, 'You are not authorized to manage borrowers'),
 (16, 'editBorrowers', 2, 'You are not authorized to manage borrowers'),
 (17, 'deleteBorrowers', 2, 'You are not authorized to manage borrowers'),
-(18, 'addCheckouts', 2, 'You are not authorized to manage checkouts'),
-(19, 'editCheckouts', 2, 'You are not authorized to manage checkouts'),
-(20, 'deleteCheckouts', 2, 'You are not authorized to manage checkouts'),
-(21, 'addClasses', 2, 'You are not authorized to manage classes'),
+(21, 'addClasses', 1, 'You are not authorized to manage classes'),
 (22, 'editClasses', 2, 'You are not authorized to manage classes'),
 (23, 'deleteClasses', 2, 'You are not authorized to manage classes'),
-(24, 'addLibraries', 2, 'You are not authorized to manage libraries'),
+(24, 'addLibraries', 1, 'You are not authorized to manage libraries'),
 (25, 'editLibraries', 2, 'You are not authorized to manage libraries'),
 (26, 'deleteLibraries', 2, 'You are not authorized to manage libraries'),
-(27, 'addTomekeepers', 2, 'You are not authorized to manage TOME Keepers'),
+(27, 'addTomekeepers', 1, 'You are not authorized to manage TOME Keepers'),
 (28, 'editTomekeepers', 2, 'You are not authorized to manage TOME Keepers'),
 (29, 'deleteTomekeepers', 2, 'You are not authorized to manage TOME Keepers'),
 (39, 'editSemester', 2, '');
