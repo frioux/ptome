@@ -27,19 +27,6 @@
 
 	$loginManager = new LoginManager();
 
-   $id = $_SESSION["ID"];
-
-   $query = "SELECT users.firstLogin
-             FROM users
-             WHERE users.ID = \"$id\";";
-
-   $resultSet = DatabaseManager::checkError($query);
-   $row = DatabaseManager::fetchArray($resultSet);
-   $hasLoggedIn = $row[0];
-   //dump("row", $row);
-   //dump("session", $_SESSION);
-   //var_dump($hasLoggedIn);
-
 	//process the login
 	$errorID = LoginManager::UNKNOWN;
 	//if the user has exceeded the number of allowed logins...
@@ -60,7 +47,14 @@
 		$errorID = $loginManager->login($_COOKIE["username"], $_COOKIE["password"], "no", true);
 	}
 
-   //var_dump($hasLoggedIn);
+    $query = "SELECT users.firstLogin
+                FROM users
+                WHERE users.ID = '".$loginManager->getUserID()."';";
+
+    $resultSet = DatabaseManager::checkError($query);
+    $row = DatabaseManager::fetchArray($resultSet);
+    $hasLoggedIn = $row[0];
+
     //check for a custom redirect
     if($hasLoggedIn == 0) {
        $redir = $path."firstlogin.php";
