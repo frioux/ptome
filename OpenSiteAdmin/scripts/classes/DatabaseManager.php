@@ -89,7 +89,6 @@
 		static function checkError($query) {
 			$result = mysqli_query(DatabaseManager::getLink(), $query);
 			$error = mysqli_error(DatabaseManager::getLink());
-            print $error;
 			if(!empty($error)) {
 				print "There was an error processing a database request.<br>";
 				ErrorLogManager::log("MYSQL ERROR -> $query<br>\n$error", ErrorLogManager::FATAL);
