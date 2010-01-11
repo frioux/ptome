@@ -10,7 +10,7 @@
     require_once($path."admin/scripts/LETUEmailField.php");
 
     $id = explode("?", $_GET["id"]);
-    $id = $id[0];
+    $id = intval($id[0]);
     if(empty($id)) {
         die("Invalid patron ID $id<br>");
     }

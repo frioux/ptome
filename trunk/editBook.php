@@ -5,7 +5,7 @@
     require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
 
-    $id = $_REQUEST["id"];
+    $id = intval($_REQUEST["id"]);
     $form = new Form(Form::EDIT);
     $form = new Form(Form::EDIT, $path."bookinfo.php?id=".$id, $path."editBook.php?id=".$id);
     $fieldset = new Fieldset_Vertical($form->getFormType());

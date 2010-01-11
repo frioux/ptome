@@ -2,7 +2,7 @@
     $path = "./";
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
-    $id = $_POST["id"];
+    $id = intval($_POST["id"]);
     $now = date("Y-m-d H:i:s");
     if($_POST["type"] == "cancel") {
         $sql = "DELETE FROM `checkouts` WHERE `ID`='$id'";

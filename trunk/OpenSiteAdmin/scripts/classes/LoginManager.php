@@ -68,8 +68,8 @@
 		 * @return INTEGER One of the error code constants defined in this class.
 		 */
 		function login($user, $pass, $remember="no", $isCookie=false) {
-            $user = htmlspecialchars(addslashes($user));
-            $pass = htmlspecialchars(addslashes($pass));
+            $user = SecurityManager::SQLPrep($user);
+            $pass = SecurityManager::SQLPrep($pass);
 			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` LIKE '$user'";
 			$result = DatabaseManager::checkError($sql);
 			if(DatabaseManager::getNumResults($result) === 0) {

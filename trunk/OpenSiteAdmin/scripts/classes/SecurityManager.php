@@ -172,7 +172,7 @@
 		 *               If errors, an array of error messages
 		 */
 		static final function SQLPrep($string) {
-			return htmlspecialchars(addslashes($string));
+			return htmlspecialchars(mysqli_real_escape_string($string));
 		}
 
 		/**

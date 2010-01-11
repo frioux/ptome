@@ -1,9 +1,10 @@
 <?php
     $path = "./";
-    $text = current($_POST);
+    require_once($path."OpenSiteAdmin/scripts/classes/SecurityManager.php");;
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
     require_once($path."admin/scripts/functions.php");
 
+    $text = SecurityManager::SQLPrep(current($_POST));
     $sql = "SELECT `ID`, `isbn10`, `isbn13`, `title`, `edition`
         FROM `bookTypes`
         WHERE `title` LIKE '%".$text."%' OR `isbn10` LIKE '".$text."%' OR `isbn13` LIKE '".$text."%'";

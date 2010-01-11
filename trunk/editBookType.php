@@ -7,7 +7,7 @@
     require_once($path."admin/scripts/ISBNField.php");
     require_once($path."header.php");
 
-    $id = $_GET["id"];
+    $id = intval($_GET["id"]);
     $redir = base64_decode($_GET["redir"]);
 
     $form = new Form(Form::EDIT, $redir);
