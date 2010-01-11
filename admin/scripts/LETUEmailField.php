@@ -1,7 +1,7 @@
 <?php
-    require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/fields/Text.php");
 
-    class LETUEmailField extends Field {
+    class LETUEmailField extends Text {
         function process() {
             $ret = parent::process();
             $value = $this->getValue();
