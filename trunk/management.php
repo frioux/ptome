@@ -149,9 +149,10 @@
 <?php
     if($securityManager->isPageVisible("addUser")) { ?>
 
-        <h3>Add User</h3>
+         <a name="adduser"></a>
+         <h3>Add User</h3>
      <?php
-        $form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]);
+        $form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]."#adduser");
 
         $fieldset = new Fieldset_Vertical($form->getFormType());
         //prevent privilege escalation here
