@@ -56,6 +56,8 @@
 		 */
 		const UNKNOWN = 4;
 
+        protected $userID;
+
 		/**
 		 * Attempts to log a user into the site's administrative system.
 		 *
@@ -86,6 +88,7 @@
                         DatabaseManager::checkError("update `users` set `password` = '".$password."', `password_salt` = '".$salt."' where `ID` = ".$row["ID"]);
                     }
 					$_SESSION["ID"] = $row["ID"];
+                    $this->userID = $row["ID"];
                     $_SESSION["libraryID"] = $row["libraryID"];
                     $_SESSION["interTOME"] = $row["interTOME"];
 					$_SESSION["username"] = $row["username"];
@@ -105,6 +108,10 @@
 			}
 			return LoginManager::UNKNOWN;
 		}
+
+        function getUserID() {
+            return $this->userID;
+        }
 
 		/**
 		 * Attempts to suspend the account associated with the given username.
