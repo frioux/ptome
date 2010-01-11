@@ -7,6 +7,7 @@
     require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/Hook.php");
+    require_once($path."admin/scripts/LETUEmailField.php");
 
     class checkout_update_hoook implements Hook {
         private $keyField;
@@ -29,7 +30,7 @@
     $fieldset = new Fieldset_Vertical($form->getFormType());
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
-    $linkField = $fieldset->addField(new Text("email", "Email", array("maxlength"=>50), true, true), $_SESSION["post"]["email"]);
+    $linkField = $fieldset->addField(new LETUEmailField("email", "Email", array("maxlength"=>50), true, true), $_SESSION["post"]["email"]);
     $fieldset->addField(new Text("name", "Name", array("maxlength"=>50), true, true));
     $fieldset->addField(new Hidden("valid", "", null, true, true), 1);
 
