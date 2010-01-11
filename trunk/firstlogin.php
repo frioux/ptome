@@ -31,8 +31,8 @@ You haven't set your user information yet.  Let's do that now!
    $fieldset = new Fieldset_Vertical($form->getFormType());
    $keyField = $fieldset->addField(new Hidden("ID", "", null, true, true));
    $fieldset->addField(new Text("name", "Name (First Last)", null, true, true));
-   $fieldset->addField(new Text("secondContact", "Second Contact", null, true, true));
-   $fieldset->addField(new LETUEmailField("email", "LeTourneau Email", null, true, true));
+   $fieldset->addField(new Text("secondContact", "Second Contact (<font color=\"red\">*</font>)", null, true, true));
+   $fieldset->addField(new LETUEmailField("email", "LeTourneau Email (<font color=\"green\">*</font>)", null, true, true));
    $fieldset->addField(new Password("password", "Password", null, true, true));
    $fieldset->addField(new Hidden("firstLogin", "", null, true, true), 1);
 
@@ -46,10 +46,16 @@ You haven't set your user information yet.  Let's do that now!
 
 <p>
 Notes: 
-<br />
-<font color="red">*</font> fields are required.<br />
-<font color="blue">*</font> This must be a LeTourneau Email address.  Knowing this, you can just put the part before the @-sign if you prefer and it will automatically be added.<br />
-<font color="green">*</font> Example: "AIM: letubenaiah; Cell: (123) 234-4567"
+</p>
+<p>
+* Required Fields<br />
+<font color="red">*</font> Example: "AIM: 
+   <?php 
+      $escape = htmlentities("<screen name>");
+      print $escape; 
+   ?>
+; Cell: (123) 234-4567"<br /
+<font color="green">*</font> This must be a LeTourneau Email address.
 </p>
 
 <?php require_once($path."footer.php"); ?>
