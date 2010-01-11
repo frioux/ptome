@@ -223,7 +223,9 @@
                         }
 						$hook->process();
 					}
-                    if(strstr($this->redir, "?") === false) {
+                    if(strstr($this->redir, "#") !== false) {
+                        die(header("Location:".$this->redir));
+                    } elseif(strstr($this->redir, "?") === false) {
     					die(header("Location:".$this->redir."?text=The%20form%20was%20submitted%20succesfully!"));
                     } else {
                         die(header("Location:".$this->redir."&text=The%20form%20was%20submitted%20succesfully!"));
