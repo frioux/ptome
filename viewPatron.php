@@ -7,6 +7,7 @@
     require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."admin/scripts/functions.php");
+    require_once($path."admin/scripts/LETUEmailField.php");
 
     $id = explode("?", $_GET["id"]);
     $id = $id[0];
@@ -18,7 +19,7 @@
     $fieldset = new Fieldset_Vertical($form->getFormType());
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
-    $linkField = $fieldset->addField(new Text("email", "Email", array("maxlength"=>50), true, true));
+    $linkField = $fieldset->addField(new LETUEmailField("email", "Email", array("maxlength"=>50), true, true));
     $fieldset->addField(new Text("name", "Display Name", array("maxlength"=>50), true, true));
 
     $row = new RowManager("borrowers", $keyField->getName(), $id);

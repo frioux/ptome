@@ -5,7 +5,9 @@
         function process() {
             $ret = parent::process();
             $value = $this->getValue();
-            if(!strchr($value, "@")) {
+            if($value == null) {
+               return $ret;
+            } elseif(!strchr($value, "@")) {
                 $value .= "@letu.edu";
                 $this->setValue($value);
             } elseif(substr($value, -9) != "@letu.edu") {
