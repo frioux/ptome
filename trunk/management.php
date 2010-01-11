@@ -165,12 +165,13 @@
         $linkField = $fieldset->addField(new Text("username", "Username", array("maxlength"=>20), true, true));
         $fieldset->addField(new Select("permissions", "Permissions", $levels, true, true));
         $fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
-        $fieldset->addField(new Password("password", "Password", null, false));
+        $fieldset->addField(new Password("password", "Password", null, false, true));
         $fieldset->addField(new Text("email", "Email", array("maxlength"=>50), true, false));
         $fieldset->addField(new Text("name", "Full Name", array("maxlength"=>50), true, false));
         $fieldset->addField(new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false));
         $fieldset->addField(new Checkbox("notifications", "Notifications", null, false, false));
         $fieldset->addField(new Checkbox("active", "Active", null, true, false), true);
+        $fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
 
         $row = new RowManager("users", $keyField->getName());
         $fieldset->addRowManager($row);
