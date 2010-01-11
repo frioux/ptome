@@ -22,10 +22,23 @@
 	}
 	$_SESSION["loginAttempts"]++;
 
-    require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+   require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 	require_once($path."OpenSiteAdmin/scripts/classes/LoginManager.php");
 
 	$loginManager = new LoginManager();
+
+   $id = $_SESSION["ID"];
+
+   $query = "SELECT users.firstLogin
+             FROM users
+             WHERE users.ID = \"$id\";";
+
+   $resultSet = DatabaseManager::checkError($query);
+   $row = DatabaseManager::fetchArray($resultSet);
+   $hasLoggedIn = $row[0];
+   //dump("row", $row);
+   //dump("session", $_SESSION);
+   //var_dump($hasLoggedIn);
 
 	//process the login
 	$errorID = LoginManager::UNKNOWN;
@@ -47,8 +60,11 @@
 		$errorID = $loginManager->login($_COOKIE["username"], $_COOKIE["password"], "no", true);
 	}
 
+   //var_dump($hasLoggedIn);
     //check for a custom redirect
-    if(isset($_GET["redir"]) && !empty($_GET["redir"])) {
+    if($hasLoggedIn == 0) {
+       $redir = $path."firstlogin.php";
+    } elseif(isset($_GET["redir"]) && !empty($_GET["redir"])) {
         $redir = $_GET["redir"];
     } else {
         $redir = $path."index.php";
