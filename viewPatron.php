@@ -10,6 +10,10 @@
 
     $id = explode("?", $_GET["id"]);
     $id = $id[0];
+    if(empty($id)) {
+        die("Invalid patron ID $id<br>");
+    }
+
     $form = new Form(Form::EDIT, $_SERVER["SCRIPT_NAME"]."?id=".$id);
     $fieldset = new Fieldset_Vertical($form->getFormType());
 
