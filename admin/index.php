@@ -9,7 +9,6 @@
     addPage("classes");
     addPage("bookTypes");
     addPage("books");
-    addPage("checkouts");
 ?>
 
 </table>
