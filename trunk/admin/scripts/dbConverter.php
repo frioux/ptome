@@ -228,7 +228,7 @@
     }
 
     //id, username, email, notifications, admin, password, disabled, first_name, last_name, second_contact, primary_library
-    $out = 'INSERT INTO `users` (`username`, `email`, `permissions`, `password`, `active`, `name`, `secondContact`, `libraryID`, `semester`, `firstLogin`) VALUES'."\n";
+    $out = 'INSERT INTO `users` (`username`, `email`, `permissions`, `password`, `active`, `notifications`, `name`, `secondContact`, `libraryID`, `semester`, `firstLogin`) VALUES'."\n";
     $lines = preg_split("/\r?\n/", $data[13]);
     $lines = array_slice($lines, 7);
     array_pop($lines);
@@ -245,12 +245,17 @@
         } else {
            $active = 0;
         }
+        if($line[3] === "f") {
+           $notify = 1;
+        } else {
+           $notify = 0;
+        }
         if($line[10] === "t"){
            $hasLoggedIn = 1;
         } else {
            $hasLoggedIn = 0;
         }
-        $out .= "('".$line[1]."', '".$line[2]."', '3', '".$line[5]."', '".$active."', '".$line[7]." ".$line[8]."', '"
+        $out .= "('".$line[1]."', '".$line[2]."', '3', '".$line[5]."', '".$active."', '".$notify."', '".$line[7]." ".$line[8]."', '"
             .$line[9]."', '".$userLib[$line[0]]."', '2010.25', '".$hasLoggedIn."'),\n";
         $tomekeeperIDMap[$line[0]] = $start++;
         $tomekeeperLibraryMap[$line[0]] = $userLib[$line[0]];
