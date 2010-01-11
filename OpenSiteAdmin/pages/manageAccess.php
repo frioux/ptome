@@ -42,6 +42,7 @@
 	} else {
 		$id = $_GET["id"];
 	}
+    $id = intval($id);
 	$row = new RowManager($tableName, $keyField->getName(), $id);
 	$fieldset->addRowManager($row);
 
