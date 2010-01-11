@@ -255,8 +255,13 @@
         } else {
            $hasLoggedIn = 0;
         }
+        if(strcmp($line[9], "\\\N") == 0) {
+           $secondContact = "";
+        } else {
+           $secondContact = $line[9];
+        }
         $out .= "('".$line[1]."', '".$line[2]."', '3', '".$line[5]."', '".$active."', '".$notify."', '".$line[7]." ".$line[8]."', '"
-            .$line[9]."', '".$userLib[$line[0]]."', '2010.25', '".$hasLoggedIn."'),\n";
+            .$secondContact."', '".$userLib[$line[0]]."', '2010.25', '".$hasLoggedIn."'),\n";
         $tomekeeperIDMap[$line[0]] = $start++;
         $tomekeeperLibraryMap[$line[0]] = $userLib[$line[0]];
     }
