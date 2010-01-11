@@ -203,7 +203,7 @@
 		 * @return MIXED Current field value.
 		 */
 		function getValue() {
-			$ret = $this->value;
+            $ret = SecurityManager::formPrep($this->value);
             if(empty($ret)) {
 				return $this->default;
 			}
@@ -271,6 +271,7 @@
          * @return BOOLEAN False if any error were encountered.
          */
         protected function postProcess($value) {
+            $value = SecurityManager::SQLPrep($value);
             $this->setValue($value);
             return true;
         }
