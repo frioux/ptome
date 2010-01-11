@@ -77,9 +77,7 @@
 	$keyField = $fieldset->addField(new Hidden("ID", "", null, false));
 	$linkField = $fieldset->addField(new Text("username", "Username", array("maxlength"=>20), true, true));
 	$fieldset->addField(new Password("password", "Password", null, false));
-	$fieldset->addField(new Select("permissions", "Permissions", $levels, true, true));
-	//set a default value for this select block
-	$data['permissions'] = 3;
+	$fieldset->addField(new Select("permissions", "Permissions", $levels, true, true), 3);
 	$fieldset->addField(new Checkbox("active", "Active", null, true));
 	//-- end table definition
 
