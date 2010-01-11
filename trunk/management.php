@@ -172,7 +172,7 @@
         $fieldset->addField(new Text("name", "Full Name", array("maxlength"=>50), true, false));
         $fieldset->addField(new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false));
         $fieldset->addField(new Checkbox("notifications", "Notifications", null, false, false));
-        $fieldset->addField(new Checkbox("active", "Active", null, true, false), true);
+        $fieldset->addField(new Checkbox("active", "Active", null, true, false), 1);
         $fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
 
         $row = new RowManager("users", $keyField->getName());
