@@ -72,8 +72,8 @@
         }
 
         protected function postProcess($value) {
-            $ret = array($this->getName()=>$value[0], $this->getName()."_salt"=>$value[1]);
-            $this->setValue($ret);
+            $ret = array($this->getName()=>SecurityManager::SQLPrep($value[0]), $this->getName()."_salt"=>SecurityManager::SQLPrep($value[1]));
+            $this->value = $ret;
             return true;
         }
 
