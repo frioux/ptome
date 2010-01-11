@@ -11,7 +11,7 @@
 </div>
 </div><!-- end container -->
 </div><!-- end atmosphere -->
-<?php if(isset($_SESSION["username"]) && $_SESSION["permissions"] <= 1) { ?>
+<?php if(isset($_SESSION["username"]) && $_SESSION["permissions"] <= 2) { ?>
     <div style="position:absolute; top:10px; left:-30px; width:150px;">
         <a href="<?php print $path; ?>admin/index.php">Admin Panel</a>
     </div>
