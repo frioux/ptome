@@ -76,7 +76,7 @@
             $field->setFormType($this->formType);
             $field->setSilent($this->silent);
             if($default !== null) {
-                $field->setDefaultValue($default);
+                $field->setValue($default);
             }
 			$this->fields[$field->getName()] = $field;
 

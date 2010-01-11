@@ -73,11 +73,9 @@
 			}
 
 			if(empty($value) || $value == "no") {
-                $this->postProcess("0");
-				return true;
+                return $this->postProcess("0");
 			} elseif($value == "yes" || $value == "on") {
-				$this->postProcess("1");
-				return true;
+				return $this->postProcess("1");
 			} else {
 				$errorText = "Unknown value $value";
 				return false;

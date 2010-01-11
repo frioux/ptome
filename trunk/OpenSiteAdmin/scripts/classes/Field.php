@@ -48,8 +48,6 @@
         protected $ajax;
         /** @var The name of the CSS ID for this field. */
         protected $cssID;
-        /** @var The default value to use for this field if none is provided. */
-        protected $default;
         /** @var Text of any error messages generated during field processing. */
 		protected $errorText;
         /** @var The name of this fields form field. */
@@ -204,9 +202,6 @@
 		 */
 		function getValue() {
             $ret = SecurityManager::formPrep($this->value);
-            if(empty($ret)) {
-				return $this->default;
-			}
 			return $ret;
         }
 
@@ -282,14 +277,14 @@
 		 * @return BOOLEAN False if errors were encountered processing the field
 		 */
 		function process() {
-			$this->value = $_POST[$this->getFieldName()];
-            $this->setEmpty($this->value);
+			$value = $_POST[$this->getFieldName()];
+            $this->setEmpty($value);
 			if($this->isRequired() && $this->isEmpty()) {
 				$this->errorText = "Please enter a value";
 				return false;
 			}
 
-			return $this->postProcess($this->value);
+			return $this->postProcess($value);
 		}
 
         /**
@@ -300,16 +295,6 @@
          */
         function setCSSID($cssID) {
             $this->cssID = $cssID;
-        }
-
-        /**
-         * Sets the default value for this field.
-         *
-         * @param MIXED $value Default value
-         * @return VOID
-         */
-		function setDefaultValue($value) {
-			$this->default = $value;
         }
 
         /**
