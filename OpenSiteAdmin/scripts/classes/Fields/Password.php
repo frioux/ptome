@@ -72,8 +72,10 @@
         }
 
         protected function postProcess($value) {
-            $ret = array($this->getName()=>SecurityManager::SQLPrep($value[0]), $this->getName()."_salt"=>SecurityManager::SQLPrep($value[1]));
-            $this->value = $ret;
+            $value[0] = SecurityManager::SQLPrep($value[0]);
+            $value[1] = SecurityManager::SQLPrep($value[1]);
+            $ret = array($this->getName()=>$value[0], $this->getName()."_salt"=>$value[1]);
+            $this->setValue($ret);
             return true;
         }
 
@@ -105,6 +107,21 @@
                 return $this->postProcess(array($password, $salt));
 			}
 			return true;
+        }
+
+        /**
+		 * Gets the current value of this form field.
+         *
+		 * @return MIXED Current field value.
+		 */
+		function getValue() {
+            $ret = $this->value;
+            if(!empty($ret)) {
+                foreach($ret as &$item) {
+                    $item = SecurityManager::formPrep($item);
+                }
+            }
+			return $ret;
         }
 	}
 ?>

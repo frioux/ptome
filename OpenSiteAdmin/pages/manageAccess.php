@@ -30,7 +30,7 @@
 
 	$keyField = $fieldset->addField(new Hidden("ID", "", null, false));
 	$linkField = $fieldset->addField(new Text("pageName", "Page", array("maxlength"=>50), true, true));
-	$fieldset->addField(new Select("minLevel", "Minimum Level", $levels, true, true))->setDefaultValue(2);
+	$fieldset->addField(new Select("minLevel", "Minimum Level", $levels, true, true), 2);
 	$fieldset->addField(new Text("message", "Access Restricted Message", array("maxlength"=>255), true));
 	//set a default value for this select block
 	//-- end table definition
