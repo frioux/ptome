@@ -163,9 +163,9 @@
 
         $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
         $linkField = $fieldset->addField(new Text("username", "Username", array("maxlength"=>20), true, true));
-        $fieldset->addField(new Password("password", "Password", null, false));
         $fieldset->addField(new Select("permissions", "Permissions", $levels, true, true));
         $fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
+        $fieldset->addField(new Password("password", "Password", null, false));
         $fieldset->addField(new Text("email", "Email", array("maxlength"=>50), true, false));
         $fieldset->addField(new Text("name", "Full Name", array("maxlength"=>50), true, false));
         $fieldset->addField(new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false));
