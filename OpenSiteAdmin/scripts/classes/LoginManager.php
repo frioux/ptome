@@ -68,7 +68,7 @@
 		 * @return INTEGER One of the error code constants defined in this class.
 		 */
 		function login($user, $pass, $remember="no", $isCookie=false) {
-			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` = '$user'";
+			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` LIKE '$user'";
 			$result = DatabaseManager::checkError($sql);
 			if(DatabaseManager::getNumResults($result) === 0) {
 				return LoginManager::INVALID;

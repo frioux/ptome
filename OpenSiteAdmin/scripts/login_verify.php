@@ -47,13 +47,17 @@
 		$errorID = $loginManager->login($_COOKIE["username"], $_COOKIE["password"], "no", true);
 	}
 
-    $query = "SELECT users.firstLogin
-                FROM users
-                WHERE users.ID = '".$loginManager->getUserID()."';";
+    $id = $loginManager->getUserID();
+    $hasLoggedIn = 1;
+    if(!empty($id)) {
+        $query = "SELECT users.firstLogin
+                    FROM users
+                    WHERE users.ID = '".$id."';";
 
-    $resultSet = DatabaseManager::checkError($query);
-    $row = DatabaseManager::fetchArray($resultSet);
-    $hasLoggedIn = $row[0];
+        $resultSet = DatabaseManager::checkError($query);
+        $row = DatabaseManager::fetchArray($resultSet);
+        $hasLoggedIn = $row[0];
+    }
 
     //check for a custom redirect
     if($hasLoggedIn == 0) {
