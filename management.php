@@ -151,7 +151,7 @@
          <a name="adduser"></a>
          <h3>Add User</h3>
      <?php
-        $form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]."#adduser");
+        $form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]."#adduser", "#adduser");
 
         $fieldset = new Fieldset_Vertical($form->getFormType());
         //prevent privilege escalation here
