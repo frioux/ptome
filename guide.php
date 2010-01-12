@@ -11,7 +11,7 @@
 <div class="center">
 <br>
 <br>
-    Not everything with feathers is a rat.<br /><br />
+    <font color="green"><strong>Not everything with feathers is a rat.</strong></font><br /><br />
 </div>
 
 <h3 class="print-page-break-before">
@@ -28,13 +28,29 @@
         </tr>
    </table>
 </h3>
-   <a href="#tips">Tips for Convincing Your Floor</a><br>
+<ul>
+   <li>
+      <a href="#tips">Tips for Convincing Your Floor</a><br>
+   </li>
+   <li>
    <a href="#gettingStarted">Getting Started</a><br>
+   </li>
+   <li>
    <a href="#using-tome">Using TOME</a><br>
+   </li>
+   <li>
    <a href="#numbers">Numbers</a><br>
+   </li>
+   <li>
    <a href="#policies">Policies</a><br>
+   </li>
+   <li>
    <a href="#credits">Credits</a><br>
+   </li>
+   <li>
    <a href="#confidentiality">A Note on Confidentiality</a><br>
+   </li>
+</ul>
 
 <a name="tips"></a>
 <h3 class="print-page-break-before">
