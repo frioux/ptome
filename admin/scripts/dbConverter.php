@@ -207,12 +207,12 @@
         $line = addslashes($line);
         $line = explode("\t", $line);
         if(strlen($line[0]) == 10) {
-            $out .= "('".$line[1]."', '".$line[0]."', '', '".$line[2]."', '".$line[3]."'),\n";
+            $out .= "('".$line[1]."', '".$line[0]."', NULL, '".$line[2]."', '".$line[3]."'),\n";
         } else {
-            $out .= "('".$line[1]."', '', '".$line[0]."', '".$line[2]."', '".$line[3]."'),\n";
+            $out .= "('".$line[1]."', NULL, '".$line[0]."', '".$line[2]."', '".$line[3]."'),\n";
         }
     }
-    $out = substr($out, 0, strlen($out)-2).";\n\n";
+    $out = substr($out, 0, strlen($out)-2).";\n";
 
     DatabaseManager::checkError($out);
 
