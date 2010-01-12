@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 11, 2010 at 09:35 PM
+-- Generation Time: Jan 12, 2010 at 04:49 PM
 -- Server version: 5.1.39
 -- PHP Version: 5.3.0
 
@@ -105,14 +105,14 @@ DROP TABLE IF EXISTS `bookTypes`;
 CREATE TABLE IF NOT EXISTS `bookTypes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
-  `isbn10` varchar(10) NOT NULL,
-  `isbn13` varchar(13) NOT NULL,
+  `isbn10` varchar(10) DEFAULT NULL,
+  `isbn13` varchar(13) DEFAULT NULL,
   `author` varchar(50) NOT NULL,
   `edition` varchar(20) NOT NULL,
   `comments` text NOT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `isbn10` (`isbn10`),
   UNIQUE KEY `isbn13` (`isbn13`),
+  UNIQUE KEY `isbn10` (`isbn10`),
   KEY `libraryID` (`title`,`isbn10`,`isbn13`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
