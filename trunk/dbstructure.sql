@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 10, 2010 at 10:57 PM
+-- Generation Time: Jan 11, 2010 at 09:35 PM
 -- Server version: 5.1.39
 -- PHP Version: 5.3.0
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `access` (
   `minLevel` int(11) NOT NULL DEFAULT '0',
   `message` varchar(255) NOT NULL DEFAULT 'You are not authorized to view this page.' COMMENT 'error message for users without permission to access a given page',
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `page_name` (`pageName`)
+  UNIQUE KEY `pageName` (`pageName`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
 
 --
@@ -111,7 +111,8 @@ CREATE TABLE IF NOT EXISTS `bookTypes` (
   `edition` varchar(20) NOT NULL,
   `comments` text NOT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `isbn10` (`isbn10`,`isbn13`),
+  UNIQUE KEY `isbn10` (`isbn10`),
+  UNIQUE KEY `isbn13` (`isbn13`),
   KEY `libraryID` (`title`,`isbn10`,`isbn13`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -285,7 +286,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `semester` float unsigned NOT NULL,
   `firstLogin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  UNIQUE KEY `user_name` (`username`),
+  UNIQUE KEY `username` (`username`),
   KEY `name` (`name`,`email`,`libraryID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
