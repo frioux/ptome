@@ -109,6 +109,15 @@
         }
 
         /**
+         * Appends errors that resulted from DB processing, such as collisions on unique keys.
+         *
+         * @return VOID
+         */
+        function appendDBErrors() {
+            $this->errorText .= $_POST["errors"][$this->getName()];
+        }
+
+        /**
          * Hack to allow foreign keys to process correctly if they are called
          * before their associated key gets processed.
          *

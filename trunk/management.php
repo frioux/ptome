@@ -148,7 +148,6 @@
 ?>
 <?php
     if($securityManager->isPageVisible("addUser")) { ?>
-
          <a name="adduser"></a>
          <h3>Add User</h3>
      <?php
@@ -189,7 +188,7 @@
         $form = new Form(Form::EDIT, $_SERVER["SCRIPT_NAME"]);
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
-        $keyField = $fieldset->addField(new Label("ID", "ID", null, true));
+        $keyField = $fieldset->addField(new Label("ID", "ID", null, false));
         $linkField = $fieldset->addField(new Text("name", "Name", null, true, true));
         $fieldset->addField(new Checkbox("interTOME", "InterTOME", null, true, false));
 
