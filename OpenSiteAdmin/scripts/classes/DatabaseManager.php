@@ -90,6 +90,12 @@
 			$result = mysqli_query(DatabaseManager::getLink(), $query);
 			$error = mysqli_error(DatabaseManager::getLink());
 			if(!empty($error)) {
+                $errno = mysqli_errno(DatabaseManager::getLink());
+                if($errno == 1062) {
+                    preg_match("/Duplicate entry '.*?' for key '(.*?)'/", $error, $match);
+                    $_POST["errors"][$match[1]] = "Duplicate entry";
+                    return false;
+                }
 				print "There was an error processing a database request.<br>";
 				ErrorLogManager::log("MYSQL ERROR -> $query<br>\n$error", ErrorLogManager::FATAL);
 				return false;

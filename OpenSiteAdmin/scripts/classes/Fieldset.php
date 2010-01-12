@@ -133,7 +133,13 @@
             foreach($this->dbRows as $dbRow) {
                 $dbRow->setValues($this->values);
                 if(!$dbRow->finalize($this->formType)) {
-                    print "<br>Error: <u>Please</u> contact your system administrator!<br>";
+                    if(!isset($_POST["errors"])) {
+                        print "<br>Error: <u>Please</u> contact your system administrator!<br>";
+                    } else {
+                        foreach($_POST["errors"] as $name=>$err) {
+                            $this->fields[$name]->appendDBErrors();
+                        }
+                    }
                     if($this->formType == Form::DELETE) {
                         print "<font color='red'><b>Please</b> don't do <i>anything</i>
                         until your system administrator tells you everything is ok again.</b></font><br>";
