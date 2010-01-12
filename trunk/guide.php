@@ -33,6 +33,7 @@
    <a href="#using-tome">Using TOME</a><br>
    <a href="#numbers">Numbers</a><br>
    <a href="#policies">Policies</a><br>
+   <a href="#credits">Credits</a><br>
    <a href="#confidentiality">A Note on Confidentiality</a><br>
 
 <a name="tips"></a>
@@ -406,9 +407,6 @@ sensitive), email address, password, and notification preferences.</p>
 
 <ul>
    <li>
-      <p>The first TOME was started in fall 2003 by Shroud and Bolt</p>
-   </li>
-   <li>
       <p>TOME  currently has:</p>
       <ul>
          <li>
@@ -492,6 +490,36 @@ doing this for two years, and we know they work.<p>
    </li>
 </ul>
 <p>TOME relies on the honor system. We trust people by default.</p>
+
+<a name="credits"></a>
+<h3 class="print-page-break-before">
+    <table class="full">
+        <tr>
+            <td style="border:0px;">
+               Credits
+            </td>
+            <td style="text-align:right; border:0px;">
+                <span style="font-size:10pt;">
+                    <a href="#top">Top</a>
+                </span>
+            </td>
+        </tr>
+   </table>
+</h3>
+<ul>
+   <li>
+      <p>The TOME system was started in fall 2003 by Charly "Shroud" Wesly and Davild "Bolt" Ringer</p>
+   </li>
+   <li>
+      <p>TOME 1 was release in spring 2004 by Curits "Fjord" Hawthorne</p>
+   </li>
+   <li>
+      <p>TOME 2 was release in spring 2008 by Frew, Benjie Cail, and James "Shutter" Frank</p>
+   </li>
+   <li>
+      <p>TOME 3 was release in spring 2010 by Bion "Wharf" Oren, and Benaiah "Panic" Henry</p>
+   </li>
+</ul>
 
 <a name="confidentiality"></a>
 <h3 class="print-page-break-before">
