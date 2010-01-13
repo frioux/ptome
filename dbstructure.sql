@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `errorLog` (
 DROP TABLE IF EXISTS `libraries`;
 CREATE TABLE IF NOT EXISTS `libraries` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL COMMENT 'Because a floor won''t be happy if this field can''t hold their name',
+  `name` varchar(100) NOT NULL COMMENT 'Because a floor won''t be happy if this field can''t hold their name',
   `interTOME` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `name` (`name`)
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(20) NOT NULL,
   `password` varchar(128) NOT NULL,
   `password_salt` varchar(64) NOT NULL,
-  `permissions` tinyint(1) NOT NULL DEFAULT '0',
+  `permissions` tinyint(1) NOT NULL DEFAULT '3',
   `active` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
