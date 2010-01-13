@@ -285,6 +285,10 @@
 
     //make comments that just have a newline truly empty
     DatabaseManager::checkError("UPDATE `books` SET `comments` = '' WHERE `comments` = '\\N'");
+    DatabaseManager::checkError("UPDATE `bookTypes` SET `comments` = '' WHERE `comments` = '\\N'");
+    DatabaseManager::checkError("UPDATE `checkouts` SET `comments` = '' WHERE `comments` = '\\N'");
+    DatabaseManager::checkError("UPDATE `classbooks` SET `comments` = '' WHERE `comments` = '\\N'");
+    DatabaseManager::checkError("UPDATE `classes` SET `comments` = '' WHERE `comments` = '\\N'");
 
     //update the bookTypeID field on the checkouts table
     $sql = "UPDATE `checkouts` join `books` on `books`.`ID` = `checkouts`.`bookID` SET `checkouts`.`bookTypeID` = `books`.`bookID`";
