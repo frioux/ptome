@@ -189,7 +189,7 @@
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
         $keyField = $fieldset->addField(new Label("ID", "ID", null, false));
-        $linkField = $fieldset->addField(new Text("name", "Name", null, true, true));
+        $linkField = $fieldset->addField(new Text("name", "Name", array("maxlength"=>100), true, true));
         $fieldset->addField(new Checkbox("interTOME", "InterTOME", null, true, false));
 
         if(!isset($_GET["id"]) || empty($_GET["id"])) {
@@ -217,7 +217,7 @@
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
         $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
-        $linkField = $fieldset->addField(new Text("name", "Name", null, true, true));
+        $linkField = $fieldset->addField(new Text("name", "Name", array("maxlength"=>100), true, true));
 
         $row = new RowManager("libraries", $keyField->getName());
         $fieldset->addRowManager($row);
