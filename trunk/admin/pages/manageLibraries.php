@@ -12,7 +12,7 @@
 //    $customSelectOptions = DatabaseManager::checkError("custom database query here");
 
 	$keyField = $fieldset->addField(new Hidden("ID", "", null, false, false));
-    $linkField = $fieldset->addField(new Text("name", "Library Name:", array("maxlength"=>50), true, true));
+    $linkField = $fieldset->addField(new Text("name", "Library Name:", array("maxlength"=>100), true, true));
     $fieldset->addField(new Checkbox("interTOME", "InterTOME", null, true, false));
 //    $fieldset->addField(new Text(dbTitle, formTitle, options, showInListView?, required?));
     //-- end table definition
