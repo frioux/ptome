@@ -14,6 +14,9 @@
     require_once($path."admin/scripts/functions.php");
 
     $id = intval($_REQUEST["id"]);
+    if($id == 0) {
+        die("Invalid class ID $id<br>");
+    }
     $book = new RowManager("classes", "ID", $id);
 
     $sql = "SELECT `bookTypes`.`ID` as `bookID`, `bookTypes`.`isbn10`, `bookTypes`.`isbn13`, `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`,
