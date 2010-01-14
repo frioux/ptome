@@ -58,11 +58,11 @@
 
             $form2 = new Form(Form::DELETE, $_SERVER["REQUEST_URI"]);
             $form2->setSubmitText("Delete");
-            $fieldset2 = new Fieldset_Vertical($form2->getFormType());
-            $keyField = $fieldset2->addField(new Hidden("ID", "", null, false));
+            $fieldset3 = new Fieldset_Vertical($form2->getFormType());
+            $keyField = $fieldset3->addField(new Hidden("ID", "", null, false));
             $row = new RowManager("classbooks", $keyField->getName(), $book["classbookID"]);
-            $fieldset2->addRowManager($row);
-            $form2->addFieldset($fieldset2);
+            $fieldset3->addRowManager($row);
+            $form2->addFieldset($fieldset3);
             $form2->process();
 
             if($book["usable"]) {
