@@ -136,7 +136,7 @@
     $ajax = new Ajax_AutoComplete("ajaxBook.php", 3);
     $ajax->setCallbackFunction("bookCallback");
     $linkField->addAjax($ajax);
-    $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, true, true), $book["bookID"]);
+    $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, true, true));
     $fieldset->addField(new RadioButtons("usable", "Usable", array(1=>"Yes", 0=>"No"), true, false), 1);
     $fieldset->addField(new Hidden("verified", "", null, true, true), date("Y-m-d"));
     $fieldset->addField(new Hidden("classID", "", null, true, true), $id);
