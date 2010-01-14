@@ -90,8 +90,8 @@
     $fields[] = new Password("password", "Password", null, false);
     $fields[] = new LETUEmailField("email", "Email", array("maxlength"=>50), true, true);
     $fields[] = new Select("permissions", "Permissions", $levels, true, true);
-    $fields[] = new Text("name", "Full Name", array("maxlength"=>50), true, true);
-    $fields[] = new Text("secondContact", "Second Contact", array("maxlength"=>50), false, true);
+    $fields[] = new Text("name", "Full Name", array("maxlength"=>50), true, false);
+    $fields[] = new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false);
     $fields[] = new Checkbox("notifications", "Notifications", null, false, false);
 
     if($securityManager->isPageVisible("editUser")) {
