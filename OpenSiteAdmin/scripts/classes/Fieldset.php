@@ -75,7 +75,9 @@
 		function addField(Field $field, $default=null) {
             $field->setFormType($this->formType);
             $field->setSilent($this->silent);
-            if($default !== null) {
+            if(!empty($this->values[$field->getFieldName()])) {
+                $field->setValue($this->values[$field->getFieldName()]);
+            } elseif($default !== null) {
                 $this->values[$field->getFieldName()] = $default;
                 $field->setValue($default);
             }
@@ -104,6 +106,10 @@
 		 */
 		function addRowManager(RowManager $dbRow) {
 			$this->dbRows[] = $dbRow;
+            $this->values = $this->getDBValues();
+            foreach($this->fields as $field) {
+                $field->setValue($this->values[$field->getName()]);
+            }
 		}
 
         /**
