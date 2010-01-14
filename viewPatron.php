@@ -28,7 +28,9 @@
     $form->process();
 
     //find books currently checked out
-    $sql = "select * from `checkouts` where `borrowerID` = $id and `in` = DEFAULT(`in`)";
+    $sql = "select `libraries`.`name`, `checkouts`.* from `checkouts`
+            JOIN `libraries` ON `checkouts`.`libraryFromID` = `libraries`.`ID`
+            where `borrowerID` = $id and `in` = DEFAULT(`in`)";
     $result = DatabaseManager::checkError($sql);
     $checkedoutCount = DatabaseManager::getNumResults($result);
     $checkouts = DatabaseManager::fetchAssocArray($result);
@@ -62,13 +64,13 @@
     <tbody>
         <?php
         foreach($checkouts as $checkout) {
-            $sql = "select `libraries`.`name`,`bookTypes`.* from `books`
-                join `libraries` on `libraries`.`ID`=`books`.`libraryID`
-                join `bookTypes` on `bookTypes`.`ID`=`books`.`bookID`
-                where `books`.`ID` = ".$checkout["bookID"];
+            $sql = "select `bookTypes`.* from `bookTypes`
+                where `bookTypes`.`ID` = '".$checkout["bookTypeID"]."'";
             $result = DatabaseManager::checkError($sql);
             $book = DatabaseManager::fetchAssoc($result);
-            $book["ID"] = $checkout["ID"];
+            $book["ID"] = $checkout["bookID"];
+            $book["checkoutID"] = $checkout["ID"];
+            $book["name"] = $checkout["name"];
             $isbn = getISBN($book["isbn13"], $book["isbn10"]);
         ?>
             <tr class="rowodd">
@@ -77,17 +79,19 @@
                 </td>
                 <td>
                     <dl class="table-display">
-                        <dt>
-                            Book ID:
-                        </dt>
-                        <dd>
-                            <a href="bookinfo.php?id=<?php print $book["ID"]; ?>"><?php print $book["ID"]; ?></a>
-                        </dd>
+                        <?php if(!empty($book["ID"])) { ?>
+                            <dt>
+                                Book ID:
+                            </dt>
+                            <dd>
+                                <a href="bookinfo.php?id=<?php print $book["ID"]; ?>"><?php print $book["ID"]; ?></a>
+                            </dd>
+                        <?php } ?>
                         <dt>
                             ISBN:
                         </dt>
                         <dd>
-                            <a href="isbninfo.php?id=<?php print $isbn; ?>"><?php print $isbn; ?></a>
+                            <a href="isbninfo.php?id=<?php print $checkout["bookTypID"]; ?>"><?php print $isbn; ?></a>
                         </dd>
                         <dt>
                             Title:
@@ -113,15 +117,13 @@
                     <?php print getSemesterName($checkout["semester"]); ?>
                 </td>
                 <td>
-                    <div class="print-no" name="checkout3113" id="checkout3113">
-                        <form action="/cgi-bin/tome/admin.pl" method="post" onsubmit=" new Ajax.Updater( 'checkout3113',  '/cgi-bin/tome/admin.pl', { parameters: Form.serialize(this),asynchronous: 1,onLoading: function(request){$('checkout3113').innerHTML = 'Loading...'
-    },onLoaded: function(request){new Effect.Highlight( 'checkout3113', { duration:0.5 } )} } ) ; return false"><input id="checkout_id" name="checkout_id" value="3113" type="hidden">
-                            <input id="rm" name="rm" value="ajax_checkin" type="hidden">
-                            <input id="ccommit3113" name="commit" value="checkin" type="hidden">
-                            <input name="submit" value="Cancel" onclick="$('ccommit3113').value='cancel'; $$('checkout3113 form')[0].submit();" type="submit">
-                            <input value="Check In" type="submit">
-                        </form>
-                    </div>
+                    <?php
+                        if($checkout["out"] == "0000-00-00 00:00:00") {
+                            showCheckoutForm($book);
+                        } else {
+                            showCheckinForm($book);
+                        }
+                    ?>
                 </td>
             </tr>
         <?php } ?>
