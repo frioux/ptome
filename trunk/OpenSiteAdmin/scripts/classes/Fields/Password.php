@@ -117,8 +117,12 @@
 		function getValue() {
             $ret = $this->value;
             if(!empty($ret)) {
-                foreach($ret as &$item) {
-                    $item = SecurityManager::formPrep($item);
+                if(is_array($ret)) {
+                    foreach($ret as &$item) {
+                        $item = SecurityManager::formPrep($item);
+                    }
+                } else {
+                    $ret = SecurityManager::formPrep($ret);
                 }
             }
 			return $ret;
