@@ -66,13 +66,13 @@
   <div id="container">
     <div id="header">
       <div id="banner">
-        <h1>&nbsp;</h1>
+        <a href="<?php print $path; ?>">
+          <h1 id="logo">&nbsp;</h1>
+        </a>
         <dl id="status">
           <dt>Current semester</dt>
           <dd><?php print getSemesterName($_SESSION["semester"]); ?></dd>
-
         </dl><!-- end status -->
-
       </div><!-- end banner -->
       <div id="navigation">
         <ul>
