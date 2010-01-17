@@ -11,16 +11,11 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="3">
-                        View Class
-                    </th>
+                    <th colspan="2">View Class</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        Class
-                    </td>
                     <td>
                         <input type="hidden" name="id" id="classID" value="">
                         <input id="class" name="class" type="text" />
@@ -48,16 +43,11 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="3">
-                        View Book
-                    </th>
+                    <th colspan="2">View Book</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        Book
-                    </td>
                     <td>
                         <input type="hidden" name="id" id="isbnID" value="">
                         <input id="isbn" name="isbn" type="text" />
@@ -85,16 +75,11 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="3" class="submit">
-                        Edit Patron
-                    </th>
+                    <th colspan="2" class="submit">Edit Patron</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        Email
-                    </td>
                     <td>
                         <input type="hidden" name="id" id="patronID" value="">
                         <input id="patron" name="patron" type="text" value="" />
