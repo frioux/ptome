@@ -6,9 +6,22 @@
 ?>
 <h1>Home</h1>
 
-<div style="display:inline;float:left;margin:0 6px 6px 0;">
-    <form action="viewClass.php" method="get" name="isbnview">
-        <table>
+<script type="text/javascript">
+function copyFirstAutocompleteValue(autoCompleteID, targetID) {
+    id = $(autoCompleteID).children[0].children[0].children[0].getAttribute("id");
+    
+    if( id != undefined )
+    {
+        $(targetID).value = id;
+    }
+}
+</script>
+
+<table class="full noborder">
+    <tr>
+        <td class="center">
+    <form action="viewClass.php" method="get" id="class_form">
+        <table class="full noborder">
             <thead>
                 <tr>
                     <th colspan="2">View Class</th>
@@ -18,7 +31,7 @@
                 <tr>
                     <td>
                         <input type="hidden" name="id" id="classID" value="">
-                        <input id="class" name="class" type="text" />
+                        <input id="class" name="class" type="text" style="width:100%;" />
                         <div class="auto_complete" id="class_auto_complete"></div>
                         <script type="text/javascript">
                             <!--
@@ -30,17 +43,16 @@
                         </script>
                     </td>
                     <td class="submit">
-                        <input type="submit" value="Go" />
+                        <input type="submit" value="Go" onClick="return(copyFirstAutocompleteValue('class_auto_complete', 'classID'));" />
                     </td>
                 </tr>
             </tbody>
         </table>
     </form>
-</div>
-
-<div style="display:inline;float:left;margin:0 6px 6px 0;">
-    <form action="isbninfo.php" method="get">
-        <table>
+        </td>
+        <td>
+    <form action="isbninfo.php" method="get" id="isbn_form">
+        <table class="full noborder">
             <thead>
                 <tr>
                     <th colspan="2">View Book</th>
@@ -50,7 +62,7 @@
                 <tr>
                     <td>
                         <input type="hidden" name="id" id="isbnID" value="">
-                        <input id="isbn" name="isbn" type="text" />
+                        <input id="isbn" name="isbn" type="text" style="width:100%;" />
                         <div class="auto_complete" id="isbn_auto_complete"></div>
                         <script type="text/javascript">
                             <!--
@@ -62,17 +74,16 @@
                         </script>
                     </td>
                     <td class="submit">
-                        <input type="submit" value="Go">
+                        <input type="submit" value="Go" onClick="return(copyFirstAutocompleteValue('isbn_auto_complete', 'isbnID'));">
                     </td>
                 </tr>
             </tbody>
         </table>
     </form>
-</div>
-
-<div style="display:inline;float:left;margin:0 0 6px 0;">
-    <form action="viewPatron.php" method="get">
-        <table>
+        </td>
+        <td>
+    <form action="viewPatron.php" method="get" id="patron_form">
+        <table class="full noborder">
             <thead>
                 <tr>
                     <th colspan="2" class="submit">Edit Patron</th>
@@ -82,7 +93,7 @@
                 <tr>
                     <td>
                         <input type="hidden" name="id" id="patronID" value="">
-                        <input id="patron" name="patron" type="text" value="" />
+                        <input id="patron" name="patron" type="text" value="" style="width:100%;" />
                         <div class="auto_complete" id="patron_auto_complete"></div>
                         <script type="text/javascript">
                             <!--
@@ -94,12 +105,13 @@
                         </script>
                     </td>
                     <td class="submit">
-                        <input type="submit" value="Go" />
+                        <input type="submit" value="Go" onClick="return(copyFirstAutocompleteValue('patron_auto_complete', 'patronID'));" />
                     </td>
                 </tr>
             </tbody>
         </table>
     </form>
-</div>
-<div style="clear:both"></div>
+        </td>
+    </tr>
+</table>
 <?php require_once($path."footer.php"); ?>
