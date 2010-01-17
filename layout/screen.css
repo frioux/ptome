@@ -113,7 +113,8 @@ div.line {
   padding: 0;
   clear: both;
 }
-div.center{
+td.center,
+div.center {
    text-align: center;
 }
 pre {
@@ -288,7 +289,8 @@ td, th {
   padding: 0.5em;
   border: 1px solid #CCC;
 }
-thead, tfoot {
+thead,
+tfoot {
   background-color: #DDD;
 }
 th {
