@@ -106,9 +106,12 @@
 		 */
 		function addRowManager(RowManager $dbRow) {
 			$this->dbRows[] = $dbRow;
-            $this->values = $this->getDBValues();
-            foreach($this->fields as $field) {
-                $field->setValue($this->values[$field->getName()]);
+            //if this is an add type form, what new information could the database possibly give us?
+            if($this->formType != Form::ADD) {
+                $this->values = $this->getDBValues();
+                foreach($this->fields as $field) {
+                    $field->setValue($this->values[$field->getName()]);
+                }
             }
 		}
 

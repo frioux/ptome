@@ -87,8 +87,10 @@
                 //release the locks, and we're done.
                 DatabaseManager::checkError("UNLOCK TABLES");
                 if($storeCreateUser) {
-                    $_SESSION["post"]["ID"] = DatabaseManager::getInsertID(DatabaseManager::getLink());
-                    $_SESSION["post"]["redir"] = $_SERVER["REQUEST_URI"];
+                    $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
+                    $_SESSION["post"]["table"] = "checkouts";
+                    $_SESSION["post"]["field"] = "borrowerID";
+                    redir_push($_SERVER["REQUEST_URI"]);
                     $_SESSION["post"]["reserveID"] = $id;
                     header("Location:".$path."addPatron.php");
                 } else {
@@ -284,5 +286,22 @@
         processBookAssociation($fieldset, $keyField, $linkField, $book);
 
         return $fieldset;
+    }
+
+    function redir_push($str) {
+        if(!is_array($_SESSION["post"]["redir"])) {
+            $_SESSION["post"]["redir"] = array();
+        }
+        array_push($_SESSION["post"]["redir"], $str);
+    }
+
+    function redir_pop() {
+        return array_pop($_SESSION["post"]["redir"]);
+    }
+
+    function cleanSessionOnEmptyRedir() {
+        if(empty($_SESSION["post"]["redir"])) {
+            unset($_SESSION["post"]);
+        }
     }
 ?>

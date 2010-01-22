@@ -8,25 +8,35 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/Hook.php");
     require_once($path."admin/scripts/LETUEmailField.php");
+    require_once($path."admin/scripts/functions.php");
 
     class checkout_update_hoook implements Hook {
         private $keyField;
-        function __construct(Field $keyField) {
+        protected $redir;
+
+        function __construct(Field $keyField, $redir) {
             $this->keyField = $keyField;
+            $this->redir = $redir;
         }
 
         function process() {
             $checkoutID = $_SESSION["post"]["ID"];
-            $row = new RowManager("checkouts", "ID", $checkoutID);
-            $row->setValue("borrowerID", $this->keyField->getValue());
-            $row->finalize(Form::EDIT);
-            $redir = $_SESSION["post"]["redir"]."&reserved=".$_SESSION["post"]["reserveID"];
-            unset($_SESSION["post"]);
-            die(header("Location:".$redir));
+            $table = $_SESSION["post"]["table"];
+            $field = array_pop($_SESSION["post"]["field"]);
+            $row = new RowManager($table, "ID", $checkoutID);
+            $row->setValue($field, $this->keyField->getValue());
+            cleanSessionOnEmptyRedir();
+            if($row->finalize(Form::EDIT)) {
+                die(header("Location:".$this->redir));
+            }
         }
     }
 
-    $form = new Form(Form::ADD, $_SESSION["post"]["redir"]."&reserved=".$_SESSION["post"]["reserveID"]);
+    $redir = redir_pop();
+    if(isset($_SESSION["post"]["reserveID"])) {
+        $redir .= "&reserved=".$_SESSION["post"]["reserveID"];
+    }
+    $form = new Form(Form::ADD, $redir);
     $fieldset = new Fieldset_Vertical($form->getFormType());
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
@@ -37,8 +47,9 @@
     $row = new RowManager("borrowers", $keyField->getName());
     $fieldset->addRowManager($row);
     $form->addFieldset($fieldset);
-    $hooks[] = new checkout_update_hoook($keyField);
+    $hooks[] = new checkout_update_hoook($keyField, $redir);
     $form->process($hooks);
+    redir_push($redir);
 ?>
 <h1>Add Patron</h1>
 <font size="+1" color="red">

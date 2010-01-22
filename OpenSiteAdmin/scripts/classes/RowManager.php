@@ -150,7 +150,7 @@
          * @return INTEGER Last insert ID number (usually the primary key)
          */
 		protected function getLastInsertID() {
-			return DatabaseManager::getInsertID(DatabaseManager::getLink());
+			return DatabaseManager::getInsertID();
         }
 
         /**
