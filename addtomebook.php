@@ -12,36 +12,36 @@
 
     Class addBookHook implements Hook {
         const TABLE = "books";
-        protected $bookIDField;
-        protected $patronIDField;
-        protected $ISBNField;
-        protected $patronField;
+        protected $fields;
 
-        function __construct(Field $keyField, Field $bookIDField, Field $patronIDField, Field $ISBNField, Field $patronField) {
-            $this->keyField = $keyField;
-            $this->bookIDField = $bookIDField;
-            $this->patronIDField = $patronIDField;
-            $this->ISBNField = $ISBNField;
-            $this->patronField = $patronField;
+        function __construct(array $fields) {
+            $this->fields = $fields;
+        }
+
+        function get($field) {
+            return $this->fields[$field]->getValue();
         }
 
         function checkBook() {
-            if($this->bookIDField->isEmpty()) {
-                $_SESSION["post"]["ID"] = $this->keyField->getValue();
+            if($this->fields["bookID"]->isEmpty()) {
+                $_SESSION["post"]["ID"] = $this->get("ID");
                 $_SESSION["post"]["table"] = addBookHook::TABLE;
                 array_push($_SESSION["post"]["field"], "bookID");
-                $_SESSION["post"]["isbn"] = $this->ISBNField->getValue();
+                $_SESSION["post"]["isbn"] = $this->get("1");
+                $_SESSION["post"]["email"] = $this->get("2");
+                $_SESSION["post"]["expires"] = $this->get("expires");
+                $_SESSION["post"]["comments"] = $this->get("comments");
                 return false;
             }
             return true;
         }
 
         function checkPatron() {
-            if($this->patronIDField->isEmpty()) {
-                $_SESSION["post"]["ID"] = $this->keyField->getValue();
+            if($this->fields["donatorID"]->isEmpty()) {
+                $_SESSION["post"]["ID"] = $this->get("ID");
                 $_SESSION["post"]["table"] = addBookHook::TABLE;
                 array_push($_SESSION["post"]["field"], "donatorID");
-                $_SESSION["post"]["email"] = $this->patronField->getValue();
+                $_SESSION["post"]["email"] = $this->get("2");
                 return false;
             }
             return true;
@@ -51,7 +51,7 @@
             $_SESSION["post"]["field"] = array();
             $ret2 = $this->checkPatron();
             $ret1 = $this->checkBook();
-            redir_push("bookinfo.php?id=".$this->keyField->getValue());
+            redir_push("bookinfo.php?id=".$this->get("ID"));
             if(!$ret1 && !$ret2) {
                 //fix the book first
                 redir_push("addPatron.php");
@@ -62,7 +62,7 @@
                 die(header("Location:".$path."addPatron.php"));
             } else {
                 unset($_SESSION["post"]);
-                die(header("Location:bookinfo.php?id=".$this->keyField->getValue()));
+                die(header("Location:bookinfo.php?id=".$this->get("ID")));
             }
         }
     }
@@ -88,7 +88,7 @@
     $row = new RowManager("books", $keyField->getName());
     $fieldset->addRowManager($row);
     $form->addFieldset($fieldset);
-    $hooks = array(new addBookHook($keyField, $bookIDField, $donatorIDField, $linkField, $donatorField));
+    $hooks = array(new addBookHook($fieldset->getFields()));
     $form->process($hooks);
     $form->setSubmitText("Add TOME Book");
 ?>

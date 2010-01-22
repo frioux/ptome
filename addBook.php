@@ -32,6 +32,9 @@
         }
     }
 
+    $result = DatabaseManager::checkError("select `name` from `libraries` where `ID` = '".$_SESSION["libraryID"]."'");
+    $libraryName = DatabaseManager::fetchAssoc($result);
+
     $redir = redir_pop();
     $form = new Form(Form::ADD, $redir);
     $form->setSubmitText("Add Book");
@@ -61,10 +64,10 @@
 <font size="+1">Adding TOME Book:</font>
 <blockquote>
     <b>ISBN:</b> <?php print $isbn; ?><br>
-    <b>Originator:</b> jamesfrank@letu.edu<br>
-    <b>Expire Semester:</b> 2010, Spring<br>
-    <b>Comments:</b> This is a test<br>
-    <b>Library:</b> <br>
+    <b>Originator:</b> <?php print $_SESSION["post"]["email"]; ?><br>
+    <b>Expires:</b> <?php print $_SESSION["post"]["expires"]; ?><br>
+    <b>Comments:</b> <?php print $_SESSION["post"]["comments"]; ?><br>
+    <b>Library:</b> <?php print $libraryName["name"]; ?><br>
 </blockquote>
 <p>
     <font color="red">
