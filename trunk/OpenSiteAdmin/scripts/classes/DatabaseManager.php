@@ -118,8 +118,8 @@
          * @param RESOURCE The connection resource to reference.
          * @return MIXED false on failure, int on success.
          */
-        static function getInsertID($result) {
-            return mysqli_insert_id($result);
+        static function getInsertID() {
+            return mysqli_insert_id(DatabaseManager::getLink());
         }
 
         /**

@@ -8,25 +8,32 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/Hook.php");
     require_once($path."admin/scripts/ISBNField.php");
+    require_once($path."admin/scripts/functions.php");
 
     class update_hook implements Hook {
         private $keyField;
-        function __construct(Field $keyField) {
+        protected $redir;
+
+        function __construct(Field $keyField, $redir) {
             $this->keyField = $keyField;
+            $this->redir = $redir;
         }
 
         function process() {
             $bookID = $_SESSION["post"]["ID"];
-            $row = new RowManager("books", "ID", $bookID);
-            $row->setValue("bookID", $this->keyField->getValue());
-            $row->finalize(Form::EDIT);
-            $redir = $_SESSION["post"]["redir"]."?id=".$bookID;
-            unset($_SESSION["post"]);
-            die(header("Location:".$redir));
+            $table = $_SESSION["post"]["table"];
+            $field = array_pop($_SESSION["post"]["field"]);
+            $row = new RowManager($table, "ID", $bookID);
+            $row->setValue($field, $this->keyField->getValue());
+            cleanSessionOnEmptyRedir();
+            if($row->finalize(Form::EDIT)) {
+                die(header("Location:".$this->redir));
+            }
         }
     }
 
-    $form = new Form(Form::ADD, $_SESSION["post"]["redir"]);
+    $redir = redir_pop();
+    $form = new Form(Form::ADD, $redir);
     $form->setSubmitText("Add Book");
     $fieldset = new Fieldset_Vertical($form->getFormType());
     $isbn = $_SESSION["post"]["isbn"];
@@ -37,8 +44,8 @@
     }
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
-    $linkField = $fieldset->addField(new ISBNField("ISBN13", "ISBN13", 13, true, true), $isbn13);
-    $fieldset->addField(new ISBNField("ISBN10", "ISBN10", 10, true, true), $isbn10);
+    $linkField = $fieldset->addField(new ISBNField("isbn13", "ISBN13", 13, true, true), $isbn13);
+    $fieldset->addField(new ISBNField("isbn10", "ISBN10", 10, true, true), $isbn10);
     $fieldset->addField(new Text("title", "Title", array("maxlength"=>100), true, true));
     $fieldset->addField(new Text("author", "Author", array("maxlength"=>50), true, true));
     $fieldset->addField(new Text("edition", "Edition", array("maxlength"=>20), true, true));
@@ -46,13 +53,14 @@
     $row = new RowManager("bookTypes", $keyField->getName());
     $fieldset->addRowManager($row);
     $form->addFieldset($fieldset);
-    $hooks[] = new update_hook($keyField);
+    $hooks[] = new update_hook($keyField, $redir);
     $form->process($hooks);
+    redir_push($redir);
 ?>
 <h1>Add Book</h1>
 <font size="+1">Adding TOME Book:</font>
 <blockquote>
-    <b>ISBN:</b> 1111111111<br>
+    <b>ISBN:</b> <?php print $isbn; ?><br>
     <b>Originator:</b> jamesfrank@letu.edu<br>
     <b>Expire Semester:</b> 2010, Spring<br>
     <b>Comments:</b> This is a test<br>

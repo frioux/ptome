@@ -8,11 +8,11 @@
 
 <script type="text/javascript">
 function copyFirstAutocompleteValue(autoCompleteID, targetID) {
-    id = $(autoCompleteID).children[0].children[0].children[0].getAttribute("id");
-    
-    if( id != undefined )
-    {
+    if($(autoCompleteID).children[0].children[0] != undefined) {
+        id = $(autoCompleteID).children[0].children[0].children[0].getAttribute("id");
         $(targetID).value = id;
+    } else {
+        $(targetID).value = 0;
     }
 }
 </script>
