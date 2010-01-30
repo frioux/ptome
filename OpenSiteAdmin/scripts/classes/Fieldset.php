@@ -272,6 +272,7 @@
 		 */
 		final function process() {
 			$success = true;
+            $empty = true;
 			if(isset($_POST["submit"]) || isset($_POST["update"])) {
                 $values = $this->getDBValues();
 				foreach($this->fields as $field) {
@@ -285,7 +286,7 @@
                         $this->values[$field->getName()] = $field->getValue();
                     }
                     if(!$field->isKey()) {
-                        $empty = $field->isEmpty() || $empty;
+                        $empty = $field->isEmpty() && $empty;
                     }
                 }
                 //if one of the fields had data, turn off error suppression
