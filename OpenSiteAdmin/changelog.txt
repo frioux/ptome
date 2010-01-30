@@ -57,7 +57,7 @@ Field.php
     ADDED method addAjax to set the Ajax object on a field.
     ADDED method setCSSID to set the name of the field's CSS ID
     ADDED protected method getCSSID
-    REMOVED support for default values. This has been rolled into an option second parameter in
+    REMOVED support for default values. This has been rolled into an optional second parameter in
             Fieldset's addField method.
 Form.php
     ADDED method processable() to indicate wether or not a form is ready to be processed

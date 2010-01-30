@@ -29,8 +29,8 @@
 	 * @version 1.1 August 4, 2008
 	 */
     class Image extends Field {
-        /** @var 1mb maximum file size */
-        protected static $maxSize = 1024000;
+        /** @var 5mb maximum file size */
+        protected static $maxSize = 5120000;
 
         /**
 		 * Attempts to delete the given file.
@@ -159,7 +159,7 @@
 			}
 
 			if($value['size'] > Image::$maxSize) {
-				$this->errorText = "The file was to large: Maximum size = 1mb";
+				$this->errorText = "The file was to large: Maximum size = 5mb";
 				return false;
 			}
 
