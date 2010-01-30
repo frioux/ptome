@@ -28,19 +28,19 @@
 		 * @final
 		 * @var Mode constant to denote an add type form.
 		 */
-		const ADD = 1;
+		const ADD = 2;
 		/**
 		 * @static
 		 * @final
 		 * @var Mode constant to denote an edit type form.
 		 */
-		const EDIT = 2;
+		const EDIT = 3;
 		/**
 		 * @static
 		 * @final
 		 * @var Mode constant to denote a delete type form.
 		 */
-		const DELETE = 3;
+		const DELETE = 4;
 
 		/**
 		 * @static
