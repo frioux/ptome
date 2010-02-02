@@ -67,15 +67,17 @@
                 $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$row->getTableName()."` WRITE,
                         `errorLog` WRITE, `books` READ, `bookTypes` READ";
                 DatabaseManager::checkError($sql);
-                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)";
+                //finding reservations for the ISBN from this library that have not yet been filled
+                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `bookID` = '0' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)";
                 DatabaseManager::checkError($sql);
                 $num1 = DatabaseManager::getNumResults();
+                //find existing books that aren't already checked out
                 $sql = "SELECT `books`.`ID` FROM `books`
                         JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
                         WHERE `books`.`libraryID` = '".$libField->getValue()."' AND `bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
                             SELECT `bookID`
                             FROM `checkouts` AS `checkout2`
-                            WHERE `bookTypeID` = '".$id."' AND `in` = DEFAULT(`in`)
+                            WHERE `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)
                         )";
                 DatabaseManager::checkError($sql);
                 $num2 = DatabaseManager::getNumResults();
@@ -157,6 +159,8 @@
     function showCheckoutForm(array $checkout) {
         $books = getAvailableBooksForISBN($checkout["bookID"]);
         ?>
+        Reserved: <?php print $checkout["reserved"]; ?>
+        <br>
         <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
             <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
                                     parameters: Form.serialize(this)+'&id=<?php print $checkout["ID"]; ?>',

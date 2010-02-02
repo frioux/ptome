@@ -6,7 +6,7 @@
     require_once($path."admin/scripts/functions.php");
 
     //fetch my TOME reservations
-    $sql = "SELECT `checkouts`.`ID`, `checkouts`.`semester`,
+    $sql = "SELECT `checkouts`.`ID`, `checkouts`.`semester`, `checkouts`.`reserved`,
             `borrowers`.`ID` AS `patronID`, `borrowers`.`name`,
             `bookTypes`.`ID` as `bookID`, `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`, `bookTypes`.`isbn13`, `bookTypes`.`isbn10`
             FROM `checkouts`
@@ -42,7 +42,7 @@
 
     if($_SESSION["interTOME"]) {
         //fetch my TOME reservations from other floors
-        $sql = "SELECT `checkouts`.`ID`, `checkouts`.`semester`,
+        $sql = "SELECT `checkouts`.`ID`, `checkouts`.`semester`, `checkouts`.`reserved`,
                 `borrowers`.`ID` AS `patronID`, `borrowers`.`name`,
                 `bookTypes`.`ID` as `bookID`, `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`, `bookTypes`.`isbn13`, `bookTypes`.`isbn10`,
                 `libraries`.`name` as `libraryName`
