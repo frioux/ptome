@@ -25,7 +25,6 @@
 	class SessionText extends Hidden {
 		/** @var The name of this field (without characters that cause problems in array key names (such as '|')). */
 		private $keyName;
-        private $value;
 
 		/**
 		 * Constructs a form field with information on how to display it.
@@ -43,13 +42,20 @@
         }
 
         /**
+		 * Prepares a form field for display.
+		 *
+		 * @return STRING HTML to display for the form field
+		 */
+		function display() {
+            return "";
+        }
+
+        /**
 		 * Processes this field, updates the current value field, and returns formated data ready for insertion into a SQL database.
 		 *
-		 * @param STRING $value Value to process
-		 * @param INTEGER $mode The type of this form (one of the form type constants defined in the Form class)
 		 * @return STRING Formatted string ready for insertion into a SQL database
 		 */
-		function process($value, $mode) {
+		function process() {
 			$this->default = $_SESSION[$this->keyName];
             $this->isEmpty = empty($this->default);
 			session_unregister($this->keyName);

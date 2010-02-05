@@ -22,7 +22,7 @@
 	}
 	$_SESSION["loginAttempts"]++;
 
-   require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 	require_once($path."OpenSiteAdmin/scripts/classes/LoginManager.php");
 
 	$loginManager = new LoginManager();

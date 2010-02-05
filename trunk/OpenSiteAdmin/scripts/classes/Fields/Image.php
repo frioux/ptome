@@ -36,7 +36,7 @@
 		 * Attempts to delete the given file.
 		 *
 		 * @param STRING $file The full name and path (relative or absolute) of the file to delete.
-		 * @return VOID
+		 * @return BOOLEAN
 		 */
 		private function deleteFile($file) {
 			if(file_exists($file)) {

@@ -40,7 +40,7 @@
     <tbody>
         <?php
         foreach($books as $book) {
-            $fieldset = getProcessISBNCheckoutFieldset($book["bookID"], $numBooks);
+            $form3 = getProcessISBNCheckoutFieldset($book["bookID"]);
 
             $form = new Form(Form::EDIT, $_SERVER["REQUEST_URI"]);
             $form->setSubmitText("Update");
@@ -92,19 +92,9 @@
                             } elseif(isset($_GET["race"]) && $_GET["race"] == $book["bookID"]) {
                                 print "Sorry, someone reserved it just before you did...<br>";
                             } else {
+                                $form3->display();
+                            }
                         ?>
-                        <form action="" method="post">
-                            <input type="hidden" name="fieldset<?php print $book["bookID"]; ?>" value="1">
-                            <?php
-                                $fieldset->display();
-                                if($numBooks > 0) {
-                                    print '<input name="submit" value="Reserve Book" type="submit">';
-                                } else {
-                                    print "There are no books available for this semester. Sorry.";
-                                }
-                            ?>
-                        </form>
-                        <?php } ?>
                     </div>
                 </td>
             </tr>
@@ -130,7 +120,7 @@
 </p>
 <?php
     $form = new Form(Form::ADD, $_SERVER["REQUEST_URI"]);
-    $fieldset = new Fieldset_Vertical(Form::EDIT);
+    $fieldset = new Fieldset_Vertical($form->getFormType());
     $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
     $linkField = $fieldset->addField(new ISBNField("1", "ISBN", null, true, true));
     $ajax = new Ajax_AutoComplete("ajaxBook.php", 3);
@@ -139,6 +129,7 @@
     $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, true, true));
     $fieldset->addField(new RadioButtons("usable", "Usable", array(1=>"Yes", 0=>"No"), true, false), 1);
     $fieldset->addField(new Hidden("verified", "", null, true, true), date("Y-m-d"));
+    $fieldset->addField(new Hidden("verifiedSemester", "", null, true, true), $_SESSION["semester"]);
     $fieldset->addField(new Hidden("classID", "", null, true, true), $id);
     $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>4, "cols"=>30), false, false));
 
@@ -146,6 +137,8 @@
     $fieldset->addRowManager($row);
     $form->addFieldset($fieldset);
     $form->process();
+    $form->setSubmitText("Update");
+    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', '".$bookIDField->getFieldName()."']));");
 ?>
 <script type="text/javascript">
     <!--

@@ -111,6 +111,11 @@
 			return LoginManager::UNKNOWN;
 		}
 
+        /**
+         * Returns the primary key for the current user
+         *
+         * @return INT
+         */
         function getUserID() {
             return $this->userID;
         }

@@ -115,7 +115,6 @@
         /**
          * Wrapper for getting the last insert ID
          *
-         * @param RESOURCE The connection resource to reference.
          * @return MIXED false on failure, int on success.
          */
         static function getInsertID() {
@@ -134,8 +133,8 @@
         /**
          * Wrapper for getting an array of the next row's data.
          *
-         * @param RESOURCE The connection resource to reference.
-         * @return INT the number of rows in this result set
+         * @param OBJECT The connection resource to reference.
+         * @return ARRAY the next row's data.
          */
         static function fetchArray($result) {
             return mysqli_fetch_row($result);
@@ -144,8 +143,8 @@
         /**
          * Wrapper for getting an associative array of the next row's data.
          *
-         * @param RESOURCE The connection resource to reference.
-         * @return ARRAY The next row's data.
+         * @param OBJECT The connection resource to reference.
+         * @return ARRAY The next row's data in an associative array.
          */
         static function fetchAssoc($result) {
             return mysqli_fetch_assoc($result);

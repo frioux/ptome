@@ -60,8 +60,11 @@ Field.php
     REMOVED support for default values. This has been rolled into an optional second parameter in
             Fieldset's addField method.
 Form.php
+    ADDED method displaySubmitButton() to display the submit button seperately from form display
+    ADDED method getQS() to inform list managers of which was used if multiple lists are on a single page.
     ADDED method processable() to indicate wether or not a form is ready to be processed
     ADDED method setSubmitText() to set custom text for the submit button
+    ADDED method setAjax() to set custom ajax on the form submit button
     CHANGED process() to process data only if it is ready to be processed
 
 Version 0.9.9

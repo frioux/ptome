@@ -74,14 +74,14 @@
     $fieldset->addField(new Hidden("libraryID", "", null, true, true), $_SESSION["libraryID"]);
     $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, false, true), 0);
     $linkField = $fieldset->addField(new ISBNFIeld("1", "ISBN", null, true, true));
-    $ajax = new Ajax_AutoComplete("ajaxBook.php", 3);
-    $ajax->setCallbackFunction("bookCallback");
-    $linkField->addAjax($ajax);
+    $ajax1 = new Ajax_AutoComplete("ajaxBook.php", 3);
+    $ajax1->setCallbackFunction("bookCallback");
+    $linkField->addAjax($ajax1);
     $donatorIDField = $fieldset->addField(new Hidden("donatorID", "", null, false, true));
     $donatorField = $fieldset->addField(new Text("2", "Originator", null, true, true));
-    $ajax = new Ajax_AutoComplete("ajaxPatron.php", 3);
-    $ajax->setCallbackFunction("patronCallback");
-    $donatorField->addAjax($ajax);
+    $ajax2 = new Ajax_AutoComplete("ajaxPatron.php", 3);
+    $ajax2->setCallbackFunction("patronCallback");
+    $donatorField->addAjax($ajax2);
     $fieldset->addField(new Date("expires", "Expire Date", null, true, false));
     $fieldset->addField(new TextArea("comments", "Comments", array("rows"=>2, "cols"=>30), false));
 
@@ -91,6 +91,7 @@
     $hooks = array(new addBookHook($fieldset->getFields()));
     $form->process($hooks);
     $form->setSubmitText("Add TOME Book");
+    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax1->getName()."', '".$bookIDField->getFieldName()."', '".$ajax2->getName()."', '".$donatorIDField->getFieldName()."']));");
 ?>
 <h1>Add TOME Book</h1>
 <script type="text/javascript">

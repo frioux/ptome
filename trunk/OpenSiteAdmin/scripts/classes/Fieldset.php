@@ -127,17 +127,21 @@
             if($this->isEmpty() && $this->silent) {
                 return true;
             }
+            $success = true;
 			foreach($this->fields as $field) {
-				$field->databasePrep();
+				$success = $field->databasePrep() && $success;
 			}
-            //refetch values from fields to allow for custom scenarios
+            if(!$success) {
+                return false;
+            }
+/*            //refetch values from fields to allow for custom scenarios
             foreach($this->fields as $field) {
                 if(is_array($field->getValue())) { //handle password fields, etc
                     $this->values = array_merge($this->values, $field->getValue());
                 } else {
                     $this->values[$field->getName()] = $field->getValue();
                 }
-            }
+            }*/
             //hand off to the db row
             foreach($this->dbRows as $dbRow) {
                 $dbRow->setValues($this->values);
@@ -157,11 +161,8 @@
                 }
             }
             //reload db values (to update fields like autoincrementing keys))
+            //and push them back out to the fields
             $this->init();
-            //push db values back out to the fields
-            foreach($this->fields as $field) {
-                $field->setValue($this->values[$field->getName()]);
-            }
 			return true;
 		}
 
@@ -220,7 +221,10 @@
             foreach($this->dbRows as $row) {
                 $ret = array_merge($row->getValues($tmp), $ret);
             }
-            return $ret;
+            //the database might not manage some of the form fields,
+        	//so this addition retains them.
+        	//NOTE: array_merge() will reorder numerical keys. DON'T USE IT
+            return $ret + $this->values;
         }
 
         /**
@@ -247,10 +251,7 @@
          * @return VOID
          */
         function init() {
-        	//the database might not manage some of the form fields,
-        	//so this addition retains them.
-        	//NOTE: array_merge() will reorder numerical keys. DON'T USE IT
-            $this->values = $this->getDBValues() + $this->values;
+            $this->values = $this->getDBValues();
             if(!isset($_REQUEST["update"])) {
                 foreach($this->values as $field=>$value) {
                     if(is_object($this->fields[$field])) { //ignore psuedo-fields like password_salt

@@ -55,7 +55,7 @@
 		 *
 		 * @param ARRAY $filters Array of Filter objects to use to filter a SQL query to get data for this form.
 		 * @param MIXED $data Optional data to use in this form.
-		 * @return STRING Error message.
+		 * @return STRING Select box or error message.
 		 */
 		function getForm(array $filters=null, $data=null) {
 			if(!is_array($data)) {
@@ -103,7 +103,7 @@
 		/**
 		 * Returns whether or not this filter has a value to use to alter a database query.
 		 *
-		 * @return STRING True if this field can create a meaningful where clause
+		 * @return BOOLEAN True if this field can create a meaningful where clause
 		 */
 		function isEmpty() {
 			return empty($this->defaultValue);
