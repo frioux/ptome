@@ -14,6 +14,7 @@
 	 */
 
 
+    require_once($path."OpenSiteAdmin/scripts/classes/Hook.php");
 	require_once($path."OpenSiteAdmin/scripts/classes/Fieldset.php");
 
 	/**
@@ -59,15 +60,17 @@
         /** @var Unique ID for this form. */
         protected $id;
         /** @var Array of fieldsets in this form. */
-		private $fieldsets;
+		protected $fieldsets;
 		/** @var The type of this form (one of the type constants). */
-		private $formType;
+		protected $formType;
 		/** @var URL To redirect to on success (relative or absolute). */
-		private $redir;
+		protected $redir;
         /** @var Optional custom text for the submit button. */
         protected $submitText;
         /** @var URL to submit form data to. */
         protected $formAction;
+        /** @var ajax Optional ajax to append to the submit button. */
+        protected $ajax;
 
 		/**
 		 * Constructs a new form manager, which manages all the forms on a page.
@@ -87,6 +90,7 @@
 			}
 			$this->redir = $redir;
             $this->formAction = $formAction;
+            $this->ajax = null;
 		}
 
 		/**
@@ -124,15 +128,27 @@
 				$fieldset->display();
 			}
             print '<br>';
+            $this->displaySubmitButton($showUpdate);
+			print '</form>';
+        }
+
+        /**
+         * Displays the submit button for this form
+         *
+         * @param BOOLEAN $showUpdate If true, shows an update button
+		 * @return VOID
+         */
+        protected function displaySubmitButton($showUpdate) {
             if($showUpdate) {
                 print '<input type="submit" name="update" value="Update">&nbsp;&nbsp;&nbsp;&nbsp;';
             }
             print '<input type="submit" name="submit" value="'.$this->getSubmitText($this->formType).'"';
 			if($this->formType == Form::DELETE) {
 				print ' onClick="return(window.confirm(\'Are you sure you want to permanently delete this?\'))"';
-			}
+			} elseif(!empty($this->ajax)) {
+                print ' onClick="'.$this->ajax.'"';
+            }
 			print '>';
-			print '</form>';
         }
 
         /**
@@ -164,6 +180,15 @@
 			}
 		}
 
+        /**
+         * Returns a unique identifier for this form ready for insertion into a uri.
+         *
+         * @return STRING
+         */
+        function getQS() {
+            return "form".$this->id."=1";
+        }
+
 		/**
 		 * Returns the text for a submit button for a given form type.
 		 *
@@ -187,10 +212,6 @@
 			}
 		}
 
-        function getQS() {
-            return "form".$this->id."=1";
-        }
-
 		/**
 		 * Initiates processing for all the fieldset in this form.
 		 *
@@ -203,6 +224,11 @@
 		 * @return VOID
 		 */
 		function process(array $hooks=array()) {
+            foreach($hooks as $hook) {
+                if(!$hook instanceof hook && $hook !== null) {
+                    throw new Exception("You attempted to set a hook that does not implement the hook interface");
+                }
+            }
 			if(!$this->processable()) {
                 return false;
             }
@@ -253,6 +279,16 @@
          */
         function selected() {
             return array_key_exists("form".$this->id, $_REQUEST);
+        }
+
+        /**
+         * Set onclick= ajax for the submit button
+         *
+         * @param STRING $ajax Text for the submit button.
+         * @return VOID
+         */
+        function setAjax($ajax) {
+            $this->ajax = $ajax;
         }
 
         /**

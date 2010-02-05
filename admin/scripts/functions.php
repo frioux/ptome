@@ -1,4 +1,10 @@
 <?php
+    require_once($path."OpenSiteAdmin/scripts/classes/Form.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/Fieldset.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
+    require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
+
     function getBookAvailability($id) {
         if(!$_SESSION["interTOME"]) {
             $where = "`libraries`.`ID` = '".$_SESSION["libraryID"]."' AND ";
@@ -37,69 +43,6 @@
         }
         ksort($libBooks);
         return $libBooks;
-    }
-
-    function processReserve(Fieldset $fieldset, RowManager $row, Field $linkField, $id, Field $libField=null) {
-        if(isset($_REQUEST["submit"]) && $_REQUEST["fieldset".$id]) {
-            //Race condition - there aren't even any books left.
-            if($libField == null) {
-                die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$id));
-            }
-            if($fieldset->process()) {
-                $result = DatabaseManager::checkError("select `ID` from `borrowers` where `email` = '".$linkField->getValue()."'");
-                if(DatabaseManager::getNumResults($result) == 0) {
-                    //this patron doesn't exist, so we need to create them.
-                    //But, we still want to move this reservations forward.
-                    //So, what we'll do is order some Creme Soda for our tomekeeper, and then, while they're distracted,
-                    //we run over, save the reservation without a borrowerID, store the table name and primary key in the session
-                    //and run away!
-                    //It's really brilliant, as long as they like Creme Soda...
-                    $storeCreateUser = true;
-                    $_SESSION["post"]["email"] = $linkField->getValue();
-                    $linkField->setValue(0);
-                } else {
-                    $tmp = DatabaseManager::fetchAssoc($result);
-                    $linkField->setValue($tmp["ID"]);
-                }
-
-                //ensure we don't checkout the same book twice.
-                //we don't use LOW_PRIORITY here because this is a read heavy app.
-                $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$row->getTableName()."` WRITE,
-                        `errorLog` WRITE, `books` READ, `bookTypes` READ";
-                DatabaseManager::checkError($sql);
-                //finding reservations for the ISBN from this library that have not yet been filled
-                $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$id."' AND `bookID` = '0' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)";
-                DatabaseManager::checkError($sql);
-                $num1 = DatabaseManager::getNumResults();
-                //find existing books that aren't already checked out
-                $sql = "SELECT `books`.`ID` FROM `books`
-                        JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
-                        WHERE `books`.`libraryID` = '".$libField->getValue()."' AND `bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
-                            SELECT `bookID`
-                            FROM `checkouts` AS `checkout2`
-                            WHERE `bookTypeID` = '".$id."' AND `libraryFromID` = '".$libField->getValue()."' AND `in` = DEFAULT(`in`)
-                        )";
-                DatabaseManager::checkError($sql);
-                $num2 = DatabaseManager::getNumResults();
-                if($num2-$num1 > 0) {
-                    $fieldset->commit();
-                } else {
-                    die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$id));
-                }
-                //release the locks, and we're done.
-                DatabaseManager::checkError("UNLOCK TABLES");
-                if($storeCreateUser) {
-                    $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
-                    $_SESSION["post"]["table"] = "checkouts";
-                    $_SESSION["post"]["field"] = "borrowerID";
-                    redir_push($_SERVER["REQUEST_URI"]);
-                    $_SESSION["post"]["reserveID"] = $id;
-                    header("Location:".$path."addPatron.php");
-                } else {
-                    header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$id);
-                }
-            }
-        }
     }
 
     function getISBN($isbn13, $isbn10) {
@@ -215,14 +158,125 @@
         <?php
     }
 
-    function getProcessISBNCheckoutFieldset($bookTypeID, &$numBooks) {
+    class CheckoutFormHook implements hook {
+        protected $fieldset;
+        protected $row;
+        protected $linkField;
+        protected $libField;
+        protected $id;
+
+        function __construct(Fieldset $fieldset, RowManager $row, Field $linkField, $id, Field $libField=null) {
+            $this->fieldset = $fieldset;
+            $this->row = $row;
+            $this->linkField = $linkField;
+            $this->libField = $libField;
+            $this->id = $id;
+        }
+
+        function process() {
+            //Race condition - there aren't even any books left.
+            if($this->libField == null) {
+                die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$this->id));
+            }
+
+            $this->fieldset->addRowManager($this->row);
+            $this->fieldset->process();
+            $result = DatabaseManager::checkError("select `ID` from `borrowers` where `email` = '".$this->linkField->getValue()."'");
+            if(DatabaseManager::getNumResults($result) == 0) {
+                //this patron doesn't exist, so we need to create them.
+                //But, we still want to move this reservations forward.
+                //So, what we'll do is order some Creme Soda for our tomekeeper, and then, while they're distracted,
+                //we run over, save the reservation without a borrowerID, store the table name and primary key in the session
+                //and run away!
+                //It's really brilliant, as long as they like Creme Soda...
+                $storeCreateUser = true;
+                $_SESSION["post"]["email"] = $this->linkField->getValue();
+                $this->linkField->setValue(0);
+            } else {
+                $tmp = DatabaseManager::fetchAssoc($result);
+                $this->linkField->setValue($tmp["ID"]);
+            }
+
+            //ensure we don't checkout the same book twice.
+            //we don't use LOW_PRIORITY here because this is a read heavy app.
+            $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$this->row->getTableName()."` WRITE,
+                    `errorLog` WRITE, `books` READ, `bookTypes` READ";
+            DatabaseManager::checkError($sql);
+            //finding reservations for the ISBN from this library that have not yet been filled
+            $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$this->id."' AND `bookID` = '0' AND `libraryFromID` = '".$this->libField->getValue()."' AND `in` = DEFAULT(`in`)";
+            DatabaseManager::checkError($sql);
+            $num1 = DatabaseManager::getNumResults();
+            //find existing books that aren't already checked out
+            $sql = "SELECT `books`.`ID` FROM `books`
+                    JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
+                    WHERE `books`.`libraryID` = '".$this->libField->getValue()."' AND `bookTypes`.`ID` = '".$this->id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
+                        SELECT `bookID`
+                        FROM `checkouts` AS `checkout2`
+                        WHERE `bookTypeID` = '".$this->id."' AND `libraryFromID` = '".$this->libField->getValue()."' AND `in` = DEFAULT(`in`)
+                    )";
+            DatabaseManager::checkError($sql);
+            $num2 = DatabaseManager::getNumResults();
+            if($num2-$num1 > 0) {
+                $this->fieldset->commit();
+            } else {
+                die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$this->id));
+            }
+            //release the locks, and we're done.
+            DatabaseManager::checkError("UNLOCK TABLES");
+            if($storeCreateUser) {
+                $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
+                $_SESSION["post"]["table"] = "checkouts";
+                $_SESSION["post"]["field"] = "borrowerID";
+                redir_push($_SERVER["REQUEST_URI"]);
+                $_SESSION["post"]["reserveID"] = $this->id;
+                header("Location:".$path."addPatron.php");
+            } else {
+                header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id);
+            }
+        }
+    }
+
+    class CheckoutForm extends Form {
+        protected $hasBooks;
+
+        /**
+		 * Constructs a new form manager, which manages all the forms on a page.
+		 *
+		 * @param INTEGER $type One of the mode constants defined in this class.
+		 * @param STRING $redir URL (relative or absolute) to send the user to on successful form processing.
+		 * @param STRING $formAction URL (relative or absolute) to submit form data to for processing.
+		 */
+		function __construct($type, $hasBooks, $redir=null, $formAction="") {
+            $this->hasBooks = $hasBooks;
+            parent::__construct($type, $redir, $formAction);
+        }
+
+        /**
+         * Displays the submit button for this form
+         *
+         * @param BOOLEAN $showUpdate If true, shows an update button
+		 * @return VOID
+         */
+         protected function displaySubmitButton($showUpdate) {
+            if($this->hasBooks) {
+                parent::displaySubmitButton($showUpdate);
+            } else {
+                print "There are no books available for this semester. Sorry.";
+            }
+        }
+    }
+
+    function getProcessISBNCheckoutFieldset($bookTypeID) {
         $libBooks = getBookAvailability($bookTypeID);
         $numBooks = count($libBooks);
 
-        $fieldset = new Fieldset_Vertical(Form::ADD);
+        $form = new CheckoutForm(Form::ADD, $numBooks > 0, $_SERVER["REQUEST_URI"]);
+        $fieldset = new Fieldset_Vertical($form->getFormType());
+
         $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
         $linkField = $fieldset->addField(new Text("borrowerID", "Patron", null, true, true));
-        $linkField->addAjax(new Ajax_AutoComplete("ajaxPatron.php", 3));
+        $ajax = new Ajax_AutoComplete("ajaxPatron.php", 3);
+        $linkField->addAjax($ajax);
         $fieldset->addField(new Hidden("bookTypeID", "", null, true, true), $bookTypeID);
         $fieldset->addField(new Hidden("tomekeeperID", "", null, false, true), $_SESSION["ID"]);
         $fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
@@ -235,46 +289,60 @@
         }
 
         $row = new RowManager("checkouts", $keyField->getName());
-        $fieldset->addRowManager($row);
-        processReserve($fieldset, $row, $linkField, $bookTypeID, $libField);
-        return $fieldset;
+        //don't add the row to the fieldset. The process hook will take care of that.
+        $form->addFieldset($fieldset);
+        $form->process(array(new CheckoutFormHook($fieldset, $row, $linkField, $bookTypeID, $libField)));
+        $form->setSubmitText("Reserve Book");
+
+        return $form;
     }
 
-    function processBookAssociation(Fieldset $fieldset, Field $keyField, Field $linkField, array $book) {
-        if(isset($_REQUEST["submit"]) && $_REQUEST["form1"]) {
-            //we MUST have at least a seamingly valid class ID before we can move forward
-            if($fieldset->process()) {
-                $classID = $fieldset->getValue("classID");
-                if(empty($classID)) {
-                    print '<div class="alert bad">Sorry, the class '.$linkField->getValue().' doesn\'t exist</div>';
-                    return;
-                } else {
-                    $result = DatabaseManager::checkError("select `ID` from `classbooks` where `classID` = '".$classID."' and bookID = '".$book["bookID"]."'");
-                    if(DatabaseManager::getNumResults($result) == 0) { //add
-                        $fieldset->setFormType(Form::ADD);
-                        $row = new RowManager("classbooks", $keyField->getName());
-                    } else { //edit
-                        $fieldset->setFormType(Form::EDIT);
-                        $tmp = DatabaseManager::fetchAssoc($result);
-                        $rowID = $tmp["ID"];
-                        $row = new RowManager("classbooks", $keyField->getName(), $rowID);
-                    }
-                    $fieldset->addRowManager($row);
-                    //we have a db row now, so we need to reprocess
-                    if($fieldset->process()) {
-                        $keyField->setValue($rowID);
-                        $linkField->setValue($classID);
-                        $fieldset->commit();
-                        //return those fields to their original states
-                        header("Location:".$_SERVER["REQUEST_URI"]);
-                    }
+    class ProcessBookAssociationHook implements hook {
+        protected $fieldset;
+        protected $keyField;
+        protected $linkField;
+        protected $book;
+
+        function __construct(Fieldset $fieldset, Field $keyField, Field $linkField, array $book) {
+            $this->fieldset = $fieldset;
+            $this->keyField = $keyField;
+            $this->linkField = $linkField;
+            $this->book = $book;
+        }
+
+        function process() {
+            $classID = $this->fieldset->getValue("classID");
+            if(empty($classID)) {
+                print '<div class="alert bad">Sorry, the class '.$this->linkField->getValue().' doesn\'t exist</div>';
+                return;
+            } else {
+                $result = DatabaseManager::checkError("select `ID` from `classbooks` where `classID` = '".$classID."' and bookID = '".$this->book["bookID"]."'");
+                if(DatabaseManager::getNumResults($result) == 0) { //add
+                    $this->fieldset->setFormType(Form::ADD);
+                    $row = new RowManager("classbooks", $this->keyField->getName());
+                } else { //edit
+                    $this->fieldset->setFormType(Form::EDIT);
+                    $tmp = DatabaseManager::fetchAssoc($result);
+                    $rowID = $tmp["ID"];
+                    $row = new RowManager("classbooks", $this->keyField->getName(), $rowID);
+                }
+                $this->fieldset->addRowManager($row);
+                //we have a db row now, so we need to reprocess
+                if($this->fieldset->process()) {
+                    $this->keyField->setValue($rowID);
+                    $this->linkField->setValue($classID);
+                    $this->fieldset->commit();
+                    //return those fields to their original states
+                    header("Location:".$_SERVER["REQUEST_URI"]);
                 }
             }
         }
     }
 
     function getProcessBookAssociation(array $book) {
-        $fieldset = new Fieldset_Vertical(Form::EDIT);
+        $form = new Form(Form::EDIT, $_SERVER["REQUEST_URI"]);
+        $fieldset = new Fieldset_Vertical($form->getFormType());
+
         $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
         $linkField = $fieldset->addField(new ClassIDField("1", "Class ID", array("maxlength"=>8), true, true));
         $ajax = new Ajax_AutoComplete("ajaxClass.php", 3);
@@ -287,9 +355,13 @@
         $fieldset->addField(new Hidden("verified", "", null, true, true), date("Y-m-d"));
         $fieldset->addField(new Hidden("verifiedSemester", "", null, true, true), $_SESSION["semester"]);
         $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>4, "cols"=>30), false, false));
-        processBookAssociation($fieldset, $keyField, $linkField, $book);
 
-        return $fieldset;
+        $form->addFieldset($fieldset);
+        $form->process(array(new ProcessBookAssociationHook($fieldset, $keyField, $linkField, $book)));
+        $form->setSubmitText("Associate Class");
+        $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', 'classID".$book["bookID"]."']));");
+
+        return $form;
     }
 
     function redir_push($str) {

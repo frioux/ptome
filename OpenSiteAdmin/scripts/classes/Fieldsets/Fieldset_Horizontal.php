@@ -63,7 +63,7 @@
          * @param INTEGER $numExtraRows The number of blank rows to display.
          * @return ARRAY List of HorizontalFieldsets.
          */
-		static function generate(RowManager $iterator, $fields, Form $form, $numExtraRows=0) {
+		static function generate(RowManager $iterator, array $fields, Form $form, $numExtraRows=0) {
 			$ret = array();
 			$mgrs = $iterator->getRowManagers();
 

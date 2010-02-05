@@ -26,7 +26,6 @@
 		/**
 		 * Prepares this form field for display.
 		 *
-		 * @param OBJECT $dbRow A RowManager object to interface with.
 		 * @return STRING HTML to display for the form field
 		 */
 		function display() {

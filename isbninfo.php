@@ -26,30 +26,20 @@
     }
     $book = DatabaseManager::fetchAssoc($result);
 
-    $fieldset = getProcessBookAssociation($book);
-    $fieldset2 = getProcessISBNCheckoutFieldset($id, $numBooks);
+    $form = getProcessBookAssociation($book);
+    $form2 = getProcessISBNCheckoutFieldset($id);
 
     $sql = "Select `classes`.`ID`, `classes`.`class`, `classes`.`name` from `classes`
             join `classbooks` on `classes`.`ID` = `classbooks`.`classID`
-            where `classbooks`.`bookID` = '".$book["bookID"]."'";
+            where `classbooks`.`bookID` = '".$book["bookID"]."' AND `classbooks`.`usable` = '1'";
     $classes = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>View Book</h1>
 <h3>Reserve Book</h3>
 <div name="reserve" id="reserve">
-    <?php if(!isset($_GET["reserved"]) && !isset($_GET["race"])) { ?>
-        <form action="" method="post">
-            <input type="hidden" name="fieldset<?php print $id; ?>" value="1">
-            <?php
-                $fieldset2->display();
-                if($numBooks > 0) {
-                    print '<input name="submit" value="Reserve Book" type="submit">';
-                } else {
-                    print "There are no books available for this semester. Sorry.";
-                }
-            ?>
-        </form>
     <?php
+        if(!isset($_GET["reserved"]) && !isset($_GET["race"])) {
+            $form2->display();
         } elseif(!isset($_GET["race"])) {
             print 'Book Reserved!';
         } else {
@@ -87,11 +77,7 @@
                     new Ajax.Autocompleter( 'isbn', 'isbn_auto_complete', 'ajaxBook.php', {frequency:0.2, minChars:3, afterUpdateElement:isbnCallback} )
                     //-->
                 </script>
-                <form action="" method="post">
-                    <input type="hidden" name="form1" value="1">
-                    <?php $fieldset->display(); ?>
-                    <input name="submit" value="Associate Class" type="submit">
-                </form>
+                <?php $form->display(); ?>
             </td>
         </tr>
     </tbody>

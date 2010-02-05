@@ -71,6 +71,12 @@
 			return "********";
         }
 
+        /**
+         * Post-processes the field (sets the fields value internally and in the database).
+         *
+         * @param MIXED $value Value to store.
+         * @return BOOLEAN False if any error were encountered.
+         */
         protected function postProcess($value) {
             $value[0] = SecurityManager::SQLPrep($value[0]);
             $value[1] = SecurityManager::SQLPrep($value[1]);

@@ -52,7 +52,12 @@
 			if(is_array($val)) {
 				dump($name."[".$key."]", $val);
 			} else {
-				print $name."[".$key."] = ".$val."<br>";
+				print $name."[".$key."] = ";
+                if(is_object($val)) {
+                    print get_class($val)."<br>";
+                } else {
+                    print $val."<br>";
+                }
 			}
 		}
 	}

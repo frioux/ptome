@@ -40,11 +40,11 @@
             where `bookID` = '".$book["ID"]."' order by `out` DESC";
     $checkouts = DatabaseManager::fetchAssocArray($sql);
 
-    $fieldset = getProcessBookAssociation($book);
+    $form = getProcessBookAssociation($book);
 
     $sql = "Select `classes`.`ID`, `classes`.`class`, `classes`.`name` from `classes`
             join `classbooks` on `classes`.`ID` = `classbooks`.`classID`
-            where `classbooks`.`bookID` = '".$book["bookID"]."'";
+            where `classbooks`.`bookID` = '".$book["bookID"]."' AND `classbooks`.`usable` = '1'";
     $classes = DatabaseManager::fetchAssocArray($sql);
 ?>
 <h1>TOME Book Info</h1>
@@ -80,11 +80,7 @@
                     }
                     //-->
                 </script>
-                <form action="" method="post">
-                    <input type="hidden" name="form1" value="1">
-                    <?php $fieldset->display(); ?>
-                    <input name="submit" value="Associate Class" type="submit">
-                </form>
+                <?php $form->display(); ?>
             </td>
         </tr>
     </tbody>

@@ -19,7 +19,7 @@
 	 *
 	 * A foreign key gets its value from a key field which must be processed before
 	 * this field.
-	 * $option = Instance of class Key
+	 * $option = Instance of class Field
 	 *
 	 * @author John Oren
 	 * @version 1.1 August 4, 2008
@@ -45,6 +45,12 @@
             $this->setKey();
 		}
 
+        /**
+         * Hack to allow foreign keys to process correctly if they are called
+         * before their associated key gets processed.
+         *
+         * @return BOOLEAN False if unsuccessful
+         */
         function databasePrep() {
 			return $this->process();
 		}

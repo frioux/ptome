@@ -32,9 +32,9 @@
         /**
          * Constructs the object.
          *
-         * @param STRING Name of the file to post partial data to for completion.
-         * @param INT Minimum number of characters before searching for completions.
-         * @param FLOAT Frequency in seconds to update the completion list.
+         * @param STRING $callback Name of the file to post partial data to for completion.
+         * @param INT $minChars Minimum number of characters before searching for completions.
+         * @param FLOAT $frequency Frequency in seconds to update the completion list.
          */
         function __construct($callback, $minChars, $frequency=0.2) {
             $this->callback = $callback;
@@ -45,7 +45,7 @@
         /**
          * Sets the name of the function to call after an element is selected from the completion list
          *
-         * @param STRING Function name.
+         * @param STRING $function Function name.
          * @return VOID
          */
         function setCallbackFunction($function) {
@@ -58,10 +58,10 @@
          * @return STRING
          */
         function display() {
-            $ret = '<div class="auto_complete" id="'.$this->fieldName.'_auto_complete"></div>
+            $ret = '<div class="auto_complete" id="'.$this->getName().'"></div>
                 <script type="text/javascript">
                     <!--';
-            $ret .= "\nnew Ajax.Autocompleter( '".$this->fieldName."', '".$this->fieldName."_auto_complete', '".$this->callback."', {frequency:".$this->frequency.", minChars:".$this->minChars;
+            $ret .= "\nnew Ajax.Autocompleter( '".$this->fieldName."', '".$this->getName()."', '".$this->callback."', {frequency:".$this->frequency.", minChars:".$this->minChars;
             if(!empty($this->callbackFunction)) {
                 $ret .= ", afterUpdateElement:".$this->callbackFunction;
             }
@@ -69,6 +69,15 @@
                     //-->
                 </script>";
             return $ret;
+        }
+
+        /**
+         * Returns the id of the autocomplete container.
+         *
+         * @return STRING
+         */
+        function getName() {
+            return $this->fieldName.'_auto_complete';
         }
     }
 ?>

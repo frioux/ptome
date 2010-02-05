@@ -51,6 +51,18 @@
     <script src="<?php print $path; ?>layout/scriptaculous.js" type="text/javascript"></script>
     <script src="<?php print $path; ?>layout/tablesort.js" type="text/javascript"></script>
     <script src="<?php print $path; ?>layout/datepickercontrol.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function copyFirstAutocompleteValue(data) {
+            for(i=0; i < data.length; i+=2) {
+                if($(data[i]).children[0].children[0] != undefined) {
+                    id = $(data[i]).children[0].children[0].children[0].getAttribute("id");
+                    $(data[i+1]).value = id;
+                } else {
+                    $(data[i+1]).value = 0;
+                }
+            }
+        }
+    </script>
 
     <link href="<?php print $path; ?>layout/datepickercontrol.css" type="text/css" rel="stylesheet">
     <link href="<?php print $path; ?>layout/screen.css" media="screen,projection" rel="stylesheet" type="text/css" />

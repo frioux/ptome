@@ -123,7 +123,9 @@
          *
          * @return BOOLEAN False if unsuccessful
          */
-		function databasePrep() {}
+		function databasePrep() {
+            return true;
+        }
 
         /**
 		 * Prepares a form field for display.
