@@ -6,7 +6,12 @@
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
     function getBookAvailability($id) {
-        if(!$_SESSION["interTOME"]) {
+        //check if interTOME is open
+        $sql = "select `interTOME` from `libraries` where `ID` = '3'";
+        $result = DatabaseManager::checkError($sql);
+        $row = DatabaseManager::fetchArray($result);
+
+        if(!$_SESSION["interTOME"] || $row[0] == 0) {
             $where = "`libraries`.`ID` = '".$_SESSION["libraryID"]."' AND ";
         }
         $sql = "SELECT `libraries`.`ID`, `libraries`.`name`, `libraries`.`interTOME`

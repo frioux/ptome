@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 12, 2010 at 04:49 PM
+-- Generation Time: Feb 11, 2010 at 01:50 PM
 -- Server version: 5.1.39
 -- PHP Version: 5.3.0
 
@@ -256,12 +256,14 @@ CREATE TABLE IF NOT EXISTS `libraries` (
   `interTOME` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `libraries`
 --
 
+INSERT INTO `libraries` (`ID`, `name`, `interTOME`) VALUES
+(3, 'interTOME', 1);
 
 -- --------------------------------------------------------
 
@@ -287,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `username` (`username`),
   KEY `name` (`name`,`email`,`libraryID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `users`
