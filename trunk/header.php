@@ -54,11 +54,13 @@
     <script type="text/javascript">
         function copyFirstAutocompleteValue(data) {
             for(i=0; i < data.length; i+=2) {
-                if($(data[i]).children[0].children[0] != undefined) {
-                    id = $(data[i]).children[0].children[0].children[0].getAttribute("id");
-                    $(data[i+1]).value = id;
-                } else {
-                    $(data[i+1]).value = 0;
+                if($(data[i+1]).value == undefined) {
+                    if($(data[i]).children[0].children[0] != undefined) {
+                        id = $(data[i]).children[0].children[0].children[0].getAttribute("id");
+                        $(data[i+1]).value = id;
+                    } else {
+                        $(data[i+1]).value = 0;
+                    }
                 }
             }
         }
