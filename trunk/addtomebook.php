@@ -75,12 +75,12 @@
     $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, false, true), 0);
     $linkField = $fieldset->addField(new ISBNFIeld("1", "ISBN", null, true, true));
     $ajax1 = new Ajax_AutoComplete("ajaxBook.php", 3);
-    $ajax1->setCallbackFunction("bookCallback");
+    $ajax1->setCallbackField($bookIDField);
     $linkField->addAjax($ajax1);
     $donatorIDField = $fieldset->addField(new Hidden("donatorID", "", null, false, true));
     $donatorField = $fieldset->addField(new Text("2", "Originator", null, true, true));
     $ajax2 = new Ajax_AutoComplete("ajaxPatron.php", 3);
-    $ajax2->setCallbackFunction("patronCallback");
+    $ajax2->setCallbackField($donatorIDField);
     $donatorField->addAjax($ajax2);
     $fieldset->addField(new Date("expires", "Expire Date", null, true, false));
     $fieldset->addField(new TextArea("comments", "Comments", array("rows"=>2, "cols"=>30), false));
@@ -91,18 +91,8 @@
     $hooks = array(new addBookHook($fieldset->getFields()));
     $form->process($hooks);
     $form->setSubmitText("Add TOME Book");
-    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax1->getName()."', '".$bookIDField->getFieldName()."', '".$ajax2->getName()."', '".$donatorIDField->getFieldName()."']));");
+    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax1->getName()."', '".$bookIDField->getCSSID()."', '".$ajax2->getName()."', '".$donatorIDField->getCSSID()."']));");
 ?>
 <h1>Add TOME Book</h1>
-<script type="text/javascript">
-    <!--
-    function bookCallback(element, entry) {
-        document.getElementById("<?php print $bookIDField->getFieldName(); ?>").setAttribute("value", entry.children[0].getAttribute("id"));
-    }
-    function patronCallback(element, entry) {
-        document.getElementById("<?php print $donatorIDField->getFieldName(); ?>").setAttribute("value", entry.children[0].getAttribute("id"));
-    }
-    //-->
-</script>
 <?php print $form->display(); ?>
 <?php require_once($path."footer.php"); ?>

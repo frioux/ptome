@@ -167,13 +167,15 @@
         protected $fieldset;
         protected $row;
         protected $linkField;
+        protected $patronIDField;
         protected $libField;
         protected $id;
 
-        function __construct(Fieldset $fieldset, RowManager $row, Field $linkField, $id, Field $libField=null) {
+        function __construct(Fieldset $fieldset, RowManager $row, Field $linkField, Field $patronIDField, $id, Field $libField=null) {
             $this->fieldset = $fieldset;
             $this->row = $row;
             $this->linkField = $linkField;
+            $this->patronIDField = $patronIDField;
             $this->libField = $libField;
             $this->id = $id;
         }
@@ -184,10 +186,18 @@
                 die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$this->id));
             }
 
+            //make sure they're actually allowed to check this book out
+            //check if interTOME is open
+            $sql = "select `interTOME` from `libraries` where `ID` = '3'";
+            $result = DatabaseManager::checkError($sql);
+            $row = DatabaseManager::fetchArray($result);
+            if($_SESSION["libraryID"] != $this->libField->getValue() && (!$_SESSION["interTOME"] || $row[0] == 0)) {
+                die(header("Location:".$_SERVER["REQUEST_URI"]));
+            }
+
             $this->fieldset->addRowManager($this->row);
             $this->fieldset->process();
-            $result = DatabaseManager::checkError("select `ID` from `borrowers` where `email` = '".$this->linkField->getValue()."'");
-            if(DatabaseManager::getNumResults($result) == 0) {
+            if($this->patronIDField->isEmpty()) {
                 //this patron doesn't exist, so we need to create them.
                 //But, we still want to move this reservations forward.
                 //So, what we'll do is order some Creme Soda for our tomekeeper, and then, while they're distracted,
@@ -196,10 +206,6 @@
                 //It's really brilliant, as long as they like Creme Soda...
                 $storeCreateUser = true;
                 $_SESSION["post"]["email"] = $this->linkField->getValue();
-                $this->linkField->setValue(0);
-            } else {
-                $tmp = DatabaseManager::fetchAssoc($result);
-                $this->linkField->setValue($tmp["ID"]);
             }
 
             //ensure we don't checkout the same book twice.
@@ -234,9 +240,10 @@
                 $_SESSION["post"]["field"] = "borrowerID";
                 redir_push($_SERVER["REQUEST_URI"]);
                 $_SESSION["post"]["reserveID"] = $this->id;
-                header("Location:".$path."addPatron.php");
+                die(header("Location:".$path."addPatron.php"));
             } else {
-                header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id);
+//                die("got here!<br>");
+                die(header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id));
             }
         }
     }
@@ -279,8 +286,10 @@
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
         $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
-        $linkField = $fieldset->addField(new Text("borrowerID", "Patron", null, true, true));
+        $patronIDField = $fieldset->addField(new Hidden("borrowerID", "", null, true, true), 0);
+        $linkField = $fieldset->addField(new Text("1", "Patron", null, true, true));
         $ajax = new Ajax_AutoComplete("ajaxPatron.php", 3);
+        $ajax->setCallbackField($patronIDField);
         $linkField->addAjax($ajax);
         $fieldset->addField(new Hidden("bookTypeID", "", null, true, true), $bookTypeID);
         $fieldset->addField(new Hidden("tomekeeperID", "", null, false, true), $_SESSION["ID"]);
@@ -289,15 +298,16 @@
         $fieldset->addField(new Hidden("reserved", "", null, true, true), date("Y-m-d H:i:s"));
         $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>1, "cols"=>30), false, false));
         $libField = null;
-        if(count($libBooks) > 0) {
+        if($numBooks > 0) {
             $libField = $fieldset->addField(new Select("libraryFromID", "Library", $libBooks, true, true), $_SESSION["libraryID"]);
         }
 
         $row = new RowManager("checkouts", $keyField->getName());
         //don't add the row to the fieldset. The process hook will take care of that.
         $form->addFieldset($fieldset);
-        $form->process(array(new CheckoutFormHook($fieldset, $row, $linkField, $bookTypeID, $libField)));
+        $form->process(array(new CheckoutFormHook($fieldset, $row, $linkField, $patronIDField, $bookTypeID, $libField)));
         $form->setSubmitText("Reserve Book");
+        $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', '".$patronIDField->getCSSID()."']));");
 
         return $form;
     }
@@ -338,7 +348,7 @@
                     $this->linkField->setValue($classID);
                     $this->fieldset->commit();
                     //return those fields to their original states
-                    header("Location:".$_SERVER["REQUEST_URI"]);
+                    die(header("Location:".$_SERVER["REQUEST_URI"]));
                 }
             }
         }
@@ -349,12 +359,11 @@
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
         $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
+        $classIDField = $fieldset->addField(new Hidden("classID", "", null, true, true), 0);
         $linkField = $fieldset->addField(new ClassIDField("1", "Class ID", array("maxlength"=>8), true, true));
         $ajax = new Ajax_AutoComplete("ajaxClass.php", 3);
-        $ajax->setCallbackFunction("bookCallback".$book["bookID"]);
+        $ajax->setCallbackField($classIDField);
         $linkField->addAjax($ajax);
-        $classIDField = $fieldset->addField(new Hidden("classID", "", null, true, true), 0);
-        $classIDField->setCSSID("classID".$book["bookID"]);
         $fieldset->addField(new Hidden("bookID", "", null, true, true), $book["bookID"]);
         $fieldset->addField(new RadioButtons("usable", "Usable", array(1=>"Yes", 0=>"No"), true, false), 1);
         $fieldset->addField(new Hidden("verified", "", null, true, true), date("Y-m-d"));
