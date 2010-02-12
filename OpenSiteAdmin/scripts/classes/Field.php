@@ -139,7 +139,7 @@
          *
          * @return STRING
          */
-        protected function getCSSID() {
+        public function getCSSID() {
             return $this->cssID;
         }
 

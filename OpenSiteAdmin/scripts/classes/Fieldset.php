@@ -127,13 +127,11 @@
             if($this->isEmpty() && $this->silent) {
                 return true;
             }
-            $success = true;
 			foreach($this->fields as $field) {
-				$success = $field->databasePrep() && $success;
+				if(!$field->databasePrep()) {
+                    return false;
+                }
 			}
-            if(!$success) {
-                return false;
-            }
 /*            //refetch values from fields to allow for custom scenarios
             foreach($this->fields as $field) {
                 if(is_array($field->getValue())) { //handle password fields, etc

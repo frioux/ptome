@@ -26,8 +26,8 @@
         protected $frequency;
         /** @var The minimum number of characters that must be typed before searching for completions. */
         protected $minChars;
-        /** @var The name of the function to call after an element is selected. */
-        protected $callbackFunction;
+        /** @var The name of the field that should be updated by this updater. */
+        protected $callbackField;
 
         /**
          * Constructs the object.
@@ -48,8 +48,8 @@
          * @param STRING $function Function name.
          * @return VOID
          */
-        function setCallbackFunction($function) {
-            $this->callbackFunction = $function;
+        function setCallbackField(Field $field) {
+            $this->callbackField = $field;
         }
 
         /**
@@ -60,10 +60,16 @@
         function display() {
             $ret = '<div class="auto_complete" id="'.$this->getName().'"></div>
                 <script type="text/javascript">
-                    <!--';
+                    <!--
+                    ';
+            if(!empty($this->callbackField)) {
+                $ret .= 'function '.$this->callbackField->getFieldName().'Callback(element, entry) {
+                            $("'.$this->callbackField->getCSSID().'").value = entry.children[0].id;
+                        }';
+            }
             $ret .= "\nnew Ajax.Autocompleter( '".$this->fieldName."', '".$this->getName()."', '".$this->callback."', {frequency:".$this->frequency.", minChars:".$this->minChars;
-            if(!empty($this->callbackFunction)) {
-                $ret .= ", afterUpdateElement:".$this->callbackFunction;
+            if(!empty($this->callbackField)) {
+                $ret .= ", afterUpdateElement:".$this->callbackField->getFieldName()."Callback";
             }
             $ret .= "} )
                     //-->

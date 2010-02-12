@@ -122,11 +122,11 @@
     $form = new Form(Form::ADD, $_SERVER["REQUEST_URI"]);
     $fieldset = new Fieldset_Vertical($form->getFormType());
     $keyField = $fieldset->addField(new Hidden("ID", "", null, true));
+    $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, true, true));
     $linkField = $fieldset->addField(new ISBNField("1", "ISBN", null, true, true));
     $ajax = new Ajax_AutoComplete("ajaxBook.php", 3);
-    $ajax->setCallbackFunction("bookCallback");
+    $ajax->setCallbackField($bookIDField);
     $linkField->addAjax($ajax);
-    $bookIDField = $fieldset->addField(new Hidden("bookID", "", null, true, true));
     $fieldset->addField(new RadioButtons("usable", "Usable", array(1=>"Yes", 0=>"No"), true, false), 1);
     $fieldset->addField(new Hidden("verified", "", null, true, true), date("Y-m-d"));
     $fieldset->addField(new Hidden("verifiedSemester", "", null, true, true), $_SESSION["semester"]);
@@ -138,16 +138,10 @@
     $form->addFieldset($fieldset);
     $form->process();
     $form->setSubmitText("Update");
-    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', '".$bookIDField->getFieldName()."']));");
+    $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', '".$bookIDField->getCSSID()."']));");
+
+    $form->display();
 ?>
-<script type="text/javascript">
-    <!--
-    function bookCallback(element, entry) {
-        document.getElementById("<?php print $bookIDField->getFieldName(); ?>").setAttribute("value", entry.children[0].getAttribute("id"));
-    }
-    //-->
-</script>
-<?php $form->display(); ?>
 <div class="line"></div>
 <?php
     class DeleteClassHook implements hook {
