@@ -107,7 +107,7 @@
     function showCheckoutForm(array $checkout) {
         $books = getAvailableBooksForISBN($checkout["bookID"]);
         ?>
-        Reserved: <?php print $checkout["reserved"]; ?>
+        Reserved: <?php print date('m/d/y', strtotime($checkout["reserved"])); ?>
         <br>
         <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
             <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
