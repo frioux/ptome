@@ -5,6 +5,11 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
+    //finds the books that are available to be reserved given a book ID and the session's current semester
+    //A book can be reserved if:
+    //1. The book has not expired
+    //2. The book is not currently checked out
+    //3. The book does not have a pending reservation for it
     function getBookAvailability($id) {
         //check if interTOME is open
         $sql = "select `interTOME` from `libraries` where `ID` = '3'";
@@ -50,10 +55,13 @@
         return $libBooks;
     }
 
+    //fetch the ISBN number for display
     function getISBN($isbn13, $isbn10) {
+        //prefer ISBN 13
         return (empty($isbn13)) ? $isbn10 : $isbn13;
     }
 
+    //display the standard book information table
     function showBookInfo(array $book, $editable=true, $showID=false) {
         $isbn = getISBN($book["isbn13"], $book["isbn10"]);
         ?>
@@ -104,6 +112,7 @@
         <?php
     }
 
+    //Show the checkout form (not reservation, checkout)
     function showCheckoutForm(array $checkout) {
         $books = getAvailableBooksForISBN($checkout["bookID"]);
         ?>
@@ -150,6 +159,7 @@
         <?php
     }
 
+    //Show the checkin form
     function showCheckinForm(array $book) {
         ?>
         <div class="print-no" id="checkout<?php print $book["checkoutID"]; ?>">
@@ -163,6 +173,7 @@
         <?php
     }
 
+    //processes book reservations
     class CheckoutFormHook implements hook {
         protected $fieldset;
         protected $row;
@@ -234,6 +245,7 @@
             }
             //release the locks, and we're done.
             DatabaseManager::checkError("UNLOCK TABLES");
+            //create the patron if we need to
             if($storeCreateUser) {
                 $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
                 $_SESSION["post"]["table"] = "checkouts";
@@ -242,12 +254,12 @@
                 $_SESSION["post"]["reserveID"] = $this->id;
                 die(header("Location:".$path."addPatron.php"));
             } else {
-//                die("got here!<br>");
                 die(header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id));
             }
         }
     }
 
+    //displays the submit button IFF there are books available to reserve
     class CheckoutForm extends Form {
         protected $hasBooks;
 
@@ -278,6 +290,7 @@
         }
     }
 
+    //displays and processes the reservation form
     function getProcessISBNCheckoutFieldset($bookTypeID) {
         $libBooks = getBookAvailability($bookTypeID);
         $numBooks = count($libBooks);
@@ -312,6 +325,8 @@
         return $form;
     }
 
+    //Processes associating a book type with a class
+    //Decides whether to add a new association entry or edit an existing one
     class ProcessBookAssociationHook implements hook {
         protected $fieldset;
         protected $keyField;
@@ -354,6 +369,7 @@
         }
     }
 
+    //Displays and processes the form to associate book types to classes
     function getProcessBookAssociation(array $book) {
         $form = new Form(Form::EDIT, $_SERVER["REQUEST_URI"]);
         $fieldset = new Fieldset_Vertical($form->getFormType());
@@ -378,6 +394,9 @@
         return $form;
     }
 
+    //pushes a URL onto the redirection stack. Users are redirected from form submissions
+    //based on the contents of this stack
+    //WARNING: Most forms statically redirect. Not all forms use the redirect stack!
     function redir_push($str) {
         if(!is_array($_SESSION["post"]["redir"])) {
             $_SESSION["post"]["redir"] = array();
@@ -385,10 +404,12 @@
         array_push($_SESSION["post"]["redir"], $str);
     }
 
+    //get the value at the top of the redirect stack
     function redir_pop() {
         return array_pop($_SESSION["post"]["redir"]);
     }
 
+    //cleans up the magic session post data if the redirect stack is empty
     function cleanSessionOnEmptyRedir() {
         if(empty($_SESSION["post"]["redir"])) {
             unset($_SESSION["post"]);
