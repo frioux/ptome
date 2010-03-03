@@ -82,8 +82,8 @@
                 <td>".$book["title"]."</td>
                 <td>".$book["author"]."</td>
                 <td>".$book["edition"]."</td>
-                <td><a href=$path.$isbnURL>$isbn</a></td>
-                <td><a href=$path.$bookURL>".$book["ID"]."</a></td>
+                <td><a href=$path$isbnURL>$isbn</a></td>
+                <td><a href=$path$bookURL>".$book["ID"]."</a></td>
             </tr>";
         }
     ?>
