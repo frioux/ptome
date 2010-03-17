@@ -6,19 +6,23 @@
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
     //finds the books that are available to be reserved given a book ID and the session's current semester
-    //A book can be reserved if:
+    //A book can be reserved IFF:
     //1. The book has not expired
-    //2. The book is not currently checked out
-    //3. The book does not have a pending reservation for it
+    //2. The book is not checked out this semester and does not have an unreturned checkout from over 2 semesters ago
+    //3. The book does not have a pending reservation for it only for this semester
+    //4. The book is in your library OR (you are a part of interTOME AND interTOME is open)
     function getBookAvailability($id) {
         //check if interTOME is open
         $sql = "select `interTOME` from `libraries` where `ID` = '3'";
         $result = DatabaseManager::checkError($sql);
         $row = DatabaseManager::fetchArray($result);
 
+        //validate #4
         if(!$_SESSION["interTOME"] || $row[0] == 0) {
             $where = "`libraries`.`ID` = '".$_SESSION["libraryID"]."' AND ";
         }
+        //excluding books that are checked out this semester or have not been returned for over 2 semesters
+        //validate #1,2
         $sql = "SELECT `libraries`.`ID`, `libraries`.`name`, `libraries`.`interTOME`
                 FROM `libraries`
                 JOIN `books` ON `books`.`libraryID` = `libraries`.`ID`
@@ -27,6 +31,7 @@
                     SELECT `checkouts`.`bookID`
                     FROM `checkouts`
                     WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`)
+                        AND `checkouts`.`semestser != '".$_SESSION["semester"]."' AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
                 )";
         //print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
@@ -38,13 +43,16 @@
             }
             $libBooks[$row["ID"]]["count"]++;
         }
-        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`)";
+        //excluding books with reservations pending this semester
+        //validate #3
+        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` == '".$_SESSION["semester"]."'";
         //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
         while($row = DatabaseManager::fetchAssoc($result)) {
             $libBooks[$row["libraryFromID"]]["count"] -= $row["count"];
         }
         foreach($libBooks as $key=>$row) {
+            //remove books with no or negative (what the?) numbers of books
             if($row["count"] <= 0) {
                 unset($libBooks[$key]);
                 continue;
