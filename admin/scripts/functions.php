@@ -31,7 +31,7 @@
                     SELECT `checkouts`.`bookID`
                     FROM `checkouts`
                     WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`)
-                        AND `checkouts`.`semestser != '".$_SESSION["semester"]."' AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
+                        AND `checkouts`.`semester` != '".$_SESSION["semester"]."' AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
                 )";
         //print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
@@ -45,7 +45,7 @@
         }
         //excluding books with reservations pending this semester
         //validate #3
-        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` == '".$_SESSION["semester"]."'";
+        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` = '".$_SESSION["semester"]."'";
         //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
         while($row = DatabaseManager::fetchAssoc($result)) {
