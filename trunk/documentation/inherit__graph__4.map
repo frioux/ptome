@@ -1,0 +1,20 @@
+<map id="G" name="G">
+<area shape="rect" id="node1" href="$classField.html" title="Field" alt="" coords="5,245,59,275"/>
+<area shape="rect" id="node3" href="$classCheckbox.html" title="Checkbox" alt="" coords="112,5,200,35"/>
+<area shape="rect" id="node5" href="$classDate.html" title="Date" alt="" coords="128,59,184,88"/>
+<area shape="rect" id="node7" href="$classForeignKey.html" title="ForeignKey" alt="" coords="108,112,204,141"/>
+<area shape="rect" id="node9" href="$classGroup.html" title="Group" alt="" coords="125,165,187,195"/>
+<area shape="rect" id="node11" href="$classHidden.html" title="Hidden" alt="" coords="123,219,189,248"/>
+<area shape="rect" id="node15" href="$classImage.html" title="Image" alt="" coords="124,272,188,301"/>
+<area shape="rect" id="node17" href="$classPassword.html" title="Password" alt="" coords="113,325,199,355"/>
+<area shape="rect" id="node19" href="$classSelect.html" title="Select" alt="" coords="123,379,189,408"/>
+<area shape="rect" id="node25" href="$classText.html" title="Text" alt="" coords="129,459,183,488"/>
+<area shape="rect" id="node35" href="$classTextArea.html" title="TextArea" alt="" coords="115,512,197,541"/>
+<area shape="rect" id="node13" href="$classSessionText.html" title="SessionText" alt="" coords="268,219,369,248"/>
+<area shape="rect" id="node21" href="$classRadioButtons.html" title="RadioButtons" alt="" coords="261,312,376,341"/>
+<area shape="rect" id="node23" href="$classSemesterPicker.html" title="SemesterPicker" alt="" coords="253,365,384,395"/>
+<area shape="rect" id="node27" href="$classClassIDField.html" title="ClassIDField" alt="" coords="268,419,369,448"/>
+<area shape="rect" id="node29" href="$classISBNField.html" title="ISBNField" alt="" coords="276,472,361,501"/>
+<area shape="rect" id="node31" href="$classLabel.html" title="Label" alt="" coords="289,525,348,555"/>
+<area shape="rect" id="node33" href="$classLETUEmailField.html" title="LETUEmailField" alt="" coords="257,579,380,608"/>
+</map>

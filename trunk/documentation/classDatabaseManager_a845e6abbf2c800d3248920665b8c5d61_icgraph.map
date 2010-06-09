@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$manageUser_8php.html#a513913093cf7196c4c2b76005cc61472" title="generateAccessTable" alt="" coords="307,5,475,35"/>
+<area shape="rect" id="node5" href="$functions_8php.html#a7a16eb4f4e5edae1c6ad5afc3b4c779e" title="getBookAvailability" alt="" coords="316,59,465,88"/>
+<area shape="rect" id="node9" href="$classSingleFilter.html#a972c8fab4c2826338da19a866ca3e5cc" title="SingleFilter::getForm" alt="" coords="309,112,472,141"/>
+<area shape="rect" id="node11" href="$classCheckoutFormHook.html#a803371e594368d83d3f38f511b522579" title="CheckoutFormHook::process" alt="" coords="283,165,499,195"/>
+<area shape="rect" id="node7" href="$functions_8php.html#a89750e427bd80e9501be33a5100da454" title="getProcessISBNCheckoutFieldset" alt="" coords="547,59,797,88"/>
+</map>

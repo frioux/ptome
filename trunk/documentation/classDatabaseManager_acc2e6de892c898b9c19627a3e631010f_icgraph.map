@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classLoginManager.html#a651275825c6501be3ada725525becadc" title="LoginManager::login" alt="" coords="380,5,535,35"/>
+<area shape="rect" id="node5" href="$classProcessBookAssociationHook.html#ad8c799f407b3a0c205dcf3d09fa27512" title="ProcessBookAssociationHook::process" alt="" coords="319,59,596,88"/>
+<area shape="rect" id="node7" href="$classCheckoutFormHook.html#a803371e594368d83d3f38f511b522579" title="CheckoutFormHook::process" alt="" coords="349,112,565,141"/>
+<area shape="rect" id="node9" href="$classLoginManager.html#a1dfe7d85b843fceec63f5ff7feaecdc7" title="LoginManager::suspend" alt="" coords="368,165,547,195"/>
+</map>

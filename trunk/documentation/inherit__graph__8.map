@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node1" href="$interfacehook.html" title="hook" alt="" coords="5,59,59,88"/>
+<area shape="rect" id="node3" href="$classCheckoutFormHook.html" title="CheckoutFormHook" alt="" coords="139,5,293,35"/>
+<area shape="rect" id="node5" href="$classDeleteClassHook.html" title="DeleteClassHook" alt="" coords="147,59,285,88"/>
+<area shape="rect" id="node7" href="$classProcessBookAssociationHook.html" title="ProcessBookAssociationHook" alt="" coords="108,112,324,141"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classRowManager.html#a9608b01f6023e4f646578d8149c79d1d" title="RowManager::getLastInsertID" alt="" coords="289,5,516,35"/>
+<area shape="rect" id="node9" href="$classCheckoutFormHook.html#a803371e594368d83d3f38f511b522579" title="CheckoutFormHook::process" alt="" coords="295,59,511,88"/>
+<area shape="rect" id="node5" href="$classRowManager.html#ad8ab274f85bcef07efa11928259d2e81" title="RowManager::insert" alt="" coords="567,5,724,35"/>
+<area shape="rect" id="node7" href="$classRowManager.html#ac0485c584159b88fd8ff16df3d9ea582" title="RowManager::finalize" alt="" coords="775,5,940,35"/>
+</map>

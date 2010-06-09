@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="336,5,563,35"/>
+<area shape="rect" id="node13" href="$classDatabaseManager.html#a2e69a5ff857c1979a73a75259084894d" title="DatabaseManager::fetchAssoc" alt="" coords="333,59,565,88"/>
+<area shape="rect" id="node15" href="$classDatabaseManager.html#acc2e6de892c898b9c19627a3e631010f" title="DatabaseManager::getNumResults" alt="" coords="615,97,876,127"/>
+<area shape="rect" id="node5" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="1180,32,1385,61"/>
+<area shape="rect" id="node7" href="$classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="663,32,828,61"/>
+<area shape="rect" id="node10" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="927,32,1129,61"/>
+</map>

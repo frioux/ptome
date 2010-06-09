@@ -1,0 +1,3 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classFieldset.html" title="{Fieldset\n|# $dbRows\l# $fields\l# $formType\l# $isEmpty\l# $showLabels\l# $silent\l# $values\l|+ __construct()\l+ addField()\l+ addFields()\l+ addRowManager()\l+ commit()\l+ display()\l+ getFields()\l+ getTableName()\l+ getValue()\l+ getValues()\l+ getDBValues()\l+ isAdd()\l+ isEmpty()\l+ init()\l+ process()\l+ setFormType()\l+ __toString()\l}" alt="" coords="5,5,163,472"/>
+</map>
