@@ -1,0 +1,9 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$report_8php.html#acf638f1af0d0a7d661c27a843972d6a4" title="getAvailableBooksForISBN" alt="" coords="209,57,407,87"/>
+<area shape="rect" id="node5" href="$classDatabaseManager.html#ac00fc6d9bcd89a2d430e5a1dca718f48" title="DatabaseManager::fetchAssocArray" alt="" coords="456,57,723,87"/>
+<area shape="rect" id="node7" href="$classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="773,31,1000,60"/>
+<area shape="rect" id="node17" href="$classDatabaseManager.html#a2e69a5ff857c1979a73a75259084894d" title="DatabaseManager::fetchAssoc" alt="" coords="771,84,1003,113"/>
+<area shape="rect" id="node9" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="1519,5,1724,35"/>
+<area shape="rect" id="node11" href="$classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="1051,31,1216,60"/>
+<area shape="rect" id="node14" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="1265,31,1468,60"/>
+</map>

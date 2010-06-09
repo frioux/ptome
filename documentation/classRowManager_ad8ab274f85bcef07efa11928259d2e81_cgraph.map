@@ -1,0 +1,11 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="215,109,441,139"/>
+<area shape="rect" id="node13" href="$classRowManager.html#a9608b01f6023e4f646578d8149c79d1d" title="RowManager::getLastInsertID" alt="" coords="492,5,719,35"/>
+<area shape="rect" id="node18" href="$classRowManager.html#a3c59420534d613c6c6c22075af8c4816" title="RowManager::setValue" alt="" coords="239,163,417,192"/>
+<area shape="rect" id="node5" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="1052,57,1257,87"/>
+<area shape="rect" id="node7" href="$classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="523,109,688,139"/>
+<area shape="rect" id="node10" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="784,109,987,139"/>
+<area shape="rect" id="node15" href="$classDatabaseManager.html#a44ca7e29ce1e881c24d5b21d5736fba2" title="DatabaseManager::getInsertID" alt="" coords="768,5,1003,35"/>
+<area shape="rect" id="node20" href="$classRowManager.html#ae90c2bd0eced0a65cc6d90c928bf6052" title="RowManager::getValue" alt="" coords="516,213,695,243"/>
+<area shape="rect" id="node22" href="$classSecurityManager.html#acecbc02f98b39c22e7bb8c2b2e2f6e33" title="SecurityManager::formPrep" alt="" coords="781,213,989,243"/>
+</map>
