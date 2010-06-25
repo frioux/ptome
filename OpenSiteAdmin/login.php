@@ -69,6 +69,14 @@
                         </td>
                     </tr>
                     <tr>
+                        <td style="text-align:right">
+                            <input type="checkbox" name="remember">
+                        </td>
+                        <td>
+                            Stay signed in
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="2" align="center">
                             <input type="submit" value="Log In">
                         </td>

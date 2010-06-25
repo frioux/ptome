@@ -13,7 +13,6 @@
 	 *	limitations under the License.
 	 */
 
-
 	require_once($path."OpenSiteAdmin/scripts/classes/SecurityManager.php");
 
 	/**

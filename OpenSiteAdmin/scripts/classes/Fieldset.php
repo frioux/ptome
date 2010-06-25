@@ -148,6 +148,11 @@
                         print "<br>Error: <u>Please</u> contact your system administrator!<br>";
                     } else {
                         foreach($_POST["errors"] as $name=>$err) {
+                            if(!is_object($this->fields[$name] == null)) {
+                                $error = "Attempt to access unkown field $field\n".debug_backtrace()."\n".var_export($this->fields, true);
+                                ErrorLogManager::log($error, ErrorLogManager::FATAL);
+                                die("Fatal error - exiting.<br>WARNING: Death in fieldset->commit() - database is in an unknown state.");
+                            }
                             $this->fields[$name]->appendDBErrors();
                         }
                     }
