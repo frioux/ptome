@@ -47,8 +47,18 @@
     }
 
     $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
-    $linkField = $fieldset->addField(new ISBNField("isbn13", "ISBN13", 13, true, true), $isbn13);
-    $fieldset->addField(new ISBNField("isbn10", "ISBN10", 10, true, true), $isbn10);
+    if(empty($isbn13)) {
+        $field = new ISBNField("isbn13", "ISBN13", 13, true);
+    } else {
+        $field = new Label("isbn13", "ISBN13", $isbn13, true, true);
+    }
+    $linkField = $fieldset->addField($field, $isbn13);
+    if(empty($isbn10)) {
+        $field = new ISBNField("isbn10", "ISBN10", 10, true);
+    } else {
+        $field = new Label("isbn10", "ISBN10", $isbn10, true, true);
+    }
+    $fieldset->addField($field, $isbn10);
     $fieldset->addField(new Text("title", "Title", array("maxlength"=>100), true, true));
     $fieldset->addField(new Text("author", "Author", array("maxlength"=>50), true, true));
     $fieldset->addField(new Text("edition", "Edition", array("maxlength"=>20), true, true));
