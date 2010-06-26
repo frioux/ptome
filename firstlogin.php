@@ -16,11 +16,11 @@ You haven't set your user information yet.  Let's do that now!
 </p>
 
 <?php
-   
+
    $username = $_SESSION["username"];
    $query = "SELECT ID
              FROM users
-             WHERE users.username = \"$username\";"; 
+             WHERE users.username = \"$username\";";
 
    $resultSet = DatabaseManager::checkError($query);
    $row = DatabaseManager::fetchArray($resultSet);
@@ -35,25 +35,27 @@ You haven't set your user information yet.  Let's do that now!
    $fieldset->addField(new Text("secondContact", "Second Contact (<font color=\"red\">*</font>)", null, true, true));
    $fieldset->addField(new LETUEmailField("email", "LeTourneau Email (<font color=\"green\">*</font>)", null, true, true));
    $fieldset->addField(new Password("password", "Password", null, true, true));
-   $fieldset->addField(new Hidden("firstLogin", "", null, true, true), 1);
+   $firstLoginField = new Hidden("firstLogin", "", null, true, true);
+   $fieldset->addField($firstLoginField);
 
    $row = new RowManager("users", $keyField->getName(), $id);
    $fieldset->addRowManager($row);
    $form->addFieldset($fieldset);
    $form->process();
+   $firstLoginField->setValue(1);
    $form->display();
 
 ?>
 
 <p>
-Notes: 
+Notes:
 </p>
 <p>
 * Required Fields<br />
-<font color="red">*</font> Example: "AIM: 
-   <?php 
+<font color="red">*</font> Example: "AIM:
+   <?php
       $escape = htmlentities("<screen name>");
-      print $escape; 
+      print $escape;
    ?>
 ; Cell: (123) 234-4567"<br /
 <font color="green">*</font> This must be a LeTourneau Email address.
