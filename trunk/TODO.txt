@@ -2,7 +2,6 @@ NOW
 --------------------------
 sending notifications
 add delete book form to delete individual books.
-first time login form is broken (keeps showing up?) (is this actually password migration fail? I think it's the interaction that's causing failure...)
 apparently you can associate a book with a class twice… And the verification comments should really show up somewhere.
 
 LATER
