@@ -117,9 +117,7 @@
 		 * @return BOOLEAN False if an error is encountered.
 		 */
         function finalize($type) {
-            //this if statement doesn't allow for the delete case.
-            //is this an optimization of edit, or is there some good reason for this??
-            if($this->hasValues) {
+            if($this->hasValues || $type == Form::DELETE) {
                 if($this->getPrimaryKeyValue() == null) {
 					return $this->insert();
 				} else {
