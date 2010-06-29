@@ -39,6 +39,11 @@
 //	Changes		(CHANGED)
 //	Features		(IMPLEMENTED)
 
+Version 0.9.11
+--------------
+Hook.php
+    ADDED a feature where hooks can throw exceptions to abandon 'redirection on success'.
+
 Version 0.9.10
 --------------
 General

@@ -281,8 +281,7 @@
 
                 $result = DatabaseManager::checkError($sql);
                 $this->values = DatabaseManager::fetchAssoc($result);
-            }
-            if(empty($this->values)) {
+            } else {
                 $result = DatabaseManager::checkError("SHOW COLUMNS FROM `".$this->getTableName()."`");
                 $this->values = array();
                 while($col = DatabaseManager::fetchAssoc($result)) {
