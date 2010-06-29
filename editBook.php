@@ -6,7 +6,6 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
 
     $id = intval($_REQUEST["id"]);
-    $form = new Form(Form::EDIT);
     $form = new Form(Form::EDIT, $path."bookinfo.php?id=".$id, $path."editBook.php?id=".$id);
     $fieldset = new Fieldset_Vertical($form->getFormType());
     $keyField = $fieldset->addField(new Hidden("ID", "", null, true, true));
@@ -17,7 +16,13 @@
     $fieldset->addRowManager($row);
     $form->addFieldset($fieldset);
     $form->process();
+
+    $deleteForm = new Form(Form::DELETE, $path."bookinfo.php?id=".$id, $path."editBook.php?id=".$id);
+    $deleteFieldset = new Fieldset_Vertical($deleteForm->getFormType());
+    $deleteFieldset->addRowManager($row);
+    $deleteForm->addFieldset($deleteFieldset);
+    $deleteForm->process();
 ?>
 <div onmouseover="DPC_autoInit()">
-    <?php $form->display(); ?>
+    <?php $form->display(); $deleteForm->display(); ?>
 </div>

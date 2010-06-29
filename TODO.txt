@@ -1,8 +1,6 @@
 NOW
 --------------------------
 sending notifications
-add delete book form to delete individual books.
-Classbook verification comments should really show up somewhere.
 The following query needs to be run when the new code is pushed. Each of these duplicate entries needs to be deleted. Then, the index 'classID' needs to be altered to be a unique index to enforce the application level checks at the database level too.
     SELECT * FROM `classbooks` AS cb1, `classbooks` AS cb2 WHERE cb1.bookID = cb2.bookID AND cb1.classID = cb2.classID AND cb1.ID != cb2.ID
 
