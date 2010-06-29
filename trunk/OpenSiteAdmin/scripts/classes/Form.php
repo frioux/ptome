@@ -240,22 +240,20 @@
             //if successful and this is not an update
 			if($success && isset($_POST["submit"])) {
 				foreach($this->fieldsets as $fieldset) {
-					$success = $fieldset->commit() && $success;
+					$success = $success && $fieldset->commit();
                 }
 				if($success) {
 					foreach($hooks as $hook) {
                         if($hook === false) {
                             return;
                         }
-						$hook->process();
-					}
-//                    if(strstr($this->redir, "#") !== false) {
-                        die(header("Location:".$this->redir));
-//                    } elseif(strstr($this->redir, "?") === false) {
-//    					die(header("Location:".$this->redir."?text=The%20form%20was%20submitted%20succesfully!"));
-//                    } else {
-//                        die(header("Location:".$this->redir."&text=The%20form%20was%20submitted%20succesfully!"));
-//                    }
+                        try {
+    						$hook->process();
+    					} catch(Exception $e) {
+                            return;
+                        }
+                    }
+                    die(header("Location:".$this->redir));
 				}
 			}
 		}

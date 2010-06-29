@@ -361,19 +361,21 @@
                 } else { //edit
                     $this->fieldset->setFormType(Form::EDIT);
                     $tmp = DatabaseManager::fetchAssoc($result);
-                    $rowID = $tmp["ID"];
+                    $rowID = $tmp[$this->keyField->getName()];
+                    $_POST[$this->keyField->getFieldName()] = $rowID;
                     $row = new RowManager("classbooks", $this->keyField->getName(), $rowID);
                 }
                 $this->fieldset->addRowManager($row);
                 //we have a db row now, so we need to reprocess
                 if($this->fieldset->process()) {
-                    $this->keyField->setValue($rowID);
                     $this->linkField->setValue($classID);
-                    $this->fieldset->commit();
-                    //return those fields to their original states
-                    die(header("Location:".$_SERVER["REQUEST_URI"]));
+                    if($this->fieldset->commit()) {
+                        //return those fields to their original states
+                        die(header("Location:".$_SERVER["REQUEST_URI"]));
+                    }
                 }
             }
+            throw new Exception("Halting on form errors");
         }
     }
 
@@ -395,7 +397,7 @@
         $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>4, "cols"=>30), false, false));
 
         $form->addFieldset($fieldset);
-        $form->process(array(new ProcessBookAssociationHook($fieldset, $keyField, $linkField, $book)));
+        $form->process(array(new ProcessBookAssociationHook($fieldset, $keyField, $classIDField, $book)));
         $form->setSubmitText("Associate Class");
         $form->setAjax("return(copyFirstAutocompleteValue(['".$ajax->getName()."', 'classID".$book["bookID"]."']));");
 

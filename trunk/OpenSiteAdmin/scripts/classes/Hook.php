@@ -1,7 +1,7 @@
 <?php
 	/*
 	 *	Copyright 2007 John Oren
-	 *	
+	 *
 	 *	Licensed under the Apache License, Version 2.0 (the "License");
 	 *	you may not use this file except in compliance with the License.
 	 *	You may obtain a copy of the License at
@@ -12,11 +12,11 @@
 	 *	See the License for the specific language governing permissions and
 	 *	limitations under the License.
 	 */
-	
-    
+
+
     /**
 	 * Defines an interface for creating hooks into the processing system.
-	 * 
+	 *
 	 * @abstract
 	 * @author John Oren
 	 * @version 1.0 July 31, 2008
@@ -25,6 +25,8 @@
         /**
          * Initiates custom processing for this hook.
          *
+         * Note that if this function throws an exception, it will be caught and the page will not be redirected.
+         * Also, all hooks added after the failing hook will NOT be executed.
          * @return VOID
          */
 		function process();
