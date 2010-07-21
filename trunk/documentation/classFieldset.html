@@ -170,7 +170,7 @@ Inheritance diagram for Fieldset:</div>
   </dd>
 </dl>
 
-<p>References <a class="el" href="Fieldset_8php_source.html#l00036">$formType</a>, <a class="el" href="Fieldset_8php_source.html#l00040">$showLabels</a>, <a class="el" href="Fieldset_8php_source.html#l00047">$silent</a>, and <a class="el" href="Fieldset_8php_source.html#l00242">isEmpty()</a>.</p>
+<p>References <a class="el" href="Fieldset_8php_source.html#l00036">$formType</a>, <a class="el" href="Fieldset_8php_source.html#l00040">$showLabels</a>, <a class="el" href="Fieldset_8php_source.html#l00047">$silent</a>, and <a class="el" href="Fieldset_8php_source.html#l00247">isEmpty()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -322,7 +322,7 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>VOID </dd></dl>
 
-<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="Form_8php_source.html#l00032">Form::ADD</a>, and <a class="el" href="Fieldset_8php_source.html#l00216">getDBValues()</a>.</p>
+<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="Form_8php_source.html#l00032">Form::ADD</a>, and <a class="el" href="Fieldset_8php_source.html#l00221">getDBValues()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -353,14 +353,14 @@ Here is the call graph for this function:</div>
 <p>If the row is empty and error suppression is on, the commit succeeds, though nothing actually happens.</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>BOOLEAN False if an error was encountered updating the database. </dd></dl>
 
-<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="exportToCSV_8php_source.html#l00006">$name</a>, <a class="el" href="Form_8php_source.html#l00044">Form::DELETE</a>, <a class="el" href="Fieldset_8php_source.html#l00251">init()</a>, <a class="el" href="Fieldset_8php_source.html#l00242">isEmpty()</a>, and <a class="el" href="addClass_8php_source.html#l00021">print</a>.</p>
+<p>References <a class="el" href="login_8php_source.html#l00019">$error</a>, <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="exportToCSV_8php_source.html#l00006">$name</a>, <a class="el" href="Form_8php_source.html#l00044">Form::DELETE</a>, <a class="el" href="ErrorLogManager_8php_source.html#l00033">ErrorLogManager::FATAL</a>, <a class="el" href="Fieldset_8php_source.html#l00256">init()</a>, <a class="el" href="Fieldset_8php_source.html#l00247">isEmpty()</a>, <a class="el" href="ErrorLogManager_8php_source.html#l00061">ErrorLogManager::log()</a>, and <a class="el" href="addClass_8php_source.html#l00021">print</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dynsection">
 <div class="center"><img src="classFieldset_aedaab6580b4b40ce5576ef4305598368_cgraph.png" border="0" usemap="#classFieldset_aedaab6580b4b40ce5576ef4305598368_cgraph_map" alt=""></div>
 <map name="classFieldset_aedaab6580b4b40ce5576ef4305598368_cgraph_map" id="classFieldset_aedaab6580b4b40ce5576ef4305598368_cgraph">
-<area shape="rect" id="node3" href="classFieldset.html#acf01312096f2c32fe1102125842bdb89" title="Fieldset::init" alt="" coords="209,5,316,35"/><area shape="rect" id="node7" href="classFieldset.html#ad5c092556062d96b03dff2095baa194b" title="Fieldset::isEmpty" alt="" coords="192,59,333,88"/><area shape="rect" id="node5" href="classFieldset.html#ac6aa507bb3b6d32ff86281afb1803057" title="Fieldset::getDBValues" alt="" coords="383,5,556,35"/></map>
+<area shape="rect" id="node3" href="classFieldset.html#acf01312096f2c32fe1102125842bdb89" title="Fieldset::init" alt="" coords="221,5,328,35"/><area shape="rect" id="node7" href="classFieldset.html#ad5c092556062d96b03dff2095baa194b" title="Fieldset::isEmpty" alt="" coords="204,59,345,88"/><area shape="rect" id="node9" href="classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="192,112,357,141"/><area shape="rect" id="node5" href="classFieldset.html#ac6aa507bb3b6d32ff86281afb1803057" title="Fieldset::getDBValues" alt="" coords="433,5,607,35"/><area shape="rect" id="node11" href="classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="407,112,633,141"/><area shape="rect" id="node16" href="classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="419,165,621,195"/><area shape="rect" id="node13" href="classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="684,139,889,168"/></map>
 </div>
 </p>
 
@@ -404,9 +404,9 @@ Here is the call graph for this function:</div>
 <p>Fetches an array of key-value pairs of the form [fieldName]-&gt;value from the database. </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>ARRAY Array of values in the database. </dd></dl>
 
-<p>References <a class="el" href="addBook_8php_source.html#l00056">$row</a>, and <a class="el" href="dbConverter_8php_source.html#l00238">$tmp</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00066">$row</a>, and <a class="el" href="dbConverter_8php_source.html#l00238">$tmp</a>.</p>
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00107">addRowManager()</a>, <a class="el" href="Fieldset_8php_source.html#l00251">init()</a>, and <a class="el" href="Fieldset_8php_source.html#l00272">process()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00107">addRowManager()</a>, <a class="el" href="Fieldset_8php_source.html#l00256">init()</a>, and <a class="el" href="Fieldset_8php_source.html#l00277">process()</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -543,7 +543,7 @@ Here is the caller graph for this function:</div>
 <p>Initializes the internal values and field values from the database</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>VOID </dd></dl>
 
-<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, and <a class="el" href="Fieldset_8php_source.html#l00216">getDBValues()</a>.</p>
+<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, and <a class="el" href="Fieldset_8php_source.html#l00221">getDBValues()</a>.</p>
 
 <p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00126">commit()</a>, <a class="el" href="Fieldset__Vertical_8php_source.html#l00034">Fieldset_Vertical::display()</a>, and <a class="el" href="Fieldset__Horizontal_8php_source.html#l00029">Fieldset_Horizontal::display()</a>.</p>
 
@@ -605,7 +605,7 @@ Here is the caller graph for this function:</div>
 <p>Returns true if none of the fields (except Keys and ForeignKeys) have data.</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>BOOLEAN False if a field (not a Key or <a class="el" href="classForeignKey.html">ForeignKey</a>) has a value. </dd></dl>
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00058">__construct()</a>, <a class="el" href="Fieldset_8php_source.html#l00126">commit()</a>, and <a class="el" href="Fieldset_8php_source.html#l00272">process()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00058">__construct()</a>, <a class="el" href="Fieldset_8php_source.html#l00126">commit()</a>, and <a class="el" href="Fieldset_8php_source.html#l00277">process()</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -636,7 +636,7 @@ Here is the caller graph for this function:</div>
 <p>Error suppression (silent mode) is also controlled here. If silent mode is enabled and a field (not a Key or <a class="el" href="classForeignKey.html">ForeignKey</a>) is not empty, silent mode is disabled for the fieldset and for all fields in this fieldset. Also note that the database is not altered in any way by this process.</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>BOOLEAN False if this form had errors. </dd></dl>
 
-<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="Fieldset_8php_source.html#l00049">$values</a>, <a class="el" href="Fieldset_8php_source.html#l00216">getDBValues()</a>, and <a class="el" href="Fieldset_8php_source.html#l00242">isEmpty()</a>.</p>
+<p>References <a class="el" href="management_8php_source.html#l00035">$field</a>, <a class="el" href="Fieldset_8php_source.html#l00049">$values</a>, <a class="el" href="Fieldset_8php_source.html#l00221">getDBValues()</a>, and <a class="el" href="Fieldset_8php_source.html#l00247">isEmpty()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -715,7 +715,7 @@ Here is the call graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00058">__construct()</a>, and <a class="el" href="Fieldset_8php_source.html#l00312">setFormType()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00058">__construct()</a>, and <a class="el" href="Fieldset_8php_source.html#l00317">setFormType()</a>.</p>
 
 </div>
 </div>
@@ -773,7 +773,7 @@ Here is the call graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00272">process()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00277">process()</a>.</p>
 
 </div>
 </div>
@@ -795,7 +795,7 @@ Here is the call graph for this function:</div>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:14 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

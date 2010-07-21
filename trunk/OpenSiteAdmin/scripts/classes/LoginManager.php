@@ -95,6 +95,8 @@
 					$_SESSION["username"] = $row["username"];
 					$_SESSION["permissions"] = $row["permissions"];
                     $_SESSION["semester"] = $row["semester"];
+					$_SESSION["notifications"] = $row["notifications"];
+					$_SESSION["email"] = $row["email"];
 					if($remember == "yes") {
 						//60*60*24*365 = 1 year
 						setcookie( "username", $row["username"], time()+(60*60*24*365), "/", SITE_NAME);

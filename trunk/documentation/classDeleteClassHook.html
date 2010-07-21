@@ -147,6 +147,7 @@ Collaboration diagram for DeleteClassHook:</div>
 </div>
 <div class="memdoc">
 <p>Initiates custom processing for this hook.</p>
+<p>Note that if this function throws an exception, it will be caught and the page will not be redirected. Also, all hooks added after the failing hook will NOT be executed. </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>VOID </dd></dl>
 
 <p>Implements <a class="el" href="interfacehook.html#ac8d3b4fa7b4d93271a061115d4d0ce2b">hook</a>.</p>
@@ -198,7 +199,7 @@ Here is the call graph for this function:</div>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:13 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

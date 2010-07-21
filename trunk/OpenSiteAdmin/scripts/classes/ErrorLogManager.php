@@ -43,6 +43,12 @@
 		 * @var Constant to denote a warning.
 		 */
 		const WARNING = 10;
+		/**
+		 * @static
+		 * @final
+		 * @var Constant to denote a generic informational message.
+		 */
+		const INFO = 15;
 
 		/**
 		 * Enters the given error message into the database's error log.

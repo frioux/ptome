@@ -92,7 +92,7 @@ Inheritance diagram for hook:</div>
 <div class="dynsection">
 <div class="center"><img src="interfacehook__inherit__graph.png" border="0" usemap="#hook_inherit__map" alt="Inheritance graph"/></div>
 <map name="hook_inherit__map" id="hook_inherit__map">
-<area shape="rect" id="node3" href="classCheckoutFormHook.html" title="{CheckoutFormHook\n|# $fieldset\l# $row\l# $linkField\l# $patronIDField\l# $libField\l# $id\l|+ __construct()\l+ process()\l}" alt="" coords="5,139,160,328"/><area shape="rect" id="node5" href="classDeleteClassHook.html" title="{DeleteClassHook\n|&#45; $id\l|+ __construct()\l+ process()\l}" alt="" coords="184,182,323,285"/><area shape="rect" id="node7" href="classProcessBookAssociationHook.html" title="{ProcessBookAssociationHook\n|# $fieldset\l# $keyField\l# $linkField\l# $book\l|+ __construct()\l+ process()\l}" alt="" coords="347,156,563,311"/></map>
+<area shape="rect" id="node3" href="classCheckoutFormHook.html" title="{CheckoutFormHook\n|# $fieldset\l# $row\l# $linkField\l# $patronIDField\l# $libField\l# $id\l|+ __construct()\l+ process()\l# sendNotificationEmail()\l# getMessageFooter()\l}" alt="" coords="5,139,197,363"/><area shape="rect" id="node5" href="classDeleteClassHook.html" title="{DeleteClassHook\n|&#45; $id\l|+ __construct()\l+ process()\l}" alt="" coords="221,199,360,302"/><area shape="rect" id="node7" href="classProcessBookAssociationHook.html" title="{ProcessBookAssociationHook\n|# $fieldset\l# $keyField\l# $linkField\l# $book\l|+ __construct()\l+ process()\l}" alt="" coords="384,173,600,328"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 
 <p><a href="interfacehook-members.html">List of all members.</a></p>
@@ -120,6 +120,7 @@ Inheritance diagram for hook:</div>
 </div>
 <div class="memdoc">
 <p>Initiates custom processing for this hook.</p>
+<p>Note that if this function throws an exception, it will be caught and the page will not be redirected. Also, all hooks added after the failing hook will NOT be executed. </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>VOID </dd></dl>
 
 <p>Implemented in <a class="el" href="classCheckoutFormHook.html#a803371e594368d83d3f38f511b522579">CheckoutFormHook</a>, <a class="el" href="classProcessBookAssociationHook.html#ad8c799f407b3a0c205dcf3d09fa27512">ProcessBookAssociationHook</a>, and <a class="el" href="classDeleteClassHook.html#a10a025e4a825621fb4c373e477b81984">DeleteClassHook</a>.</p>
@@ -144,7 +145,7 @@ Inheritance diagram for hook:</div>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:15 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>
