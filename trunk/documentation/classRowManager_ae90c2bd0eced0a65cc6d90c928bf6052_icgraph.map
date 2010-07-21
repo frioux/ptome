@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classRowManager.html#a9d019ee81e72428ea6be53024c8cb6d6" title="RowManager::getValues" alt="" coords="232,5,419,35"/>
-<area shape="rect" id="node5" href="$classRowManager.html#a3c59420534d613c6c6c22075af8c4816" title="RowManager::setValue" alt="" coords="236,59,415,88"/>
-<area shape="rect" id="node7" href="$classRowManager.html#ad8ab274f85bcef07efa11928259d2e81" title="RowManager::insert" alt="" coords="481,32,639,61"/>
-<area shape="rect" id="node11" href="$classRowManager.html#a7df4f5f74cc5cb2269727dd4c4d49566" title="RowManager::setValues" alt="" coords="468,85,652,115"/>
-<area shape="rect" id="node9" href="$classRowManager.html#ac0485c584159b88fd8ff16df3d9ea582" title="RowManager::finalize" alt="" coords="703,32,868,61"/>
-</map>

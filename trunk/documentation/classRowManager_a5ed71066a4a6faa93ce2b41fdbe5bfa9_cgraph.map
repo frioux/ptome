@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="308,31,535,60"/>
-<area shape="rect" id="node13" href="$classDatabaseManager.html#a2e69a5ff857c1979a73a75259084894d" title="DatabaseManager::fetchAssoc" alt="" coords="305,84,537,113"/>
-<area shape="rect" id="node15" href="$classFilter.html#a295ac785e1e4f9c3c69801002dde68f8" title="Filter::getFilterClause" alt="" coords="336,137,507,167"/>
-<area shape="rect" id="node17" href="$classRowManager.html#a601cfe888e607e962fd199ccd7aeb3da" title="RowManager::getPrimaryKeyName" alt="" coords="292,191,551,220"/>
-<area shape="rect" id="node5" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="1068,5,1273,35"/>
-<area shape="rect" id="node7" href="$classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="600,31,765,60"/>
-<area shape="rect" id="node10" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="815,31,1017,60"/>
-</map>

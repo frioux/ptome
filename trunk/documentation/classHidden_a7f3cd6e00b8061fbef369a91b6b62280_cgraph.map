@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classField.html#a80694faf602f66ff9a4f4d81707d3a32" title="Field::getFieldName" alt="" coords="185,5,343,35"/>
-<area shape="rect" id="node5" href="$classField.html#a14d1621c82bacd7dc3eed7cce25bdbee" title="Field::postProcess" alt="" coords="191,59,337,88"/>
-<area shape="rect" id="node13" href="$classField.html#ae1717829245e2dcfdd51add740c955aa" title="Field::setEmpty" alt="" coords="199,112,329,141"/>
-<area shape="rect" id="node7" href="$classField.html#a71850d0cc96eeb649e4e62b040c6fa97" title="Field::setValue" alt="" coords="433,5,556,35"/>
-<area shape="rect" id="node9" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="393,59,596,88"/>
-<area shape="rect" id="node11" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="647,59,852,88"/>
-<area shape="rect" id="node15" href="$classField.html#a40350deee0326230e39132fd68096bf6" title="Field::isEmpty" alt="" coords="436,112,553,141"/>
-</map>
