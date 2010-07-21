@@ -97,7 +97,6 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#a1a4fda4c28a9ee5f91102c023b9501f4">$form</a> = new <a class="el" href="classForm.html">Form</a>(<a class="el" href="classForm.html#ab07df5cb5294473ea90994cd3e210d6e">Form::ADD</a>, $redir)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#ab15059ce6bfbf3ac01b4d114975f3320">$fieldset</a> = new <a class="el" href="classFieldset__Vertical.html">Fieldset_Vertical</a>($form-&gt;getFormType())</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#a3e942591cb14ba7a3554f1e6777fd490">$isbn</a> = $_SESSION[&quot;post&quot;][&quot;isbn&quot;]</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#a9f56752c7c9b7576264e885bc06cb02c">$linkField</a> = $fieldset-&gt;addField(new <a class="el" href="classISBNField.html">ISBNField</a>(&quot;isbn13&quot;, &quot;ISBN13&quot;, 13, true, true), $isbn13)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#aa1d731aa570613e5bcff831bb10e9b87">$row</a> = new <a class="el" href="classRowManager.html">RowManager</a>(&quot;bookTypes&quot;, $keyField-&gt;getName())</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#abf18baf8286590fca009f868e21b64ba">$hooks</a> [] = new <a class="el" href="classupdate__hook.html">update_hook</a>($keyField, $redir)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="indexFooter_8php.html#a3ad3a4240c0f97c7e85aff5c52a454d4">print</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="addBook_8php.html#a39038bed2de61b20abd44cd8ebee9fe0">$_SESSION</a> [&quot;post&quot;][&quot;email&quot;]</td></tr>
@@ -143,7 +142,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00421">cleanSessionOnEmptyRedir()</a>, <a class="el" href="report_8php_source.html#l00101">getAvailableBooksForISBN()</a>, <a class="el" href="functions_8php_source.html#l00014">getBookAvailability()</a>, <a class="el" href="functions_8php_source.html#l00381">getProcessBookAssociation()</a>, <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="SecurityManager_8php_source.html#l00108">SecurityManager::isPageVisible()</a>, <a class="el" href="SecurityManager_8php_source.html#l00132">SecurityManager::isRowVisible()</a>, <a class="el" href="LoginManager_8php_source.html#l00070">LoginManager::login()</a>, <a class="el" href="SessionText_8php_source.html#l00058">SessionText::process()</a>, <a class="el" href="management_8php_source.html#l00043">SemesterUpdateHook::process()</a>, <a class="el" href="functions_8php_source.html#l00202">CheckoutFormHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>, <a class="el" href="functions_8php_source.html#l00416">redir_pop()</a>, <a class="el" href="functions_8php_source.html#l00408">redir_push()</a>, <a class="el" href="SessionText_8php_source.html#l00073">SessionText::show()</a>, and <a class="el" href="SecurityManager_8php_source.html#l00184">SecurityManager::validatePage()</a>.</p>
+<p>Referenced by <a class="el" href="functions_8php_source.html#l00486">cleanSessionOnEmptyRedir()</a>, <a class="el" href="report_8php_source.html#l00101">getAvailableBooksForISBN()</a>, <a class="el" href="functions_8php_source.html#l00023">getBookAvailability()</a>, <a class="el" href="functions_8php_source.html#l00446">getProcessBookAssociation()</a>, <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="SecurityManager_8php_source.html#l00108">SecurityManager::isPageVisible()</a>, <a class="el" href="SecurityManager_8php_source.html#l00132">SecurityManager::isRowVisible()</a>, <a class="el" href="LoginManager_8php_source.html#l00069">LoginManager::login()</a>, <a class="el" href="SessionText_8php_source.html#l00058">SessionText::process()</a>, <a class="el" href="management_8php_source.html#l00043">SemesterUpdateHook::process()</a>, <a class="el" href="functions_8php_source.html#l00216">CheckoutFormHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>, <a class="el" href="functions_8php_source.html#l00481">redir_pop()</a>, <a class="el" href="functions_8php_source.html#l00473">redir_push()</a>, <a class="el" href="SessionText_8php_source.html#l00073">SessionText::show()</a>, and <a class="el" href="SecurityManager_8php_source.html#l00184">SecurityManager::validatePage()</a>.</p>
 
 </div>
 </div>
@@ -158,7 +157,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00112">Form::addFieldsets()</a>, <a class="el" href="Form_8php_source.html#l00124">Form::display()</a>, <a class="el" href="Fieldset__Horizontal_8php_source.html#l00066">Fieldset_Horizontal::generate()</a>, <a class="el" href="functions_8php_source.html#l00381">getProcessBookAssociation()</a>, <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>, and <a class="el" href="Form_8php_source.html#l00226">Form::process()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00112">Form::addFieldsets()</a>, <a class="el" href="Form_8php_source.html#l00124">Form::display()</a>, <a class="el" href="Fieldset__Horizontal_8php_source.html#l00066">Fieldset_Horizontal::generate()</a>, <a class="el" href="functions_8php_source.html#l00446">getProcessBookAssociation()</a>, <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>, and <a class="el" href="Form_8php_source.html#l00227">Form::process()</a>.</p>
 
 </div>
 </div>
@@ -173,7 +172,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="functions_8php_source.html#l00381">getProcessBookAssociation()</a>, and <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>.</p>
+<p>Referenced by <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="functions_8php_source.html#l00446">getProcessBookAssociation()</a>, and <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>.</p>
 
 </div>
 </div>
@@ -188,7 +187,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00226">Form::process()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00227">Form::process()</a>.</p>
 
 </div>
 </div>
@@ -203,7 +202,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00073">showBookInfo()</a>, and <a class="el" href="ISBNField_8php_source.html#l00041">validateISBN()</a>.</p>
+<p>Referenced by <a class="el" href="functions_8php_source.html#l00087">showBookInfo()</a>, and <a class="el" href="ISBNField_8php_source.html#l00055">validateISBN()</a>.</p>
 
 </div>
 </div>
@@ -233,21 +232,6 @@ window.onload = initDynSections;
 
 </div>
 </div>
-<a class="anchor" id="a9f56752c7c9b7576264e885bc06cb02c"></a><!-- doxytag: member="addBook.php::$linkField" ref="a9f56752c7c9b7576264e885bc06cb02c" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">$linkField = $fieldset-&gt;addField(new <a class="el" href="classISBNField.html">ISBNField</a>(&quot;isbn13&quot;, &quot;ISBN13&quot;, 13, true, true), $isbn13)</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00381">getProcessBookAssociation()</a>, and <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="a3a19a3c439125b55fcedd6bb5dbabdcb"></a><!-- doxytag: member="addBook.php::$pageTitle" ref="a3a19a3c439125b55fcedd6bb5dbabdcb" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -272,7 +256,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">Form::__construct()</a>, <a class="el" href="indexHeader_8php_source.html#l00060">addPage()</a>, <a class="el" href="indexHeader_8php_source.html#l00039">addPageLink()</a>, <a class="el" href="Image_8php_source.html#l00115">Image::process()</a>, <a class="el" href="functions_8php_source.html#l00202">CheckoutFormHook::process()</a>, and <a class="el" href="SecurityManager_8php_source.html#l00184">SecurityManager::validatePage()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">Form::__construct()</a>, <a class="el" href="indexHeader_8php_source.html#l00060">addPage()</a>, <a class="el" href="indexHeader_8php_source.html#l00039">addPageLink()</a>, <a class="el" href="Image_8php_source.html#l00115">Image::process()</a>, <a class="el" href="functions_8php_source.html#l00216">CheckoutFormHook::process()</a>, and <a class="el" href="SecurityManager_8php_source.html#l00184">SecurityManager::validatePage()</a>.</p>
 
 </div>
 </div>
@@ -302,7 +286,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00139">DatabaseManager::fetchArray()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00149">DatabaseManager::fetchAssoc()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00160">DatabaseManager::fetchAssocArray()</a>, <a class="el" href="manageUser_8php_source.html#l00023">generateAccessTable()</a>, <a class="el" href="ListManager_8php_source.html#l00088">ListManager::generateList()</a>, <a class="el" href="functions_8php_source.html#l00014">getBookAvailability()</a>, <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="RowManager_8php_source.html#l00216">RowManager::getRowManagers()</a>, <a class="el" href="RowManager_8php_source.html#l00276">RowManager::initialize()</a>, <a class="el" href="LoginManager_8php_source.html#l00070">LoginManager::login()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00218">DatabaseManager::multiCheckError()</a>, <a class="el" href="functions_8php_source.html#l00351">ProcessBookAssociationHook::process()</a>, <a class="el" href="functions_8php_source.html#l00202">CheckoutFormHook::process()</a>, <a class="el" href="SecurityManager_8php_source.html#l00157">SecurityManager::setPermissions()</a>, and <a class="el" href="LoginManager_8php_source.html#l00129">LoginManager::suspend()</a>.</p>
+<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00139">DatabaseManager::fetchArray()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00149">DatabaseManager::fetchAssoc()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00160">DatabaseManager::fetchAssocArray()</a>, <a class="el" href="manageUser_8php_source.html#l00023">generateAccessTable()</a>, <a class="el" href="ListManager_8php_source.html#l00088">ListManager::generateList()</a>, <a class="el" href="functions_8php_source.html#l00023">getBookAvailability()</a>, <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="RowManager_8php_source.html#l00214">RowManager::getRowManagers()</a>, <a class="el" href="RowManager_8php_source.html#l00274">RowManager::initialize()</a>, <a class="el" href="LoginManager_8php_source.html#l00069">LoginManager::login()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00218">DatabaseManager::multiCheckError()</a>, <a class="el" href="functions_8php_source.html#l00414">ProcessBookAssociationHook::process()</a>, <a class="el" href="functions_8php_source.html#l00216">CheckoutFormHook::process()</a>, <a class="el" href="functions_8php_source.html#l00289">CheckoutFormHook::sendNotificationEmail()</a>, <a class="el" href="SecurityManager_8php_source.html#l00157">SecurityManager::setPermissions()</a>, and <a class="el" href="LoginManager_8php_source.html#l00130">LoginManager::suspend()</a>.</p>
 
 </div>
 </div>
@@ -317,7 +301,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00160">DatabaseManager::fetchAssocArray()</a>, <a class="el" href="functions_8php_source.html#l00014">getBookAvailability()</a>, <a class="el" href="Fieldset_8php_source.html#l00216">Fieldset::getDBValues()</a>, <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="LoginManager_8php_source.html#l00070">LoginManager::login()</a>, <a class="el" href="functions_8php_source.html#l00351">ProcessBookAssociationHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>, <a class="el" href="SecurityManager_8php_source.html#l00157">SecurityManager::setPermissions()</a>, and <a class="el" href="LoginManager_8php_source.html#l00129">LoginManager::suspend()</a>.</p>
+<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00160">DatabaseManager::fetchAssocArray()</a>, <a class="el" href="functions_8php_source.html#l00023">getBookAvailability()</a>, <a class="el" href="Fieldset_8php_source.html#l00221">Fieldset::getDBValues()</a>, <a class="el" href="SingleFilter_8php_source.html#l00060">SingleFilter::getForm()</a>, <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="LoginManager_8php_source.html#l00069">LoginManager::login()</a>, <a class="el" href="functions_8php_source.html#l00414">ProcessBookAssociationHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>, <a class="el" href="SecurityManager_8php_source.html#l00157">SecurityManager::setPermissions()</a>, and <a class="el" href="LoginManager_8php_source.html#l00130">LoginManager::suspend()</a>.</p>
 
 </div>
 </div>
@@ -336,7 +320,7 @@ window.onload = initDynSections;
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:09 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

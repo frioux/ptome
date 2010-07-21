@@ -13,7 +13,6 @@
 	 *	limitations under the License.
 	 */
 
-
 	session_start();
 
 	//define site name constant (for creating and destroying cookies)

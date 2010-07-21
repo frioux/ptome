@@ -1,13 +1,14 @@
 NOW
 --------------------------
-sending notifications
+not done with notifications yet... multiple emails fail and don't receive from your own library
+Finish documenting functions.php
 The following query needs to be run when the new code is pushed. Each of these duplicate entries needs to be deleted. Then, the index 'classID' needs to be altered to be a unique index to enforce the application level checks at the database level too.
     SELECT * FROM `classbooks` AS cb1, `classbooks` AS cb2 WHERE cb1.bookID = cb2.bookID AND cb1.classID = cb2.classID AND cb1.ID != cb2.ID
 
 LATER
 --------------------------
 -Adding a book with both an ISBN 10 and 13 for which one of those ISBNs exists should update the existing entry instead of creating a new one.
--Implement hard start times for intertome (spring, summer, and fall)
+-Implement hard coded start times for intertome (spring, summer, and fall)
 -Let books be marked unusable on a global level the first time, and then let individual tomekeepers mark their books usable again at their discretion
 -include links to the efollet page for every class?
 -automatically send all patrons an email with a list of the books they got

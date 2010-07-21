@@ -1,7 +1,20 @@
 <?php
     require_once($path."OpenSiteAdmin/scripts/classes/Field.php");
 
+    /**
+	 * Handles display and processing of a Text field designed specifically to process ISBN numbers.
+	 *
+	 * OPTIONAL<br>
+	 * $options["size"] - size of the form's text input field<br>
+	 * $options["maxlength"] - maximum length of text input field<br>
+	 */
     class ISBNField extends Text {
+        /**
+		 * Processes this field and update the backend used by this field.
+		 *
+		 * @see validateISBN()
+		 * @return BOOLEAN False if errors were encountered
+		 */
         function process() {
             $ret = parent::process();
             $value = $this->getValue();
@@ -30,13 +43,14 @@
 
     /**
     *  Validates ISBN numbers
+    *
     *  Algorithms can be found here:
     *  http://en.wikipedia.org/wiki/International_Standard_Book_Number
     *
-    *  @param   isbn  an ISBN number as a string
-    *  @return        0 - Valid
-    *                 1 - Invalid
-    *                 2 - Wrong length
+    *  @param STRING $isbn An ISBN number
+    *  @return INTEGER 0 - Valid<br>
+    *                  1 - Invalid<br>
+    *                  2 - Wrong length<br>
     */
    function validateISBN($isbn) {
       if(strlen($isbn) == 13) {

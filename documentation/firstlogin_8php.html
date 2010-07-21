@@ -97,6 +97,7 @@ window.onload = initDynSections;
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="firstlogin_8php.html#a1a4fda4c28a9ee5f91102c023b9501f4">$form</a> = new <a class="el" href="classForm.html">Form</a>(<a class="el" href="classForm.html#a8b02ff05d47c085d995984bc233f7609">Form::EDIT</a>)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="firstlogin_8php.html#ab15059ce6bfbf3ac01b4d114975f3320">$fieldset</a> = new <a class="el" href="classFieldset__Vertical.html">Fieldset_Vertical</a>($form-&gt;getFormType())</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="firstlogin_8php.html#a3b80a09199a2e18c0d7e76c5fb344f95">$keyField</a> = $fieldset-&gt;addField(new <a class="el" href="classHidden.html">Hidden</a>(&quot;ID&quot;, &quot;&quot;, null, true, true))</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="firstlogin_8php.html#abbecb0b7333c78a65a0cb2dad5076a57">$firstLoginField</a> = new <a class="el" href="classHidden.html">Hidden</a>(&quot;firstLogin&quot;, &quot;&quot;, null, true, true)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="firstlogin_8php.html#a9aca52fb47eeb886bc226c6db4b36c53">$escape</a> = htmlentities(&quot;&lt;screen name&gt;&quot;)</td></tr>
 </table>
 <hr/><h2>Variable Documentation</h2>
@@ -119,6 +120,19 @@ window.onload = initDynSections;
       <table class="memname">
         <tr>
           <td class="memname">$fieldset = new <a class="el" href="classFieldset__Vertical.html">Fieldset_Vertical</a>($form-&gt;getFormType())</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="abbecb0b7333c78a65a0cb2dad5076a57"></a><!-- doxytag: member="firstlogin.php::$firstLoginField" ref="abbecb0b7333c78a65a0cb2dad5076a57" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">$firstLoginField = new <a class="el" href="classHidden.html">Hidden</a>(&quot;firstLogin&quot;, &quot;&quot;, null, true, true)</td>
         </tr>
       </table>
 </div>
@@ -205,7 +219,7 @@ window.onload = initDynSections;
 <span class="stringliteral">             FROM users</span>
 <span class="stringliteral">             WHERE users.username = \&quot;$username\&quot;;&quot;</span>
 </pre></div>
-<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="RowManager_8php_source.html#l00100">RowManager::delete()</a>, <a class="el" href="RowManager_8php_source.html#l00300">RowManager::insert()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00218">DatabaseManager::multiCheckError()</a>, and <a class="el" href="RowManager_8php_source.html#l00385">RowManager::update()</a>.</p>
+<p>Referenced by <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="RowManager_8php_source.html#l00100">RowManager::delete()</a>, <a class="el" href="RowManager_8php_source.html#l00297">RowManager::insert()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00218">DatabaseManager::multiCheckError()</a>, and <a class="el" href="RowManager_8php_source.html#l00382">RowManager::update()</a>.</p>
 
 </div>
 </div>
@@ -263,7 +277,7 @@ window.onload = initDynSections;
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:10 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

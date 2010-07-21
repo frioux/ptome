@@ -1,5 +1,5 @@
 <map id="G" name="G">
-<area shape="rect" id="node3" href="$classCheckoutFormHook.html" title="{CheckoutFormHook\n|# $fieldset\l# $row\l# $linkField\l# $patronIDField\l# $libField\l# $id\l|+ __construct()\l+ process()\l}" alt="" coords="5,139,160,328"/>
-<area shape="rect" id="node5" href="$classDeleteClassHook.html" title="{DeleteClassHook\n|&#45; $id\l|+ __construct()\l+ process()\l}" alt="" coords="184,182,323,285"/>
-<area shape="rect" id="node7" href="$classProcessBookAssociationHook.html" title="{ProcessBookAssociationHook\n|# $fieldset\l# $keyField\l# $linkField\l# $book\l|+ __construct()\l+ process()\l}" alt="" coords="347,156,563,311"/>
+<area shape="rect" id="node3" href="$classCheckoutFormHook.html" title="{CheckoutFormHook\n|# $fieldset\l# $row\l# $linkField\l# $patronIDField\l# $libField\l# $id\l|+ __construct()\l+ process()\l# sendNotificationEmail()\l# getMessageFooter()\l}" alt="" coords="5,139,197,363"/>
+<area shape="rect" id="node5" href="$classDeleteClassHook.html" title="{DeleteClassHook\n|&#45; $id\l|+ __construct()\l+ process()\l}" alt="" coords="221,199,360,302"/>
+<area shape="rect" id="node7" href="$classProcessBookAssociationHook.html" title="{ProcessBookAssociationHook\n|# $fieldset\l# $keyField\l# $linkField\l# $book\l|+ __construct()\l+ process()\l}" alt="" coords="384,173,600,328"/>
 </map>

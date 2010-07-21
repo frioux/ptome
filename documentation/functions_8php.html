@@ -120,7 +120,7 @@ window.onload = initDynSections;
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>.</p>
 
 <p>Referenced by <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, and <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>.</p>
 
@@ -150,10 +150,23 @@ Here is the caller graph for this function:</div>
       </table>
 </div>
 <div class="memdoc">
+<p>Finds the books that are available to be reserved given a book ID and the session's current semester.</p>
+<p>A book can be reserved IFF: 1. The book has not expired 2. The book is not checked out this semester and does not have an unreturned checkout from over 2 semesters ago 3. The book does not have a pending reservation for it only for this semester 4. The book is in your library OR (you are a part of interTOME AND interTOME is open)</p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>INTEGER</em>&nbsp;</td><td>$id ID number of the specific book. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>ARRAY List of available books of the form books[libraryID]["ID"] - libraryID<br/>
+ books[libraryID]["name"] - library name<br/>
+ books[libraryID]["interTOME"] - true if available for intertome loans<br/>
+ books[libraryID]["count"] - number of available books<br/>
+ </dd></dl>
 
-<p>References <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>, <a class="el" href="bookinfo_8php_source.html#l00016">$id</a>, <a class="el" href="addBook_8php_source.html#l00035">$result</a>, <a class="el" href="addBook_8php_source.html#l00056">$row</a>, <a class="el" href="dbConverter_8php_source.html#l00294">$sql</a>, <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00139">DatabaseManager::fetchArray()</a>, and <a class="el" href="DatabaseManager_8php_source.html#l00149">DatabaseManager::fetchAssoc()</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>, <a class="el" href="bookinfo_8php_source.html#l00016">$id</a>, <a class="el" href="addBook_8php_source.html#l00035">$result</a>, <a class="el" href="addBook_8php_source.html#l00066">$row</a>, <a class="el" href="dbConverter_8php_source.html#l00294">$sql</a>, <a class="el" href="DatabaseManager_8php_source.html#l00089">DatabaseManager::checkError()</a>, <a class="el" href="DatabaseManager_8php_source.html#l00139">DatabaseManager::fetchArray()</a>, and <a class="el" href="DatabaseManager_8php_source.html#l00149">DatabaseManager::fetchAssoc()</a>.</p>
 
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>.</p>
+<p>Referenced by <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -199,8 +212,17 @@ Here is the caller graph for this function:</div>
       </table>
 </div>
 <div class="memdoc">
+<p>Fetch the ISBN number for display, preferring the newer ISBN number.</p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>STRING</em>&nbsp;</td><td>$isbn13 ISBN13 number (if any) </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>STRING</em>&nbsp;</td><td>$isbn10 ISBN10 number (if any) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>STRING Preferred ISBN number. </dd></dl>
 
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00073">showBookInfo()</a>.</p>
+<p>Referenced by <a class="el" href="functions_8php_source.html#l00087">showBookInfo()</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -229,7 +251,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>, <a class="el" href="viewClass_8php_source.html#l00127">$ajax</a>, <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00039">$form</a>, <a class="el" href="addClass_8php_source.html#l00013">$keyField</a>, <a class="el" href="addBook_8php_source.html#l00050">$linkField</a>, and <a class="el" href="Form_8php_source.html#l00038">Form::EDIT</a>.</p>
+<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>, <a class="el" href="viewClass_8php_source.html#l00127">$ajax</a>, <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00039">$form</a>, <a class="el" href="addClass_8php_source.html#l00013">$keyField</a>, <a class="el" href="addClass_8php_source.html#l00014">$linkField</a>, and <a class="el" href="Form_8php_source.html#l00038">Form::EDIT</a>.</p>
 
 </div>
 </div>
@@ -249,7 +271,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>, <a class="el" href="viewClass_8php_source.html#l00127">$ajax</a>, <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00039">$form</a>, <a class="el" href="addClass_8php_source.html#l00013">$keyField</a>, <a class="el" href="addBook_8php_source.html#l00050">$linkField</a>, <a class="el" href="addBook_8php_source.html#l00056">$row</a>, <a class="el" href="Form_8php_source.html#l00032">Form::ADD</a>, and <a class="el" href="functions_8php_source.html#l00014">getBookAvailability()</a>.</p>
+<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>, <a class="el" href="viewClass_8php_source.html#l00127">$ajax</a>, <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00039">$form</a>, <a class="el" href="addClass_8php_source.html#l00013">$keyField</a>, <a class="el" href="addClass_8php_source.html#l00014">$linkField</a>, <a class="el" href="addBook_8php_source.html#l00066">$row</a>, <a class="el" href="Form_8php_source.html#l00032">Form::ADD</a>, and <a class="el" href="functions_8php_source.html#l00023">getBookAvailability()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -277,7 +299,7 @@ Here is the call graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>.</p>
 
 </div>
 </div>
@@ -297,9 +319,9 @@ Here is the call graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="addBook_8php_source.html#l00067">$_SESSION</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00077">$_SESSION</a>.</p>
 
-<p>Referenced by <a class="el" href="functions_8php_source.html#l00202">CheckoutFormHook::process()</a>.</p>
+<p>Referenced by <a class="el" href="functions_8php_source.html#l00216">CheckoutFormHook::process()</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -343,7 +365,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00042">$isbn</a>, <a class="el" href="functions_8php_source.html#l00067">getISBN()</a>, <a class="el" href="inventory_8php_source.html#l00058">php</a>, and <a class="el" href="addClass_8php_source.html#l00021">print</a>.</p>
+<p>References <a class="el" href="stats_8php_source.html#l00015">$_SERVER</a>, <a class="el" href="addBook_8php_source.html#l00042">$isbn</a>, <a class="el" href="functions_8php_source.html#l00082">getISBN()</a>, <a class="el" href="inventory_8php_source.html#l00058">php</a>, and <a class="el" href="addClass_8php_source.html#l00021">print</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -420,7 +442,7 @@ Here is the call graph for this function:</div>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:09 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

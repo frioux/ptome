@@ -218,6 +218,7 @@
          * If no errors are encountered and there is no hook that equals false,
          * redirects the user to the success page.
 		 * Note that all fieldsets will be processed, regardless of previous errors.
+		 * However, if one commit fails then no further commits are attempted.
          *
          * @param ARRAY $hooks Array of postprocessor hooks to run (returns if one of
          *                      the hooks === false, skipping the redirect)

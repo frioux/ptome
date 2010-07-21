@@ -5,12 +5,21 @@
     require_once($path."OpenSiteAdmin/scripts/classes/RowManager.php");
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
-    //finds the books that are available to be reserved given a book ID and the session's current semester
-    //A book can be reserved IFF:
-    //1. The book has not expired
-    //2. The book is not checked out this semester and does not have an unreturned checkout from over 2 semesters ago
-    //3. The book does not have a pending reservation for it only for this semester
-    //4. The book is in your library OR (you are a part of interTOME AND interTOME is open)
+    /**
+     * Finds the books that are available to be reserved given a book ID and the session's current semester.
+     *
+     * A book can be reserved IFF:
+     * 1. The book has not expired
+     * 2. The book is not checked out this semester and does not have an unreturned checkout from over 2 semesters ago
+     * 3. The book does not have a pending reservation for it only for this semester
+     * 4. The book is in your library OR (you are a part of interTOME AND interTOME is open)
+     *
+     * @param INTEGER $id ID number of the specific book.
+     * @return ARRAY List of available books of the form books[libraryID]["ID"] - libraryID<br>
+     *                  books[libraryID]["name"] - library name<br>
+     *                  books[libraryID]["interTOME"] - true if available for intertome loans<br>
+     *                  books[libraryID]["count"] - number of available books<br>
+     */
     function getBookAvailability($id) {
         //check if interTOME is open
         $sql = "select `interTOME` from `libraries` where `ID` = '3'";
@@ -63,9 +72,14 @@
         return $libBooks;
     }
 
-    //fetch the ISBN number for display
+    /**
+     * Fetch the ISBN number for display, preferring the newer ISBN number.
+     *
+     * @param STRING $isbn13 ISBN13 number (if any)
+     * @param STRING $isbn10 ISBN10 number (if any)
+     * @return STRING Preferred ISBN number.
+     */
     function getISBN($isbn13, $isbn10) {
-        //prefer ISBN 13
         return (empty($isbn13)) ? $isbn10 : $isbn13;
     }
 
@@ -253,6 +267,12 @@
             }
             //release the locks, and we're done.
             DatabaseManager::checkError("UNLOCK TABLES");
+
+            //notify the tomekeeper this book is from of the checkout if they want the notification
+            if($_SESSION["notifications"]) {
+                $this->sendNotificationEmail();
+            }
+
             //create the patron if we need to
             if($storeCreateUser) {
                 $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
@@ -264,6 +284,49 @@
             } else {
                 die(header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id));
             }
+        }
+
+        protected function sendNotificationEmail() {
+            $subject = "TOME Notification";
+            $headers = "From: noreply@dorm41.org\r\nReply-To: noreply@dorm41.org";
+
+            $libraryID = $this->row->getValue("libraryToID");
+            $userID = $this->row->getValue("tomekeeperID");
+            $bookID = $this->row->getValue("bookID");
+            $checkoutTime = $this->row->getValue("reserved");
+            $comments = $this->row->getValue("comments");
+            $sql = "SELECT `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`,
+                    `libraries`.`name`,
+                    `users`.`username`, `users`.`email`
+                    FROM `bookTypes`
+                    JOIN `libraries` ON `libraries`.`ID` = '".$libraryID."'
+                    JOIN `users` ON `users`.`ID` = '".$userID."'
+                    WHERE `bookTypes`.`ID`='".$this->id."'";
+            $result = DatabaseManager::checkError($sql);
+            $info = DatabaseManager::fetchAssoc($result);
+
+            $message = "This is an automated notification that a book has been\nchecked out from your library.\n";
+            $message .= "ID: ".$bookID."\n";
+            $message .= "Book: ".$info["title"];
+            if(!empty($info["edition"])) {
+                $message .= ", ".$info["edition"];
+            }
+            $message .= ": ".$info["author"]."\n\n";
+            $message .= "Reserved at ".$checkoutTime." by ".$info["name"]." (".$info["username"].")\n";
+            if(!empty($comments)) {
+                $message .= $comments;
+            }
+            $message .= $this->getMessageFooter();
+
+            $email = $info["email"];
+//            ErrorLogManager::log(implode("<br>", array($email, $subject, $message, $headers)), ErrorLogManager::INFO);
+//            mail($email, $subject, $message, $headers);
+        }
+
+        protected function getMessageFooter() {
+            $ret = "\n\n-------------------------\n";
+            $ret .= "To stop receiving email notifications from TOME,\ngo to dorm41.org/tome/management.php\nand uncheck the 'Notifications' box.";
+            return $ret;
         }
     }
 
@@ -317,7 +380,7 @@
         $fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
         $fieldset->addField(new Hidden("libraryToID", "", null, true, true), $_SESSION["libraryID"]);
         $fieldset->addField(new Hidden("reserved", "", null, true, true), date("Y-m-d H:i:s"));
-        $fieldset->addField(new TextArea("comments", "Verification<br>comments", array("rows"=>1, "cols"=>30), false, false));
+        $fieldset->addField(new TextArea("comments", "Comments", array("rows"=>1, "cols"=>30), false, false));
         $libField = null;
         if($numBooks > 0) {
             $libField = $fieldset->addField(new Select("libraryFromID", "Library", $libBooks, true, true), $_SESSION["libraryID"]);

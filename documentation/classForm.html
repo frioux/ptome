@@ -453,7 +453,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 <p>Initiates processing for all the fieldset in this form.</p>
-<p>If no errors are encountered and there is no hook that equals false, redirects the user to the success page. Note that all fieldsets will be processed, regardless of previous errors.</p>
+<p>If no errors are encountered and there is no hook that equals false, redirects the user to the success page. Note that all fieldsets will be processed, regardless of previous errors. However, if one commit fails then no further commits are attempted.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>ARRAY</em>&nbsp;</td><td>$hooks Array of postprocessor hooks to run (returns if one of the hooks === false, skipping the redirect) </td></tr>
@@ -462,7 +462,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>VOID </dd></dl>
 
-<p>References <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00059">$hooks</a>, and <a class="el" href="Form_8php_source.html#l00268">processable()</a>.</p>
+<p>References <a class="el" href="addBook_8php_source.html#l00041">$fieldset</a>, <a class="el" href="addBook_8php_source.html#l00069">$hooks</a>, and <a class="el" href="Form_8php_source.html#l00267">processable()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -492,9 +492,9 @@ Here is the call graph for this function:</div>
 <p>Returns true if this form is ready to be processed</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>BOOLEAN </dd></dl>
 
-<p>References <a class="el" href="login_8php_source.html#l00052">$_GET</a>, <a class="el" href="pageHeader_8php_source.html#l00012">$mode</a>, <a class="el" href="Form_8php_source.html#l00032">ADD</a>, and <a class="el" href="Form_8php_source.html#l00280">selected()</a>.</p>
+<p>References <a class="el" href="login_8php_source.html#l00052">$_GET</a>, <a class="el" href="pageHeader_8php_source.html#l00012">$mode</a>, <a class="el" href="Form_8php_source.html#l00032">ADD</a>, and <a class="el" href="Form_8php_source.html#l00279">selected()</a>.</p>
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00226">process()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00227">process()</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
@@ -533,7 +533,7 @@ Here is the caller graph for this function:</div>
 <p>Returns true if this form has been submitted.</p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>BOOLEAN </dd></dl>
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00268">processable()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00267">processable()</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -614,7 +614,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00290">setAjax()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00289">setAjax()</a>.</p>
 
 </div>
 </div>
@@ -642,7 +642,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">__construct()</a>, and <a class="el" href="functions_8php_source.html#l00281">CheckoutForm::__construct()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">__construct()</a>, and <a class="el" href="functions_8php_source.html#l00344">CheckoutForm::__construct()</a>.</p>
 
 </div>
 </div>
@@ -698,7 +698,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">__construct()</a>, and <a class="el" href="functions_8php_source.html#l00281">CheckoutForm::__construct()</a>.</p>
+<p>Referenced by <a class="el" href="Form_8php_source.html#l00082">__construct()</a>, and <a class="el" href="functions_8php_source.html#l00344">CheckoutForm::__construct()</a>.</p>
 
 </div>
 </div>
@@ -726,7 +726,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00107">Fieldset::addRowManager()</a>, <a class="el" href="RowManager_8php_source.html#l00162">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="functions_8php_source.html#l00302">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, <a class="el" href="Fieldset_8php_source.html#l00233">Fieldset::isAdd()</a>, <a class="el" href="functions_8php_source.html#l00351">ProcessBookAssociationHook::process()</a>, and <a class="el" href="Form_8php_source.html#l00268">processable()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00107">Fieldset::addRowManager()</a>, <a class="el" href="RowManager_8php_source.html#l00160">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="functions_8php_source.html#l00365">getProcessISBNCheckoutFieldset()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, <a class="el" href="Fieldset_8php_source.html#l00238">Fieldset::isAdd()</a>, <a class="el" href="functions_8php_source.html#l00414">ProcessBookAssociationHook::process()</a>, and <a class="el" href="Form_8php_source.html#l00267">processable()</a>.</p>
 
 </div>
 </div>
@@ -741,7 +741,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00126">Fieldset::commit()</a>, <a class="el" href="Form_8php_source.html#l00141">displaySubmitButton()</a>, <a class="el" href="RowManager_8php_source.html#l00162">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, and <a class="el" href="Field_8php_source.html#l00224">Field::isDelete()</a>.</p>
+<p>Referenced by <a class="el" href="Fieldset_8php_source.html#l00126">Fieldset::commit()</a>, <a class="el" href="Form_8php_source.html#l00141">displaySubmitButton()</a>, <a class="el" href="RowManager_8php_source.html#l00119">RowManager::finalize()</a>, <a class="el" href="RowManager_8php_source.html#l00160">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, and <a class="el" href="Field_8php_source.html#l00224">Field::isDelete()</a>.</p>
 
 </div>
 </div>
@@ -769,7 +769,7 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Referenced by <a class="el" href="RowManager_8php_source.html#l00162">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="functions_8php_source.html#l00381">getProcessBookAssociation()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, <a class="el" href="functions_8php_source.html#l00351">ProcessBookAssociationHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, and <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>.</p>
+<p>Referenced by <a class="el" href="RowManager_8php_source.html#l00160">RowManager::getModeText()</a>, <a class="el" href="Form_8php_source.html#l00169">getModeText()</a>, <a class="el" href="functions_8php_source.html#l00446">getProcessBookAssociation()</a>, <a class="el" href="Form_8php_source.html#l00198">getSubmitText()</a>, <a class="el" href="functions_8php_source.html#l00414">ProcessBookAssociationHook::process()</a>, <a class="el" href="addPatron_8php_source.html#l00022">checkout_update_hoook::process()</a>, and <a class="el" href="addBook_8php_source.html#l00022">update_hook::process()</a>.</p>
 
 </div>
 </div>
@@ -792,7 +792,7 @@ Here is the caller graph for this function:</div>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jun 9 13:28:12 2010 for 'TOME' by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Wed Jul 21 14:01:15 2010 for 'TOME' by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

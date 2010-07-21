@@ -1,5 +1,9 @@
 <map id="G" name="G">
-<area shape="rect" id="node3" href="$classFieldset.html#acf01312096f2c32fe1102125842bdb89" title="Fieldset::init" alt="" coords="209,5,316,35"/>
-<area shape="rect" id="node7" href="$classFieldset.html#ad5c092556062d96b03dff2095baa194b" title="Fieldset::isEmpty" alt="" coords="192,59,333,88"/>
-<area shape="rect" id="node5" href="$classFieldset.html#ac6aa507bb3b6d32ff86281afb1803057" title="Fieldset::getDBValues" alt="" coords="383,5,556,35"/>
+<area shape="rect" id="node3" href="$classFieldset.html#acf01312096f2c32fe1102125842bdb89" title="Fieldset::init" alt="" coords="221,5,328,35"/>
+<area shape="rect" id="node7" href="$classFieldset.html#ad5c092556062d96b03dff2095baa194b" title="Fieldset::isEmpty" alt="" coords="204,59,345,88"/>
+<area shape="rect" id="node9" href="$classErrorLogManager.html#ae13562ba349b7b53496c72afb6bff926" title="ErrorLogManager::log" alt="" coords="192,112,357,141"/>
+<area shape="rect" id="node5" href="$classFieldset.html#ac6aa507bb3b6d32ff86281afb1803057" title="Fieldset::getDBValues" alt="" coords="433,5,607,35"/>
+<area shape="rect" id="node11" href="$classDatabaseManager.html#a4eae57e7bc22401e478c4e1bc08d5597" title="DatabaseManager::checkError" alt="" coords="407,112,633,141"/>
+<area shape="rect" id="node16" href="$classSecurityManager.html#a94e5ee2388c4a4963f286f8deb41d815" title="SecurityManager::SQLPrep" alt="" coords="419,165,621,195"/>
+<area shape="rect" id="node13" href="$classDatabaseManager.html#aa31eb7cc3be10f24cc9cdff338865e93" title="DatabaseManager::getLink" alt="" coords="684,139,889,168"/>
 </map>
