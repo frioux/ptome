@@ -75,7 +75,15 @@
 </head>
 <body class="yui-skin-sam">
   <div id="atmosphere">
-  <div id="statusbar">Logged in as: <?php print $username; ?> | <a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php">Logout</a></div>
+  <div id="statusbar">
+    <?php
+        if(isset($_SESSION["username"]) && $_SESSION["permissions"] <= 1) {
+            $buildTime = `svn info | grep "Last Changed Rev" | awk -F' ' '{print $4}'`;
+            print "Revision [[BUILD_TIME]] ";
+        }
+    ?>
+    Logged in as: <?php print $username; ?> | <a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php">Logout</a>
+  </div>
 
   <div id="container">
     <div id="header">

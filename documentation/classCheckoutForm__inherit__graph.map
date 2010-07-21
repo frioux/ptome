@@ -1,3 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node2" href="$classForm.html" title="{Form\n|+ ADD\l+ EDIT\l+ DELETE\l+ DELIMITER\l# $id\l# $fieldsets\l# $formType\l# $redir\l# $submitText\l# $formAction\l# $ajax\l# $nextFormID\l|+ __construct()\l+ addFieldset()\l+ addFieldsets()\l+ display()\l+ getFormType()\l+ getQS()\l+ getSubmitText()\l+ process()\l+ processable()\l+ selected()\l+ setAjax()\l+ setSubmitText()\l+ getModeText()\l# displaySubmitButton()\l}" alt="" coords="5,5,192,507"/>
-</map>

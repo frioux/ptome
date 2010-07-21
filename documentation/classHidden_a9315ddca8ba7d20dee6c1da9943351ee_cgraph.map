@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classField.html#acb4f1dad1d68f3317ec366468612f902" title="Field::getErrorText" alt="" coords="181,5,331,35"/>
-<area shape="rect" id="node7" href="$classField.html#a80694faf602f66ff9a4f4d81707d3a32" title="Field::getFieldName" alt="" coords="177,59,335,88"/>
-<area shape="rect" id="node9" href="$classField.html#aa2a5387191aa04a20d0b0d48bf7bf8e9" title="Field::getValue" alt="" coords="195,112,317,141"/>
-<area shape="rect" id="node5" href="$classField.html#acfd76b28c62500157916bcf662abc4ac" title="Field::isSilent" alt="" coords="433,5,543,35"/>
-<area shape="rect" id="node11" href="$classSecurityManager.html#acecbc02f98b39c22e7bb8c2b2e2f6e33" title="SecurityManager::formPrep" alt="" coords="384,112,592,141"/>
-</map>

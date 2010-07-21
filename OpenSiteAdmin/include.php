@@ -16,18 +16,13 @@
 	session_start();
 
 	//define site name constant (for creating and destroying cookies)
-	define("SITE_NAME", "letuacm.org/tome/");
+	define("SITE_NAME", "letuacm.org");
 	//define site database constants
 	if($_SERVER["HTTP_HOST"] == "www.".SITE_NAME || $_SERVER["HTTP_HOST"] == SITE_NAME) { //live
-		define("DB_USER", "letuacm_tome");
+		define("DB_USER", "letuacm_TOME");
 		define("DB_PASS", "T,u<|nf}&lxA");
 		define("DB_ROOT", "localhost");
 		define("DB_NAME", "letuacm_TOME");
-	} elseif($_SERVER["HTTP_HOST"] == "tome.dorm41.org") {
-        define("DB_USER", "bobthewonderduck");
-		define("DB_PASS", "llama41");
-		define("DB_ROOT", "db.dorm41.org");
-		define("DB_NAME", "ptome");
     } else { //dev
 		define("DB_USER", "root");
 		define("DB_PASS", "jimbo111");

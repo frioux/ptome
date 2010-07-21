@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$classForeignKey.html#adeea4a9c40a47224f0205154fd946c9c" title="ForeignKey::process" alt="" coords="257,59,415,88"/>
-<area shape="rect" id="node5" href="$classField.html#af91a78102df0d89cf30f1fd50c41ccbf" title="Field::getOptions" alt="" coords="464,5,603,35"/>
-<area shape="rect" id="node7" href="$classField.html#ae1717829245e2dcfdd51add740c955aa" title="Field::setEmpty" alt="" coords="468,59,599,88"/>
-<area shape="rect" id="node11" href="$classField.html#a71850d0cc96eeb649e4e62b040c6fa97" title="Field::setValue" alt="" coords="472,112,595,141"/>
-<area shape="rect" id="node9" href="$classField.html#a40350deee0326230e39132fd68096bf6" title="Field::isEmpty" alt="" coords="652,59,769,88"/>
-</map>
