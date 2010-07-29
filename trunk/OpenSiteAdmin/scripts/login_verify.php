@@ -32,7 +32,7 @@
 	//if the user has exceeded the number of allowed logins...
 	if($_SESSION["loginAttempts"] > LoginManager::MAX_LOGIN_ATTEMPTS) {
 		//...suspend the user account
-		$loginManager->suspend($_POST["username"]);
+		LoginManager::suspend($_POST["username"]);
 		//...notify the user of their suspension
 		$errorID = LoginManager::SUSPENDED;
 		//...allow the user to log in if an administrator reactivates their account

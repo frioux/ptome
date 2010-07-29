@@ -91,7 +91,7 @@
                             ISBN:
                         </dt>
                         <dd>
-                            <a href="isbninfo.php?id=<?php print $checkout["bookTypID"]; ?>"><?php print $isbn; ?></a>
+                            <a href="isbninfo.php?id=<?php print $checkout["bookTypeID"]; ?>"><?php print $isbn; ?></a>
                         </dd>
                         <dt>
                             Title:
@@ -150,7 +150,6 @@
                         where `books`.`ID` = ".$donation["ID"];
                     $result = DatabaseManager::checkError($sql);
                     $book = DatabaseManager::fetchAssoc($result);
-                    $book["ID"] = $donation["ID"];
                     $isbn = getISBN($book["isbn13"], $book["isbn10"]);
             ?>
                 <tr>
@@ -160,13 +159,13 @@
                                 Book ID:
                             </dt>
                             <dd>
-                                <a href="bookinfo.php?id=<?php print $book["ID"]; ?>"><?php print $book["ID"]; ?></a>
+                                <a href="bookinfo.php?id=<?php print $donation["ID"]; ?>"><?php print $donation["ID"]; ?></a>
                             </dd>
                             <dt>
                                 ISBN:
                             </dt>
                             <dd>
-                                <a href="isbninfo.php?id=<?php print $isbn; ?>"><?php print $isbn; ?></a>
+                                <a href="isbninfo.php?id=<?php print $book["ID"]; ?>"><?php print $isbn; ?></a>
                             </dd>
                             <dt>
                                 Title:
