@@ -29,20 +29,30 @@
 //	Additions		(ADDED)
 //  Deprecations	(DEPRECATED)
 //	Deletions		(REMOVED)
-//	Changes		(CHANGED)
+//	Changes		    (CHANGED)
 //	Features		(IMPLEMENTED)
 //FileName
 //	Bug Fixes		(FIXED)
 //	Additions		(ADDED)
 //  Deprecations	(DEPRECATED)
 //	Deletions		(REMOVED)
-//	Changes		(CHANGED)
+//	Changes	        (CHANGED)
 //	Features		(IMPLEMENTED)
 
 Version 0.9.11
 --------------
 Hook.php
     ADDED a feature where hooks can throw exceptions to abandon 'redirection on success'.
+LoginManager.php
+    ADDED functionality to run the whole login and logout process.
+login.php
+    CHANGED location from OpenSiteAdmin/ to admin/ to allow for customization while maintaining
+            ease of upgrading.
+logout.php
+    CHANGED location from OpenSiteAdmin/ to admin/ to allow for customization while maintaining
+            ease of upgrading.
+login_verify.php
+    REMOVED
 
 Version 0.9.10
 --------------

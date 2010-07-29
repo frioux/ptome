@@ -16,8 +16,8 @@
 <a href="<?php print $path; ?>OpenSiteAdmin/pages/manageUser.php?mode=<?php print Form::EDIT; ?>&id=<?php print $_SESSION['ID']; ?>" style="text-decoration:none;">Update My Information</a>
 <br>
 <br>
-<a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php" style="text-decoration:none;">Logout</a>
-<?php 
+<a href="<?php print $path; ?>admin/logout.php" style="text-decoration:none;">Logout</a>
+<?php
 	//END CUSTOM CODE
 
 	//INCLUDE FOOTER FILE

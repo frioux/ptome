@@ -13,11 +13,11 @@
 	 *	limitations under the License.
 	 */
 
-	$path = "../../";
+	$path = "../";
 	require_once($path."OpenSiteAdmin/scripts/classes/LoginManager.php");
 
 	LoginManager::logout();
 
 	//offer to log back in
-	header("Location:../login.php");
+	header("Location:".$path."admin/login.php");
 ?>

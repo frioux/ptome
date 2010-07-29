@@ -11,10 +11,7 @@ TABLE OF CONTENTS:
 INSTALL
 -----------------------------
 REQUIREMENTS:
-PHP >= 5.2 (for type hinting. If you remove that feature, it should work for
-        5.x. If enough people want a special 5.x release, I will post one; or
-        feel free to submit it!)
-Web Server (generic)
+PHP >= 5.2
 MySQL Database (I think >= 3.x, but I don't know a whole lot about
         databases...)
 

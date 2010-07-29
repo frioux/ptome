@@ -20,25 +20,44 @@
 	//INCLUDE REQUIRED FILES AND DECLARE GENERAL OBJECTS
 	require_once($path."OpenSiteAdmin/scripts/classes/LoginManager.php");
 
-	//BEGIN CUSTOM CODE
-	$error = LoginManager::isError();
-	if($error) {
-		print '<span style="color:red">';
-		switch($error) {
-			case LoginManager::UNKNOWN:
-				print "An unknown error was encountered while trying to log you in: Please try again.<br>";
-				print "If the problem persists, contact your system administrator.";
-				break;
-			case LoginManager::INVALID:
-				print "You have entered an invalid username\password. Please try again.";
-				break;
-			case LoginManager::SUSPENDED:
-				print "Your account has been suspended. Please contact your system administrator.";
-				break;
-			default:
+	if(isset($_REQUEST["username"])) {
+		$mgr = new LoginManager($_REQUEST["redir"]);
+		$error = $mgr->login($_REQUEST["username"], $_REQUEST["password"], $_REQUEST["remember"], isset($_COOKIE["username"]));
+		//BEGIN CUSTOM CODE
+		if($error != LoginManager::NONE) {
+			print '<span style="color:red">';
+			switch($error) {
+				case LoginManager::UNKNOWN:
+					print "An unknown error was encountered while trying to log you in: Please try again.<br>";
+					print "If the problem persists, contact your system administrator.";
+					break;
+				case LoginManager::INVALID:
+					print "You have entered an invalid username\password. Please try again.";
+					break;
+				case LoginManager::SUSPENDED:
+					print "Your account has been suspended. Please contact your system administrator.";
+					break;
+				default:
+			}
+			print "</span>";
+		} else {
+			$id = $mgr->getUserID();
+			$query = "SELECT users.firstLogin
+						FROM users
+						WHERE users.ID = '".$id."';";
+
+			$resultSet = DatabaseManager::checkError($query);
+			$row = DatabaseManager::fetchArray($resultSet);
+			//check for a custom redirect
+			if($row[0] == 0) {
+			   $mgr->setRedirect($path."firstlogin.php");
+			}
+
+			$mgr->redirect();
 		}
-		print "</span>";
 	}
+
+	$redir = isset($_GET["redir"])?$_GET['redir']:$path."index.php";
 ?>
 <html>
     <head>
@@ -47,7 +66,8 @@
     <body onLoad="document.login.username.focus();">
         <center>
             <img src="<?php print $path; ?>images/tome.png">
-                <form action="<?php print $path; ?>OpenSiteAdmin/scripts/login_verify.php?redir=<?php print $_GET['redir']; ?>" method="post" name="login">
+                <form method="post" action="">
+				<input type="hidden" name="redir" value="<?php print $redir; ?>">
                 <br>
                 <table>
                     <tr>
