@@ -189,7 +189,7 @@
                 } else {
                     $redir = $_SERVER["REQUEST_URI"];
                 }
-				die(header("Location:".$path."OpenSiteAdmin/login.php?redir=".$redir));
+				die(header("Location:".$path."admin/login.php?redir=".$redir));
             }
 			if(!$this->isPageVisible("admin") && $page != "index") {
                 global $path;

@@ -14,7 +14,7 @@
 	 */
 
     /**
-	 * Displays an dropdown list on a field that offers completions to what the user is entering.
+	 * Displays a dropdown list on a field that offers completions to what the user is entering.
 	 *
 	 * @author John Oren
 	 * @version 1.0 December 24, 2009

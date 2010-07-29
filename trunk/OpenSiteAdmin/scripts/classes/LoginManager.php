@@ -56,6 +56,32 @@
 
 		/** Primary key for the current user logging/logged in. */
         protected $userID;
+		/** The URL to redirect the user to. */
+		protected $redir;
+
+		/**
+		 * Constructs a new login manager that will redirect to the given URL.
+		 *
+		 * @param $redir The URL to redirect to.
+		 */
+		public function __construct($redir) {
+			$this->setRedirect($redir);
+
+			//set up the variable for the current number of login attempts
+			if(!isset($_SESSION["loginAttempts"])) {
+				$_SESSION["loginAttempts"] = 0;
+			}
+			$_SESSION["loginAttempts"]++;
+
+			if($_SESSION["loginAttempts"] > LoginManager::MAX_LOGIN_ATTEMPTS) {
+				//...suspend the user account
+				LoginManager::suspend($_POST["username"]);
+				//...allow the user to log in if an administrator reactivates their account
+				$_SESSION["loginAttempts"] = 0;
+				//...notify the user of their suspension
+				header("Location:".$path."OpenSiteAdmin/login.php?errorID=".LoginManager::SUSPENDED);
+			}
+		}
 
 		/**
 		 * Returns false if there is no error, otherwise returns an error code.
@@ -124,7 +150,9 @@
 		}
 
 		/**
+		 * Logs the user out and obliterates their session.
 		 *
+		 * @return VOID
 		 */
 		public static function logout() {
 			if(!isset($_SESSION) || empty($_SESSION)) {
@@ -154,6 +182,16 @@
         }
 
 		/**
+		 * Assumes the user is logged in and redirects them properly.
+		 *
+		 * @return VOID
+		 */
+		public function redirect() {
+			$_SESSION["loginAttempts"] = 0;
+			die(header("Location:".$this->redir));
+		}
+
+		/**
 		 * Sets (or unsets) cookies with secure user information to automatically log them in.
 		 *
 		 * @param STRING $username Username.
@@ -169,6 +207,16 @@
 			}
 			setcookie( "username", $username, time()+$offset, "/", SITE_NAME);
 			setcookie( "password", $password, time()+$offset, "/", SITE_NAME);
+		}
+
+		/**
+		 * Sets the redirect URL to a new location.
+		 *
+		 * @param STRING $redir The new URL to redirect to.
+		 * @return VOID
+		 */
+		public function setRedirect($redir) {
+			$this->redir = $redir;
 		}
 
 		/**

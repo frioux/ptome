@@ -82,7 +82,7 @@
             print "Revision [[BUILD_TIME]] ";
         }
     ?>
-    Logged in as: <?php print $username; ?> | <a href="<?php print $path; ?>OpenSiteAdmin/scripts/logout.php">Logout</a>
+    Logged in as: <?php print $username; ?> | <a href="<?php print $path; ?>admin/logout.php">Logout</a>
   </div>
 
   <div id="container">
