@@ -29,7 +29,6 @@
 		 */
 		const MAX_LOGIN_ATTEMPTS = 5;
 
-
         /**
 		 * @static
 		 * @final
@@ -55,7 +54,21 @@
 		 */
 		const UNKNOWN = 4;
 
+		/** Primary key for the current user logging/logged in. */
         protected $userID;
+
+		/**
+		 * Returns false if there is no error, otherwise returns an error code.
+		 *
+		 * @return INT Error constant from this class.
+		 */
+		public static function isError() {
+			$error = $_REQUEST["errorID"];
+			if(!empty($error) && $error != LoginManager::NONE) {
+				return $error;
+			}
+			return false;
+		}
 
 		/**
 		 * Attempts to log a user into the site's administrative system.
@@ -66,7 +79,7 @@
 		 * @param BOOLEAN $isCookie True if the provided data is coming from cookie data (cookie passwords are already encrypted).
 		 * @return INTEGER One of the error code constants defined in this class.
 		 */
-		function login($user, $pass, $remember="no", $isCookie=false) {
+		public function login($user, $pass, $remember="no", $isCookie=false) {
             $user = SecurityManager::SQLPrep($user);
             $pass = SecurityManager::SQLPrep($pass);
 			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` LIKE '$user'";
@@ -98,9 +111,7 @@
 					$_SESSION["notifications"] = $row["notifications"];
 					$_SESSION["email"] = $row["email"];
 					if($remember == "yes") {
-						//60*60*24*365 = 1 year
-						setcookie( "username", $row["username"], time()+(60*60*24*365), "/", SITE_NAME);
-						setcookie( "password", $pass2, time()+(60*60*24*365), "/", SITE_NAME);
+						$this->setCookies($row["username"], $pass2, true);
 					}
 					return LoginManager::NONE;
 				} else {
@@ -112,14 +123,53 @@
 			return LoginManager::UNKNOWN;
 		}
 
+		/**
+		 *
+		 */
+		public static function logout() {
+			if(!isset($_SESSION) || empty($_SESSION)) {
+				session_start();
+			}
+			if(empty($_SESSION["ID"])) {
+				//don't let people get around the suspension system by logging out between login attempts.
+				return;
+			}
+			//destroy session data
+			$_SESSION = array();
+			//delete cookies
+			if(isset($_COOKIE["username"])) {
+				LoginManager::setCookies("", "", false);
+			}
+			//formally destroy the session
+			session_destroy();
+		}
+
         /**
          * Returns the primary key for the current user
          *
          * @return INT
          */
-        function getUserID() {
+        public function getUserID() {
             return $this->userID;
         }
+
+		/**
+		 * Sets (or unsets) cookies with secure user information to automatically log them in.
+		 *
+		 * @param STRING $username Username.
+		 * @param STRING $password Encrypted password.
+		 * @param BOOLEAN $set If false, unsets the cookies instead of setting them.
+		 * @return VOID
+		 */
+		protected static function setCookies($username, $password, $set) {
+			//60*60*24*365 = 1 year
+			$offset = 60*60*24*365;
+			if(!$set) {
+				$offset = -$offset;
+			}
+			setcookie( "username", $username, time()+$offset, "/", SITE_NAME);
+			setcookie( "password", $password, time()+$offset, "/", SITE_NAME);
+		}
 
 		/**
 		 * Attempts to suspend the account associated with the given username.
@@ -127,7 +177,7 @@
 		 * @param STRING $user Username for the account to suspend.
 		 * @return VOID
 		 */
-		function suspend($user) {
+		public static function suspend($user) {
 			$sql = "select * from `users` where `username` = '$user'";
 			$result = DatabaseManager::checkError($sql);
 			if(DatabaseManager::getNumResults($result) === 0) {

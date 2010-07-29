@@ -97,15 +97,6 @@
                 ORDER BY `checkouts`.`semester`";
         $returnToMe = DatabaseManager::fetchAssocArray($sql);
     }
-
-    function getAvailableBooksForISBN($id) {
-        $sql = "SELECT `books`.`ID` from `books`
-                WHERE `books`.`bookID` = '".$id."' AND `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`ID` NOT IN (
-                    SELECT `checkouts`.`bookID` from `checkouts`
-                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `checkouts`.`out` != DEFAULT(`checkouts`.`out`)
-                )";
-        return DatabaseManager::fetchAssocArray($sql);
-    }
 ?>
 <a name="top"></a>
 <h1>Semester Report</h1>

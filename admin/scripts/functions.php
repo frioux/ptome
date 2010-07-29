@@ -138,7 +138,9 @@
     function showCheckoutForm(array $checkout) {
         $books = getAvailableBooksForISBN($checkout["bookID"]);
         ?>
-        Reserved: <?php print date('m/d/y', strtotime($checkout["reserved"])); ?>
+        <?php if(isset($checkout["reserved"])) { ?>
+            Reserved: <?php print date('m/d/y', strtotime($checkout["reserved"])); ?>
+        <?php } ?>
         <br>
         <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
             <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
@@ -179,6 +181,15 @@
             </form>
         </div>
         <?php
+    }
+
+    function getAvailableBooksForISBN($id) {
+        $sql = "SELECT `books`.`ID` from `books`
+                WHERE `books`.`bookID` = '".$id."' AND `books`.`libraryID` = '".$_SESSION["libraryID"]."' AND `books`.`ID` NOT IN (
+                    SELECT `checkouts`.`bookID` from `checkouts`
+                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`) AND `checkouts`.`out` != DEFAULT(`checkouts`.`out`)
+                )";
+        return DatabaseManager::fetchAssocArray($sql);
     }
 
     //Show the checkin form

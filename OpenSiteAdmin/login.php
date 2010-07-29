@@ -16,30 +16,28 @@
 
 	//DEFINE VARIABLES
 	$path = "../";
-	$error = $_GET["errorID"];
 
 	//INCLUDE REQUIRED FILES AND DECLARE GENERAL OBJECTS
 	require_once($path."OpenSiteAdmin/scripts/classes/LoginManager.php");
 
 	//BEGIN CUSTOM CODE
-	if(!empty($error) && $error != LoginManager::NONE) {
-		print "<font color='red'>";
-	}
-	switch($error) {
-		case LoginManager::UNKNOWN:
-			print "An unknown error was encountered while trying to log you in: Please try again.<br>";
-			print "If the problem persists, contact your system administrator.";
-			break;
-		case LoginManager::INVALID:
-			print "You have entered an invalid username\password. Please try again.";
-			break;
-		case LoginManager::SUSPENDED:
-			print "Your account has been suspended. Please contact your system administrator.";
-			break;
-		default:
-	}
-	if(!empty($error) && $error != LoginManager::NONE) {
-		print "</font>";
+	$error = LoginManager::isError();
+	if($error) {
+		print '<span style="color:red">';
+		switch($error) {
+			case LoginManager::UNKNOWN:
+				print "An unknown error was encountered while trying to log you in: Please try again.<br>";
+				print "If the problem persists, contact your system administrator.";
+				break;
+			case LoginManager::INVALID:
+				print "You have entered an invalid username\password. Please try again.";
+				break;
+			case LoginManager::SUSPENDED:
+				print "Your account has been suspended. Please contact your system administrator.";
+				break;
+			default:
+		}
+		print "</span>";
 	}
 ?>
 <html>
