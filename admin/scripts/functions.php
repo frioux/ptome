@@ -40,9 +40,9 @@
                     SELECT `checkouts`.`bookID`
                     FROM `checkouts`
                     WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`)
-                        AND `checkouts`.`semester` != '".$_SESSION["semester"]."' AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
+                        AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
                 )";
-        //print $sql."<br><br>";
+//        print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
         $libBooks = array();
         while($row = DatabaseManager::fetchAssoc($result)) {
@@ -55,7 +55,6 @@
         //excluding books with reservations pending this semester
         //validate #3
         $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` = '".$_SESSION["semester"]."'";
-        //print $sql."<br>=========================<br>";
         $result = DatabaseManager::checkError($sql);
         while($row = DatabaseManager::fetchAssoc($result)) {
             $libBooks[$row["libraryFromID"]]["count"] -= $row["count"];
@@ -254,24 +253,12 @@
 
             //ensure we don't checkout the same book twice.
             //we don't use LOW_PRIORITY here because this is a read heavy app.
-            $sql = "LOCK TABLE checkouts AS checkout1 WRITE, checkouts AS checkout2 WRITE, `".$this->row->getTableName()."` WRITE,
+            $sql = "LOCK TABLE checkouts WRITE, libraries WRITE, `".$this->row->getTableName()."` AS commitRow WRITE,
                     `errorLog` WRITE, `books` READ, `bookTypes` READ";
             DatabaseManager::checkError($sql);
             //finding reservations for the ISBN from this library that have not yet been filled
-            $sql = "SELECT * from `checkouts` AS `checkout1` where `bookTypeID` = '".$this->id."' AND `bookID` = '0' AND `libraryFromID` = '".$this->libField->getValue()."' AND `in` = DEFAULT(`in`)";
-            DatabaseManager::checkError($sql);
-            $num1 = DatabaseManager::getNumResults();
-            //find existing books that aren't already checked out
-            $sql = "SELECT `books`.`ID` FROM `books`
-                    JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
-                    WHERE `books`.`libraryID` = '".$this->libField->getValue()."' AND `bookTypes`.`ID` = '".$this->id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
-                        SELECT `bookID`
-                        FROM `checkouts` AS `checkout2`
-                        WHERE `bookTypeID` = '".$this->id."' AND `libraryFromID` = '".$this->libField->getValue()."' AND `in` = DEFAULT(`in`)
-                    )";
-            DatabaseManager::checkError($sql);
-            $num2 = DatabaseManager::getNumResults();
-            if($num2-$num1 > 0) {
+            $books = getBookAvailability($this->id);
+            if(isset($books[$this->libField->getValue()])) {
                 $this->fieldset->commit();
             } else {
                 die(header("Location:".$_SERVER["REQUEST_URI"]."&race=".$this->id));
@@ -279,7 +266,7 @@
             //release the locks, and we're done.
             DatabaseManager::checkError("UNLOCK TABLES");
 
-            //notify the tomekeeper this book is from of the checkout if they want the notification
+            //notify the tomekeeper this book is from of the checkout, if they want the notification
             if($_SESSION["notifications"]) {
                 $this->sendNotificationEmail();
             }
