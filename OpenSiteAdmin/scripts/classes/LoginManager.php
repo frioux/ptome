@@ -79,7 +79,8 @@
 				//...allow the user to log in if an administrator reactivates their account
 				$_SESSION["loginAttempts"] = 0;
 				//...notify the user of their suspension
-				header("Location:".$path."OpenSiteAdmin/login.php?errorID=".LoginManager::SUSPENDED);
+				global $path;
+				header("Location:".$path."admin/login.php?errorID=".LoginManager::SUSPENDED);
 			}
 		}
 
@@ -105,7 +106,7 @@
 		 * @param BOOLEAN $isCookie True if the provided data is coming from cookie data (cookie passwords are already encrypted).
 		 * @return INTEGER One of the error code constants defined in this class.
 		 */
-		public function login($user, $pass, $remember="no", $isCookie=false) {
+		public function login($user, $pass, $remember=false, $isCookie=false) {
             $user = SecurityManager::SQLPrep($user);
             $pass = SecurityManager::SQLPrep($pass);
 			$sql = "select `users`.*, `libraries`.`interTOME` from `users` JOIN `libraries` ON `users`.`libraryID` = `libraries`.`ID` where `username` LIKE '$user'";
@@ -116,7 +117,7 @@
 			$row = DatabaseManager::fetchAssoc($result);
 			if($row["active"] == "1") {
 				if($isCookie) {
-					$pass2 = SecurityManager::encrypt($row["password"], $row["salt"]);
+					$pass2 = SecurityManager::encrypt($row["password"], $row["password_salt"]);
 				} else {
 					$pass2 = $row["password"];
 				}
@@ -136,7 +137,7 @@
                     $_SESSION["semester"] = $row["semester"];
 					$_SESSION["notifications"] = $row["notifications"];
 					$_SESSION["email"] = $row["email"];
-					if($remember == "yes") {
+					if($remember == "on") {
 						$this->setCookies($row["username"], $pass2, true);
 					}
 					return LoginManager::NONE;
@@ -205,8 +206,9 @@
 			if(!$set) {
 				$offset = -$offset;
 			}
-			setcookie( "username", $username, time()+$offset, "/", SITE_NAME);
-			setcookie( "password", $password, time()+$offset, "/", SITE_NAME);
+			$time = time()+$offset;
+			setcookie( "username", $username, $time, "/");
+			setcookie( "password", $password, $time, "/");
 		}
 
 		/**

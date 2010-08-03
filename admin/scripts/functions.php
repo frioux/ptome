@@ -207,7 +207,7 @@
     }
 
     //processes book reservations
-    class CheckoutFormHook implements hook {
+    class CheckoutFormHook implements Hook {
         protected $fieldset;
         protected $row;
         protected $linkField;
@@ -283,6 +283,8 @@
             } else {
                 die(header("Location:".$_SERVER["REQUEST_URI"]."&reserved=".$this->id));
             }
+
+            return true;
         }
 
         protected function sendNotificationEmail() {
@@ -397,7 +399,7 @@
 
     //Processes associating a book type with a class
     //Decides whether to add a new association entry or edit an existing one
-    class ProcessBookAssociationHook implements hook {
+    class ProcessBookAssociationHook implements Hook {
         protected $fieldset;
         protected $keyField;
         protected $linkField;
@@ -414,7 +416,7 @@
             $classID = $this->fieldset->getValue("classID");
             if(empty($classID)) {
                 print '<div class="alert bad">Sorry, the class '.$this->linkField->getValue().' doesn\'t exist</div>';
-                return;
+                return true;
             } else {
                 $result = DatabaseManager::checkError("select `ID` from `classbooks` where `classID` = '".$classID."' and bookID = '".$this->book["bookID"]."'");
                 if(DatabaseManager::getNumResults($result) == 0) { //add
@@ -437,7 +439,7 @@
                     }
                 }
             }
-            throw new Exception("Halting on form errors");
+            return false;
         }
     }
 

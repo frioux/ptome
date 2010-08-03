@@ -64,6 +64,8 @@
                 unset($_SESSION["post"]);
                 die(header("Location:bookinfo.php?id=".$this->get("ID")));
             }
+
+            return true;
         }
     }
 

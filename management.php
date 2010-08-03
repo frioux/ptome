@@ -42,6 +42,7 @@
 
         public function process() {
             $_SESSION["semester"] = $this->keyField->getValue();
+			return true;
         }
     }
     $row = new RowManager("users", $keyField->getName(), $_SESSION["ID"]);
@@ -108,8 +109,8 @@
             }
 
             public function process() {
-
                 $_SESSION["libraryID"] = $this->field->getValue();
+				return true;
             }
         }
 
