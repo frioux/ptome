@@ -30,6 +30,8 @@
                 die(header("Location:".$this->redir));
             }
         }
+
+        return true;
     }
 
     $redir = redir_pop();

@@ -21,13 +21,11 @@
 	 * @author John Oren
 	 * @version 1.0 July 31, 2008
 	 */
-	interface hook {
+	interface Hook {
         /**
          * Initiates custom processing for this hook.
          *
-         * Note that if this function throws an exception, it will be caught and the page will not be redirected.
-         * Also, all hooks added after the failing hook will NOT be executed.
-         * @return VOID
+         * @return BOOLEAN False if the hook did not process correctly.
          */
 		function process();
 	}

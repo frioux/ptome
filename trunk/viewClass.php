@@ -144,7 +144,7 @@
 ?>
 <div class="line"></div>
 <?php
-    class DeleteClassHook implements hook {
+    class DeleteClassHook implements Hook {
         private $id;
         function __construct($id) {
             $this->id = $id;
@@ -152,7 +152,7 @@
 
         function process() {
             $sql = "DELETE FROM `classbooks` WHERE `classbooks`.`classID` = '".$id."'";
-            DatabaseManager::checkError($sql);
+            return DatabaseManager::checkError($sql);
         }
     }
 

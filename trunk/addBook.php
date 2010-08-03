@@ -29,6 +29,8 @@
             if($row->finalize(Form::EDIT)) {
                 die(header("Location:".$this->redir));
             }
+
+            return true;
         }
     }
 

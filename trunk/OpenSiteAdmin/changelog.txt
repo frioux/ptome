@@ -42,7 +42,7 @@
 Version 0.9.11
 --------------
 Hook.php
-    ADDED a feature where hooks can throw exceptions to abandon 'redirection on success'.
+    CHANGED Hook interface to be Hook instead of hook and so that hooks return a boolean success value.
 LoginManager.php
     ADDED functionality to run the whole login and logout process.
 login.php

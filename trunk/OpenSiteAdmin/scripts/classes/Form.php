@@ -226,8 +226,8 @@
 		 */
 		function process(array $hooks=array()) {
             foreach($hooks as $hook) {
-                if(!$hook instanceof hook && $hook !== null) {
-                    throw new Exception("You attempted to set a hook that does not implement the hook interface");
+                if(!$hook instanceof Hook && $hook !== null) {
+                    throw new Exception("You attempted to set a hook that does not implement the Hook interface");
                 }
             }
 			if(!$this->processable()) {
@@ -236,11 +236,13 @@
 
             $success = true;
 			foreach($this->fieldsets as $fieldset) {
+				//all fieldsets will be processed
 				$success = $fieldset->process() && $success;
 			}
             //if successful and this is not an update
 			if($success && isset($_POST["submit"])) {
 				foreach($this->fieldsets as $fieldset) {
+					//commits halt on the first error
 					$success = $success && $fieldset->commit();
                 }
 				if($success) {
@@ -248,13 +250,12 @@
                         if($hook === false) {
                             return;
                         }
-                        try {
-    						$hook->process();
-    					} catch(Exception $e) {
-                            return;
-                        }
+						//hooks halt on the first failure
+    					$success = $success && $hook->process();
                     }
-                    die(header("Location:".$this->redir));
+					if($success) {
+	                    die(header("Location:".$this->redir));
+					}
 				}
 			}
 		}
