@@ -7,6 +7,7 @@
 
     /**
      * Finds the books that are available to be reserved given a book ID and the session's current semester.
+     * NOTE: The checkouts table is referred to by the alias bookAvailabilityCheckouts for the purposes of table locking.
      *
      * A book can be reserved IFF:
      * 1. The book has not expired
@@ -37,10 +38,10 @@
                 JOIN `books` ON `books`.`libraryID` = `libraries`.`ID`
                 JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
                 WHERE ".$where."`bookTypes`.`ID` = '".$id."' and `books`.`expired` = '0' AND `books`.`ID` NOT IN (
-                    SELECT `checkouts`.`bookID`
-                    FROM `checkouts`
-                    WHERE `checkouts`.`bookTypeID` = '".$id."' AND `checkouts`.`in` = DEFAULT(`checkouts`.`in`)
-                        AND (`checkouts`.`semester` - '".$_SESSION["semester"]."') <= 0.5
+                    SELECT bookAvailablityCheckouts.`bookID`
+                    FROM `checkouts` AS bookAvailablityCheckouts
+                    WHERE bookAvailablityCheckouts.`bookTypeID` = '".$id."' AND bookAvailablityCheckouts.`in` = DEFAULT(bookAvailablityCheckouts.`in`)
+                        AND (bookAvailablityCheckouts.`semester` - '".$_SESSION["semester"]."') <= 0.5
                 )";
 //        print $sql."<br><br>";
         $result = DatabaseManager::checkError($sql);
@@ -253,11 +254,11 @@
 
             //ensure we don't checkout the same book twice.
             //we don't use LOW_PRIORITY here because this is a read heavy app.
-            $sql = "LOCK TABLE checkouts WRITE, libraries WRITE, `".$this->row->getTableName()."` AS commitRow WRITE,
+            $sql = "LOCK TABLE checkouts AS bookAvailablityCheckouts READ, libraries READ, `".$this->row->getTableName()."` WRITE,
                     `errorLog` WRITE, `books` READ, `bookTypes` READ";
             DatabaseManager::checkError($sql);
             //finding reservations for the ISBN from this library that have not yet been filled
-            $books = getBookAvailability($this->id);
+            $books = getBookAvailability($this->id, "checkouts1");
             if(isset($books[$this->libField->getValue()])) {
                 $this->fieldset->commit();
             } else {
@@ -273,7 +274,7 @@
 
             //create the patron if we need to
             if($storeCreateUser) {
-                $_SESSION["post"]["ID"] = DatabaseManager::getInsertID();
+                $_SESSION["post"]["ID"] = $this->row->getValue($this->row->getPrimaryKeyName());
                 $_SESSION["post"]["table"] = "checkouts";
                 $_SESSION["post"]["field"] = "borrowerID";
                 redir_push($_SERVER["REQUEST_URI"]);
