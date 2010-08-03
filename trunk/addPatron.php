@@ -22,7 +22,7 @@
         function process() {
             $checkoutID = $_SESSION["post"]["ID"];
             $table = $_SESSION["post"]["table"];
-            $field = array_pop($_SESSION["post"]["field"]);
+            $field = $_SESSION["post"]["field"];
             $row = new RowManager($table, "ID", $checkoutID);
             $row->setValue($field, $this->keyField->getValue());
             cleanSessionOnEmptyRedir();
