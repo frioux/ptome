@@ -41,6 +41,13 @@
 
 Version 0.9.11
 --------------
+Fieldset.php
+    REMOVED call to databasePrep method on fields before committing. It wasn't doing anything anyway
+            since the value was never pulled back into the fieldset.
+Form.php
+    ADDED method addPreCommitHook to add a pre-commit hook.
+    ADDED method addPostCommitHook to add a post-commit hook.
+    DEPRECATED the hooks argument to the process method.
 Hook.php
     CHANGED Hook interface to be Hook instead of hook and so that hooks return a boolean success value.
 LoginManager.php

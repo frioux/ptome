@@ -57,20 +57,24 @@
 		 */
 		protected static $nextFormID = 1;
 
+		/** @var ajax Optional ajax to append to the submit button. */
+        protected $ajax;
         /** @var Unique ID for this form. */
         protected $id;
         /** @var Array of fieldsets in this form. */
 		protected $fieldsets;
+		/** @var URL to submit form data to. */
+        protected $formAction;
 		/** @var The type of this form (one of the type constants). */
 		protected $formType;
+		/** @var Array of hooks to execute after all fieldsets have committed. */
+		protected $postCommitHooks = array();
+		/** @var Array of hooks to execute just before all fieldsets have committed. */
+		protected $preCommitHooks = array();
 		/** @var URL To redirect to on success (relative or absolute). */
 		protected $redir;
         /** @var Optional custom text for the submit button. */
         protected $submitText;
-        /** @var URL to submit form data to. */
-        protected $formAction;
-        /** @var ajax Optional ajax to append to the submit button. */
-        protected $ajax;
 
 		/**
 		 * Constructs a new form manager, which manages all the forms on a page.
@@ -114,6 +118,26 @@
 				$this->addFieldset($fieldset);
 			}
         }
+
+		/**
+		 * Adds a hook to the list of hooks to be processed after all fieldsets are committed.
+		 *
+		 * @param Hook $hook Hook to add.
+		 * @return VOID
+		 */
+		function addPostCommitHook(Hook $hook) {
+			$this->postCommitHooks[] = $hook;
+		}
+
+		/**
+		 * Adds a hook to the list of hooks to be processed just before all fieldsets are committed.
+		 *
+		 * @param Hook $hook Hook to add.
+		 * @return VOID
+		 */
+		function addPreCommitHook(Hook $hook) {
+			$this->preCommitHooks[] = $hook;
+		}
 
         /**
 		 * Prepares the form for displays and calls all fieldsets for display
@@ -215,23 +239,23 @@
 		/**
 		 * Initiates processing for all the fieldset in this form.
 		 *
-         * If no errors are encountered and there is no hook that equals false,
+         * If no errors are encountered and there is no post-process hook that equals false,
          * redirects the user to the success page.
 		 * Note that all fieldsets will be processed, regardless of previous errors.
 		 * However, if one commit fails then no further commits are attempted.
          *
+         * @deprecated parameter $hooks
          * @param ARRAY $hooks Array of postprocessor hooks to run (returns if one of
          *                      the hooks === false, skipping the redirect)
 		 * @return VOID
 		 */
 		function process(array $hooks=array()) {
-            foreach($hooks as $hook) {
-                if(!$hook instanceof Hook && $hook !== null) {
-                    throw new Exception("You attempted to set a hook that does not implement the Hook interface");
-                }
-            }
 			if(!$this->processable()) {
                 return false;
+            }
+			
+            foreach($hooks as $hook) {
+                $this->addPostCommitHook($hook);
             }
 
             $success = true;
@@ -241,21 +265,34 @@
 			}
             //if successful and this is not an update
 			if($success && isset($_POST["submit"])) {
-				foreach($this->fieldsets as $fieldset) {
-					//commits halt on the first error
-					$success = $success && $fieldset->commit();
-                }
+				//pre-process
+				foreach($this->preCommitHooks as $hook) {
+					//hooks halt on the first failure
+					$success = $success && $hook->process();
+				}
+
+				//commit
 				if($success) {
-					foreach($hooks as $hook) {
+					foreach($this->fieldsets as $fieldset) {
+						//commits halt on the first error
+						$success = $success && $fieldset->commit();
+					}
+				}
+
+				//post-process
+				if($success) {
+					foreach($this->postCommitHooks as $hook) {
                         if($hook === false) {
                             return;
                         }
 						//hooks halt on the first failure
     					$success = $success && $hook->process();
                     }
-					if($success) {
-	                    die(header("Location:".$this->redir));
-					}
+				}
+
+				//redirect
+				if($success) {
+					die(header("Location:".$this->redir));
 				}
 			}
 		}
