@@ -127,12 +127,12 @@
             if($this->isEmpty() && $this->silent) {
                 return true;
             }
-			foreach($this->fields as $field) {
+/*			foreach($this->fields as $field) {
 				if(!$field->databasePrep()) {
                     return false;
                 }
 			}
-/*            //refetch values from fields to allow for custom scenarios
+            //refetch values from fields to allow for custom scenarios
             foreach($this->fields as $field) {
                 if(is_array($field->getValue())) { //handle password fields, etc
                     $this->values = array_merge($this->values, $field->getValue());
