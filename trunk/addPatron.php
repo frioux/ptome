@@ -29,9 +29,9 @@
             if($row->finalize(Form::EDIT)) {
                 die(header("Location:".$this->redir));
             }
-        }
 
-        return true;
+            return true;
+        }
     }
 
     $redir = redir_pop();
