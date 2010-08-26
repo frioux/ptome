@@ -55,9 +55,12 @@
         }
         //excluding books with reservations pending this semester
         //validate #3
-        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` = '".$_SESSION["semester"]."'";
+        $sql = "SELECT count(`ID`) AS `count`, `libraryFromID` from `checkouts` where `bookTypeID`='".$id."' AND `out` = DEFAULT(`out`) AND `semester` = '".$_SESSION["semester"]."' GROUP BY `libraryFromID`";
         $result = DatabaseManager::checkError($sql);
+        print "--------------------------------------<br>$id<br>";
+        dump("libbooks", $libBooks);
         while($row = DatabaseManager::fetchAssoc($result)) {
+            dump("row", $row);
             $libBooks[$row["libraryFromID"]]["count"] -= $row["count"];
         }
         foreach($libBooks as $key=>$row) {
