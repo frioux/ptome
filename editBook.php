@@ -17,10 +17,14 @@
     $form->addFieldset($fieldset);
     $form->process();
 
-    $deleteForm = new Form(Form::DELETE, $path."bookinfo.php?id=".$id, $path."editBook.php?id=".$id);
+    $deleteForm = new Form(Form::EDIT, $path."bookinfo.php?id=".$id, $path."editBook.php?id=".$id);
     $deleteFieldset = new Fieldset_Vertical($deleteForm->getFormType());
+    $deleteFieldset->addField($keyField);
+    $field = $deleteFieldset->addField(new Hidden("expired", "", null, false, false));
     $deleteFieldset->addRowManager($row);
     $deleteForm->addFieldset($deleteFieldset);
+    $deleteForm->setSubmitText("Delete");
+    $field->setValue(true);
     $deleteForm->process();
 ?>
 <div onmouseover="DPC_autoInit()">
