@@ -25,11 +25,11 @@
                     return false;
                 }
                 if($this->getOptions() == 13 && strlen($value) != 13) {
-                    $this->errorText .= "ISBN numbers must be 13 characters long";
+                    $this->errorText .= "This ISBN number must be 13 characters long";
                     return false;
                 }
                 if($this->getOptions() == 10 && strlen($value) != 10) {
-                    $this->errorText .= "ISBN numbers must be 10 characters long";
+                    $this->errorText .= "This ISBN number must be 10 characters long";
                     return false;
                 }
                 if($valid != 0) {

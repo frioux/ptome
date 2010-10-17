@@ -66,7 +66,7 @@
 				return false;
 			}
 			$options = $this->getOptions();
-			if(!empty($options["maxlength"])) {
+			if(array_key_exists($options["maxlength"])) {
 				if(strlen($value) > $options["maxlength"]) {
 					//HTML should enforce this, but the user can disable it with browser extensions.
 					$this->errorText = "The provided value was longer than the maximum allowed length";
