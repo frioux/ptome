@@ -253,7 +253,7 @@
 			if(!$this->processable()) {
                 return false;
             }
-			
+
             foreach($hooks as $hook) {
                 $this->addPostCommitHook($hook);
             }
@@ -265,7 +265,7 @@
 			}
             //if successful and this is not an update
 			if($success && isset($_POST["submit"])) {
-				//pre-process
+				//post-process
 				foreach($this->preCommitHooks as $hook) {
 					//hooks halt on the first failure
 					$success = $success && $hook->process();
@@ -279,7 +279,7 @@
 					}
 				}
 
-				//post-process
+				//post-commit
 				if($success) {
 					foreach($this->postCommitHooks as $hook) {
                         if($hook === false) {

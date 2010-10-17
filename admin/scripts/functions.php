@@ -142,13 +142,13 @@
             Reserved: <?php print date('m/d/y', strtotime($checkout["reserved"])); ?>
         <?php } ?>
         <br>
-        <div class="print-no" id="checkout<?php print $checkout["checkoutID"]; ?>">
-            <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["checkoutID"]; ?>','reserve.php', {
-                                    parameters: Form.serialize(this)+'&id=<?php print $checkout["checkoutID"]; ?>',
-                                    onCreate: function(request){$('checkout<?php print $checkout["checkoutID"]; ?>').innerHTML = 'Loading...'},
-                                    onSuccess: function(request){new Effect.Highlight( 'checkout<?php print $checkout["checkoutID"]; ?>', { duration:0.5 } )}
+        <div class="print-no" id="checkout<?php print $checkout["ID"]; ?>">
+            <form method="post" action="" onsubmit="new Ajax.Updater('checkout<?php print $checkout["ID"]; ?>','reserve.php', {
+                                    parameters: Form.serialize(this)+'&id=<?php print $checkout["ID"]; ?>',
+                                    onCreate: function(request){$('checkout<?php print $checkout["ID"]; ?>').innerHTML = 'Loading...'},
+                                    onSuccess: function(request){new Effect.Highlight( 'checkout<?php print $checkout["ID"]; ?>', { duration:0.5 } )}
                                     }); return false">
-                <input type="hidden" value="fill" name="type" id="checkouthidden<?php print $checkout["checkoutID"]; ?>">
+                <input type="hidden" value="fill" name="type" id="checkouthidden<?php print $checkout["ID"]; ?>">
                 <table class="noborder close">
                     <tbody>
                         <tr>
@@ -159,10 +159,10 @@
                             </td>
                             <td>
                                 <select name="bookID">
-                                    <option id="-1">Please select a Book ID</option>
+                                    <option value="-1">Please select a Book ID</option>
                                     <?php
                                         foreach($books as $b) {
-                                            print '<option id="'.$b["ID"].'">'.$b["ID"].'</option>';
+                                            print '<option value="'.$b["ID"].'">'.$b["ID"].'</option>';
                                         }
                                     ?>
                                 </select>
@@ -170,10 +170,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="submit" name="submit" value="Cancel" onclick="$('checkouthidden<?php print $checkout["checkoutID"]; ?>').value='cancel';">
+                                <input type="submit" name="submit" value="Cancel" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='cancel';">
                             </td>
                             <td>
-                                <input type="submit" name="submit" value="Fill Reservation" onclick="$('checkouthidden<?php print $checkout["checkoutID"]; ?>').value='submit';">
+                                <input type="submit" name="submit" value="Fill Reservation" onclick="$('checkouthidden<?php print $checkout["ID"]; ?>').value='submit';">
                             </td>
                         </tr>
                     </tbody>
