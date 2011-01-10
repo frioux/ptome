@@ -114,7 +114,7 @@
     <a name="checkout"></a>
 </p>
 <h4>Checkout:</h4>
-<strong>Books can only be checked out through a reservation.  Use <a href="isbninfo.php?id=<?php print $bookType["ID"]; ?>">ISBN page</a> if you want to check out a book.</strong>
+<strong>Books can only be checked out through a reservation.  Use <a href="isbninfo.php?id=<?php print $book["bookID"]; ?>">ISBN page</a> if you want to check out a book.</strong>
 <br>
 <h4>Checkout History</h4>
 <?php
