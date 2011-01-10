@@ -298,6 +298,9 @@
 			$names = "";
 			$values = "";
 			foreach($this->values as $name=>$value) {
+                if(empty($value)) {
+                    continue;
+                }
 				$names .= "`".$name."`,";
 				$values .= "'".$value."',";
 			}
@@ -393,6 +396,9 @@
 
 			$set = "";
 			foreach($this->values as $name=>$value) {
+                if(empty($value)) {
+                    continue;
+                }
 				$set .= "`".$name."` = '".$value."',";
 			}
 			$set = substr($set, 0, strlen($set)-1);
