@@ -19,10 +19,10 @@
 	define("SITE_NAME", "letuacm.org");
 	//define site database constants
 	if($_SERVER["HTTP_HOST"] == "www.".SITE_NAME || $_SERVER["HTTP_HOST"] == SITE_NAME) { //live
-		define("DB_USER", "letuacm_TOME");
-		define("DB_PASS", "T,u<|nf}&lxA");
-		define("DB_ROOT", "localhost");
-		define("DB_NAME", "letuacm_TOME");
+		define("DB_USER", "letutome");
+		define("DB_PASS", "M5?/#[g");
+		define("DB_ROOT", "mysql.".SITE_NAME);
+		define("DB_NAME", "letutome");
     } else { //dev
 		define("DB_USER", "root");
 		define("DB_PASS", "jimbo111");
