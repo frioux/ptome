@@ -98,6 +98,16 @@
 			return $ret[0];
         }
 
+		/**
+		 * Returns the error message for a given page.
+		 *
+		 * @param STRING $page The page name.
+		 * @return STRING Error message.
+		 */
+		function getErrorMessage($page) {
+			return $this->errorMessages[$page];
+		}
+
         /**
 		 * Verifies that the current user is allowed to view the specified page.
 		 *

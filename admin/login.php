@@ -15,6 +15,7 @@
 
 
 	//DEFINE VARIABLES
+	$page = "site";
 	$path = "../";
 
 	//INCLUDE REQUIRED FILES AND DECLARE GENERAL OBJECTS
@@ -41,19 +42,24 @@
 			}
 			print "</span>";
 		} else {
-			$id = $mgr->getUserID();
-			$query = "SELECT users.firstLogin
-						FROM users
-						WHERE users.ID = '".$id."';";
+			$securityCheck = new SecurityManager();
+			if(!$securityCheck->isPageVisible($page)) {
+				print '<span style="color:red;">'.$securityCheck->getErrorMessage($page).'</span>';
+			} else {
+				$id = $mgr->getUserID();
+				$query = "SELECT users.firstLogin
+							FROM users
+							WHERE users.ID = '".$id."';";
 
-			$resultSet = DatabaseManager::checkError($query);
-			$row = DatabaseManager::fetchArray($resultSet);
-			//check for a custom redirect
-			if($row[0] == 0) {
-			   $mgr->setRedirect($path."firstlogin.php");
+				$resultSet = DatabaseManager::checkError($query);
+				$row = DatabaseManager::fetchArray($resultSet);
+				//check for a custom redirect
+				if($row[0] == 0) {
+				   $mgr->setRedirect($path."firstlogin.php");
+				}
+
+				$mgr->redirect();
 			}
-
-			$mgr->redirect();
 		}
 	}
 
