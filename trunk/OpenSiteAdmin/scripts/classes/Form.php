@@ -125,7 +125,7 @@
 		 * @param Hook $hook Hook to add.
 		 * @return VOID
 		 */
-		function addPostCommitHook(Hook $hook) {
+		function addPostCommitHook($hook) {
 			$this->postCommitHooks[] = $hook;
 		}
 
