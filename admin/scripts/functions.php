@@ -15,10 +15,9 @@
      * 3. The book does not have a pending reservation for it only for this semester
      * 4. The book is in your library OR (you are a part of interTOME AND interTOME is open)
      *
-     * @param INTEGER $id ID number of the specific book.
+     * @param INTEGER $id ID number of the specific book type.
      * @return ARRAY List of available books of the form books[libraryID]["ID"] - libraryID<br>
      *                  books[libraryID]["name"] - library name<br>
-     *                  books[libraryID]["interTOME"] - true if available for intertome loans<br>
      *                  books[libraryID]["count"] - number of available books<br>
      */
     function getBookAvailability($id) {
@@ -47,7 +46,7 @@
         $result = DatabaseManager::checkError($sql);
         $libBooks = array();
         while($row = DatabaseManager::fetchAssoc($result)) {
-            if(!$row["interTOME"]) continue;
+            if(!$row["interTOME"] && $row["ID"] != $_SESSION["libraryID"]) continue;
             if(!isset($libBooks[$row["ID"]])) {
                 $libBooks[$row["ID"]] = $row;
             }
@@ -70,6 +69,88 @@
         }
         ksort($libBooks);
         return $libBooks;
+    }
+
+    /**
+     * Checks to see if a specific book is available to be reserved.
+     *
+     * A book is reservable IFF:
+     * 1. The book has not expired.
+     * 2. The book is not checked out this semester and does not have an unreturned checkout from over 2 semesters ago.
+     * 3. There are less reservations for the book type from this library than there are books of this type from this library.
+     * 4. The book is in your library OR (you are a part of interTOME AND interTOME is open).
+     *
+     * @param INTEGER $id ID number of the specific book.
+     * @return BOOLEAN True if the book can be reserved.
+     * @see getBookAvailability
+     */
+    function isBookReservable($id) {
+        //get book info
+        $sql = "select `libraryID`, `bookID`, `expired` from `books` where `ID` = '".$id."'";
+        $result = DatabaseManager::checkError($sql);
+        $book = DatabaseManager::fetchAssoc($result);
+        if($book["expired"]) {
+            return false;
+        }
+
+        //check if interTOME is open
+        $sql = "select `interTOME` from `libraries` where `ID` = '3'";
+        $result = DatabaseManager::checkError($sql);
+        $row = DatabaseManager::fetchArray($result);
+
+        //validate #4
+        if(!$_SESSION["interTOME"] || $row[0] == false) {
+            if($book["libraryID"] != $_SESSION["libraryID"]) {
+                return false;
+            }
+        }
+        //excluding books that are checked out this semester or have not been returned for over 2 semesters
+        //validate #1,2
+        $sql = "SELECT count(`libraries`.`ID`) as `count`
+                FROM `libraries`
+                JOIN `books` ON `books`.`libraryID` = `libraries`.`ID`
+                JOIN `bookTypes` ON `books`.`bookID` = `bookTypes`.`ID`
+                WHERE `bookTypes`.`ID` = '".$book["bookID"]."' and `libraries`.`ID` = '".$book["libraryID"]."' AND `books`.`ID` NOT IN (
+                    SELECT bookAvailablityCheckouts.`bookID`
+                    FROM `checkouts` AS bookAvailablityCheckouts
+                    WHERE bookAvailablityCheckouts.`bookTypeID` = '".$book["bookID"]."' AND bookAvailablityCheckouts.`in` = DEFAULT(bookAvailablityCheckouts.`in`)
+                        AND (bookAvailablityCheckouts.`semester` - '".$_SESSION["semester"]."') <= 0.5
+                )";
+//        print $sql."<br><br>";
+        $result = DatabaseManager::checkError($sql);
+        $row = DatabaseManager::fetchAssoc($result);
+        $numBooks = $row["count"];
+        if($numBooks == 0) {
+            return false;
+        }
+        //excluding books with reservations pending this semester
+        //validate #3
+        $sql = "SELECT count(`ID`) AS `count` from `checkouts` where `bookTypeID`='".$book["bookID"]."' AND `out` = DEFAULT(`out`) AND `semester` = '".$_SESSION["semester"]."' AND `libraryFromID` = '".$book["libraryID"]."'";
+        $result = DatabaseManager::checkError($sql);
+        $row = DatabaseManager::fetchAssoc($result);
+        $numBooks -= $row["count"];
+        if($numBooks <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks to see if a given book is available for checkout.
+     *
+     * A book can be checked out IFF:
+     * 1. There is an existing checkout request for the book type with an "out" time of 0 for the current semester.
+     *
+     * @param INTEGER $id ID number of the specific book.
+     * @return BOOLEAN True if the book can be checkout out.
+     */
+    function isBookCheckoutable($id) {
+        $sql = "SELECT `ID` FROM `checkouts` WHERE `bookID` = '".$id."' AND `checkouts`.`out` != DEFAULT(`checkouts`.`out`) AND `checkouts`.`semester` = '".$_SESSION["semester"]."'";
+        $result = DatabaseManager::checkError($sql);
+        if(DatabaseManager::getNumResults() == 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
