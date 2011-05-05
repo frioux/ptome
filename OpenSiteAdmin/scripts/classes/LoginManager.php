@@ -27,7 +27,7 @@
 		 * @final
 		 * @var The maximum number of login attempts that can be made before a user's account is suspended.
 		 */
-		const MAX_LOGIN_ATTEMPTS = 5;
+		const MAX_LOGIN_ATTEMPTS = 15;
 
         /**
 		 * @static
