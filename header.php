@@ -79,6 +79,9 @@
 </head>
 <body class="yui-skin-sam">
   <div id="atmosphere">
+  <div id="statusbarleft">
+    <a href="<?php print $path; ?>admin/pages/contact.php">Need help?</a>
+  </div>
   <div id="statusbar">
     <?php
         if(isset($_SESSION["username"]) && $_SESSION["permissions"] <= 1) {
