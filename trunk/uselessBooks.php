@@ -5,7 +5,7 @@
     require_once($path."OpenSiteAdmin/scripts/classes/DatabaseManager.php");
 
     function countUniqueBooks($data) {
-        for($i = 0, $count = 0; $i < count($data); $i++, $count++) {
+        for($i = 0, $count = 0; $i < count($data)-1; $i++, $count++) {
             if($data[$i]["ID"] == $data[$i+1]["ID"]) {
                 $i++;
             }
@@ -139,7 +139,7 @@
                 <td>
                     <?php
                         print '<a href="/viewClass.php?id='.$row["classID"].'">'.$row["class"].'</a> - '.$row["course"];
-                        while($data[$i+1]["ID"] == $row["ID"]) {
+                        while(isset($data[$i+1]) && $data[$i+1]["ID"] == $row["ID"]) {
                             $row = $data[++$i];
                             print '<br>';
                             print '<a href="/viewClass.php?id='.$row["classID"].'">'.$row["class"].'</a> - '.$row["course"];

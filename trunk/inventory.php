@@ -6,7 +6,7 @@
 
     $libraryID = $_SESSION['libraryID'];
 
-    if($_POST["mode"] == "in") {
+    if(isset($_POST["mode"]) && $_POST["mode"] == "in") {
         $sql = "SELECT `books`.`ID`,
                 `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`, `bookTypes`.`isbn10`, `bookTypes`.`isbn13`, `bookTypes`.`ID` AS `bookID`
                 FROM `books`
@@ -17,7 +17,7 @@
                     WHERE `libraryFromID` = '$libraryID' AND `in` = DEFAULT(`in`)
                 )";
         $title = "These books are currently in your library somewhere";
-    } elseif($_POST["mode"] == "out") {
+    } elseif(isset($_POST["mode"]) && $_POST["mode"] == "out") {
         $sql = "SELECT `books`.`ID`, `bookTypes`.`title`, `bookTypes`.`author`, `bookTypes`.`edition`,
                  `bookTypes`.`isbn10`, `bookTypes`.`isbn13`, `bookTypes`.`ID` AS `bookID`
                  FROM `books`

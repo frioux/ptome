@@ -13,7 +13,10 @@
 	 *	limitations under the License.
 	 */
 
-	session_start();
+	if(session_id() === "")
+	{
+		session_start();
+	}
 
 	//define site name constant (for creating and destroying cookies)
 	define("SITE_NAME", "letuacm.org");

@@ -219,7 +219,6 @@
 			$result = DatabaseManager::checkError($sql);
 
 			while($entry = DatabaseManager::fetchAssoc($result)) {
-				$i++;
 				$ret[] = new RowManager($this->tableName, $this->getPrimaryKeyName(), $entry[$this->getPrimaryKeyName()]);
 			}
 

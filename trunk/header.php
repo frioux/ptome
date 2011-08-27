@@ -1,5 +1,9 @@
-<?php session_start(); ?>
 <?php
+    if(session_id() === "")
+	{
+		session_start();
+	}
+
     //start output buffering
     ob_start();
     if(!isset($page)) {

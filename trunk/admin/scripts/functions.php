@@ -166,6 +166,7 @@
 
     //display the standard book information table
     function showBookInfo(array $book, $editable=true, $showID=false) {
+        global $path;
         $isbn = getISBN($book["isbn13"], $book["isbn10"]);
         ?>
         <td>
