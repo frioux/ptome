@@ -106,6 +106,8 @@
                         </td>
                     </tr>
                 </table>
+				<br>
+				<a href="<?php print $path; ?>admin/pages/contact.php?login=1">Need help?</a>
             </form>
         </center>
     </body>
