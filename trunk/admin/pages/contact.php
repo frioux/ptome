@@ -19,11 +19,13 @@
 
 Having problems? Contact a TOME developer!
 <br>
+<br>
 <form method="post" action="">
     <input type="hidden" name="session" value="<?php var_dump($_SESSION); ?>">
     Your Email:
     <br>
     <input type="text" name="from"> (If you don't provide this, we can't respond to your questions)
+    <br>
     <br>
     Comment/Question/etc:
     <br>
@@ -34,6 +36,6 @@ Having problems? Contact a TOME developer!
 
 <?php
     if(!isset($_GET["login"])) {
-        require_once("footer.php");
+        require_once($path."footer.php");
     }
 ?>
