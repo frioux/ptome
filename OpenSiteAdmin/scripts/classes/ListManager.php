@@ -94,6 +94,7 @@
 			$ret = $this->generateFilterForms($this->filters, $data);
 
 			$where = Filter::getFilterClause($this->filters);
+			$order = "";
 			if(!empty($this->order)) {
 				$order = "ORDER BY `".$this->order."` ".$this->sortDir;
 			}

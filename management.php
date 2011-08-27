@@ -72,7 +72,8 @@
 <a name="users">
 <h3>User Preferences</h3>
 <?php
-    $form = new Form(Form::EDIT, $_SERVER["SCRIPT_NAME"]);
+	$mode = Form::EDIT;
+    $form = new Form($mode, $_SERVER["SCRIPT_NAME"]);
     $form->setSubmitText("Update");
 
     $fieldset = new Fieldset_Vertical($form->getFormType());
@@ -186,7 +187,8 @@
     <a name="library">
     <h3>Library Management</h3>
     <?php
-        $form = new Form(Form::EDIT, $_SERVER["SCRIPT_NAME"]);
+		$mode = Form::EDIT;
+        $form = new Form($mode, $_SERVER["SCRIPT_NAME"]);
         $fieldset = new Fieldset_Vertical($form->getFormType());
 
         $keyField = $fieldset->addField(new Label("ID", "ID", null, false));
