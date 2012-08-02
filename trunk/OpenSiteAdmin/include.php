@@ -30,7 +30,7 @@
 		define("DB_USER", "root");
 		define("DB_PASS", "jimbo111");
 		define("DB_ROOT", "localhost");
-		define("DB_NAME", "TOME");
+		define("DB_NAME", "letutome");
 	}
 
     /**

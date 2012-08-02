@@ -53,12 +53,13 @@
         $field = new ISBNField("isbn13", "ISBN13", 13, true);
     } else {
         $field = new Label("isbn13", "ISBN13", $isbn13, true, true);
+        $linkField = $fieldset->addField($field, $isbn13);
     }
-    $linkField = $fieldset->addField($field, $isbn13);
     if(empty($isbn10)) {
         $field = new ISBNField("isbn10", "ISBN10", 10, true);
     } else {
         $field = new Label("isbn10", "ISBN10", $isbn10, true, true);
+        $linkField = $fieldset->addField($field, $isbn10);
     }
     $fieldset->addField($field, $isbn10);
     $fieldset->addField(new Text("title", "Title", array("maxlength"=>100), true, true));
