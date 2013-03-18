@@ -12,6 +12,50 @@
 ?>
 <h1>Statistics</h1>
 
+<b>Activity in the last 8 months</b>
+<?php
+    $sql = "SELECT libraries.name, COUNT(checkouts.ID) AS count FROM checkouts JOIN libraries ON libraries.ID=libraryFromID WHERE checkouts.out >= DATE_SUB(NOW(), INTERVAL 8 MONTH) GROUP BY checkouts.libraryFromID ORDER BY count DESC";
+    $result = DatabaseManager::checkError($sql);
+    $rowsFrom = DatabaseManager::fetchAssocArray($result);
+    $totalFrom = 0;
+    foreach($rowsFrom as $row) {
+        $totalFrom += $row["count"];
+    }
+    $rows = [];
+    foreach($rowsFrom as $row) {
+        $rows[$row["name"]]["from"] = $row["count"];
+    }
+
+    $sql = "SELECT libraries.name, COUNT(checkouts.ID) AS count FROM checkouts JOIN libraries ON libraries.ID=libraryToID WHERE checkouts.out >= DATE_SUB(NOW(), INTERVAL 8 MONTH) GROUP BY checkouts.libraryToID ORDER BY count DESC";
+    $result = DatabaseManager::checkError($sql);
+    $rowsTo = DatabaseManager::fetchAssocArray($result);
+    $totalTo = 0;
+    foreach($rowsTo as $row) {
+        $totalTo += $row["count"];
+    }
+    foreach($rowsTo as $row) {
+        $rows[$row["name"]]["to"] = $row["count"];
+    }
+
+    function cmp($a, $b) {
+        if(@$a["to"] == @$b["to"]) {
+            return @$a["from"] < @$b["from"] ? 1 : -1;
+        }
+        return @$a["to"] < @$b["to"] ? 1 : -1;
+    }
+    uasort($rows, "cmp");
+
+    print "<table>";
+    print "<tr style='font-weight:bold;'><td>Floor</td><td># Checkouts to</td><td>% Checkouts to</td><td># Checkouts from</td><td>% Checkouts from</td></tr>";
+    foreach($rows as $name=>$row) {
+        print "<tr>";
+        @print "<td style='font-weight:bold;'>".$name."</td><td>".$row["to"]."</td><td>".round($row["to"]/$totalTo*100)."%</td><td>".$row["from"]."</td><td>".round($row["from"]/$totalFrom*100)."%</td>";
+        print "</tr>";
+    }
+    print "</table>";
+?>
+<br><br>
+
 <form name="report" action="<?php print $_SERVER["SCRIPT_NAME"]; ?>" method="post">
     <table>
         <tbody>
@@ -55,6 +99,7 @@
    $allLibraries = $_POST['libraries'];
 
    //Generate WHERE clauses
+   $where = "";
    if($allLibraries == NULL)
    {
       $where = "books.libraryID = $libID";
@@ -148,6 +193,5 @@
       $topCount++;
    }
 ?>
-
 
 <?php require_once($path."footer.php"); ?>
