@@ -69,7 +69,7 @@
         $form->display();
     }
 ?>
-<a name="users">
+<a name="users"></a>
 <h3>User Preferences</h3>
 <?php
 	$mode = Form::EDIT;
@@ -77,11 +77,11 @@
     $form->setSubmitText("Update");
 
     $fieldset = new Fieldset_Vertical($form->getFormType());
-    $levels[1] = "Developer";
-    $levels[2] = "Administrator";
-    $levels[3] = "TOMEKeeper";
+    $levelArray[1] = "Developer";
+    $levelArray[2] = "Administrator";
+    $levelArray[3] = "TOMEKeeper";
     //prevent privilege escalation here
-    $levels = array_slice($levels, $_SESSION["permissions"]-1, count($levels), true);
+    $levels = array_slice($levelArray, $_SESSION["permissions"]-1, count($levelArray), true);
     $result = DatabaseManager::checkError("select * from `libraries`");
     $libraries = array();
     while($row = DatabaseManager::fetchAssoc($result)) {
@@ -96,92 +96,110 @@
     $fields[] = new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false);
     $fields[] = new Checkbox("notifications", "Notifications", null, false, false);
 
-    if($securityManager->isPageVisible("editUser")) {
-        $linkField = new Text("username", "Username", array("maxlength"=>20), true, true);
-        array_unshift($fields, $linkField);
-        $fields[] = new Checkbox("active", "Active", null, true, false);
-        $fieldset->addFields($fields);
-        $libField = $fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
+	$linkField = new Text("username", "Username", array("maxlength"=>20), true, true);
+	array_unshift($fields, $linkField);
+	$fields[] = new Checkbox("active", "Active", null, true, false);
+	$fieldset->addFields($fields);
+	$libField = $fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
 
-        class LibraryUpdateHook implements Hook {
-            protected $field;
-            function __construct(Field $field) {
-                $this->field = $field;
-            }
+	class LibraryUpdateHook implements Hook {
+		protected $field;
+		function __construct(Field $field) {
+			$this->field = $field;
+		}
 
-            public function process() {
-                $_SESSION["libraryID"] = $this->field->getValue();
-				return true;
-            }
-        }
+		public function process() {
+			$_SESSION["libraryID"] = $this->field->getValue();
+			return true;
+		}
+	}
 
-        if(!isset($_GET["id"]) || empty($_GET["id"])) {
-            $id = -1;
-        } else {
-            $id = $_GET["id"];
-        }
-        $row = new RowManager("users", $keyField->getName(), $id);
-        $fieldset->addRowManager($row);
-        $form->addFieldset($fieldset);
-        $hooks = array();
-        if($id = $_SESSION["ID"]) {
-            $hooks[] = new LibraryUpdateHook($libField);
-        }
-        $form->process($hooks);
+	if(!isset($_GET["id"]) || empty($_GET["id"])) {
+		$id = -1;
+	} else {
+		$id = intval($_GET["id"]);
+	}
+	$row = new RowManager("users", $keyField->getName(), $id);
+	$fieldset->addRowManager($row);
+	$form->addFieldset($fieldset);
+	$hooks = array();
+	if($id == $_SESSION["ID"]) {
+		$hooks[] = new LibraryUpdateHook($libField);
+	}
+	//hacks
+	if($_REQUEST["submit"] != "Delete User") {
+		$form->process($hooks);
+	}
 
-        $list = new ListManager();
-        if((empty($_GET["id"]) && $mode != Form::ADD) || (!empty($_GET["id"]) && !$form->selected())) {
-            print $list->generateList($fieldset, $keyField, $linkField, $form->getQS()."#users");
-        } else {
-            $form->display();
-        }
-    } else {
-        array_unshift($fields, new Label("username", "Username", null, true, true));
-        $fieldset->addFields($fields);
-        $fieldset->addField(new Label("libraryID", "Library", $libraries[$_SESSION["libraryID"]], true, true));
+	$deleteForm = new Form(Form::DELETE, $_SERVER["SCRIPT_NAME"]);
+	$deleteForm->setSubmitText("Delete User");
+	$deleteFieldset = new Fieldset_Vertical($deleteForm->getFormType());
+	$deleteFieldset->addField($keyField);
+	$deleteFieldset->addRowManager($row);
+	$deleteForm->addFieldset($deleteFieldset);
+	$deleteForm->process();
 
-        $id = $_SESSION["ID"];
-        $row = new RowManager("users", $keyField->getName(), $id);
-        $fieldset->addRowManager($row);
-        $form->addFieldset($fieldset);
-        $form->process();
-        $form->display();
-    }
+	$list = new ListManager();
+	if((empty($_GET["id"]) && $mode != Form::ADD) || (!empty($_GET["id"]) && !$form->selected())) {
+		if(!$securityManager->isPageVisible("editUser")) {
+			class LibraryFilterHook {
+				protected $libraryID;
+				function __construct($libraryID) {
+					$this->libraryID = $libraryID;
+				}
+
+				public function process($entry) {
+					//if the user can't edit users, they can still manage their own library (or at least the people in it with permissions at or below their level)
+					return $entry["libraryID"] == $this->libraryID && $entry["permissions"] >= $_SESSION["permissions"];
+				}
+			}
+			$list->addFilterHook(new LibraryFilterHook($_SESSION["libraryID"]));
+		}
+		print $list->generateList($fieldset, $keyField, $linkField, $form->getQS()."#users");
+	} else {
+		$form->display();
+
+		if($_SESSION["ID"] != $id) {
+			//if you can see them, you can remove them. Provided you are not them, of course
+			$deleteForm->display();
+		}
+	}
 ?>
+<a name="adduser"></a>
+<h3>Add User</h3>
 <?php
-    if($securityManager->isPageVisible("addUser")) { ?>
-         <a name="adduser"></a>
-         <h3>Add User</h3>
-     <?php
-        $form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]."#adduser", "#adduser");
+	$form = new Form(Form::ADD, $_SERVER["SCRIPT_NAME"]."#adduser", "#adduser");
 
-        $fieldset = new Fieldset_Vertical($form->getFormType());
-        //prevent privilege escalation here
-        $levels = array_slice($levels, $_SESSION["permissions"]-1, count($levels), true);
-        $result = DatabaseManager::checkError("select * from `libraries`");
-        $libraries = array();
-        while($row = DatabaseManager::fetchAssoc($result)) {
-            $libraries[$row["ID"]] = $row["name"];
-        }
+	$fieldset = new Fieldset_Vertical($form->getFormType());
+	//prevent privilege escalation here
+	$levels = array_slice($levelArray, $_SESSION["permissions"]-1, count($levelArray), true);
+	$result = DatabaseManager::checkError("select * from `libraries`");
+	$libraries = array();
+	while($row = DatabaseManager::fetchAssoc($result)) {
+		$libraries[$row["ID"]] = $row["name"];
+	}
 
-        $keyField = $fieldset->addField(new Hidden("ID", "", null, false));
-        $linkField = $fieldset->addField(new Text("username", "Username", array("maxlength"=>20), true, true));
-        $fieldset->addField(new Select("permissions", "Permissions", $levels, true, true));
-        $fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
-        $fieldset->addField(new Password("password", "Password", null, false, true));
-        $fieldset->addField(new LETUEmailField("email", "Email", array("maxlength"=>50), true, false));
-        $fieldset->addField(new Text("name", "Full Name", array("maxlength"=>50), true, false));
-        $fieldset->addField(new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false));
-        $fieldset->addField(new Checkbox("notifications", "Notifications", null, false, false));
-        $fieldset->addField(new Checkbox("active", "Active", null, true, false), 1);
-        $fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
+	$keyField = $fieldset->addField(new Hidden("ID", "", null, false));
+	$linkField = $fieldset->addField(new Text("username", "Username", array("maxlength"=>20), true, true));
+	$fieldset->addField(new Select("permissions", "Permissions", $levels, true, true));
+	if($securityManager->isPageVisible("addUser")) {
+		$fieldset->addField(new Select("libraryID", "Library", $libraries, true, true));
+	} else {
+		$fieldset->addField(new Label("libraryID", "Library", $libraries[$_SESSION["libraryID"]], true, true));
+	}
+	$fieldset->addField(new Password("password", "Password", null, false, true));
+	$fieldset->addField(new LETUEmailField("email", "Email", array("maxlength"=>50), true, false));
+	$fieldset->addField(new Text("name", "Full Name", array("maxlength"=>50), true, false));
+	$fieldset->addField(new Text("secondContact", "Second Contact", array("maxlength"=>50), false, false));
+	$fieldset->addField(new Checkbox("notifications", "Notifications", null, false, false));
+	$fieldset->addField(new Checkbox("active", "Active", null, true, false), 1);
+	$fieldset->addField(new Hidden("semester", "", null, true, true), $_SESSION["semester"]);
 
-        $row = new RowManager("users", $keyField->getName());
-        $fieldset->addRowManager($row);
-        $form->addFieldset($fieldset);
-        $form->process();
-        $form->display();
-    }
+	$row = new RowManager("users", $keyField->getName());
+	$fieldset->addRowManager($row);
+	$form->addFieldset($fieldset);
+	$form->process();
+	$form->display();
 ?>
 <?php if($securityManager->isPageVisible("editLibraries")) { ?>
     <a name="library">

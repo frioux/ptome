@@ -21,7 +21,7 @@
     foreach($rowsFrom as $row) {
         $totalFrom += $row["count"];
     }
-    $rows = [];
+    $rows = array();
     foreach($rowsFrom as $row) {
         $rows[$row["name"]]["from"] = $row["count"];
     }

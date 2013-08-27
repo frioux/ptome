@@ -23,6 +23,8 @@
 	class ListManager {
 		/** @var Array of filters to apply to the database list. */
 		protected $filters;
+		/** @var Array of filter hooks to filter the database results. */
+		protected $filterHooks;
 		/** @var name of the database column to use in a SQL ORDER BY clause to apply to the database list. */
 		protected $order;
         /** @var The direction (asc\desc) to sort by. */
@@ -33,6 +35,7 @@
 		 */
 		function __construct() {
 			$this->filters = array();
+			$this->filterHooks = array();
 			$this->order = null;
             $this->sortDir = "asc";
 		}
@@ -46,6 +49,10 @@
 		function addFilter(Filter $filter) {
 			$this->filters[] = $filter;
         }
+
+		function addFilterHook($hook) {
+			$this->filterHooks[] = $hook;
+		}
 
         /**
 		 * Generates forms from any filters that may be applied to this form.
@@ -61,7 +68,9 @@
 			$ret = '<form method="post" action="">';
 
 			foreach($filters as $filter) {
-				$filter->setDefaultValue(array_shift($data));
+				if($data) {
+					$filter->setDefaultValue(array_shift($data));
+				}
 				$ret .= $filter->getForm()."<br>";
 			}
 
@@ -116,6 +125,16 @@
             $ret .= '<tbody>';
 			//add list data
 			while($entry = DatabaseManager::fetchAssoc($result)) {
+				$showRow = true;
+				foreach($this->filterHooks as $filterHook) {
+					if(!$filterHook->process($entry)) {
+						$showRow = false;
+						break;
+					}
+				}
+				if(!$showRow) {
+					continue;
+				}
 				$ret .= "<tr>";
 				foreach($fields as $field) {
 					if(!$field->isInList()) {

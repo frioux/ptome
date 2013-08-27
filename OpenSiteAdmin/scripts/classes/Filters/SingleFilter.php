@@ -44,7 +44,7 @@
 				die("Error in ".$field.": If a single filter defines either a tablename or a primary key field, it must define both");
 			}
 			$this->field = $field;
-			$this->defaultValue = $defaultValue;
+			$this->setDefaultValue($defaultValue);
 			$this->tableName = $table;
 			$this->displayField = $displayField;
 		}
