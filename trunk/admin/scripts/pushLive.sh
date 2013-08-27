@@ -8,5 +8,5 @@ tar -czf tome.tar.gz *
 mv header.php.orig header.php
 mv tome.tar.gz admin/scripts/tome.tar.gz
 cd admin/scripts/
-scp tome.tar.gz wharf_41@letuacm.org:letuacm.org/tome
-ssh wharf_41@letuacm.org 'cd letuacm.org/tome; tar -xzf tome.tar.gz; rm tome.tar.gz'
+scp tome.tar.gz wharf_41@letuacm.org:"tome.letuacm.org"
+ssh wharf_41@letuacm.org 'cd tome.letuacm.org; tar -xzf tome.tar.gz; rm tome.tar.gz'
